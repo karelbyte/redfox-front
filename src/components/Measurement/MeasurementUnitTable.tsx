@@ -1,4 +1,5 @@
 import { MeasurementUnit } from '@/types/measurement-unit';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 interface MeasurementUnitTableProps {
   units: MeasurementUnit[];
@@ -49,18 +50,22 @@ export default function MeasurementUnitTable({ units, onEdit, onDelete }: Measur
                 {new Date(unit.created_at).toLocaleDateString()}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  onClick={() => onEdit(unit)}
-                  className="text-red-600 hover:text-red-900 mr-4"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => onDelete(unit)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  Eliminar
-                </button>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => onEdit(unit)}
+                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    title="Editar"
+                  >
+                    <PencilIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(unit)}
+                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    title="Eliminar"
+                  >
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

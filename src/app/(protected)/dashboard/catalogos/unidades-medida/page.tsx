@@ -7,6 +7,7 @@ import { MeasurementUnit } from '@/types/measurement-unit';
 import MeasurementUnitForm from '@/components/Measurement/MeasurementUnitForm';
 import MeasurementUnitTable from '@/components/Measurement/MeasurementUnitTable';
 import DeleteMeasurementUnitModal from '@/components/Measurement/DeleteMeasurementUnitModal';
+import Pagination from '@/components/Pagination/Pagination';
 
 export default function MeasurementUnitsPage() {
   const [units, setUnits] = useState<MeasurementUnit[]>([]);
@@ -14,7 +15,6 @@ export default function MeasurementUnitsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingUnit, setEditingUnit] = useState<MeasurementUnit | null>(null);
   const [unitToDelete, setUnitToDelete] = useState<MeasurementUnit | null>(null);
 
@@ -24,7 +24,7 @@ export default function MeasurementUnitsPage() {
       const response = await measurementUnitsService.getMeasurementUnits(page);
       setUnits(response.data);
       setTotalPages(response.meta.totalPages);
-    } catch (error) {
+    } catch {
       toastService.error('Error al cargar las unidades de medida');
     } finally {
       setLoading(false);
@@ -42,9 +42,8 @@ export default function MeasurementUnitsPage() {
       await measurementUnitsService.deleteMeasurementUnit(unitToDelete.id);
       toastService.success('Unidad de medida eliminada correctamente');
       fetchUnits(currentPage);
-      setShowDeleteModal(false);
       setUnitToDelete(null);
-    } catch (error) {
+    } catch {
       toastService.error('Error al eliminar la unidad de medida');
     }
   };
@@ -66,7 +65,10 @@ export default function MeasurementUnitsPage() {
 
   const openDeleteModal = (unit: MeasurementUnit) => {
     setUnitToDelete(unit);
-    setShowDeleteModal(true);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -98,26 +100,12 @@ export default function MeasurementUnitsPage() {
             />
           </div>
 
-          {/* Paginación */}
-          <div className="flex justify-end space-x-2 mt-6">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
-            >
-              Anterior
-            </button>
-            <span className="px-3 py-1">
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50"
-            >
-              Siguiente
-            </button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            className="mt-6"
+          />
         </>
       )}
 
@@ -140,10 +128,7 @@ export default function MeasurementUnitsPage() {
       {/* Modal de confirmación para eliminar */}
       <DeleteMeasurementUnitModal
         unit={unitToDelete}
-        onClose={() => {
-          setShowDeleteModal(false);
-          setUnitToDelete(null);
-        }}
+        onClose={() => setUnitToDelete(null)}
         onConfirm={handleDelete}
       />
     </div>
