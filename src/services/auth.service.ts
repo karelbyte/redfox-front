@@ -1,5 +1,7 @@
 'use client';
 
+import { toastService } from './toast.service';
+
 interface LoginResponse {
   access_token: string;
   expires_at: string;
@@ -25,18 +27,20 @@ interface LoginCredentials {
 }
 
 export const authService = {
-  async login(credentials: LoginCredentials): Promise<LoginResponse> {
+  async login(email: string, password: string): Promise<void> {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
-        throw new Error('Error en la autenticación');
+        const error = await response.json();
+        toastService.error(error);
+        throw new Error(error.message);
       }
 
       const data: LoginResponse = await response.json();
@@ -49,21 +53,30 @@ export const authService = {
       // También guardar el token en una cookie para compatibilidad
       document.cookie = `token=${data.access_token}; path=/; expires=${new Date(data.expires_at).toUTCString()}; secure; samesite=strict`;
       
-      return data;
+      toastService.success('¡Bienvenido!');
     } catch (error) {
-      console.error('Error en login:', error);
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      }
       throw error;
     }
   },
 
   async logout(): Promise<void> {
-    // Eliminar datos de localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('tokenExpires');
-    localStorage.removeItem('user');
-    
-    // Eliminar la cookie del token
-    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict';
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_URL_API}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      this.clearAuth();
+      toastService.info('Sesión cerrada correctamente');
+    }
   },
 
   getToken(): string | null {
@@ -128,5 +141,20 @@ export const authService = {
       console.error('Error al obtener usuario:', error);
       return null;
     }
+  },
+
+  setToken(token: string): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('tokenExpires', new Date(Date.now() + 3600000).toUTCString());
+  },
+
+  setUser(user: LoginResponse['user']): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  },
+
+  clearAuth(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpires');
+    localStorage.removeItem('user');
   },
 }; 

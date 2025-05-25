@@ -7,21 +7,19 @@ import { useAuth } from '@/context/AuthContext';
 export default function LoginPage() {
   const [email, setEmail] = useState('admin@redfox.com');
   const [password, setPassword] = useState('admin123');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
     try {
       await login(email, password);
       router.push('/dashboard');
     } catch {
-      setError('Credenciales inválidas');
+      // El error ya se maneja en el servicio de autenticación
     } finally {
       setLoading(false);
     }
@@ -40,12 +38,6 @@ export default function LoginPage() {
         </div>
 
         <form className="space-y-8" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-100 text-red-500 px-4 py-3 rounded-lg" role="alert">
-              {error}
-            </div>
-          )}
-          
           <div className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-red-400 mb-2">
