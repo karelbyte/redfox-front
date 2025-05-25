@@ -27,7 +27,7 @@ interface LoginCredentials {
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,12 @@ export const authService = {
 
       const data: LoginResponse = await response.json();
       
-      // Guardar el token en una cookie
+      // Guardar el token y los datos del usuario en localStorage
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('tokenExpires', data.expires_at);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // También guardar el token en una cookie para compatibilidad
       document.cookie = `token=${data.access_token}; path=/; expires=${new Date(data.expires_at).toUTCString()}; secure; samesite=strict`;
       
       return data;
@@ -52,36 +57,73 @@ export const authService = {
   },
 
   async logout(): Promise<void> {
+    // Eliminar datos de localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpires');
+    localStorage.removeItem('user');
+    
     // Eliminar la cookie del token
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict';
   },
 
   getToken(): string | null {
+    // Primero intentar obtener el token de localStorage
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Verificar si el token ha expirado
+      const expiresAt = localStorage.getItem('tokenExpires');
+      if (expiresAt && new Date(expiresAt) > new Date()) {
+        return token;
+      } else {
+        // Si el token ha expirado, limpiar todo
+        this.logout();
+        return null;
+      }
+    }
+    
+    // Si no hay token en localStorage, intentar con cookies
     const cookies = document.cookie.split(';');
     const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
     return tokenCookie ? tokenCookie.split('=')[1] : null;
   },
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    if (!token) return false;
+
+    // Verificar si el token ha expirado
+    const expiresAt = localStorage.getItem('tokenExpires');
+    if (!expiresAt) return false;
+
+    return new Date(expiresAt) > new Date();
   },
 
   async getCurrentUser(): Promise<LoginResponse['user'] | null> {
+    // Primero intentar obtener el usuario de localStorage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      return JSON.parse(storedUser);
+    }
+
+    // Si no hay usuario en localStorage, intentar obtenerlo de la API
     const token = this.getToken();
     if (!token) return null;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Error al obtener el usuario actual');
+        throw new Error('Error al obtener el usuario');
       }
 
-      return await response.json();
+      const user = await response.json();
+      // Guardar el usuario en localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
     } catch (error) {
       console.error('Error al obtener usuario:', error);
       return null;
