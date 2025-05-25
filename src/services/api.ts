@@ -40,7 +40,7 @@ export const api = {
       );
     }
 
-    return data;
+    return { data };
   },
 
   async post<T, D = Record<string, unknown>>(endpoint: string, data: D): Promise<ApiResponse<T>> {
@@ -63,7 +63,7 @@ export const api = {
       );
     }
 
-    return responseData;
+    return { data: responseData };
   },
 
   async put<T, D = Record<string, unknown>>(endpoint: string, data: D): Promise<ApiResponse<T>> {
@@ -86,7 +86,7 @@ export const api = {
       );
     }
 
-    return responseData;
+    return { data: responseData };
   },
 
   async delete(endpoint: string): Promise<void> {

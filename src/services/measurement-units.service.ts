@@ -7,8 +7,9 @@ interface PaginatedResponse<T> {
   data: T[];
   meta: {
     total: number;
+    page: number;
+    limit: number;
     totalPages: number;
-    currentPage: number;
   };
 }
 
@@ -19,13 +20,13 @@ export const measurementUnitsService = {
   },
 
   async createMeasurementUnit(data: Omit<MeasurementUnit, 'id' | 'created_at' | 'updated_at'>): Promise<MeasurementUnit> {
-    const response = await api.post<{ data: MeasurementUnit }>('/measurement-units', data);
-    return response.data.data;
+    const response = await api.post<MeasurementUnit>('/measurement-units', data);
+    return response.data;
   },
 
   async updateMeasurementUnit(id: string, data: Partial<MeasurementUnit>): Promise<MeasurementUnit> {
-    const response = await api.put<{ data: MeasurementUnit }>(`/measurement-units/${id}`, data);
-    return response.data.data;
+    const response = await api.put<MeasurementUnit>(`/measurement-units/${id}`, data);
+    return response.data;
   },
 
   async deleteMeasurementUnit(id: string): Promise<void> {

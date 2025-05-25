@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { measurementUnitsService } from '@/services/measurement-units.service';
-import { toastService } from '@/services/toast.service';
-import { MeasurementUnit } from '@/types/measurement-unit';
-import MeasurementUnitForm from '@/components/Measurement/MeasurementUnitForm';
-import MeasurementUnitTable from '@/components/Measurement/MeasurementUnitTable';
-import DeleteMeasurementUnitModal from '@/components/Measurement/DeleteMeasurementUnitModal';
-import Pagination from '@/components/Pagination/Pagination';
-import Drawer from '@/components/Drawer/Drawer';
-import { MeasurementUnitFormRef } from '@/components/Measurement/MeasurementUnitForm';
+import { useState, useEffect, useRef } from "react";
+import { measurementUnitsService } from "@/services/measurement-units.service";
+import { toastService } from "@/services/toast.service";
+import { MeasurementUnit } from "@/types/measurement-unit";
+import MeasurementUnitForm from "@/components/Measurement/MeasurementUnitForm";
+import MeasurementUnitTable from "@/components/Measurement/MeasurementUnitTable";
+import DeleteMeasurementUnitModal from "@/components/Measurement/DeleteMeasurementUnitModal";
+import Pagination from "@/components/Pagination/Pagination";
+import Drawer from "@/components/Drawer/Drawer";
+import { MeasurementUnitFormRef } from "@/components/Measurement/MeasurementUnitForm";
 
 export default function MeasurementUnitsPage() {
   const [units, setUnits] = useState<MeasurementUnit[]>([]);
@@ -18,7 +18,9 @@ export default function MeasurementUnitsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editingUnit, setEditingUnit] = useState<MeasurementUnit | null>(null);
-  const [unitToDelete, setUnitToDelete] = useState<MeasurementUnit | null>(null);
+  const [unitToDelete, setUnitToDelete] = useState<MeasurementUnit | null>(
+    null
+  );
   const [isSaving, setIsSaving] = useState(false);
   const formRef = useRef<MeasurementUnitFormRef>(null);
 
@@ -29,7 +31,7 @@ export default function MeasurementUnitsPage() {
       setUnits(response.data);
       setTotalPages(response.meta.totalPages);
     } catch {
-      toastService.error('Error al cargar las unidades de medida');
+      toastService.error("Error al cargar las unidades de medida");
     } finally {
       setLoading(false);
     }
@@ -41,14 +43,14 @@ export default function MeasurementUnitsPage() {
 
   const handleDelete = async () => {
     if (!unitToDelete) return;
-    
+
     try {
       await measurementUnitsService.deleteMeasurementUnit(unitToDelete.id);
-      toastService.success('Unidad de medida eliminada correctamente');
+      toastService.success("Unidad de medida eliminada correctamente");
       fetchUnits(currentPage);
       setUnitToDelete(null);
     } catch {
-      toastService.error('Error al eliminar la unidad de medida');
+      toastService.error("Error al eliminar la unidad de medida");
     }
   };
 
@@ -85,7 +87,9 @@ export default function MeasurementUnitsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">Unidades de Medida</h1>
+        <h1 className="text-xl font-semibold text-red-900">
+          Unidades de Medida
+        </h1>
         <button
           onClick={() => {
             setEditingUnit(null);
@@ -101,7 +105,7 @@ export default function MeasurementUnitsPage() {
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
         </div>
-      ) : units.length === 0 ? (
+      ) : units && units.length === 0 ? (
         <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
           <svg
             className="h-12 w-12 text-red-300 mb-4"
@@ -116,8 +120,12 @@ export default function MeasurementUnitsPage() {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">No hay unidades de medida</p>
-          <p className="text-sm text-red-300">Haz clic en &quot;Nueva Unidad&quot; para agregar una.</p>
+          <p className="text-lg font-medium text-red-400 mb-2">
+            No hay unidades de medida
+          </p>
+          <p className="text-sm text-red-300">
+            Haz clic en &quot;Nueva Unidad&quot; para agregar una.
+          </p>
         </div>
       ) : (
         <>
@@ -144,7 +152,9 @@ export default function MeasurementUnitsPage() {
       <Drawer
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingUnit ? 'Editar Unidad de Medida' : 'Nueva Unidad de Medida'}
+        title={
+          editingUnit ? "Editar Unidad de Medida" : "Nueva Unidad de Medida"
+        }
         onSave={handleSave}
         isSaving={isSaving}
       >
@@ -165,4 +175,4 @@ export default function MeasurementUnitsPage() {
       />
     </div>
   );
-} 
+}
