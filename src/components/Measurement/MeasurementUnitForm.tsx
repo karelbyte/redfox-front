@@ -1,111 +1,119 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { measurementUnitsService } from '@/services/measurement-units.service';
 import { toastService } from '@/services/toast.service';
+import { MeasurementUnit } from '@/types/measurement-unit';
 
-interface MeasurementUnit {
-  id: string;
-  code: string;
-  description: string;
-  status: boolean;
-}
-
-interface MeasurementUnitFormProps {
-  unit?: MeasurementUnit | null;
+export interface MeasurementUnitFormProps {
+  unit: MeasurementUnit | null;
   onClose: () => void;
   onSuccess: () => void;
+  onSavingChange?: (isSaving: boolean) => void;
 }
 
-export default function MeasurementUnitForm({ unit, onClose, onSuccess }: MeasurementUnitFormProps) {
-  const [formData, setFormData] = useState({
-    code: '',
-    description: '',
-    status: true,
-  });
+export interface MeasurementUnitFormRef {
+  submit: () => void;
+}
 
-  useEffect(() => {
-    if (unit) {
-      setFormData({
-        code: unit.code,
-        description: unit.description,
-        status: unit.status,
-      });
-    }
-  }, [unit]);
+const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFormProps>(
+  ({ unit, onClose, onSuccess, onSavingChange }, ref) => {
+    const [code, setCode] = useState('');
+    const [description, setDescription] = useState('');
+    const [status, setStatus] = useState(true);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
+    useEffect(() => {
       if (unit) {
-        await measurementUnitsService.updateMeasurementUnit(unit.id, formData);
-        toastService.success('Unidad de medida actualizada correctamente');
+        setCode(unit.code);
+        setDescription(unit.description);
+        setStatus(unit.status);
       } else {
-        await measurementUnitsService.createMeasurementUnit(formData);
-        toastService.success('Unidad de medida creada correctamente');
+        setCode('');
+        setDescription('');
+        setStatus(true);
       }
-      onSuccess();
-    } catch (error) {
-      toastService.error('Error al guardar la unidad de medida');
-    }
-  };
+    }, [unit]);
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="code" className="block text-sm font-medium text-gray-700">
-          Código
-        </label>
-        <input
-          type="text"
-          id="code"
-          value={formData.code}
-          onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
-          required
-        />
-      </div>
+    const handleSubmit = async () => {
+      try {
+        onSavingChange?.(true);
+        const data = {
+          code,
+          description,
+          status,
+        };
 
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-          Descripción
-        </label>
-        <input
-          type="text"
-          id="description"
-          value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
-          required
-        />
-      </div>
+        if (unit) {
+          await measurementUnitsService.updateMeasurementUnit(unit.id, data);
+          toastService.success('Unidad de medida actualizada correctamente');
+        } else {
+          await measurementUnitsService.createMeasurementUnit(data);
+          toastService.success('Unidad de medida creada correctamente');
+        }
 
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          id="status"
-          checked={formData.status}
-          onChange={(e) => setFormData({ ...formData, status: e.target.checked })}
-          className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-        />
-        <label htmlFor="status" className="ml-2 block text-sm text-gray-900">
-          Activo
-        </label>
-      </div>
+        onSuccess();
+      } catch (error) {
+        if (error instanceof Error) {
+          toastService.error(error.message);
+        } else {
+          toastService.error('Error al guardar la unidad de medida');
+        }
+      } finally {
+        onSavingChange?.(false);
+      }
+    };
 
-      <div className="flex justify-end space-x-2 mt-6">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 text-gray-600 hover:text-gray-800"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-        >
-          Guardar
-        </button>
-      </div>
-    </form>
-  );
-} 
+    useImperativeHandle(ref, () => ({
+      submit: handleSubmit,
+    }));
+
+    return (
+      <form className="space-y-6">
+        <div>
+          <label htmlFor="code" className="block text-sm font-medium text-red-400 mb-2">
+            Código
+          </label>
+          <input
+            type="text"
+            id="code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            placeholder="Ej: Lts"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium text-red-400 mb-2">
+            Descripción
+          </label>
+          <input
+            type="text"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            placeholder="Ej: Litros"
+            required
+          />
+        </div>
+
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="status"
+            checked={status}
+            onChange={(e) => setStatus(e.target.checked)}
+            className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
+          />
+          <label htmlFor="status" className="ml-2 block text-sm text-red-400">
+            Activo
+          </label>
+        </div>
+      </form>
+    );
+  }
+);
+
+MeasurementUnitForm.displayName = 'MeasurementUnitForm';
+
+export default MeasurementUnitForm; 
