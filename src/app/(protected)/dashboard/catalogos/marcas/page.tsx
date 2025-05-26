@@ -122,26 +122,26 @@ export default function BrandsPage() {
         </div>
       ) : brands && brands.length === 0 ? (
         <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
-          <svg
+                  <svg
             className="h-12 w-12 text-red-300 mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
+                    />
+                  </svg>
           <p className="text-lg font-medium text-red-400 mb-2">
             No hay marcas
           </p>
           <p className="text-sm text-red-300">
             Haz clic en &quot;Nueva Marca&quot; para agregar una.
           </p>
-        </div>
+              </div>
       ) : (
         <>
           <div className="mt-6">
@@ -150,7 +150,7 @@ export default function BrandsPage() {
               onEdit={handleEdit}
               onDelete={openDeleteModal}
             />
-          </div>
+            </div>
 
           {totalPages > 1 && (
             <Pagination
@@ -172,14 +172,14 @@ export default function BrandsPage() {
         isSaving={isSaving}
         isFormValid={isFormValid}
       >
-        <BrandForm
-          ref={formRef}
+              <BrandForm
+                ref={formRef}
           initialData={editingBrand}
           onClose={handleDrawerClose}
           onSuccess={handleFormSuccess}
-          onSavingChange={setIsSaving}
-          onValidChange={setIsFormValid}
-        />
+                onSavingChange={setIsSaving}
+                onValidChange={setIsFormValid}
+              />
       </Drawer>
 
       {/* Modal de confirmación para eliminar */}

@@ -39,15 +39,15 @@ export const authService = {
       }
 
       const data: LoginResponse = await response.json();
-      
+
       // Guardar el token y los datos del usuario en localStorage
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('tokenExpires', data.expires_at);
       localStorage.setItem('user', JSON.stringify(data.user));
-      
+
       // También guardar el token en una cookie para compatibilidad
       document.cookie = `token=${data.access_token}; path=/; expires=${new Date(data.expires_at).toUTCString()}; secure; samesite=strict`;
-      
+
       toastService.success('¡Bienvenido!');
     } catch (error) {
       if (error instanceof Error) {
@@ -57,21 +57,19 @@ export const authService = {
     }
   },
 
-  async logout(): Promise<void> {
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_URL_API}/api/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-    } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      this.clearAuth();
-      toastService.info('Sesión cerrada correctamente');
-    }
+  logout(): void {
+    this.clearAuth();
+
+    // Limpiar todas las cookies relacionadas con la autenticación
+    const cookies = document.cookie.split(';');
+    cookies.forEach(cookie => {
+      const [name] = cookie.trim().split('=');
+      if (name === 'token' || name.startsWith('auth_')) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=strict`;
+      }
+    });
+
+    toastService.info('Sesión cerrada correctamente');
   },
 
   getToken(): string | null {
@@ -88,7 +86,7 @@ export const authService = {
         return null;
       }
     }
-    
+
     // Si no hay token en localStorage, intentar con cookies
     const cookies = document.cookie.split(';');
     const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));

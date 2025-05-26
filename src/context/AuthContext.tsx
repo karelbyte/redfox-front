@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       setIsLoading(true);
-      await authService.logout();
+      authService.logout();
       setUser(null);
       router.push('/login');
     } catch (error) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import toast from 'react-hot-toast';
+import toast, { Toast } from 'react-hot-toast';
 
 interface ErrorResponse {
   message: string;
@@ -12,7 +12,7 @@ const toastOptions = {
   position: 'top-right' as const,
 };
 
-const renderToast = (t: any, message: string, type: 'success' | 'error' | 'warning' | 'info') => {
+const renderToast = (t: Toast, message: string, type: 'success' | 'error' | 'warning' | 'info') => {
   const styles = {
     success: {
       bg: 'bg-green-50',

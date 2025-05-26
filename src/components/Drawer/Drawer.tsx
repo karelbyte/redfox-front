@@ -7,6 +7,7 @@ interface DrawerProps {
   children: React.ReactNode;
   onSave?: () => void;
   isSaving?: boolean;
+  isFormValid?: boolean;
 }
 
 export default function Drawer({ 
@@ -15,7 +16,8 @@ export default function Drawer({
   title, 
   children, 
   onSave,
-  isSaving = false 
+  isSaving = false,
+  isFormValid = true
 }: DrawerProps) {
   if (!isOpen) return null;
 
@@ -43,7 +45,7 @@ export default function Drawer({
             {onSave && (
               <button
                 onClick={onSave}
-                disabled={isSaving}
+                disabled={isSaving || !isFormValid}
                 className="px-4 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:hover:bg-red-600 flex items-center"
               >
                 {isSaving ? (

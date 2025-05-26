@@ -66,7 +66,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
     }, [initialData]);
 
     const validateForm = (): boolean => {
-      const newErrors: Partial<TaxFormData> = {};
+      const newErrors: Partial<TaxFormErrors> = {};
       let isValid = true;
 
       if (!formData.code.trim()) {
@@ -87,7 +87,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
         isValid = false;
       }
 
-      setErrors(newErrors as TaxFormErrors);
+      setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
     };
