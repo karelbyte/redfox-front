@@ -21,11 +21,6 @@ interface LoginResponse {
   };
 }
 
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
 export const authService = {
   async login(email: string, password: string): Promise<void> {
     try {
