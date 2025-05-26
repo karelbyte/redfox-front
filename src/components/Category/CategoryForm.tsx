@@ -25,7 +25,7 @@ interface FormErrors {
 }
 
 const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
-  ({ category, onClose, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ category, onSuccess, onSavingChange, onValidChange }, ref) => {
     const [formData, setFormData] = useState<CategoryFormData>({
       name: '',
       slug: '',

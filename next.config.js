@@ -3,13 +3,13 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
+        protocol: 'http', // Use 'http' since your URL is http://localhost
         hostname: 'localhost',
-        port: '5500',
-        pathname: '/api/**',
+        port: '5500', // Specify the port your image server is running on
+        pathname: '/uploads/categories/**', // Use a wildcard if images are in subdirectories
       },
     ],
   },
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;

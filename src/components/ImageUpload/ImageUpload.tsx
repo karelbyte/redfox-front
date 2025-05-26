@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef } from 'react';
 import { PhotoIcon } from '@heroicons/react/24/outline';
-
+import Image from 'next/image';
 interface ImageUploadProps {
   value?: string;
   onChange: (file: File | null) => void;
@@ -62,9 +62,11 @@ export default function ImageUpload({ value, onChange, error }: ImageUploadProps
         
         {preview ? (
           <div className="relative">
-            <img
+            <Image
               src={preview}
               alt="Preview"
+              width={80}
+              height={80}
               className="w-full h-48 object-cover rounded-lg"
             />
             <button

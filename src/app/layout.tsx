@@ -24,7 +24,16 @@ export default function RootLayout({
       >
         <AuthProvider>
           {children}
-          <Toaster />
+          <Toaster
+            toastOptions={{
+              className: '',
+              style: {
+                padding: '16px',
+                borderRadius: '8px',
+                maxWidth: '400px',
+              },
+            }}
+          />
         </AuthProvider>
       </body>
     </html>

@@ -2,7 +2,7 @@ import { Category } from '@/types/category';
 import { PencilIcon, TrashIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useState, ReactElement } from 'react';
 import React from 'react';
-
+import Image from 'next/image';
 interface CategoryTableProps {
   categories: Category[];
   onEdit: (category: Category) => void;
@@ -62,7 +62,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{category.slug}</td>
           <td className="px-6 py-4 whitespace-nowrap">
             {category.image && (
-              <img 
+              <Image 
                 src={`${process.env.NEXT_PUBLIC_URL_API}${category.image}`}
                 alt={category.name}
                 width={80}

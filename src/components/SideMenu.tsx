@@ -45,6 +45,10 @@ const menuItems: MenuItem[] = [
         name: 'Marcas',
         path: '/dashboard/catalogos/marcas',
       },
+      {
+        name: 'Impuestos',
+        path: '/dashboard/catalogos/impuestos',
+      },
     ],
   },
   {

@@ -27,7 +27,7 @@ interface FormErrors {
 }
 
 const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFormProps>(
-  ({ unit, onClose, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ unit, onSuccess, onSavingChange, onValidChange }, ref) => {
     const [formData, setFormData] = useState<FormData>({
       code: '',
       description: '',
@@ -73,6 +73,7 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
 
     useEffect(() => {
       validateForm();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async () => {

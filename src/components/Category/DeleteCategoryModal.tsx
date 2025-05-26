@@ -36,7 +36,7 @@ export default function DeleteCategoryModal({ category, onClose, onConfirm }: De
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar la categoría "{category.name}"? Esta acción no se puede deshacer.
+                  ¿Estás seguro de que deseas eliminar la categoría &quot;{category.name}&quot;? Esta acción no se puede deshacer.
                 </p>
               </div>
             </div>
