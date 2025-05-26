@@ -1,110 +1,73 @@
-import { ApiResponse } from '@/types/api';
-
 const baseURL = process.env.NEXT_PUBLIC_URL_API + '/api' || 'http://localhost:3000/api';
 
-class ApiError extends Error {
-  constructor(
-    public message: string,
-    public statusCode: number,
-    public error: string
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
-}
+const getHeaders = (isFormData = false) => {
+  const headers: Record<string, string> = {
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+  };
 
-const getErrorMessage = (message: string | string[]): string => {
-  if (Array.isArray(message)) {
-    return message[0] || 'Error en la petición';
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
   }
-  return message || 'Error en la petición';
+
+  return headers;
 };
 
 export const api = {
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    const response = await fetch(`${baseURL}${endpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+  get: async <T>(url: string, params?: Record<string, unknown>): Promise<T> => {
+    const queryString = params ? `?${new URLSearchParams(params as Record<string, string>)}` : '';
+    const response = await fetch(`${baseURL}${url}${queryString}`, {
+      headers: getHeaders(),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      throw new ApiError(
-        getErrorMessage(data.message),
-        data.statusCode || response.status,
-        data.error || 'Error desconocido'
-      );
+      throw new Error('Error en la petición');
     }
 
-    return { data };
+    return response.json();
   },
 
-  async post<T, D = Record<string, unknown>>(endpoint: string, data: D): Promise<ApiResponse<T>> {
-    const response = await fetch(`${baseURL}${endpoint}`, {
+  post: async <T>(url: string, data: Record<string, unknown> | FormData): Promise<T> => {
+    const isFormData = data instanceof FormData;
+    const body = isFormData ? data : JSON.stringify(data);
+
+    const response = await fetch(`${baseURL}${url}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(data),
+      headers: getHeaders(isFormData),
+      body,
     });
 
-    const responseData = await response.json();
-
     if (!response.ok) {
-      throw new ApiError(
-        getErrorMessage(responseData.message),
-        responseData.statusCode || response.status,
-        responseData.error || 'Error desconocido'
-      );
+      throw new Error('Error en la petición');
     }
 
-    return { data: responseData };
+    return response.json();
   },
 
-  async put<T, D = Record<string, unknown>>(endpoint: string, data: D): Promise<ApiResponse<T>> {
-    const response = await fetch(`${baseURL}${endpoint}`, {
+  put: async <T>(url: string, data: Record<string, unknown> | FormData): Promise<T> => {
+    const isFormData = data instanceof FormData;
+    const body = isFormData ? data : JSON.stringify(data);
+
+    const response = await fetch(`${baseURL}${url}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(data),
+      headers: getHeaders(isFormData),
+      body,
     });
 
-    const responseData = await response.json();
-
     if (!response.ok) {
-      throw new ApiError(
-        getErrorMessage(responseData.message),
-        responseData.statusCode || response.status,
-        responseData.error || 'Error desconocido'
-      );
+      throw new Error('Error en la petición');
     }
 
-    return { data: responseData };
+    return response.json();
   },
 
-  async delete(endpoint: string): Promise<void> {
-    const response = await fetch(`${baseURL}${endpoint}`, {
+  delete: async (url: string): Promise<void> => {
+    const response = await fetch(`${baseURL}${url}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+      headers: getHeaders(),
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      throw new ApiError(
-        getErrorMessage(data.message),
-        data.statusCode || response.status,
-        data.error || 'Error desconocido'
-      );
+      throw new Error('Error en la petición');
     }
   },
 }; 

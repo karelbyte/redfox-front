@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { categoriesService } from '@/services/categories.service';
 import { toastService } from '@/services/toast.service';
 import { Category, CategoryFormData } from '@/types/category';
+import ImageUpload from '@/components/ImageUpload/ImageUpload';
 
 export interface CategoryFormProps {
   category: Category | null;
@@ -19,6 +21,7 @@ interface FormErrors {
   name?: string;
   description?: string;
   image?: string;
+  slug?: string;
 }
 
 const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
@@ -33,6 +36,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
       position: 1,
     });
 
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [errors, setErrors] = useState<FormErrors>({});
 
     useEffect(() => {
@@ -68,13 +72,8 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         isValid = false;
       }
 
-      if (!formData.description.trim()) {
-        newErrors.description = 'La descripción es requerida';
-        isValid = false;
-      }
-
-      if (!formData.image.trim()) {
-        newErrors.image = 'La imagen es requerida';
+      if (!formData.slug.trim()) {
+        newErrors.slug = 'El slug es requerido';
         isValid = false;
       }
 
@@ -85,7 +84,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
 
     useEffect(() => {
       validateForm();
-    }, [formData]);
+    }, [formData, imageFile]);
 
     const handleSubmit = async () => {
       if (!validateForm()) {
@@ -98,14 +97,13 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
           ...formData,
           name: formData.name.trim(),
           description: formData.description.trim(),
-          image: formData.image.trim(),
         };
 
         if (category) {
-          await categoriesService.updateCategory(category.id, data);
+          await categoriesService.updateCategory(category.id, data, imageFile || undefined);
           toastService.success('Categoría actualizada correctamente');
         } else {
-          await categoriesService.createCategory(data);
+          await categoriesService.createCategory(data, imageFile || undefined);
           toastService.success('Categoría creada correctamente');
         }
 
@@ -144,8 +142,24 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         </div>
 
         <div>
+          <label htmlFor="slug" className="block text-sm font-medium text-red-400 mb-2">
+            Slug <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="slug"
+            value={formData.slug}
+            onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            placeholder="Ej: zapatos"
+            required
+          />
+          {errors.slug && <p className="mt-1 text-xs text-gray-300">{errors.slug}</p>}
+        </div>
+
+        <div>
           <label htmlFor="description" className="block text-sm font-medium text-red-400 mb-2">
-            Descripción <span className="text-red-500">*</span>
+            Descripción <span className="text-red-500"></span>
           </label>
           <input
             type="text"
@@ -156,23 +170,17 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
             placeholder="Ej: Productos de calzado"
             required
           />
-          {errors.description && <p className="mt-1 text-xs text-gray-300">{errors.description}</p>}
         </div>
 
         <div>
-          <label htmlFor="image" className="block text-sm font-medium text-red-400 mb-2">
-            URL de la imagen <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium text-red-400 mb-2">
+            Imagen {!category && <span className="text-red-500"></span>}
           </label>
-          <input
-            type="text"
-            id="image"
-            value={formData.image}
-            onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: https://ejemplo.com/imagen.jpg"
-            required
+          <ImageUpload
+            value={category?.image}
+            onChange={setImageFile}
+            error={errors.image}
           />
-          {errors.image && <p className="mt-1 text-xs text-gray-300">{errors.image}</p>}
         </div>
 
         <div>

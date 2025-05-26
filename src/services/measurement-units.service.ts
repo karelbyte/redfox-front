@@ -16,17 +16,17 @@ interface PaginatedResponse<T> {
 export const measurementUnitsService = {
   async getMeasurementUnits(page: number = 1): Promise<PaginatedResponse<MeasurementUnit>> {
     const response = await api.get<PaginatedResponse<MeasurementUnit>>(`/measurement-units?page=${page}`);
-    return response.data;
+    return response;
   },
 
   async createMeasurementUnit(data: Omit<MeasurementUnit, 'id' | 'created_at' | 'updated_at'>): Promise<MeasurementUnit> {
     const response = await api.post<MeasurementUnit>('/measurement-units', data);
-    return response.data;
+    return response;
   },
 
   async updateMeasurementUnit(id: string, data: Partial<MeasurementUnit>): Promise<MeasurementUnit> {
     const response = await api.put<MeasurementUnit>(`/measurement-units/${id}`, data);
-    return response.data;
+    return response;
   },
 
   async deleteMeasurementUnit(id: string): Promise<void> {

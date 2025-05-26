@@ -29,7 +29,8 @@ export default function CategoriesPage() {
       const response = await categoriesService.getCategories(page);
       setCategories(response.data);
       setTotalPages(response.meta.totalPages);
-    } catch {
+    } catch (error) {
+      console.log(error);
       toastService.error("Error al cargar las categorías");
     } finally {
       setLoading(false);
