@@ -18,11 +18,10 @@ export default function MeasurementUnitsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editingUnit, setEditingUnit] = useState<MeasurementUnit | null>(null);
-  const [unitToDelete, setUnitToDelete] = useState<MeasurementUnit | null>(
-    null
-  );
+  const [unitToDelete, setUnitToDelete] = useState<MeasurementUnit | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const formRef = useRef<MeasurementUnitFormRef>(null);
+  const initialFetchDone = useRef(false);
 
   const fetchUnits = async (page: number) => {
     try {
@@ -38,8 +37,11 @@ export default function MeasurementUnitsPage() {
   };
 
   useEffect(() => {
-    fetchUnits(currentPage);
-  }, [currentPage]);
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchUnits(currentPage);
+    }
+  }, []);
 
   const handleDelete = async () => {
     if (!unitToDelete) return;

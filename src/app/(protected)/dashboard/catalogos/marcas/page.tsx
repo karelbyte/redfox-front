@@ -25,11 +25,12 @@ export default function BrandsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [editingBrand, setEditingBrand] = useState<Brand | undefined>();
-  const [brandToDelete, setBrandToDelete] = useState<Brand | undefined>();
+  const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
+  const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<BrandFormRef>(null);
+  const initialFetchDone = useRef(false);
 
   const fetchBrands = async (page: number) => {
     try {
@@ -49,8 +50,11 @@ export default function BrandsPage() {
   };
 
   useEffect(() => {
-    fetchBrands(currentPage);
-  }, [currentPage]);
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchBrands(currentPage);
+    }
+  }, []);
 
   const handleDelete = async () => {
     if (!brandToDelete) return;
@@ -76,7 +80,7 @@ export default function BrandsPage() {
 
   const handleDrawerClose = () => {
     setShowDrawer(false);
-    setEditingBrand(undefined);
+    setEditingBrand(null);
     setIsSaving(false);
   };
 
@@ -107,7 +111,7 @@ export default function BrandsPage() {
         </h1>
         <button
           onClick={() => {
-            setEditingBrand(undefined);
+            setEditingBrand(null);
             setShowDrawer(true);
           }}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -185,7 +189,7 @@ export default function BrandsPage() {
       {/* Modal de confirmación para eliminar */}
       <DeleteBrandModal
         brand={brandToDelete}
-        onClose={() => setBrandToDelete(undefined)}
+        onClose={() => setBrandToDelete(null)}
         onConfirm={handleDelete}
       />
     </div>

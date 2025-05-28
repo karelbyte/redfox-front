@@ -21,8 +21,8 @@ interface TaxFormErrors {
   isActive?: string;
 }
 
-interface TaxFormProps {
-  initialData?: Tax;
+export interface TaxFormProps {
+  initialData: Tax | null;
   onClose: () => void;
   onSuccess: () => void;
   onSavingChange?: (isSaving: boolean) => void;

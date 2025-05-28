@@ -4,46 +4,54 @@ import { useState, useEffect, useRef } from 'react';
 import { Tax } from '@/types/tax';
 import TaxTable from '@/components/Tax/TaxTable';
 import TaxForm, { TaxFormRef } from '@/components/Tax/TaxForm';
-import { api } from '@/services/api';
 import Drawer from '@/components/Drawer/Drawer';
 import { toastService } from '@/services/toast.service';
+import { taxesService } from '@/services/taxes.service';
+import Pagination from '@/components/Pagination/Pagination';
+import DeleteTaxModal from '@/components/Tax/DeleteTaxModal';
 
 export default function TaxesPage() {
   const [taxes, setTaxes] = useState<Tax[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [editingTax, setEditingTax] = useState<Tax | undefined>(undefined);
+  const [editingTax, setEditingTax] = useState<Tax | null>(null);
+  const [taxToDelete, setTaxToDelete] = useState<Tax | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const formRef = useRef<TaxFormRef>(null);
+  const initialFetchDone = useRef(false);
 
-  const fetchTaxes = async () => {
+  const fetchTaxes = async (page: number) => {
     try {
       setLoading(true);
-      const data = await api.get<Tax[]>('/taxes');
-      setTaxes(data);
+      const response = await taxesService.getTaxes(page);
+      setTaxes(response.data);
+      setTotalPages(response.meta.totalPages);
     } catch (err) {
       console.error('Error fetching taxes:', err);
-      toastService.error('Error al cargar los impuestos');
+      toastService.error("Error al cargar los impuestos");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTaxes();
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchTaxes(currentPage);
+    }
   }, []);
 
-  const handleDelete = async (tax: Tax) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este impuesto?')) {
-      return;
-    }
+  const handleDelete = async () => {
+    if (!taxToDelete) return;
 
     try {
-      await api.delete(`/taxes/${tax.id}`);
+      await taxesService.deleteTax(taxToDelete.id);
       toastService.success('Impuesto eliminado correctamente');
-      await fetchTaxes();
-    } catch (err) {
-      console.error('Error deleting tax:', err);
+      fetchTaxes(currentPage);
+      setTaxToDelete(null);
+    } catch {
       toastService.error('Error al eliminar el impuesto');
     }
   };
@@ -55,19 +63,28 @@ export default function TaxesPage() {
 
   const handleDrawerClose = () => {
     setShowDrawer(false);
-    setEditingTax(undefined);
+    setEditingTax(null);
     setIsSaving(false);
   };
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchTaxes();
+    fetchTaxes(currentPage);
   };
 
   const handleSave = () => {
     if (formRef.current) {
       formRef.current.submit();
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    fetchTaxes(page);
+  };
+
+  const openDeleteModal = (tax: Tax) => {
+    setTaxToDelete(tax);
   };
 
   if (loading) {
@@ -86,7 +103,7 @@ export default function TaxesPage() {
         </h1>
         <button
           onClick={() => {
-            setEditingTax(undefined);
+            setEditingTax(null);
             setShowDrawer(true);
           }}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -118,13 +135,24 @@ export default function TaxesPage() {
           </p>
         </div>
       ) : (
-        <div className="mt-6">
-          <TaxTable
-            taxes={taxes}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
+        <>
+          <div className="mt-6">
+            <TaxTable
+              taxes={taxes}
+              onEdit={handleEdit}
+              onDelete={openDeleteModal}
+            />
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className="mt-6"
+            />
+          )}
+        </>
       )}
 
       <Drawer
@@ -142,6 +170,12 @@ export default function TaxesPage() {
           onSavingChange={setIsSaving}
         />
       </Drawer>
+
+      <DeleteTaxModal
+        tax={taxToDelete}
+        onClose={() => setTaxToDelete(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 } 

@@ -22,6 +22,7 @@ export default function CategoriesPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<CategoryFormRef>(null);
+  const initialFetchDone = useRef(false);
 
   const fetchCategories = async (page: number) => {
     try {
@@ -29,8 +30,7 @@ export default function CategoriesPage() {
       const response = await categoriesService.getCategories(page);
       setCategories(response.data);
       setTotalPages(response.meta.totalPages);
-    } catch (error) {
-      console.log(error);
+    } catch {
       toastService.error("Error al cargar las categorías");
     } finally {
       setLoading(false);
@@ -38,8 +38,11 @@ export default function CategoriesPage() {
   };
 
   useEffect(() => {
-    fetchCategories(currentPage);
-  }, [currentPage]);
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchCategories(currentPage);
+    }
+  }, []);
 
   const handleDelete = async () => {
     if (!categoryToDelete) return;
@@ -82,6 +85,7 @@ export default function CategoriesPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    fetchCategories(page);
   };
 
   return (
