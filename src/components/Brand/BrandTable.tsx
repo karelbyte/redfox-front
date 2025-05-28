@@ -54,10 +54,10 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    brand.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    brand.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {brand.status ? 'Activo' : 'Inactivo'}
+                  {brand.isActive ? 'Activo' : 'Inactivo'}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

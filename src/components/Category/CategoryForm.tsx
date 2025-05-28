@@ -34,6 +34,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
       parentId: null,
       isActive: true,
       position: 1,
+      imageChanged: false,
     });
 
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -49,6 +50,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
           parentId: category.parentId,
           isActive: category.isActive,
           position: category.position,
+          imageChanged: false,
         });
       } else {
         setFormData({
@@ -59,6 +61,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
           parentId: null,
           isActive: true,
           position: 1,
+          imageChanged: false,
         });
       }
     }, [category]);
@@ -85,6 +88,15 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
     useEffect(() => {
       validateForm();
     }, [formData, imageFile]);
+
+    const handleImageChange = (file: File | null) => {
+      setImageFile(file);
+      setFormData(prev => ({
+        ...prev,
+        imageChanged: true,
+        image: file ? prev.image : ''
+      }));
+    };
 
     const handleSubmit = async () => {
       if (!validateForm()) {
@@ -178,7 +190,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
           </label>
           <ImageUpload
             value={category?.image}
-            onChange={setImageFile}
+            onChange={handleImageChange}
             error={errors.image}
           />
         </div>

@@ -172,14 +172,14 @@ export default function BrandsPage() {
         isSaving={isSaving}
         isFormValid={isFormValid}
       >
-              <BrandForm
-                ref={formRef}
-          initialData={editingBrand}
+        <BrandForm
+          ref={formRef}
+          brand={editingBrand || null}
           onClose={handleDrawerClose}
           onSuccess={handleFormSuccess}
-                onSavingChange={setIsSaving}
-                onValidChange={setIsFormValid}
-              />
+          onSavingChange={setIsSaving}
+          onValidChange={setIsFormValid}
+        />
       </Drawer>
 
       {/* Modal de confirmación para eliminar */}

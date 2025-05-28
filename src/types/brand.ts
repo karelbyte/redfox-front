@@ -3,6 +3,14 @@ export interface Brand {
   code: string;
   description: string;
   img: string | null;
-  status: boolean;
+  isActive: boolean;
   created_at: string;
+}
+
+export interface BrandFormData {
+  code: string;
+  description: string;
+  img: string | null;
+  isActive: boolean;
+  imageChanged?: boolean;
 } 

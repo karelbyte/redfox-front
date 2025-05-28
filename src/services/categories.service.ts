@@ -26,6 +26,7 @@ class CategoriesService {
     formData.append('slug', data.slug);
     formData.append('isActive', data.isActive.toString());
     formData.append('position', data.position.toString());
+    formData.append('imageChanged', 'true'); // Siempre es true para creación
     if (data.parentId) {
       formData.append('parentId', data.parentId);
     }
@@ -48,12 +49,13 @@ class CategoriesService {
     formData.append('slug', data.slug);
     formData.append('isActive', data.isActive.toString());
     formData.append('position', data.position.toString());
+    formData.append('imageChanged', data.imageChanged ? 'true' : 'false');
     if (data.parentId) {
       formData.append('parentId', data.parentId);
     }
 
-    // Agregar archivo de imagen si existe
-    if (imageFile) {
+    // Agregar archivo de imagen si existe y ha cambiado
+    if (data.imageChanged && imageFile) {
       formData.append('image', imageFile);
     }
 

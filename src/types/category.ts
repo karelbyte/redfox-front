@@ -19,4 +19,5 @@ export interface CategoryFormData {
   parentId: string | null;
   isActive: boolean;
   position: number;
+  imageChanged?: boolean;
 } 

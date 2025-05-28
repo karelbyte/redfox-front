@@ -1,27 +1,13 @@
 'use client'
 
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { Brand } from '@/types/brand';
-import { api } from '@/services/api';
+import { brandService } from '@/services/brand.service';
 import { toastService } from '@/services/toast.service';
+import { Brand, BrandFormData } from '@/types/brand';
 import ImageUpload from '@/components/ImageUpload/ImageUpload';
 
-interface BrandFormData {
-  code: string;
-  description: string;
-  img: string | null;
-  status: boolean;
-}
-
-interface BrandFormErrors {
-  code?: string;
-  description?: string;
-  img?: string;
-  status?: string;
-}
-
-interface BrandFormProps {
-  initialData?: Brand;
+export interface BrandFormProps {
+  brand: Brand | null;
   onClose: () => void;
   onSuccess: () => void;
   onSavingChange?: (isSaving: boolean) => void;
@@ -32,38 +18,47 @@ export interface BrandFormRef {
   submit: () => void;
 }
 
+interface FormErrors {
+  code?: string;
+  description?: string;
+  img?: string;
+}
+
 const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
-  ({ initialData, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ brand, onSuccess, onSavingChange, onValidChange }, ref) => {
     const [formData, setFormData] = useState<BrandFormData>({
-      code: initialData?.code || '',
-      description: initialData?.description || '',
-      img: initialData?.img || null,
-      status: initialData?.status ?? true,
+      code: '',
+      description: '',
+      img: null,
+      isActive: true,
+      imageChanged: false,
     });
 
     const [imageFile, setImageFile] = useState<File | null>(null);
-    const [errors, setErrors] = useState<BrandFormErrors>({});
+    const [errors, setErrors] = useState<FormErrors>({});
 
     useEffect(() => {
-      if (initialData) {
+      if (brand) {
         setFormData({
-          code: initialData.code,
-          description: initialData.description,
-          img: initialData.img,
-          status: initialData.status,
+          code: brand.code,
+          description: brand.description,
+          img: brand.img,
+          isActive: brand.isActive,
+          imageChanged: false,
         });
       } else {
         setFormData({
           code: '',
           description: '',
           img: null,
-          status: true,
+          isActive: true,
+          imageChanged: false,
         });
       }
-    }, [initialData]);
+    }, [brand]);
 
     const validateForm = (): boolean => {
-      const newErrors: Partial<BrandFormData> = {};
+      const newErrors: FormErrors = {};
       let isValid = true;
 
       if (!formData.code.trim()) {
@@ -76,15 +71,23 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
         isValid = false;
       }
 
-      setErrors(newErrors as BrandFormErrors);
+      setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
     };
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData, imageFile]);
+
+    const handleImageChange = (file: File | null) => {
+      setImageFile(file);
+      setFormData(prev => ({
+        ...prev,
+        imageChanged: true,
+        img: file ? prev.img : null
+      }));
+    };
 
     const handleSubmit = async () => {
       if (!validateForm()) {
@@ -93,20 +96,16 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
 
       try {
         onSavingChange?.(true);
-        const formDataToSend = new FormData();
-        formDataToSend.append('code', formData.code.trim());
-        formDataToSend.append('description', formData.description.trim());
-        formDataToSend.append('status', formData.status.toString());
-        if (imageFile) {
-          formDataToSend.append('img', imageFile);
-        }
+        const data = {
+          ...formData,
+          code: formData.code.trim(),
+          description: formData.description.trim(),
+        };
 
-        if (initialData) {
-          await api.put(`/brands/${initialData.id}`, formDataToSend);
-          toastService.success('Marca actualizada correctamente');
+        if (brand) {
+          await brandService.updateBrand(brand.id, data, imageFile || undefined);
         } else {
-          await api.post('/brands', formDataToSend);
-          toastService.success('Marca creada correctamente');
+          await brandService.createBrand(data, imageFile || undefined);
         }
 
         onSuccess();
@@ -137,7 +136,7 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
             value={formData.code}
             onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
             className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: Zapatos Negros"
+            placeholder="Ej: BRAND001"
             required
           />
           {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
@@ -147,13 +146,13 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
           <label htmlFor="description" className="block text-sm font-medium text-red-400 mb-2">
             Descripción <span className="text-red-500">*</span>
           </label>
-          <textarea
+          <input
+            type="text"
             id="description"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
             className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: Productos de calzado para hombres negros"
-            rows={3}
+            placeholder="Ej: Marca de ropa deportiva"
             required
           />
           {errors.description && <p className="mt-1 text-xs text-gray-300">{errors.description}</p>}
@@ -161,11 +160,11 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
 
         <div>
           <label className="block text-sm font-medium text-red-400 mb-2">
-            Imagen {!initialData && <span className="text-red-500">*</span>}
+            Imagen {!brand && <span className="text-red-500"></span>}
           </label>
           <ImageUpload
-            value={formData.img || undefined}
-            onChange={setImageFile}
+            value={brand?.img || undefined}
+            onChange={handleImageChange}
             error={errors.img}
           />
         </div>
@@ -173,12 +172,12 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
         <div className="flex items-center">
           <input
             type="checkbox"
-            id="status"
-            checked={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
+            id="isActive"
+            checked={formData.isActive}
+            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
             className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
           />
-          <label htmlFor="status" className="ml-2 block text-sm text-red-400">
+          <label htmlFor="isActive" className="ml-2 block text-sm text-red-400">
             Activo
           </label>
         </div>
