@@ -98,19 +98,19 @@ export function SideMenu() {
 
             return (
               <div key={item.path}>
-                <button
-                  onClick={() => item.subItems ? toggleSubmenu(item.path) : undefined}
-                  className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-red-50 text-red-600'
-                      : 'text-gray-600 hover:bg-red-50 hover:text-red-600'
-                  }`}
-                >
-                  <span className={`mr-3 ${isActive ? 'text-red-500' : 'text-gray-400'}`}>
-                    {item.icon}
-                  </span>
-                  {item.name}
-                  {item.subItems && (
+                {item.subItems ? (
+                  <button
+                    onClick={() => toggleSubmenu(item.path)}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-red-50 text-red-600'
+                        : 'text-gray-600 hover:bg-red-50 hover:text-red-600'
+                    }`}
+                  >
+                    <span className={`mr-3 ${isActive ? 'text-red-500' : 'text-gray-400'}`}>
+                      {item.icon}
+                    </span>
+                    {item.name}
                     <svg
                       className={`ml-auto w-4 h-4 transform transition-transform ${
                         isExpanded ? 'rotate-180' : ''
@@ -121,8 +121,22 @@ export function SideMenu() {
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
-                  )}
-                </button>
+                  </button>
+                ) : (
+                  <Link
+                    href={item.path}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-red-50 text-red-600'
+                        : 'text-gray-600 hover:bg-red-50 hover:text-red-600'
+                    }`}
+                  >
+                    <span className={`mr-3 ${isActive ? 'text-red-500' : 'text-gray-400'}`}>
+                      {item.icon}
+                    </span>
+                    {item.name}
+                  </Link>
+                )}
                 {item.subItems && isExpanded && (
                   <div className="ml-8 mt-1 space-y-1">
                     {item.subItems.map((subItem) => (

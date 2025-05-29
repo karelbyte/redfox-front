@@ -1,5 +1,10 @@
 const baseURL = process.env.NEXT_PUBLIC_URL_API + '/api' || 'http://localhost:3000/api';
 
+const handleUnauthorized = () => {
+  localStorage.removeItem('token');
+  window.location.href = '/login';
+};
+
 const getHeaders = (isFormData = false) => {
   const headers: Record<string, string> = {
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -12,66 +17,110 @@ const getHeaders = (isFormData = false) => {
   return headers;
 };
 
+const handleResponse = async (response: Response) => {
+  if (response.status === 401) {
+    handleUnauthorized();
+    return Promise.reject(new Error('Sesión expirada'));
+  }
+
+  if (!response.ok) {
+    try {
+      const errorData = await response.json();
+      return Promise.reject(new Error(errorData.message || 'Error en la petición'));
+    } catch (e) {
+      return Promise.reject(new Error('Error en la petición'));
+    }
+  }
+
+  try {
+    return await response.json();
+  } catch (e) {
+    return Promise.reject(new Error('Error al procesar la respuesta'));
+  }
+};
+
 export const api = {
   get: async <T>(url: string, params?: Record<string, unknown>): Promise<T> => {
-    const queryString = params ? `?${new URLSearchParams(params as Record<string, string>)}` : '';
-    const response = await fetch(`${baseURL}${url}${queryString}`, {
-      headers: getHeaders(),
-    });
+    try {
+      const queryString = params ? `?${new URLSearchParams(params as Record<string, string>)}` : '';
+      const response = await fetch(`${baseURL}${url}${queryString}`, {
+        headers: getHeaders(),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error en la petición');
+      return handleResponse(response);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Sesión expirada') {
+        handleUnauthorized();
+      }
+      throw error;
     }
-
-    return response.json();
   },
 
   post: async <T>(url: string, data: Record<string, unknown> | FormData): Promise<T> => {
-    const isFormData = data instanceof FormData;
-    const body = isFormData ? data : JSON.stringify(data);
+    try {
+      const isFormData = data instanceof FormData;
+      const body = isFormData ? data : JSON.stringify(data);
 
-    const response = await fetch(`${baseURL}${url}`, {
-      method: 'POST',
-      headers: getHeaders(isFormData),
-      body,
-    });
+      const response = await fetch(`${baseURL}${url}`, {
+        method: 'POST',
+        headers: getHeaders(isFormData),
+        body,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error en la petición');
+      return handleResponse(response);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Sesión expirada') {
+        handleUnauthorized();
+      }
+      throw error;
     }
-
-    return response.json();
   },
 
   put: async <T>(url: string, data: Record<string, unknown> | FormData): Promise<T> => {
-    const isFormData = data instanceof FormData;
-    const body = isFormData ? data : JSON.stringify(data);
+    try {
+      const isFormData = data instanceof FormData;
+      const body = isFormData ? data : JSON.stringify(data);
 
-    const response = await fetch(`${baseURL}${url}`, {
-      method: 'PUT',
-      headers: getHeaders(isFormData),
-      body,
-    });
+      const response = await fetch(`${baseURL}${url}`, {
+        method: 'PUT',
+        headers: getHeaders(isFormData),
+        body,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error en la petición');
+      return handleResponse(response);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Sesión expirada') {
+        handleUnauthorized();
+      }
+      throw error;
     }
-
-    return response.json();
   },
 
   delete: async (url: string): Promise<void> => {
-    const response = await fetch(`${baseURL}${url}`, {
-      method: 'DELETE',
-      headers: getHeaders(),
-    });
+    try {
+      const response = await fetch(`${baseURL}${url}`, {
+        method: 'DELETE',
+        headers: getHeaders(),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error en la petición');
+      if (response.status === 401) {
+        handleUnauthorized();
+        return Promise.reject(new Error('Sesión expirada'));
+      }
+
+      if (!response.ok) {
+        try {
+          const errorData = await response.json();
+          return Promise.reject(new Error(errorData.message || 'Error en la petición'));
+        } catch (e) {
+          return Promise.reject(new Error('Error en la petición'));
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Sesión expirada') {
+        handleUnauthorized();
+      }
+      throw error;
     }
   },
 }; 
