@@ -12,6 +12,7 @@ import { categoriesService } from '@/services/categories.service';
 import { measurementUnitsService } from '@/services/measurement-units.service';
 import { taxesService } from '@/services/taxes.service';
 import { Tax } from '@/types/tax';
+import ImageCarousel from '@/components/ImageCarousel/ImageCarousel';
 
 export interface ProductFormProps {
   product: Product | null;
@@ -60,6 +61,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       isDigital: false,
     });
 
+    const [images, setImages] = useState<File[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [measurementUnits, setMeasurementUnits] = useState<MeasurementUnit[]>([]);
@@ -162,11 +164,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         isValid = false;
       }
 
-      if (formData.price < 0) {
-        newErrors.price = 'El precio no puede ser negativo';
-        isValid = false;
-      }
-
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
@@ -191,10 +188,19 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           slug: formData.slug.trim() || formData.name.trim().toLowerCase().replace(/\s+/g, '-'),
         };
 
+        const formDataToSend = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+          formDataToSend.append(key, value.toString());
+        });
+
+        images.forEach((image) => {
+          formDataToSend.append('images', image);
+        });
+
         if (product) {
-          await productService.updateProduct(product.id, data);
+          await productService.updateProduct(product.id, formDataToSend);
         } else {
-          await productService.createProduct(data);
+          await productService.createProduct(formDataToSend);
         }
 
         onSuccess();
@@ -404,6 +410,11 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             rows={3}
           />
         </div>
+
+        <ImageCarousel
+          images={images}
+          onChange={setImages}
+        />
 
         <div className="flex items-center space-x-6">
           <div className="flex items-center">
