@@ -2,6 +2,7 @@ import { Brand } from './brand';
 import { Category } from './category';
 import { Tax } from './tax';
 import { MeasurementUnit } from './measurementUnit';
+import { ProductType } from '@/components/Product/ProductForm';
 
 export interface Product {
   id: string;
@@ -9,17 +10,33 @@ export interface Product {
   slug: string;
   description: string;
   sku: string;
-  weight: string;
-  width: string;
-  height: string;
-  length: string;
-  brand: Brand;
-  category: Category;
-  tax: Tax;
-  measurement_unit: MeasurementUnit;
+  weight: number;
+  width: number;
+  height: number;
+  length: number;
+  brand: Brand | string;
+  category: Category | string;
+  tax: Tax | string;
+  measurement_unit: MeasurementUnit | string;
   is_active: boolean;
-  is_featured: boolean;
-  is_digital: boolean;
+  type: ProductType;
   images: string[];
   created_at: string;
+}
+
+export interface ProductFormData {
+  name: string;
+  slug: string;
+  description: string;
+  sku: string;
+  weight: number;
+  width: number;
+  height: number;
+  length: number;
+  brand_id: string;
+  category_id: string;
+  tax_id: string;
+  measurement_unit_id: string;
+  is_active: boolean;
+  type: ProductType;
 } 

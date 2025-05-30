@@ -6,6 +6,7 @@ export interface Tax {
   name: string;
   value: number;
   type: TaxType;
-  isActive: boolean;
+  is_active: boolean;
   createdAt: string;
+  percentage: number;
 } 

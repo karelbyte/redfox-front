@@ -70,7 +70,7 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
             <button
               type="button"
               onClick={() => handleRemoveImage(currentIndex)}
-              className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+              className="absolute top-2 right-4 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
             >
               <XMarkIcon className="h-4 w-4" />
             </button>
@@ -81,14 +81,14 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
                 <button
                   type="button"
                   onClick={handlePrevious}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-1 bg-red-100 text-white rounded-full hover:bg-red-700 transition-colors"
                 >
                   <ChevronLeftIcon className="h-5 w-5" />
                 </button>
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-red-100 text-white rounded-full hover:bg-red-700 transition-colors"
                 >
                   <ChevronRightIcon className="h-5 w-5" />
                 </button>
