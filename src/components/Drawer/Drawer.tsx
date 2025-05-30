@@ -8,6 +8,7 @@ interface DrawerProps {
   onSave?: () => void;
   isSaving?: boolean;
   isFormValid?: boolean;
+  width?: string;
 }
 
 export default function Drawer({ 
@@ -17,7 +18,8 @@ export default function Drawer({
   children, 
   onSave,
   isSaving = false,
-  isFormValid = true
+  isFormValid = true,
+  width = 'max-w-md'
 }: DrawerProps) {
   if (!isOpen) return null;
 
@@ -30,7 +32,7 @@ export default function Drawer({
       />
       
       {/* Drawer */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out">
+      <div className={`fixed right-0 top-0 h-full w-full ${width} bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out`}>
         <div className="h-full flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-2 border-b border-red-100">
