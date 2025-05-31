@@ -30,6 +30,7 @@ export interface ProductFormProps {
 
 export interface ProductFormRef {
   submit: () => void;
+  reset: () => void;
 }
 
 interface FormErrors {
@@ -217,9 +218,26 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     };
 
     useImperativeHandle(ref, () => ({
-      submit: handleSubmit,
+      submit: handleSubmit, 
+      reset: () => {
+        setFormData({
+          name: '',
+          slug: '',
+          description: '',
+          sku: '',
+          weight: 0,
+          width: 0,
+          height: 0,
+          length: 0,
+          measurement_unit_id: '',
+          category_id: '',
+          brand_id: '',
+          tax_id: '',
+          is_active: true,
+          type: ProductType.TANGIBLE,
+        });
+      },
     }));
-
     return (
       <form className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
