@@ -4,8 +4,8 @@ import { useState, useRef } from 'react';
 import { XMarkIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface ImageCarouselProps {
-  images: File[];
-  onChange: (images: File[]) => void;
+  images: (File | string)[];
+  onChange: (images: (File | string)[]) => void;
 }
 
 export default function ImageCarousel({ images, onChange }: ImageCarouselProps) {
@@ -35,6 +35,13 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  const getImageUrl = (image: File | string) => {
+    if (typeof image === 'string') {
+      return `${process.env.NEXT_PUBLIC_URL_API}${image}`;
+    }
+    return URL.createObjectURL(image);
+  };
+
   return (
     <div className="relative">
       <div className="flex items-center justify-between mb-4">
@@ -61,7 +68,7 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
         <div className="relative bg-white rounded-lg border border-red-200 p-4">
           <div className="relative w-1/2 mx-auto aspect-video overflow-hidden rounded-lg">
             <img
-              src={URL.createObjectURL(images[currentIndex])}
+              src={getImageUrl(images[currentIndex])}
               alt={`Imagen ${currentIndex + 1}`}
               className="w-full h-full object-contain"
             />

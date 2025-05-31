@@ -67,7 +67,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       type: ProductType.TANGIBLE,
     });
 
-    const [images, setImages] = useState<File[]>([]);
+    const [images, setImages] = useState<(File | string)[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [measurementUnits, setMeasurementUnits] = useState<MeasurementUnit[]>([]);
@@ -114,6 +114,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           is_active: product.is_active,
           type: product.type || ProductType.TANGIBLE,
         });
+        setImages(product.images || []);
       } else {
         setFormData({
           name: '',
@@ -198,9 +199,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         };
 
         if (product) {
-          await productService.updateProduct(product.id, data, images);
+          await productService.updateProduct(product.id, data, images as File[]);
         } else {
-          await productService.createProduct(data, images);
+          await productService.createProduct(data, images as File[]);
         }
 
         onSuccess();
@@ -442,7 +443,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         </div>
 
         <ImageCarousel
-          images={images}
+          images={images as File[]}
           onChange={setImages}
         />
 
