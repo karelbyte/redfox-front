@@ -6,16 +6,10 @@ import { toastService } from "@/services/toast.service";
 interface DeleteWarehouseModalProps {
   warehouse: Warehouse | null;
   onClose: () => void;
-  onSuccess: () => void;
-  onDeletingChange: (isDeleting: boolean) => void;
+  onConfirm: () => void;
 }
 
-const DeleteWarehouseModal = ({
-  warehouse,
-  onClose,
-  onSuccess,
-  onDeletingChange,
-}: DeleteWarehouseModalProps) => {
+export default function DeleteWarehouseModal({ warehouse, onClose, onConfirm }: DeleteWarehouseModalProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -23,10 +17,9 @@ const DeleteWarehouseModal = ({
 
     try {
       setIsDeleting(true);
-      onDeletingChange(true);
       await warehousesService.deleteWarehouse(warehouse.id);
       toastService.success("Almacén eliminado correctamente");
-      onSuccess();
+      onConfirm();
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
@@ -35,7 +28,6 @@ const DeleteWarehouseModal = ({
       }
     } finally {
       setIsDeleting(false);
-      onDeletingChange(false);
     }
   };
 
@@ -68,7 +60,7 @@ const DeleteWarehouseModal = ({
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar el almacén "{warehouse.name}"? Esta acción no se puede deshacer.
+                  ¿Estás seguro de que deseas eliminar el almacén &quot;{warehouse.name}&quot;? Esta acción no se puede deshacer.
                 </p>
               </div>
             </div>
@@ -76,17 +68,15 @@ const DeleteWarehouseModal = ({
           <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
             <button
               type="button"
-              className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
               onClick={handleDelete}
-              disabled={isDeleting}
             >
-              {isDeleting ? "Eliminando..." : "Eliminar"}
+              Eliminar
             </button>
             <button
               type="button"
-              className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
               onClick={onClose}
-              disabled={isDeleting}
             >
               Cancelar
             </button>
@@ -95,6 +85,4 @@ const DeleteWarehouseModal = ({
       </div>
     </div>
   );
-};
-
-export default DeleteWarehouseModal; 
+} 

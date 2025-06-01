@@ -1,45 +1,48 @@
-import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
-import { Warehouse } from "@/types/warehouse";
-import { warehousesService } from "@/services/warehouses.service";
-import { toastService } from "@/services/toast.service";
+'use client'
+
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { Warehouse } from '@/types/warehouse';
+import { api } from '@/services/api';
+import { toastService } from '@/services/toast.service';
+
+interface WarehouseFormData {
+  code: string;
+  name: string;
+  address: string;
+  phone: string;
+  isActive: boolean;
+}
+
+interface WarehouseFormErrors {
+  code?: string;
+  name?: string;
+  address?: string;
+  phone?: string;
+}
+
+export interface WarehouseFormProps {
+  warehouse: Warehouse | null;
+  onClose: () => void;
+  onSuccess: () => void;
+  onSavingChange?: (isSaving: boolean) => void;
+  onValidChange?: (isValid: boolean) => void;
+}
 
 export interface WarehouseFormRef {
   submit: () => void;
 }
 
-interface WarehouseFormProps {
-  warehouse?: Warehouse | null;
-  onClose: () => void;
-  onSuccess: () => void;
-  onSavingChange: (isSaving: boolean) => void;
-  onValidChange?: (isValid: boolean) => void;
-}
-
-interface FormData {
-  code: string;
-  name: string;
-  address: string;
-  phone: string;
-  status: boolean;
-}
-
-interface FormErrors {
-  code?: string;
-  name?: string;
-  address?: string;
-}
-
 const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
-  ({ warehouse, onClose, onSuccess, onSavingChange, onValidChange }, ref) => {
-    const [formData, setFormData] = useState<FormData>({
-      code: warehouse?.code || "",
-      name: warehouse?.name || "",
-      address: warehouse?.address || "",
-      phone: warehouse?.phone || "",
-      status: warehouse?.status ?? true,
+  ({ warehouse, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const [formData, setFormData] = useState<WarehouseFormData>({
+      code: warehouse?.code || '',
+      name: warehouse?.name || '',
+      address: warehouse?.address || '',
+      phone: warehouse?.phone || '',
+      isActive: warehouse?.isActive ?? true,
     });
 
-    const [errors, setErrors] = useState<FormErrors>({});
+    const [errors, setErrors] = useState<WarehouseFormErrors>({});
 
     useEffect(() => {
       if (warehouse) {
@@ -47,22 +50,22 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
           code: warehouse.code,
           name: warehouse.name,
           address: warehouse.address,
-          phone: warehouse.phone || "",
-          status: warehouse.status,
+          phone: warehouse.phone,
+          isActive: warehouse.isActive,
         });
       } else {
         setFormData({
-          code: "",
-          name: "",
-          address: "",
-          phone: "",
-          status: true,
+          code: '',
+          name: '',
+          address: '',
+          phone: '',
+          isActive: true,
         });
       }
     }, [warehouse]);
 
     const validateForm = (): boolean => {
-      const newErrors: FormErrors = {};
+      const newErrors: Partial<WarehouseFormErrors> = {};
       let isValid = true;
 
       if (!formData.code.trim()) {
@@ -77,6 +80,11 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
 
       if (!formData.address.trim()) {
         newErrors.address = 'La dirección es requerida';
+        isValid = false;
+      }
+
+      if (!formData.phone.trim()) {
+        newErrors.phone = 'El teléfono es requerido';
         isValid = false;
       }
 
@@ -96,35 +104,32 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
       }
 
       try {
-        onSavingChange(true);
+        onSavingChange?.(true);
         const data = {
+          ...formData,
           code: formData.code.trim(),
           name: formData.name.trim(),
           address: formData.address.trim(),
           phone: formData.phone.trim(),
-          status: formData.status,
         };
 
         if (warehouse) {
-          await warehousesService.updateWarehouse(warehouse.id, data);
-          toastService.success("Almacén actualizado correctamente");
+          await api.put(`/warehouses/${warehouse.id}`, data);
+          toastService.success('Almacén actualizado correctamente');
         } else {
-          await warehousesService.createWarehouse(data);
-          toastService.success("Almacén creado correctamente");
+          await api.post('/warehouses', data);
+          toastService.success('Almacén creado correctamente');
         }
+
         onSuccess();
       } catch (error) {
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error(
-            warehouse
-              ? "Error al actualizar el almacén"
-              : "Error al crear el almacén"
-          );
+          toastService.error('Error al guardar el almacén');
         }
       } finally {
-        onSavingChange(false);
+        onSavingChange?.(false);
       }
     };
 
@@ -135,7 +140,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
     return (
       <form className="space-y-6">
         <div>
-          <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="code" className="block text-sm font-medium text-red-400 mb-2">
             Código <span className="text-red-500">*</span>
           </label>
           <input
@@ -143,15 +148,15 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
             id="code"
             value={formData.code}
             onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
-            placeholder="Ej: ALM001"
+            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            placeholder="Ej: ALM-001"
             required
           />
-          {errors.code && <p className="mt-1 text-sm text-red-600">{errors.code}</p>}
+          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
         </div>
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="name" className="block text-sm font-medium text-red-400 mb-2">
             Nombre <span className="text-red-500">*</span>
           </label>
           <input
@@ -159,52 +164,54 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
             id="name"
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
-            placeholder="Ej: Almacén Principal"
+            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            placeholder="Ej: Almacén Central"
             required
           />
-          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+          {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
         </div>
 
         <div>
-          <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="address" className="block text-sm font-medium text-red-400 mb-2">
             Dirección <span className="text-red-500">*</span>
           </label>
-          <textarea
+          <input
+            type="text"
             id="address"
             value={formData.address}
             onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
-            rows={3}
-            placeholder="Ej: Av. Principal 123"
+            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            placeholder="Ej: Av. Principal #123"
             required
           />
-          {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
+          {errors.address && <p className="mt-1 text-xs text-gray-300">{errors.address}</p>}
         </div>
 
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-            Teléfono
+          <label htmlFor="phone" className="block text-sm font-medium text-red-400 mb-2">
+            Teléfono <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="phone"
             value={formData.phone}
             onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
-            placeholder="Ej: +51 987654321"
+            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            placeholder="Ej: +1234567890"
+            required
           />
+          {errors.phone && <p className="mt-1 text-xs text-gray-300">{errors.phone}</p>}
         </div>
 
         <div className="flex items-center">
           <input
             type="checkbox"
-            id="status"
-            checked={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
-            className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+            id="isActive"
+            checked={formData.isActive}
+            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+            className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
           />
-          <label htmlFor="status" className="ml-2 block text-sm text-gray-700">
+          <label htmlFor="isActive" className="ml-2 block text-sm text-red-400">
             Activo
           </label>
         </div>
@@ -213,6 +220,6 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
   }
 );
 
-WarehouseForm.displayName = "WarehouseForm";
+WarehouseForm.displayName = 'WarehouseForm';
 
 export default WarehouseForm; 

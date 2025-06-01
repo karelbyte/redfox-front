@@ -1,19 +1,9 @@
 import { api } from './api';
-import { Warehouse } from '@/types/warehouse';
-
-interface PaginatedResponse {
-  data: Warehouse[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
+import { Warehouse, WarehouseResponse } from '@/types/warehouse';
 
 class WarehousesService {
-  async getWarehouses(page: number = 1): Promise<PaginatedResponse> {
-    const response = await api.get<PaginatedResponse>(`/warehouses?page=${page}`);
+  async getWarehouses(page: number = 1): Promise<WarehouseResponse> {
+    const response = await api.get<WarehouseResponse>(`/warehouses?page=${page}`);
     return response;
   }
 

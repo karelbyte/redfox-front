@@ -3,12 +3,12 @@ export interface Warehouse {
   code: string;
   name: string;
   address: string;
-  phone: string | null;
+  phone: string;
   status: boolean;
   created_at: string;
 }
 
-export interface WarehousesResponse {
+export interface WarehouseResponse {
   data: Warehouse[];
   meta: {
     total: number;

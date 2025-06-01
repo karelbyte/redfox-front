@@ -6,6 +6,7 @@ export interface Client {
   address: string | null;
   phone: string | null;
   email: string | null;
+  tax_document: string | null;
   status: boolean;
   created_at: string;
 }

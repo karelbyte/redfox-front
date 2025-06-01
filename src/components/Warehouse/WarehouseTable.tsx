@@ -1,4 +1,6 @@
-import { Warehouse } from "@/types/warehouse";
+'use client'
+
+import { Warehouse } from '@/types/warehouse';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 interface WarehouseTableProps {
@@ -39,28 +41,18 @@ export default function WarehouseTable({ warehouses, onEdit, onDelete }: Warehou
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {warehouses.map((warehouse) => (
-            <tr key={warehouse.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {warehouse.code}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {warehouse.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {warehouse.address}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {warehouse.phone || "-"}
-              </td>
+            <tr key={warehouse.id}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{warehouse.code}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{warehouse.name}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{warehouse.address}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{warehouse.phone}</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    warehouse.status
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
+                    warehouse.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {warehouse.status ? "Activo" : "Inactivo"}
+                  {warehouse.isActive ? 'Activo' : 'Inactivo'}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

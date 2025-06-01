@@ -1,38 +1,38 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { categoriesService } from "@/services/categories.service";
+import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
-import { Category } from "@/types/category";
-import CategoryForm from "@/components/Category/CategoryForm";
-import CategoryTable from "@/components/Category/CategoryTable";
-import DeleteCategoryModal from "@/components/Category/DeleteCategoryModal";
+import { Warehouse } from "@/types/warehouse";
+import WarehouseForm from "@/components/Warehouse/WarehouseForm";
+import WarehouseTable from "@/components/Warehouse/WarehouseTable";
+import DeleteWarehouseModal from "@/components/Warehouse/DeleteWarehouseModal";
 import Pagination from "@/components/Pagination/Pagination";
 import Drawer from "@/components/Drawer/Drawer";
-import { CategoryFormRef } from "@/components/Category/CategoryForm";
+import { WarehouseFormRef } from "@/components/Warehouse/WarehouseForm";
 import Loading from "@/components/Loading/Loading";
 
-export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
+export default function WarehousesPage() {
+  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(null);
+  const [warehouseToDelete, setWarehouseToDelete] = useState<Warehouse | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const formRef = useRef<CategoryFormRef>(null);
+  const formRef = useRef<WarehouseFormRef>(null);
   const initialFetchDone = useRef(false);
 
-  const fetchCategories = async (page: number) => {
+  const fetchWarehouses = async (page: number) => {
     try {
       setLoading(true);
-      const response = await categoriesService.getCategories(page);
-      setCategories(response.data);
+      const response = await warehousesService.getWarehouses(page);
+      setWarehouses(response.data);
       setTotalPages(response.meta.totalPages);
     } catch {
-      toastService.error("Error al cargar las categorías");
+      toastService.error("Error al cargar los almacenes");
     } finally {
       setLoading(false);
     }
@@ -41,37 +41,37 @@ export default function CategoriesPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchCategories(currentPage);
+      fetchWarehouses(currentPage);
     }
   }, []);
 
   const handleDelete = async () => {
-    if (!categoryToDelete) return;
+    if (!warehouseToDelete) return;
 
     try {
-      await categoriesService.deleteCategory(categoryToDelete.id);
-      toastService.success("Categoría eliminada correctamente");
-      fetchCategories(currentPage);
-      setCategoryToDelete(null);
+      await warehousesService.deleteWarehouse(warehouseToDelete.id);
+      toastService.success("Almacén eliminado correctamente");
+      fetchWarehouses(currentPage);
+      setWarehouseToDelete(null);
     } catch {
-      toastService.error("Error al eliminar la categoría");
+      toastService.error("Error al eliminar el almacén");
     }
   };
 
-  const handleEdit = (category: Category) => {
-    setEditingCategory(category);
+  const handleEdit = (warehouse: Warehouse) => {
+    setEditingWarehouse(warehouse);
     setShowDrawer(true);
   };
 
   const handleDrawerClose = () => {
     setShowDrawer(false);
-    setEditingCategory(null);
+    setEditingWarehouse(null);
     setIsSaving(false);
   };
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchCategories(currentPage);
+    fetchWarehouses(currentPage);
   };
 
   const handleSave = () => {
@@ -80,29 +80,29 @@ export default function CategoriesPage() {
     }
   };
 
-  const openDeleteModal = (category: Category) => {
-    setCategoryToDelete(category);
+  const openDeleteModal = (warehouse: Warehouse) => {
+    setWarehouseToDelete(warehouse);
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchCategories(page);
+    fetchWarehouses(page);
   };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold text-red-900">
-          Categorías
+          Lista de Almacenes
         </h1>
         <button
           onClick={() => {
-            setEditingCategory(null);
+            setEditingWarehouse(null);
             setShowDrawer(true);
           }}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
         >
-          Nueva Categoría
+          Nuevo Almacén
         </button>
       </div>
 
@@ -110,7 +110,7 @@ export default function CategoriesPage() {
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
         </div>
-      ) : categories && categories.length === 0 ? (
+      ) : warehouses && warehouses.length === 0 ? (
         <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
           <svg
             className="h-12 w-12 text-red-300 mb-4"
@@ -126,17 +126,17 @@ export default function CategoriesPage() {
             />
           </svg>
           <p className="text-lg font-medium text-red-400 mb-2">
-            No hay categorías
+            No hay almacenes
           </p>
           <p className="text-sm text-red-300">
-            Haz clic en &quot;Nueva Categoría&quot; para agregar una.
+            Haz clic en &quot;Nuevo Almacén&quot; para agregar uno.
           </p>
         </div>
       ) : (
         <>
           <div className="mt-6">
-            <CategoryTable
-              categories={categories}
+            <WarehouseTable
+              warehouses={warehouses}
               onEdit={handleEdit}
               onDelete={openDeleteModal}
             />
@@ -157,14 +157,14 @@ export default function CategoriesPage() {
       <Drawer
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
+        title={editingWarehouse ? 'Editar Almacén' : 'Nuevo Almacén'}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
       >
-        <CategoryForm
+        <WarehouseForm
           ref={formRef}
-          category={editingCategory}
+          warehouse={editingWarehouse}
           onClose={handleDrawerClose}
           onSuccess={handleFormSuccess}
           onSavingChange={setIsSaving}
@@ -173,9 +173,9 @@ export default function CategoriesPage() {
       </Drawer>
 
       {/* Modal de confirmación para eliminar */}
-      <DeleteCategoryModal
-        category={categoryToDelete}
-        onClose={() => setCategoryToDelete(null)}
+      <DeleteWarehouseModal
+        warehouse={warehouseToDelete}
+        onClose={() => setWarehouseToDelete(null)}
         onConfirm={handleDelete}
       />
     </div>

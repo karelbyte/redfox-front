@@ -22,6 +22,7 @@ interface FormData {
   phone: string;
   email: string;
   address: string;
+  tax_document: string;
   status: boolean;
 }
 
@@ -30,10 +31,11 @@ interface FormErrors {
   name?: string;
   description?: string;
   email?: string;
+  tax_document?: string;
 }
 
 const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
-  ({ client, onClose, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ client, onSuccess, onSavingChange, onValidChange }, ref) => {
     const [formData, setFormData] = useState<FormData>({
       code: client?.code || "",
       name: client?.name || "",
@@ -41,6 +43,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
       phone: client?.phone || "",
       email: client?.email || "",
       address: client?.address || "",
+      tax_document: client?.tax_document || "",
       status: client?.status ?? true,
     });
 
@@ -55,6 +58,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           phone: client.phone || "",
           email: client.email || "",
           address: client.address || "",
+          tax_document: client.tax_document || "",
           status: client.status,
         });
       } else {
@@ -65,6 +69,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           phone: "",
           email: "",
           address: "",
+          tax_document: "",
           status: true,
         });
       }
@@ -86,6 +91,11 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
 
       if (!formData.description.trim()) {
         newErrors.description = 'La descripción es requerida';
+        isValid = false;
+      }
+
+      if (!formData.tax_document.trim()) {
+        newErrors.tax_document = 'El documento fiscal es requerido';
         isValid = false;
       }
 
@@ -118,6 +128,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           phone: formData.phone.trim(),
           email: formData.email.trim(),
           address: formData.address.trim(),
+          tax_document: formData.tax_document.trim(),
           status: formData.status,
         };
 
@@ -151,7 +162,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
     return (
       <form className="space-y-6">
         <div>
-          <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="code" className="block text-sm font-medium text-red-500 mb-2">
             Código <span className="text-red-500">*</span>
           </label>
           <input
@@ -163,11 +174,11 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
             placeholder="Ej: CLI001"
             required
           />
-          {errors.code && <p className="mt-1 text-sm text-red-600">{errors.code}</p>}
+          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
         </div>
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="name" className="block text-sm font-medium text-red-500 mb-2">
             Nombre <span className="text-red-500">*</span>
           </label>
           <input
@@ -179,11 +190,11 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
             placeholder="Ej: Cliente XYZ"
             required
           />
-          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+          {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="description" className="block text-sm font-medium text-red-500 mb-2">
             Descripción <span className="text-red-500">*</span>
           </label>
           <textarea
@@ -195,12 +206,12 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
             placeholder="Ej: Cliente general"
             required
           />
-          {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
+          {errors.description && <p className="mt-1 text-xs text-gray-300">{errors.description}</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="phone" className="block text-sm font-medium text-red-500 mb-2">
               Teléfono
             </label>
             <input
@@ -214,7 +225,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-red-500 mb-2">
               Email
             </label>
             <input
@@ -225,12 +236,12 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
               className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
               placeholder="Ej: contacto@cliente.com"
             />
-            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+            {errors.email && <p className="mt-1 text-xs text-gray-300">{errors.email}</p>}
           </div>
         </div>
 
         <div>
-          <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="address" className="block text-sm font-medium text-red-500 mb-2">
             Dirección
           </label>
           <textarea
@@ -243,6 +254,23 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           />
         </div>
 
+        <div>
+          <label htmlFor="tax_document" className="block text-sm font-medium text-red-500 mb-2">
+            Documento Fiscal
+          </label>
+          <input
+            type="text"
+            id="tax_document"
+            value={formData.tax_document}
+            onChange={(e) => setFormData(prev => ({ ...prev, tax_document: e.target.value }))}
+            className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors"
+            placeholder="Ej: RUC 20123456789"
+          />
+          {errors.tax_document && (
+            <p className="mt-1 text-xs text-gray-300">{errors.tax_document}</p>
+          )}
+        </div>
+
         <div className="flex items-center">
           <input
             type="checkbox"
@@ -251,7 +279,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
             onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
             className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
           />
-          <label htmlFor="status" className="ml-2 block text-sm text-gray-700">
+          <label htmlFor="status" className="ml-2 block text-sm text-red-500">
             Activo
           </label>
         </div>
