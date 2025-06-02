@@ -20,6 +20,11 @@ class WarehousesService {
   async deleteWarehouse(id: string): Promise<void> {
     await api.delete(`/warehouses/${id}`);
   }
+
+  async updateStatus(id: string, isOpen: boolean): Promise<Warehouse> {
+    const response = await api.patch<Warehouse>(`/warehouses/${id}/status`, { isOpen });
+    return response;
+  }
 }
 
 export const warehousesService = new WarehousesService(); 

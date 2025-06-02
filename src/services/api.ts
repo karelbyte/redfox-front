@@ -27,14 +27,14 @@ const handleResponse = async (response: Response) => {
     try {
       const errorData = await response.json();
       return Promise.reject(new Error(errorData.message || 'Error en la petición'));
-    } catch (e) {
+    } catch {
       return Promise.reject(new Error('Error en la petición'));
     }
   }
 
   try {
     return await response.json();
-  } catch (e) {
+  } catch {
     return Promise.reject(new Error('Error al procesar la respuesta'));
   }
 };
@@ -96,6 +96,26 @@ export const api = {
     }
   },
 
+  patch: async <T>(url: string, data: Record<string, unknown> | FormData): Promise<T> => {
+    try {
+      const isFormData = data instanceof FormData;
+      const body = isFormData ? data : JSON.stringify(data);
+
+      const response = await fetch(`${baseURL}${url}`, {
+        method: 'PATCH',
+        headers: getHeaders(isFormData),
+        body,
+      });
+
+      return handleResponse(response);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Sesión expirada') {
+        handleUnauthorized();
+      }
+      throw error;
+    }
+  },
+
   delete: async (url: string): Promise<void> => {
     try {
       const response = await fetch(`${baseURL}${url}`, {
@@ -112,7 +132,7 @@ export const api = {
         try {
           const errorData = await response.json();
           return Promise.reject(new Error(errorData.message || 'Error en la petición'));
-        } catch (e) {
+        } catch {
           return Promise.reject(new Error('Error en la petición'));
         }
       }

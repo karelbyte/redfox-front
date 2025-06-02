@@ -5,6 +5,7 @@ export interface Warehouse {
   address: string;
   phone: string;
   status: boolean;
+  is_open: boolean;
   created_at: string;
 }
 
