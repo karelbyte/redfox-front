@@ -89,6 +89,10 @@ export default function WarehousesPage() {
     fetchWarehouses(page);
   };
 
+  const handleReload = () => {
+    fetchWarehouses(currentPage);
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
@@ -134,22 +138,19 @@ export default function WarehousesPage() {
         </div>
       ) : (
         <>
-          <div className="mt-6">
-            <WarehouseTable
-              warehouses={warehouses}
-              onEdit={handleEdit}
-              onDelete={openDeleteModal}
-            />
-          </div>
-
-          {totalPages > 1 && (
+          <WarehouseTable
+            warehouses={warehouses}
+            onEdit={handleEdit}
+            onDelete={openDeleteModal}
+            onReload={handleReload}
+          />
+          <div className="mt-4">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
-              className="mt-6"
             />
-          )}
+          </div>
         </>
       )}
 
