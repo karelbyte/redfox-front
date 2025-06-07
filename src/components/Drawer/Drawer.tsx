@@ -35,7 +35,7 @@ export default function Drawer({
       <div className={`fixed right-0 top-0 h-full w-full ${width} bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out`}>
         <div className="h-full flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between p-2 border-b border-red-100">
+          <div className={`flex items-center p-2 border-b border-red-100 ${onSave ? 'justify-between' : 'justify-start'}`}>
             <button
               onClick={onClose}
               className="p-2 text-gray-600 hover:text-red-600 transition-colors"

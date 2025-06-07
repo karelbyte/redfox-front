@@ -21,6 +21,11 @@ class WarehousesService {
     await api.delete(`/warehouses/${id}`);
   }
 
+  async getWarehouse(id: string): Promise<Warehouse> {
+    const response = await api.get<Warehouse>(`/warehouses/${id}`);
+    return response;
+  }
+
   async updateStatus(id: string, isOpen: boolean): Promise<Warehouse> {
     const response = await api.patch<Warehouse>(`/warehouses/${id}/status`, { isOpen });
     return response;

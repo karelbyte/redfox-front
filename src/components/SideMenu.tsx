@@ -146,6 +146,15 @@ const menuItems: MenuItem[] = [
           </svg>
         ),
       },
+      {
+        name: 'Monedas',
+        path: '/dashboard/productos/monedas',
+        icon: (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m-2.599-3.801C9.08 13.598 8 13.198 8 12.5v-.5" />
+          </svg>
+        ),
+      },
     ],
   },
   {

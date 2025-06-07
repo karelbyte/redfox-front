@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Warehouse } from "@/types/warehouse";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { warehousesService } from "@/services/warehouses.service";
@@ -20,12 +21,17 @@ export default function WarehouseTable({
   onDelete,
   onReload,
 }: WarehouseTableProps) {
+  const router = useRouter();
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const handleCloseWarehouse = async (warehouse: Warehouse) => {
     setSelectedWarehouse(warehouse);
     setIsConfirmModalOpen(true);
+  };
+
+  const handleOpenAperturas = (warehouse: Warehouse) => {
+    router.push(`/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id}&warehouse_name=${encodeURIComponent(warehouse.name)}`);
   };
 
   const handleConfirmClose = async () => {
@@ -70,6 +76,9 @@ export default function WarehouseTable({
                 Teléfono
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Moneda
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Estado
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -94,6 +103,9 @@ export default function WarehouseTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {warehouse.phone}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {warehouse.currency?.code} - {warehouse.currency?.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
@@ -121,7 +133,7 @@ export default function WarehouseTable({
                   <div className="flex justify-end space-x-2">
                     {warehouse.is_open && (
                       <button
-                        onClick={() => onToggleOpen(warehouse)}
+                        onClick={() => handleOpenAperturas(warehouse)}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
                       >
                         Aperturar
