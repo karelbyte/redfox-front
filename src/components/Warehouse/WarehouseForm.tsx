@@ -113,7 +113,8 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
         isValid = false;
       }
 
-      if (!formData.currency_id) {
+      // Solo validar currency_id si no estamos editando o si estamos creando
+      if (!formData.currency_id && !warehouse) {
         newErrors.currency_id = 'La moneda es requerida';
         isValid = false;
       }
@@ -140,8 +141,8 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
           name: formData.name.trim(),
           address: formData.address.trim(),
           phone: formData.phone.trim(),
-          currency_id: formData.currency_id,
           status: formData.isActive,
+          ...(warehouse ? {} : { currency_id: formData.currency_id }),
         };
 
         if (warehouse) {
@@ -237,6 +238,11 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
         <div>
           <label htmlFor="currency_id" className="block text-sm font-medium text-red-400 mb-2">
             Moneda <span className="text-red-500">*</span>
+            {warehouse && (
+              <span className="text-xs text-gray-500 font-normal ml-2">
+                (No se puede modificar en edición)
+              </span>
+            )}
           </label>
           {loadingCurrencies ? (
             <div className="animate-pulse bg-gray-200 h-12 rounded-lg"></div>
@@ -245,7 +251,12 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
               id="currency_id"
               value={formData.currency_id}
               onChange={(e) => setFormData(prev => ({ ...prev, currency_id: e.target.value }))}
-              className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+              className={`appearance-none block w-full px-4 py-3 border rounded-lg text-black focus:outline-none transition-colors ${
+                warehouse 
+                  ? 'bg-gray-100 border-gray-300 cursor-not-allowed' 
+                  : 'border-red-300 placeholder-red-200 focus:ring-1 focus:ring-red-300 focus:border-red-300'
+              }`}
+              disabled={!!warehouse}
               required
             >
               <option value="">Seleccionar moneda...</option>

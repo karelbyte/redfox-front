@@ -20,4 +20,13 @@ export interface WarehouseResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+export interface WarehouseCloseResponse {
+  warehouseId: string;
+  warehouseName: string;
+  transferredProducts: number;
+  totalQuantity: number;
+  message: string;
+  closedAt: string;
 } 

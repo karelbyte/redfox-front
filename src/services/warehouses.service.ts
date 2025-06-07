@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Warehouse, WarehouseResponse } from '@/types/warehouse';
+import { Warehouse, WarehouseResponse, WarehouseCloseResponse } from '@/types/warehouse';
 
 class WarehousesService {
   async getWarehouses(page: number = 1): Promise<WarehouseResponse> {
@@ -28,6 +28,11 @@ class WarehousesService {
 
   async updateStatus(id: string, isOpen: boolean): Promise<Warehouse> {
     const response = await api.patch<Warehouse>(`/warehouses/${id}/status`, { isOpen });
+    return response;
+  }
+
+  async closeWarehouse(id: string): Promise<WarehouseCloseResponse> {
+    const response = await api.post<WarehouseCloseResponse>(`/warehouses/${id}/close`, {});
     return response;
   }
 }

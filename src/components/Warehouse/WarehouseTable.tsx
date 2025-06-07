@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Warehouse } from "@/types/warehouse";
+import { Warehouse, WarehouseCloseResponse } from "@/types/warehouse";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
 import ConfirmModal from '../Modal/ConfirmModal';
+import WarehouseCloseResultModal from './WarehouseCloseResultModal';
 
 interface WarehouseTableProps {
   warehouses: Warehouse[];
@@ -24,6 +25,8 @@ export default function WarehouseTable({
   const router = useRouter();
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [closeResult, setCloseResult] = useState<WarehouseCloseResponse | null>(null);
 
   const handleCloseWarehouse = async (warehouse: Warehouse) => {
     setSelectedWarehouse(warehouse);
@@ -38,19 +41,27 @@ export default function WarehouseTable({
     if (!selectedWarehouse) return;
 
     try {
-      await warehousesService.updateStatus(selectedWarehouse.id, false);
-      toastService.success("Almacén cerrado correctamente");
-      onReload();
+      const result = await warehousesService.closeWarehouse(selectedWarehouse.id);
+      setCloseResult(result);
+      setIsConfirmModalOpen(false);
+      setIsResultModalOpen(true);
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al cerrar el almacén");
+        toastService.error("Error al cerrar la apertura del almacén");
       }
-    } finally {
       setIsConfirmModalOpen(false);
       setSelectedWarehouse(null);
     }
+  };
+
+  const handleCloseResultModal = () => {
+    setIsResultModalOpen(false);
+    setCloseResult(null);
+    setSelectedWarehouse(null);
+    // Recargar datos después de cerrar la modal de resultados
+    onReload();
   };
 
   if (!Array.isArray(warehouses)) {
@@ -155,9 +166,14 @@ export default function WarehouseTable({
                       <PencilIcon className="h-5 w-5" />
                     </button>
                     <button
-                      onClick={() => onDelete(warehouse)}
-                      className="p-1 text-gray-600 hover:text-red-600 transition-colors"
-                      title="Eliminar"
+                      onClick={() => warehouse.is_open && onDelete(warehouse)}
+                      className={`p-1 transition-colors ${
+                        !warehouse.is_open 
+                          ? "text-gray-300 cursor-not-allowed" 
+                          : "text-gray-600 hover:text-red-600"
+                      }`}
+                      title={!warehouse.is_open ? "No se puede eliminar un almacén cerrado" : "Eliminar"}
+                      disabled={!warehouse.is_open}
                     >
                       <TrashIcon className="h-5 w-5" />
                     </button>
@@ -179,10 +195,16 @@ export default function WarehouseTable({
         title="Cerrar Apertura"
         message={
           <>
-            ¿Estás seguro que deseas cerrar la apertura del almacén <span className="font-bold">{selectedWarehouse?.name}</span>? Esta acción no se puede deshacer.
+            ¿Estás seguro que deseas cerrar la apertura del almacén <span className="font-bold">{selectedWarehouse?.name}</span>? Esta acción transferirá todos los productos al inventario y no se puede deshacer.
           </>
         }
         confirmText="Cerrar Apertura"
+      />
+
+      <WarehouseCloseResultModal
+        isOpen={isResultModalOpen}
+        onClose={handleCloseResultModal}
+        result={closeResult}
       />
     </>
   );
