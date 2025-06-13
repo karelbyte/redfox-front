@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { ThemeSelectorCompact } from '@/components/ThemeSelector';
 import { useRouter } from 'next/navigation';
 
 export function MainMenu() {
@@ -28,13 +29,20 @@ export function MainMenu() {
   };
 
   return (
-    <nav className="bg-white border-b border-red-100">
+    <nav 
+      className="bg-white border-b"
+      style={{ borderColor: `rgb(var(--color-primary-100))` }}
+    >
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo y nombre de la app */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-red-500">RedFox</span>
+              <img 
+                src="/logo.png" 
+                alt="RedFox" 
+                className="h-8 w-auto"
+              />
             </div>
           </div>
 
@@ -45,8 +53,14 @@ export function MainMenu() {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="flex items-center space-x-3 focus:outline-none"
               >
-                <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
-                  <span className="text-red-500 font-medium">
+                <div 
+                  className="h-8 w-8 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: `rgb(var(--color-primary-100))` }}
+                >
+                  <span 
+                    className="font-medium"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
                     {user?.name?.charAt(0).toUpperCase() || 'U'}
                   </span>
                 </div>
@@ -76,12 +90,32 @@ export function MainMenu() {
                   <div className="p-4 border-b border-gray-100">
                     <p className="text-sm font-medium text-gray-900">{user?.name}</p>
                     <p className="text-sm text-gray-500">{user?.email}</p>
-                    <p className="text-xs text-red-500 mt-1">{user?.roles?.[0]?.description}</p>
+                    <p 
+                      className="text-xs mt-1"
+                      style={{ color: `rgb(var(--color-primary-500))` }}
+                    >
+                      {user?.roles?.[0]?.description}
+                    </p>
                   </div>
+
+                  {/* Selector de temas */}
+                  <div className="p-4 border-b border-gray-100">
+                    <p className="text-xs text-gray-600 mb-2">Seleccionar tema</p>
+                    <ThemeSelectorCompact />
+                  </div>
+
                   <div className="py-1" role="menu">
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 transition-colors"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+                        e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = '#374151';
+                      }}
                       role="menuitem"
                     >
                       Cerrar sesión

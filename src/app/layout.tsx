@@ -2,13 +2,19 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "RedFox - Tu Plataforma",
-  description: "Plataforma moderna construida con Next.js",
+  title: "Nitro",
+  description: "Nitro - Sistema de gestión empresarial",
+  icons: {
+    icon: '/wlogo.png',
+    shortcut: '/wlogo.png',
+    apple: '/wlogo.png',
+  },
 };
 
 export default function RootLayout({
@@ -22,19 +28,21 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.className} min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
-        <AuthProvider>
-          {children}
-          <Toaster
-            toastOptions={{
-              className: '',
-              style: {
-                padding: '16px',
-                borderRadius: '8px',
-                maxWidth: '400px',
-              },
-            }}
-          />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
+            <Toaster
+              toastOptions={{
+                className: '',
+                style: {
+                  padding: '16px',
+                  borderRadius: '8px',
+                  maxWidth: '400px',
+                },
+              }}
+            />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

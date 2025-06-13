@@ -8,7 +8,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {
+        // Tema Rojo (Red Theme)
+        red: {
           50: '#fff5f5',
           100: '#ffe8e8',
           200: '#ffd1d1',
@@ -21,7 +22,22 @@ module.exports = {
           900: '#9e1515',
           950: '#5c0a0a',
         },
-        secondary: {
+        // Tema Azul (Blue Theme)
+        blue: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#172554',
+        },
+        // Tema Gris (Gray Theme)
+        gray: {
           50: '#f8f8f8',
           100: '#f0f0f0',
           200: '#e4e4e4',
@@ -33,6 +49,47 @@ module.exports = {
           800: '#5a5a5a',
           900: '#4e4e4e',
           950: '#282828',
+        },
+        // Tema Verde Gris (Green Gray Theme)
+        'green-gray': {
+          50: '#f6f8f6',
+          100: '#edf2ed',
+          200: '#dce6dc',
+          300: '#c4d4c4',
+          400: '#a2baa2',
+          500: '#6b7c6b',
+          600: '#566656',
+          700: '#465446',
+          800: '#3a463a',
+          900: '#313b31',
+          950: '#1b211b',
+        },
+        // Colores dinámicos basados en CSS variables
+        primary: {
+          50: 'rgb(var(--color-primary-50) / <alpha-value>)',
+          100: 'rgb(var(--color-primary-100) / <alpha-value>)',
+          200: 'rgb(var(--color-primary-200) / <alpha-value>)',
+          300: 'rgb(var(--color-primary-300) / <alpha-value>)',
+          400: 'rgb(var(--color-primary-400) / <alpha-value>)',
+          500: 'rgb(var(--color-primary-500) / <alpha-value>)',
+          600: 'rgb(var(--color-primary-600) / <alpha-value>)',
+          700: 'rgb(var(--color-primary-700) / <alpha-value>)',
+          800: 'rgb(var(--color-primary-800) / <alpha-value>)',
+          900: 'rgb(var(--color-primary-900) / <alpha-value>)',
+          950: 'rgb(var(--color-primary-950) / <alpha-value>)',
+        },
+        secondary: {
+          50: 'rgb(var(--color-secondary-50) / <alpha-value>)',
+          100: 'rgb(var(--color-secondary-100) / <alpha-value>)',
+          200: 'rgb(var(--color-secondary-200) / <alpha-value>)',
+          300: 'rgb(var(--color-secondary-300) / <alpha-value>)',
+          400: 'rgb(var(--color-secondary-400) / <alpha-value>)',
+          500: 'rgb(var(--color-secondary-500) / <alpha-value>)',
+          600: 'rgb(var(--color-secondary-600) / <alpha-value>)',
+          700: 'rgb(var(--color-secondary-700) / <alpha-value>)',
+          800: 'rgb(var(--color-secondary-800) / <alpha-value>)',
+          900: 'rgb(var(--color-secondary-900) / <alpha-value>)',
+          950: 'rgb(var(--color-secondary-950) / <alpha-value>)',
         },
       },
     },

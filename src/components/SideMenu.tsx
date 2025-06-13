@@ -312,7 +312,10 @@ export function SideMenu() {
   };
 
   return (
-    <aside className="w-64 flex-shrink-0 bg-white border-r border-red-100 h-full">
+    <aside 
+      className="w-64 flex-shrink-0 bg-white border-r h-full"
+      style={{ borderColor: `rgb(var(--color-primary-100))` }}
+    >
       <nav className="h-full p-4">
         <div className="space-y-1">
           {menuItems.map((item) => {
@@ -324,13 +327,28 @@ export function SideMenu() {
                 {item.subItems ? (
                   <button
                     onClick={() => toggleSubmenu(item.path)}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-red-50 text-red-600'
-                        : 'text-gray-600 hover:bg-red-50 hover:text-red-600'
-                    }`}
+                    className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
+                    style={{
+                      backgroundColor: isActive ? `rgb(var(--color-primary-50))` : 'transparent',
+                      color: isActive ? `rgb(var(--color-primary-600))` : '#4b5563'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+                        e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = '#4b5563';
+                      }
+                    }}
                   >
-                    <span className={`mr-3 ${isActive ? 'text-red-500' : 'text-gray-400'}`}>
+                    <span 
+                      className="mr-3"
+                      style={{ color: isActive ? `rgb(var(--color-primary-500))` : '#9ca3af' }}
+                    >
                       {item.icon}
                     </span>
                     {item.name}
@@ -348,13 +366,28 @@ export function SideMenu() {
                 ) : (
                   <Link
                     href={item.path}
-                    className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-red-50 text-red-600'
-                        : 'text-gray-600 hover:bg-red-50 hover:text-red-600'
-                    }`}
+                    className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
+                    style={{
+                      backgroundColor: isActive ? `rgb(var(--color-primary-50))` : 'transparent',
+                      color: isActive ? `rgb(var(--color-primary-600))` : '#4b5563'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+                        e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = '#4b5563';
+                      }
+                    }}
                   >
-                    <span className={`mr-3 ${isActive ? 'text-red-500' : 'text-gray-400'}`}>
+                    <span 
+                      className="mr-3"
+                      style={{ color: isActive ? `rgb(var(--color-primary-500))` : '#9ca3af' }}
+                    >
                       {item.icon}
                     </span>
                     {item.name}
@@ -366,14 +399,29 @@ export function SideMenu() {
                       <Link
                         key={subItem.path}
                         href={subItem.path}
-                        className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                          pathname === subItem.path
-                            ? 'bg-red-50 text-red-600'
-                            : 'text-gray-600 hover:bg-red-50 hover:text-red-600'
-                        }`}
+                        className="block px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                        style={{
+                          backgroundColor: pathname === subItem.path ? `rgb(var(--color-primary-50))` : 'transparent',
+                          color: pathname === subItem.path ? `rgb(var(--color-primary-600))` : '#4b5563'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (pathname !== subItem.path) {
+                            e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+                            e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (pathname !== subItem.path) {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = '#4b5563';
+                          }
+                        }}
                       >
                         <div className="flex items-center">
-                          <span className={`mr-3 ${pathname === subItem.path ? 'text-red-500' : 'text-gray-400'}`}>
+                          <span 
+                            className="mr-3"
+                            style={{ color: pathname === subItem.path ? `rgb(var(--color-primary-500))` : '#9ca3af' }}
+                          >
                             {subItem.icon}
                           </span>
                           {subItem.name}

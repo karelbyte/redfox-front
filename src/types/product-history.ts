@@ -1,5 +1,3 @@
-
-
 export interface ProductHistoryItem {
   id: string;
   product: {

@@ -10,6 +10,7 @@ import DeleteClientModal from "@/components/Client/DeleteClientModal";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ClientFormRef } from "@/components/Client/ClientForm";
+import { Btn } from "@/components/atoms";
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -18,6 +19,7 @@ export default function ClientsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<ClientFormRef>(null);
 
   const fetchClients = async () => {
@@ -77,28 +79,35 @@ export default function ClientsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">
+        <h1 className="text-xl font-semibold"  style={{ color: `rgb(var(--color-primary-800))` }}>
           Clientes
         </h1>
-        <button
+        <Btn
           onClick={() => {
             setSelectedClient(null);
             setShowDrawer(true);
           }}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          leftIcon={<PlusIcon className="h-5 w-5" />}
         >
           Nuevo Cliente
-        </button>
+        </Btn>
       </div>
 
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+          <div 
+            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
+            style={{ borderColor: `rgb(var(--color-primary-500))` }}
+          ></div>
         </div>
       ) : clients && clients.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
+        <div 
+          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
+          style={{ borderColor: `rgb(var(--color-primary-200))` }}
+        >
           <svg
-            className="h-12 w-12 text-red-300 mb-4"
+            className="h-12 w-12 mb-4"
+            style={{ color: `rgb(var(--color-primary-300))` }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -110,10 +119,16 @@ export default function ClientsPage() {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">
+          <p 
+            className="text-lg font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-400))` }}
+          >
             No hay clientes
           </p>
-          <p className="text-sm text-red-300">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-primary-300))` }}
+          >
             Haz clic en &quot;Nuevo Cliente&quot; para agregar uno.
           </p>
         </div>
@@ -133,6 +148,7 @@ export default function ClientsPage() {
         title={selectedClient ? "Editar Cliente" : "Nuevo Cliente"}
         onSave={handleSave}
         isSaving={isSaving}
+        isFormValid={isFormValid}
       >
         <ClientForm
           ref={formRef}
@@ -140,6 +156,7 @@ export default function ClientsPage() {
           onClose={handleDrawerClose}
           onSuccess={handleFormSuccess}
           onSavingChange={setIsSaving}
+          onValidChange={setIsFormValid}
         />
       </Drawer>
 
