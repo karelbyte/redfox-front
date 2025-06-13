@@ -14,8 +14,9 @@ interface PaginatedResponse<T> {
 }
 
 export const measurementUnitsService = {
-  async getMeasurementUnits(page: number = 1): Promise<PaginatedResponse<MeasurementUnit>> {
-    const response = await api.get<PaginatedResponse<MeasurementUnit>>(`/measurement-units?page=${page}`);
+  async getMeasurementUnits(page?: number): Promise<PaginatedResponse<MeasurementUnit>> {
+    const queryParam = page ? `?page=${page}` : '';
+    const response = await api.get<PaginatedResponse<MeasurementUnit>>(`/measurement-units${queryParam}`);
     return response;
   },
 

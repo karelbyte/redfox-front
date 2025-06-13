@@ -135,18 +135,47 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
       submit: handleSubmit,
     }));
 
+    // Estilos para los inputs con focus dinámico
+    const getInputStyles = () => ({
+      appearance: 'none' as const,
+      display: 'block',
+      width: '100%',
+      padding: '0.75rem 1rem',
+      border: '1px solid #d1d5db',
+      borderRadius: '0.5rem',
+      color: '#111827',
+      backgroundColor: 'white',
+      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+    });
+
+    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
+      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
+    };
+
+    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      e.target.style.borderColor = '#d1d5db';
+      e.target.style.boxShadow = 'none';
+    };
+
     return (
       <form className="space-y-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-red-400 mb-2">
-            Nombre <span className="text-red-500">*</span>
+          <label 
+            htmlFor="name" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <input
             type="text"
             id="name"
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: Zapatos"
             required
           />
@@ -154,15 +183,21 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         </div>
 
         <div>
-          <label htmlFor="slug" className="block text-sm font-medium text-red-400 mb-2">
-            Slug <span className="text-red-500">*</span>
+          <label 
+            htmlFor="slug" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Slug <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <input
             type="text"
             id="slug"
             value={formData.slug}
             onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: zapatos"
             required
           />
@@ -170,23 +205,32 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-red-400 mb-2">
-            Descripción <span className="text-red-500"></span>
+          <label 
+            htmlFor="description" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Descripción
           </label>
           <input
             type="text"
             id="description"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: Productos de calzado"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-red-400 mb-2">
-            Imagen {!category && <span className="text-red-500"></span>}
+          <label 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Imagen
           </label>
           <ImageUpload
             value={category?.image}
@@ -196,7 +240,11 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         </div>
 
         <div>
-          <label htmlFor="position" className="block text-sm font-medium text-red-400 mb-2">
+          <label 
+            htmlFor="position" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Posición
           </label>
           <input
@@ -204,7 +252,9 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
             id="position"
             value={formData.position}
             onChange={(e) => setFormData(prev => ({ ...prev, position: parseInt(e.target.value) || 1 }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             min="1"
           />
         </div>
@@ -215,9 +265,16 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
             id="isActive"
             checked={formData.isActive}
             onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-            className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
+            className="h-4 w-4 border-gray-300 rounded"
+            style={{
+              accentColor: `rgb(var(--color-primary-500))`,
+            }}
           />
-          <label htmlFor="isActive" className="ml-2 block text-sm text-red-400">
+          <label 
+            htmlFor="isActive" 
+            className="ml-2 block text-sm"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Activo
           </label>
         </div>

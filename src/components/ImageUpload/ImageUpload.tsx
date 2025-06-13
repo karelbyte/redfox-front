@@ -48,9 +48,20 @@ export default function ImageUpload({ value, onChange, error }: ImageUploadProps
     <div className="space-y-2">
       <div
         onClick={handleClick}
-        className={`relative cursor-pointer rounded-lg border-2 border-dashed ${
-          error ? 'border-red-300' : 'border-red-200'
-        } p-4 hover:border-red-300 transition-colors`}
+        className="relative cursor-pointer rounded-lg border-2 border-dashed p-4 transition-colors"
+        style={{ 
+          borderColor: error 
+            ? `rgb(var(--color-primary-400))` 
+            : `rgb(var(--color-primary-200))` 
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = `rgb(var(--color-primary-300))`;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = error 
+            ? `rgb(var(--color-primary-400))` 
+            : `rgb(var(--color-primary-200))`;
+        }}
       >
         <input
           type="file"
@@ -72,7 +83,14 @@ export default function ImageUpload({ value, onChange, error }: ImageUploadProps
             <button
               type="button"
               onClick={handleRemove}
-              className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+              className="absolute top-2 right-2 p-1 text-white rounded-full transition-colors"
+              style={{ backgroundColor: `rgb(var(--color-primary-600))` }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-700))`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+              }}
             >
               <svg
                 className="h-4 w-4"
@@ -91,17 +109,33 @@ export default function ImageUpload({ value, onChange, error }: ImageUploadProps
           </div>
         ) :  (
           <div className="flex flex-col items-center justify-center py-6">
-            <PhotoIcon className="h-12 w-12 text-red-300 mb-2" />
-            <p className="text-sm text-red-400">
+            <PhotoIcon 
+              className="h-12 w-12 mb-2" 
+              style={{ color: `rgb(var(--color-primary-300))` }}
+            />
+            <p 
+              className="text-sm"
+              style={{ color: `rgb(var(--color-primary-400))` }}
+            >
               Haz clic para seleccionar una imagen
             </p>
-            <p className="text-xs text-red-300 mt-1">
+            <p 
+              className="text-xs mt-1"
+              style={{ color: `rgb(var(--color-primary-300))` }}
+            >
               PNG, JPG, GIF hasta 5MB
             </p>
           </div>
         )}
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && (
+        <p 
+          className="text-xs"
+          style={{ color: `rgb(var(--color-primary-500))` }}
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 } 

@@ -74,7 +74,7 @@ export default function TaxesPage() {
 
   const handleSave = () => {
     if (formRef.current) {
-      formRef.current.submit();
+      formRef.current.save();
     }
   };
 

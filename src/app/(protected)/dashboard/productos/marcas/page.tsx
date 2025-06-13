@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Brand } from '@/types/brand';
-import { api } from '@/services/api';
+import { brandService } from '@/services/brand.service';
 import { toastService } from '@/services/toast.service';
 import BrandTable from '@/components/Brand/BrandTable';
 import BrandForm from '@/components/Brand/BrandForm';
@@ -35,7 +35,7 @@ export default function BrandsPage() {
   const fetchBrands = async (page: number) => {
     try {
       setLoading(true);
-      const response = await api.get<PaginatedResponse>(`/brands?page=${page}`);
+      const response = await brandService.getBrands(page);
       setBrands(response.data);
       setTotalPages(response.meta.totalPages);
     } catch (error) {
@@ -60,10 +60,9 @@ export default function BrandsPage() {
     if (!brandToDelete) return;
 
     try {
-      await api.delete(`/brands/${brandToDelete.id}`);
-      toastService.success('Marca eliminada correctamente');
+      await brandService.deleteBrand(brandToDelete.id);
       fetchBrands(currentPage);
-      setBrandToDelete(undefined);
+      setBrandToDelete(null);
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
@@ -101,6 +100,7 @@ export default function BrandsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    fetchBrands(page);
   };
 
   return (

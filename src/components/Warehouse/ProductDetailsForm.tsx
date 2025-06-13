@@ -323,7 +323,10 @@ const ProductDetailsForm = forwardRef<
       {/* Galería de imágenes */}
       {product.images && product.images.length > 0 && (
         <div>
-          <label className="block text-sm font-medium text-red-400 mb-3">
+          <label 
+            className="block text-sm font-medium mb-3"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Imágenes ({product.images.length})
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -333,7 +336,8 @@ const ProductDetailsForm = forwardRef<
                   src={`${process.env.NEXT_PUBLIC_URL_API}${image}`}
                   alt={`${product.name} - Imagen ${index + 1}`}
                   fill
-                  className="object-cover rounded-lg border border-red-200 group-hover:opacity-90 transition-opacity"
+                  className="object-cover rounded-lg border group-hover:opacity-90 transition-opacity"
+                  style={{ borderColor: `rgb(var(--color-primary-200))` }}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-200 rounded-lg flex items-center justify-center">
                   <span className="text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 px-2 py-1 rounded">

@@ -84,6 +84,7 @@ export default function MeasurementUnitsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    fetchUnits(page);
   };
 
   return (

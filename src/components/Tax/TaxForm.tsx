@@ -30,7 +30,7 @@ export interface TaxFormProps {
 }
 
 export interface TaxFormRef {
-  submit: () => void;
+  save: () => void;
 }
 
 const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
@@ -39,7 +39,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
       code: initialData?.code || '',
       name: initialData?.name || '',
       value: initialData?.value || 0,
-      type: initialData?.type || 'PERCENTAGE',
+      type: initialData?.type || TaxType.PERCENTAGE,
       isActive: initialData?.isActive ?? true,
     });
 
@@ -59,7 +59,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
           code: '',
           name: '',
           value: 0,
-          type: 'PERCENTAGE',
+          type: TaxType.PERCENTAGE,
           isActive: true,
         });
       }
@@ -131,21 +131,62 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
     };
 
     useImperativeHandle(ref, () => ({
-      submit: handleSubmit,
+      save: handleSubmit,
     }));
+
+    // Estilos para los inputs con focus dinámico
+    const getInputStyles = () => ({
+      appearance: 'none' as const,
+      display: 'block',
+      width: '100%',
+      padding: '0.75rem 1rem',
+      border: '1px solid #d1d5db',
+      borderRadius: '0.5rem',
+      color: '#111827',
+      backgroundColor: 'white',
+      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+    });
+
+    const getSelectStyles = () => ({
+      appearance: 'none' as const,
+      display: 'block',
+      width: '100%',
+      padding: '0.75rem 1rem',
+      border: '1px solid #d1d5db',
+      borderRadius: '0.5rem',
+      color: '#111827',
+      backgroundColor: 'white',
+      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+    });
+
+    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
+      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
+    };
+
+    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = '#d1d5db';
+      e.target.style.boxShadow = 'none';
+    };
 
     return (
       <form className="space-y-6">
         <div>
-          <label htmlFor="code" className="block text-sm font-medium text-red-400 mb-2">
-            Código <span className="text-red-500">*</span>
+          <label 
+            htmlFor="code" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Código <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <input
             type="text"
             id="code"
             value={formData.code}
             onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: IVA"
             required
           />
@@ -153,15 +194,21 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
         </div>
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-red-400 mb-2">
-            Nombre <span className="text-red-500">*</span>
+          <label 
+            htmlFor="name" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <input
             type="text"
             id="name"
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: Impuesto al Valor Agregado"
             required
           />
@@ -169,37 +216,51 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
         </div>
 
         <div>
-          <label htmlFor="value" className="block text-sm font-medium text-red-400 mb-2">
-            Valor <span className="text-red-500">*</span>
+          <label 
+            htmlFor="value" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Valor <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <input
             type="number"
             id="value"
             value={formData.value}
             onChange={(e) => setFormData(prev => ({ ...prev, value: parseFloat(e.target.value) || 0 }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: 20"
-            step="0.01"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
+            placeholder="Ej: 19"
             min="0"
+            step="0.01"
             required
           />
           {errors.value && <p className="mt-1 text-xs text-gray-300">{errors.value}</p>}
         </div>
 
         <div>
-          <label htmlFor="type" className="block text-sm font-medium text-red-400 mb-2">
-            Tipo <span className="text-red-500">*</span>
+          <label 
+            htmlFor="type" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Tipo <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <select
             id="type"
             value={formData.type}
             onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as TaxType }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getSelectStyles()}
             required
           >
-            <option value="PERCENTAGE">Porcentaje</option>
-            <option value="FIXED">Valor Fijo</option>
+            <option value="">Seleccione un tipo</option>
+            <option value={TaxType.PERCENTAGE}>Porcentaje (%)</option>
+            <option value={TaxType.FIXED}>Valor Fijo</option>
           </select>
+          {errors.type && <p className="mt-1 text-xs text-gray-300">{errors.type}</p>}
         </div>
 
         <div className="flex items-center">
@@ -208,9 +269,16 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
             id="isActive"
             checked={formData.isActive}
             onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-            className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
+            className="h-4 w-4 border-gray-300 rounded"
+            style={{
+              accentColor: `rgb(var(--color-primary-500))`,
+            }}
           />
-          <label htmlFor="isActive" className="ml-2 block text-sm text-red-400">
+          <label 
+            htmlFor="isActive" 
+            className="ml-2 block text-sm"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Activo
           </label>
         </div>

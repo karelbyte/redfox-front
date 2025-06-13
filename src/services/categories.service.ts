@@ -12,8 +12,9 @@ interface PaginatedResponse {
 }
 
 class CategoriesService {
-  async getCategories(page: number = 1): Promise<PaginatedResponse> {
-    const response = await api.get<PaginatedResponse>(`/categories?page=${page}`);
+  async getCategories(page?: number): Promise<PaginatedResponse> {
+    const queryParam = page ? `?page=${page}` : '';
+    const response = await api.get<PaginatedResponse>(`/categories${queryParam}`);
     return response;
   }
 

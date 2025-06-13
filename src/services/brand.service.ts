@@ -13,8 +13,9 @@ interface PaginatedResponse {
 }
 
 class BrandService {
-  async getBrands(page: number = 1): Promise<PaginatedResponse> {
-    const response = await api.get<PaginatedResponse>(`/brands?page=${page}`);
+  async getBrands(page?: number): Promise<PaginatedResponse> {
+    const queryParam = page ? `?page=${page}` : '';
+    const response = await api.get<PaginatedResponse>(`/brands${queryParam}`);
     return response;
   }
 

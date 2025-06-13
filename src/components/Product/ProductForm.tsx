@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
 import { Product, ProductFormData } from '@/types/product';
@@ -11,8 +11,18 @@ import { brandService } from '@/services/brand.service';
 import { categoriesService } from '@/services/categories.service';
 import { measurementUnitsService } from '@/services/measurement-units.service';
 import { taxesService } from '@/services/taxes.service';
-import { Tax } from '@/types/tax';
+import { Tax, TaxType } from '@/types/tax';
 import ImageCarousel from '@/components/ImageCarousel/ImageCarousel';
+import Drawer from '@/components/Drawer/Drawer';
+import BrandForm from '@/components/Brand/BrandForm';
+import { BrandFormRef } from '@/components/Brand/BrandForm';
+import CategoryForm from '@/components/Category/CategoryForm';
+import { CategoryFormRef } from '@/components/Category/CategoryForm';
+import MeasurementUnitForm from '@/components/Measurement/MeasurementUnitForm';
+import { MeasurementUnitFormRef } from '@/components/Measurement/MeasurementUnitForm';
+import TaxForm from '@/components/Tax/TaxForm';
+import { TaxFormRef } from '@/components/Tax/TaxForm';
+
 
 export enum ProductType {
   DIGITAL = 'digital',
@@ -74,6 +84,66 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     const [measurementUnits, setMeasurementUnits] = useState<MeasurementUnit[]>([]);
     const [taxes, setTaxes] = useState<Tax[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
+
+    // Estados para el drawer de marcas
+    const [showBrandDrawer, setShowBrandDrawer] = useState(false);
+    const [isSavingBrand, setIsSavingBrand] = useState(false);
+    const [isBrandFormValid, setIsBrandFormValid] = useState(false);
+    const brandFormRef = useRef<BrandFormRef>(null);
+
+    // Estados para el drawer de categorías
+    const [showCategoryDrawer, setShowCategoryDrawer] = useState(false);
+    const [isSavingCategory, setIsSavingCategory] = useState(false);
+    const [isCategoryFormValid, setIsCategoryFormValid] = useState(false);
+    const categoryFormRef = useRef<CategoryFormRef>(null);
+
+    // Estados para el drawer de unidades de medida
+    const [showMeasurementUnitDrawer, setShowMeasurementUnitDrawer] = useState(false);
+    const [isSavingMeasurementUnit, setIsSavingMeasurementUnit] = useState(false);
+    const [isMeasurementUnitFormValid, setIsMeasurementUnitFormValid] = useState(false);
+    const measurementUnitFormRef = useRef<MeasurementUnitFormRef>(null);
+
+    // Estados para el drawer de impuestos
+    const [showTaxDrawer, setShowTaxDrawer] = useState(false);
+    const [isSavingTax, setIsSavingTax] = useState(false);
+    const [isTaxFormValid, setIsTaxFormValid] = useState(false);
+    const taxFormRef = useRef<TaxFormRef>(null);
+
+    const fetchBrands = async () => {
+      try {
+        const brandsData = await brandService.getBrands();
+        setBrands(brandsData.data);
+      } catch (error) {
+        console.error('Error fetching brands:', error);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await categoriesService.getCategories();
+        setCategories(categoriesData.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    const fetchMeasurementUnits = async () => {
+      try {
+        const measurementUnitsData = await measurementUnitsService.getMeasurementUnits();
+        setMeasurementUnits(measurementUnitsData.data);
+      } catch (error) {
+        console.error('Error fetching measurement units:', error);
+      }
+    };
+
+    const fetchTaxes = async () => {
+      try {
+        const taxesData = await taxesService.getTaxes();
+        setTaxes(taxesData.data);
+      } catch (error) {
+        console.error('Error fetching taxes:', error);
+      }
+    };
 
     useEffect(() => {
       const fetchData = async () => {
@@ -217,6 +287,74 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       }
     };
 
+    // Funciones para el drawer de marcas
+    const handleBrandDrawerClose = () => {
+      setShowBrandDrawer(false);
+      setIsSavingBrand(false);
+    };
+
+    const handleBrandFormSuccess = () => {
+      handleBrandDrawerClose();
+      // Refrescar la lista de marcas
+      fetchBrands();
+      toastService.success('Marca creada correctamente');
+    };
+
+    const handleBrandSave = () => {
+      brandFormRef.current?.submit();
+    };
+
+    // Funciones para el drawer de categorías
+    const handleCategoryDrawerClose = () => {
+      setShowCategoryDrawer(false);
+      setIsSavingCategory(false);
+    };
+
+    const handleCategoryFormSuccess = () => {
+      handleCategoryDrawerClose();
+      // Refrescar la lista de categorías
+      fetchCategories();
+      toastService.success('Categoría creada correctamente');
+    };
+
+    const handleCategorySave = () => {
+      categoryFormRef.current?.submit();
+    };
+
+    // Funciones para el drawer de unidades de medida
+    const handleMeasurementUnitDrawerClose = () => {
+      setShowMeasurementUnitDrawer(false);
+      setIsSavingMeasurementUnit(false);
+    };
+
+    const handleMeasurementUnitFormSuccess = () => {
+      handleMeasurementUnitDrawerClose();
+      // Refrescar la lista de unidades de medida
+      fetchMeasurementUnits();
+      toastService.success('Unidad de medida creada correctamente');
+    };
+
+    const handleMeasurementUnitSave = () => {
+      measurementUnitFormRef.current?.submit();
+    };
+
+    // Funciones para el drawer de impuestos
+    const handleTaxDrawerClose = () => {
+      setShowTaxDrawer(false);
+      setIsSavingTax(false);
+    };
+
+    const handleTaxFormSuccess = () => {
+      handleTaxDrawerClose();
+      // Refrescar la lista de impuestos
+      fetchTaxes();
+      toastService.success('Impuesto creado correctamente');
+    };
+
+    const handleTaxSave = () => {
+      taxFormRef.current?.save();
+    };
+
     useImperativeHandle(ref, () => ({
       submit: handleSubmit, 
       reset: () => {
@@ -264,324 +402,502 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     };
 
     return (
-      <form className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <>
+        <form className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label 
+                htmlFor="name" 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
+                Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+                style={getInputStyles()}
+                placeholder="Ej: iPhone 15 Pro"
+                required
+              />
+              {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
+            </div>
+
+            <div>
+              <label 
+                htmlFor="sku" 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
+                SKU <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+              </label>
+              <input
+                type="text"
+                id="sku"
+                value={formData.sku}
+                onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+                style={getInputStyles()}
+                placeholder="Ej: IPH15PRO-256"
+                required
+              />
+              {errors.sku && <p className="mt-1 text-xs text-gray-300">{errors.sku}</p>}
+            </div>
+
+            <div className="col-span-2">
+              <div className="grid grid-cols-4 gap-4">
+                <div>
+                  <label 
+                    htmlFor="weight" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Peso (kg)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="weight"
+                    value={formData.weight}
+                    onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) }))}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    style={getInputStyles()}
+                  />
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="width" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Ancho (m)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="width"
+                    value={formData.width}
+                    onChange={(e) => setFormData(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    style={getInputStyles()}
+                  />
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="height" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Alto (m)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="height"
+                    value={formData.height}
+                    onChange={(e) => setFormData(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    style={getInputStyles()}
+                  />
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="length" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Largo (m)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="length"
+                    value={formData.length}
+                    onChange={(e) => setFormData(prev => ({ ...prev, length: parseFloat(e.target.value) }))}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    style={getInputStyles()}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="col-span-2">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label 
+                    htmlFor="brand" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Marca <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="brand"
+                      value={formData.brand_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, brand_id: e.target.value }))}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                      style={{
+                        ...getInputStyles(),
+                        paddingRight: '3rem', // Espacio para el botón
+                      }}
+                      required
+                    >
+                      <option value="">Seleccione una marca</option>
+                      {brands.map((brand) => (
+                        <option key={brand.id} value={brand.id}>
+                          {brand.code} - {brand.description}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowBrandDrawer(true)}
+                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
+                      style={{ 
+                        backgroundColor: `rgb(var(--color-primary-500))`,
+                        borderColor: `rgb(var(--color-primary-600))`,
+                        borderTopRightRadius: '0.5rem',
+                        borderBottomRightRadius: '0.5rem',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
+                      }}
+                      title="Crear nueva marca"
+                    >
+                      +
+                    </button>
+                  </div>
+                  {errors.brand_id && <p className="mt-1 text-xs text-gray-300">{errors.brand_id}</p>}
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="category" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Categoría <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="category"
+                      value={formData.category_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                      style={{
+                        ...getInputStyles(),
+                        paddingRight: '3rem', // Espacio para el botón
+                      }}
+                      required
+                    >
+                      <option value="">Seleccione una categoría</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowCategoryDrawer(true)}
+                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
+                      style={{ 
+                        backgroundColor: `rgb(var(--color-primary-500))`,
+                        borderColor: `rgb(var(--color-primary-600))`,
+                        borderTopRightRadius: '0.5rem',
+                        borderBottomRightRadius: '0.5rem',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
+                      }}
+                      title="Crear nueva categoría"
+                    >
+                      +
+                    </button>
+                  </div>
+                  {errors.category_id && <p className="mt-1 text-xs text-gray-300">{errors.category_id}</p>}
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="measurement_unit" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Unidad de Medida <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="measurement_unit"
+                      value={formData.measurement_unit_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, measurement_unit_id: e.target.value }))}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                      style={{
+                        ...getInputStyles(),
+                        paddingRight: '3rem', // Espacio para el botón
+                      }}
+                      required
+                    >
+                      <option value="">Seleccione una unidad</option>
+                      {measurementUnits.map((unit) => (
+                        <option key={unit.id} value={unit.id}>
+                          {unit.code} - {unit.description}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowMeasurementUnitDrawer(true)}
+                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
+                      style={{ 
+                        backgroundColor: `rgb(var(--color-primary-500))`,
+                        borderColor: `rgb(var(--color-primary-600))`,
+                        borderTopRightRadius: '0.5rem',
+                        borderBottomRightRadius: '0.5rem',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
+                      }}
+                      title="Crear nueva unidad de medida"
+                    >
+                      +
+                    </button>
+                  </div>
+                  {errors.measurement_unit_id && (
+                    <p className="mt-1 text-xs text-gray-300">{errors.measurement_unit_id}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="col-span-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label 
+                    htmlFor="tax" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Impuesto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="tax"
+                      value={formData.tax_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, tax_id: e.target.value }))}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                      style={{
+                        ...getInputStyles(),
+                        paddingRight: '3rem', // Espacio para el botón
+                      }}
+                      required
+                    >
+                      <option value="">Seleccione un impuesto</option>
+                      {taxes.map((tax) => (
+                        <option key={tax.id} value={tax.id}>
+                          {tax.name} ({tax.value}{tax.type === TaxType.PERCENTAGE ? '%' : ' fijo'})
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowTaxDrawer(true)}
+                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
+                      style={{ 
+                        backgroundColor: `rgb(var(--color-primary-500))`,
+                        borderColor: `rgb(var(--color-primary-600))`,
+                        borderTopRightRadius: '0.5rem',
+                        borderBottomRightRadius: '0.5rem',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
+                      }}
+                      title="Crear nuevo impuesto"
+                    >
+                      +
+                    </button>
+                  </div>
+                  {errors.tax_id && <p className="mt-1 text-xs text-gray-300">{errors.tax_id}</p>}
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="type" 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    Tipo de Producto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+                  </label>
+                  <select
+                    id="type"
+                    value={formData.type}
+                    onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProductType }))}
+                    onFocus={handleInputFocus}
+                    onBlur={handleInputBlur}
+                    style={getInputStyles()}
+                    required
+                  >
+                    <option value={ProductType.TANGIBLE}>Tangible</option>
+                    <option value={ProductType.DIGITAL}>Digital</option>
+                    <option value={ProductType.SERVICE}>Servicio</option>
+                  </select>
+                  {errors.type && <p className="mt-1 text-xs text-gray-300">{errors.type}</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div>
             <label 
-              htmlFor="name" 
+              htmlFor="description" 
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+              Descripción
             </label>
-            <input
-              type="text"
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            <textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               style={getInputStyles()}
-              placeholder="Ej: iPhone 15 Pro"
-              required
+              placeholder="Descripción del producto"
+              rows={2}
             />
-            {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
           </div>
 
-          <div>
+          <ImageCarousel
+            images={images as File[]}
+            onChange={setImages}
+          />
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isActive"
+              checked={formData.is_active}
+              onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+              className="h-4 w-4 border-gray-300 rounded"
+              style={{
+                accentColor: `rgb(var(--color-primary-500))`,
+              }}
+            />
             <label 
-              htmlFor="sku" 
-              className="block text-sm font-medium mb-2"
+              htmlFor="isActive" 
+              className="ml-2 block text-sm"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              SKU <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+              Activo
             </label>
-            <input
-              type="text"
-              id="sku"
-              value={formData.sku}
-              onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              style={getInputStyles()}
-              placeholder="Ej: IPH15PRO-256"
-              required
-            />
-            {errors.sku && <p className="mt-1 text-xs text-gray-300">{errors.sku}</p>}
           </div>
+        </form>
 
-          <div className="col-span-2">
-            <div className="grid grid-cols-4 gap-4">
-              <div>
-                <label 
-                  htmlFor="weight" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Peso (kg)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="weight"
-                  value={formData.weight}
-                  onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                />
-              </div>
-
-              <div>
-                <label 
-                  htmlFor="width" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Ancho (m)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="width"
-                  value={formData.width}
-                  onChange={(e) => setFormData(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                />
-              </div>
-
-              <div>
-                <label 
-                  htmlFor="height" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Alto (m)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="height"
-                  value={formData.height}
-                  onChange={(e) => setFormData(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                />
-              </div>
-
-              <div>
-                <label 
-                  htmlFor="length" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Largo (m)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="length"
-                  value={formData.length}
-                  onChange={(e) => setFormData(prev => ({ ...prev, length: parseFloat(e.target.value) }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-2">
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label 
-                  htmlFor="brand" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Marca <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                </label>
-                <select
-                  id="brand"
-                  value={formData.brand_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, brand_id: e.target.value }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                  required
-                >
-                  <option value="">Seleccione una marca</option>
-                  {brands.map((brand) => (
-                    <option key={brand.id} value={brand.id}>
-                      {brand.code} - {brand.description}
-                    </option>
-                  ))}
-                </select>
-                {errors.brand_id && <p className="mt-1 text-xs text-gray-300">{errors.brand_id}</p>}
-              </div>
-
-              <div>
-                <label 
-                  htmlFor="category" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Categoría <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                </label>
-                <select
-                  id="category"
-                  value={formData.category_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                  required
-                >
-                  <option value="">Seleccione una categoría</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.category_id && <p className="mt-1 text-xs text-gray-300">{errors.category_id}</p>}
-              </div>
-
-              <div>
-                <label 
-                  htmlFor="measurement_unit" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Unidad de Medida <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                </label>
-                <select
-                  id="measurement_unit"
-                  value={formData.measurement_unit_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, measurement_unit_id: e.target.value }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                  required
-                >
-                  <option value="">Seleccione una unidad</option>
-                  {measurementUnits.map((unit) => (
-                    <option key={unit.id} value={unit.id}>
-                      {unit.code} - {unit.description}
-                    </option>
-                  ))}
-                </select>
-                {errors.measurement_unit_id && (
-                  <p className="mt-1 text-xs text-gray-300">{errors.measurement_unit_id}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-2">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label 
-                  htmlFor="tax" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Impuesto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                </label>
-                <select
-                  id="tax"
-                  value={formData.tax_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, tax_id: e.target.value }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                  required
-                >
-                  <option value="">Seleccione un impuesto</option>
-                  {taxes.map((tax) => (
-                    <option key={tax.id} value={tax.id}>
-                      {tax.name} ({tax.percentage}%)
-                    </option>
-                  ))}
-                </select>
-                {errors.tax_id && <p className="mt-1 text-xs text-gray-300">{errors.tax_id}</p>}
-              </div>
-
-              <div>
-                <label 
-                  htmlFor="type" 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  Tipo de Producto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                </label>
-                <select
-                  id="type"
-                  value={formData.type}
-                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProductType }))}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                  style={getInputStyles()}
-                  required
-                >
-                  <option value={ProductType.TANGIBLE}>Tangible</option>
-                  <option value={ProductType.DIGITAL}>Digital</option>
-                  <option value={ProductType.SERVICE}>Servicio</option>
-                </select>
-                {errors.type && <p className="mt-1 text-xs text-gray-300">{errors.type}</p>}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label 
-            htmlFor="description" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Descripción
-          </label>
-          <textarea
-            id="description"
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Descripción del producto"
-            rows={2}
+        {/* Drawer para crear marcas */}
+        <Drawer
+          isOpen={showBrandDrawer}
+          onClose={handleBrandDrawerClose}
+          title="Nueva Marca"
+          onSave={handleBrandSave}
+          isSaving={isSavingBrand}
+          isFormValid={isBrandFormValid}
+        >
+          <BrandForm
+            ref={brandFormRef}
+            brand={null}
+            onClose={handleBrandDrawerClose}
+            onSuccess={handleBrandFormSuccess}
+            onSavingChange={setIsSavingBrand}
+            onValidChange={setIsBrandFormValid}
           />
-        </div>
+        </Drawer>
 
-        <ImageCarousel
-          images={images as File[]}
-          onChange={setImages}
-        />
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="isActive"
-            checked={formData.is_active}
-            onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
-            className="h-4 w-4 border-gray-300 rounded"
-            style={{
-              accentColor: `rgb(var(--color-primary-500))`,
-            }}
+        {/* Drawer para crear categorías */}
+        <Drawer
+          isOpen={showCategoryDrawer}
+          onClose={handleCategoryDrawerClose}
+          title="Nueva Categoría"
+          onSave={handleCategorySave}
+          isSaving={isSavingCategory}
+          isFormValid={isCategoryFormValid}
+        >
+          <CategoryForm
+            ref={categoryFormRef}
+            category={null}
+            onClose={handleCategoryDrawerClose}
+            onSuccess={handleCategoryFormSuccess}
+            onSavingChange={setIsSavingCategory}
+            onValidChange={setIsCategoryFormValid}
           />
-          <label 
-            htmlFor="isActive" 
-            className="ml-2 block text-sm"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Activo
-          </label>
-        </div>
-      </form>
+        </Drawer>
+
+        {/* Drawer para crear unidades de medida */}
+        <Drawer
+          isOpen={showMeasurementUnitDrawer}
+          onClose={handleMeasurementUnitDrawerClose}
+          title="Nueva Unidad de Medida"
+          onSave={handleMeasurementUnitSave}
+          isSaving={isSavingMeasurementUnit}
+          isFormValid={isMeasurementUnitFormValid}
+        >
+          <MeasurementUnitForm
+            ref={measurementUnitFormRef}
+            unit={null}
+            onClose={handleMeasurementUnitDrawerClose}
+            onSuccess={handleMeasurementUnitFormSuccess}
+            onSavingChange={setIsSavingMeasurementUnit}
+            onValidChange={setIsMeasurementUnitFormValid}
+          />
+        </Drawer>
+
+        {/* Drawer para crear impuestos */}
+        <Drawer
+          isOpen={showTaxDrawer}
+          onClose={handleTaxDrawerClose}
+          title="Nuevo Impuesto"
+          onSave={handleTaxSave}
+          isSaving={isSavingTax}
+          isFormValid={isTaxFormValid}
+        >
+          <TaxForm
+            ref={taxFormRef}
+            initialData={null}
+            onClose={handleTaxDrawerClose}
+            onSuccess={handleTaxFormSuccess}
+            onSavingChange={setIsSavingTax}
+            onValidChange={setIsTaxFormValid}
+          />
+        </Drawer>
+      </>
     );
   }
 );
