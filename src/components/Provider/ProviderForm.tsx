@@ -153,18 +153,47 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
       submit: handleSubmit,
     }));
 
+    // Estilos para los inputs con focus dinámico
+    const getInputStyles = () => ({
+      appearance: 'none' as const,
+      display: 'block',
+      width: '100%',
+      padding: '0.75rem 1rem',
+      border: '1px solid #d1d5db',
+      borderRadius: '0.5rem',
+      color: '#111827',
+      backgroundColor: 'white',
+      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+    });
+
+    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
+      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
+    };
+
+    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      e.target.style.borderColor = '#d1d5db';
+      e.target.style.boxShadow = 'none';
+    };
+
     return (
       <form className="space-y-6">
         <div>
-          <label htmlFor="code" className="block text-sm font-medium text-red-400 mb-2">
-            Código <span className="text-red-500">*</span>
+          <label 
+            htmlFor="code" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Código <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <input
             type="text"
             id="code"
             value={formData.code}
             onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: PROV001"
             required
           />
@@ -172,15 +201,21 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
         </div>
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-red-400 mb-2">
-            Nombre <span className="text-red-500">*</span>
+          <label 
+            htmlFor="name" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <input
             type="text"
             id="name"
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: Proveedor XYZ"
             required
           />
@@ -188,14 +223,20 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-red-400 mb-2">
-            Descripción <span className="text-red-500">*</span>
+          <label 
+            htmlFor="description" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Descripción <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           <textarea
             id="description"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             rows={3}
             placeholder="Ej: Proveedor de materiales de construcción"
             required
@@ -205,7 +246,11 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="document" className="block text-sm font-medium text-red-400 mb-2">
+            <label 
+              htmlFor="document" 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
               Documento
             </label>
             <input
@@ -213,13 +258,19 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
               id="document"
               value={formData.document}
               onChange={(e) => setFormData(prev => ({ ...prev, document: e.target.value }))}
-              className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              style={getInputStyles()}
               placeholder="Ej: RUC 12345678901"
             />
           </div>
 
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-red-400 mb-2">
+            <label 
+              htmlFor="phone" 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
               Teléfono
             </label>
             <input
@@ -227,14 +278,20 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
               id="phone"
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              style={getInputStyles()}
               placeholder="Ej: +51 987654321"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-red-400 mb-2">
+          <label 
+            htmlFor="email" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Email
           </label>
           <input
@@ -242,21 +299,29 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
             id="email"
             value={formData.email}
             onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Ej: contacto@proveedor.com"
           />
           {errors.email && <p className="mt-1 text-xs text-gray-300">{errors.email}</p>}
         </div>
 
         <div>
-          <label htmlFor="address" className="block text-sm font-medium text-red-400 mb-2">
+          <label 
+            htmlFor="address" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Dirección
           </label>
           <textarea
             id="address"
             value={formData.address}
             onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             rows={3}
             placeholder="Ej: Av. Principal 123, Lima"
           />
@@ -268,9 +333,16 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
             id="status"
             checked={formData.status}
             onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
-            className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
+            className="h-4 w-4 border-gray-300 rounded"
+            style={{
+              accentColor: `rgb(var(--color-primary-500))`,
+            }}
           />
-          <label htmlFor="status" className="ml-2 block text-sm text-red-400">
+          <label 
+            htmlFor="status" 
+            className="ml-2 block text-sm"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Activo
           </label>
         </div>

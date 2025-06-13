@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Provider } from "@/types/provider";
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
+import { Btn } from "@/components/atoms";
 
 interface DeleteProviderModalProps {
   provider: Provider | null;
@@ -46,9 +47,13 @@ const DeleteProviderModal = ({
       <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
         <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
           <div className="sm:flex sm:items-start">
-            <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+            <div 
+              className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"
+              style={{ backgroundColor: `rgb(var(--color-primary-100))` }}
+            >
               <svg
-                className="h-6 w-6 text-red-600"
+                className="h-6 w-6"
+                style={{ color: `rgb(var(--color-primary-600))` }}
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
@@ -74,22 +79,23 @@ const DeleteProviderModal = ({
             </div>
           </div>
           <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            <Btn
+              variant="danger"
               onClick={handleDelete}
               disabled={isDeleting}
+              loading={isDeleting}
+              className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
             >
-              {isDeleting ? "Eliminando..." : "Eliminar"}
-            </button>
-            <button
-              type="button"
-              className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              Eliminar
+            </Btn>
+            <Btn
+              variant="outline"
               onClick={onClose}
               disabled={isDeleting}
+              className="mt-3 inline-flex w-full justify-center text-sm sm:mt-0 sm:w-auto"
             >
               Cancelar
-            </button>
+            </Btn>
           </div>
         </div>
       </div>

@@ -236,21 +236,52 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           is_active: true,
           type: ProductType.TANGIBLE,
         });
+        setImages([]);
       },
     }));
+
+    // Estilos para los inputs con focus dinámico
+    const getInputStyles = () => ({
+      appearance: 'none' as const,
+      display: 'block',
+      width: '100%',
+      padding: '0.75rem 1rem',
+      border: '1px solid #d1d5db',
+      borderRadius: '0.5rem',
+      color: '#111827',
+      backgroundColor: 'white',
+      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+    });
+
+    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
+      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
+    };
+
+    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = '#d1d5db';
+      e.target.style.boxShadow = 'none';
+    };
+
     return (
       <form className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-red-400 mb-2">
-              Nombre <span className="text-red-500">*</span>
+            <label 
+              htmlFor="name" 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
+              Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
             </label>
             <input
               type="text"
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              style={getInputStyles()}
               placeholder="Ej: iPhone 15 Pro"
               required
             />
@@ -258,15 +289,21 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           </div>
 
           <div>
-            <label htmlFor="sku" className="block text-sm font-medium text-red-400 mb-2">
-              SKU <span className="text-red-500">*</span>
+            <label 
+              htmlFor="sku" 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
+              SKU <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
             </label>
             <input
               type="text"
               id="sku"
               value={formData.sku}
               onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
-              className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              style={getInputStyles()}
               placeholder="Ej: IPH15PRO-256"
               required
             />
@@ -276,7 +313,11 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           <div className="col-span-2">
             <div className="grid grid-cols-4 gap-4">
               <div>
-                <label htmlFor="weight" className="block text-sm font-medium text-red-400 mb-2">
+                <label 
+                  htmlFor="weight" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
                   Peso (kg)
                 </label>
                 <input
@@ -285,12 +326,18 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="weight"
                   value={formData.weight}
                   onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                 />
               </div>
 
               <div>
-                <label htmlFor="width" className="block text-sm font-medium text-red-400 mb-2">
+                <label 
+                  htmlFor="width" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
                   Ancho (m)
                 </label>
                 <input
@@ -299,12 +346,18 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="width"
                   value={formData.width}
                   onChange={(e) => setFormData(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                 />
               </div>
 
               <div>
-                <label htmlFor="height" className="block text-sm font-medium text-red-400 mb-2">
+                <label 
+                  htmlFor="height" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
                   Alto (m)
                 </label>
                 <input
@@ -313,12 +366,18 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="height"
                   value={formData.height}
                   onChange={(e) => setFormData(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                 />
               </div>
 
               <div>
-                <label htmlFor="length" className="block text-sm font-medium text-red-400 mb-2">
+                <label 
+                  htmlFor="length" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
                   Largo (m)
                 </label>
                 <input
@@ -327,7 +386,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="length"
                   value={formData.length}
                   onChange={(e) => setFormData(prev => ({ ...prev, length: parseFloat(e.target.value) }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                 />
               </div>
             </div>
@@ -336,14 +397,20 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           <div className="col-span-2">
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label htmlFor="brand" className="block text-sm font-medium text-red-400 mb-2">
-                  Marca <span className="text-red-500">*</span>
+                <label 
+                  htmlFor="brand" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
+                  Marca <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
                 </label>
                 <select
                   id="brand"
                   value={formData.brand_id}
                   onChange={(e) => setFormData(prev => ({ ...prev, brand_id: e.target.value }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                   required
                 >
                   <option value="">Seleccione una marca</option>
@@ -357,14 +424,20 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               </div>
 
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-red-400 mb-2">
-                  Categoría <span className="text-red-500">*</span>
+                <label 
+                  htmlFor="category" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
+                  Categoría <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
                 </label>
                 <select
                   id="category"
                   value={formData.category_id}
                   onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                   required
                 >
                   <option value="">Seleccione una categoría</option>
@@ -378,14 +451,20 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               </div>
 
               <div>
-                <label htmlFor="measurement_unit" className="block text-sm font-medium text-red-400 mb-2">
-                  Unidad de Medida <span className="text-red-500">*</span>
+                <label 
+                  htmlFor="measurement_unit" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
+                  Unidad de Medida <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
                 </label>
                 <select
                   id="measurement_unit"
                   value={formData.measurement_unit_id}
                   onChange={(e) => setFormData(prev => ({ ...prev, measurement_unit_id: e.target.value }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                   required
                 >
                   <option value="">Seleccione una unidad</option>
@@ -405,14 +484,20 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           <div className="col-span-2">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="tax" className="block text-sm font-medium text-red-400 mb-2">
-                  Impuesto <span className="text-red-500">*</span>
+                <label 
+                  htmlFor="tax" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
+                  Impuesto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
                 </label>
                 <select
                   id="tax"
                   value={formData.tax_id}
                   onChange={(e) => setFormData(prev => ({ ...prev, tax_id: e.target.value }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                   required
                 >
                   <option value="">Seleccione un impuesto</option>
@@ -426,14 +511,20 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               </div>
 
               <div>
-                <label htmlFor="type" className="block text-sm font-medium text-red-400 mb-2">
-                  Tipo de Producto <span className="text-red-500">*</span>
+                <label 
+                  htmlFor="type" 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
+                  Tipo de Producto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
                 </label>
                 <select
                   id="type"
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProductType }))}
-                  className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  style={getInputStyles()}
                   required
                 >
                   <option value={ProductType.TANGIBLE}>Tangible</option>
@@ -447,14 +538,20 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-red-400 mb-2">
+          <label 
+            htmlFor="description" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Descripción
           </label>
           <textarea
             id="description"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            style={getInputStyles()}
             placeholder="Descripción del producto"
             rows={2}
           />
@@ -471,9 +568,16 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             id="isActive"
             checked={formData.is_active}
             onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
-            className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
+            className="h-4 w-4 border-gray-300 rounded"
+            style={{
+              accentColor: `rgb(var(--color-primary-500))`,
+            }}
           />
-          <label htmlFor="isActive" className="ml-2 block text-sm text-red-400">
+          <label 
+            htmlFor="isActive" 
+            className="ml-2 block text-sm"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Activo
           </label>
         </div>

@@ -7,116 +7,107 @@ import { Provider } from "@/types/provider";
 import ProviderForm from "@/components/Provider/ProviderForm";
 import ProviderTable from "@/components/Provider/ProviderTable";
 import DeleteProviderModal from "@/components/Provider/DeleteProviderModal";
-import Pagination from "@/components/Pagination/Pagination";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ProviderFormRef } from "@/components/Provider/ProviderForm";
+import { Btn } from "@/components/atoms";
 
 export default function ProvidersPage() {
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
-  const [providerToDelete, setProviderToDelete] = useState<Provider | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<ProviderFormRef>(null);
-  const initialFetchDone = useRef(false);
 
-  const fetchProviders = async (page: number) => {
+  const fetchProviders = async () => {
     try {
-      setLoading(true);
-      const response = await providersService.getProviders(page);
+      setIsLoading(true);
+      const response = await providersService.getProviders();
       setProviders(response.data);
-      setTotalPages(response.meta.totalPages);
-    } catch {
-      toastService.error("Error al cargar los proveedores");
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error("Error al cargar los proveedores");
+      }
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!initialFetchDone.current) {
-      initialFetchDone.current = true;
-      fetchProviders(currentPage);
-    }
+    fetchProviders();
   }, []);
 
-  useEffect(() => {
-    if (initialFetchDone.current) {
-      fetchProviders(currentPage);
-    }
-  }, [currentPage]);
-
-  const handleDelete = async () => {
-    if (!providerToDelete) return;
-
-    try {
-      await providersService.deleteProvider(providerToDelete.id);
-      toastService.success("Proveedor eliminado correctamente");
-      fetchProviders(currentPage);
-      setProviderToDelete(null);
-    } catch {
-      toastService.error("Error al eliminar el proveedor");
-    }
-  };
-
   const handleEdit = (provider: Provider) => {
-    setEditingProvider(provider);
+    setSelectedProvider(provider);
     setShowDrawer(true);
   };
 
+  const handleDelete = (provider: Provider) => {
+    setSelectedProvider(provider);
+    setIsDeleteModalOpen(true);
+  };
+
   const handleDrawerClose = () => {
+    setSelectedProvider(null);
     setShowDrawer(false);
-    setEditingProvider(null);
-    setIsSaving(false);
   };
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchProviders(currentPage);
+    fetchProviders();
+  };
+
+  const handleDeleteModalClose = () => {
+    setSelectedProvider(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleDeleteSuccess = () => {
+    handleDeleteModalClose();
+    fetchProviders();
   };
 
   const handleSave = () => {
-    if (formRef.current) {
-      formRef.current.submit();
-    }
-  };
-
-  const openDeleteModal = (provider: Provider) => {
-    setProviderToDelete(provider);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    formRef.current?.submit();
   };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">
+        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           Proveedores
         </h1>
-        <button
+        <Btn
           onClick={() => {
-            setEditingProvider(null);
+            setSelectedProvider(null);
             setShowDrawer(true);
           }}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          leftIcon={<PlusIcon className="h-5 w-5" />}
         >
           Nuevo Proveedor
-        </button>
+        </Btn>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+          <div 
+            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
+            style={{ borderColor: `rgb(var(--color-primary-500))` }}
+          ></div>
         </div>
       ) : providers && providers.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
+        <div 
+          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
+          style={{ borderColor: `rgb(var(--color-primary-200))` }}
+        >
           <svg
-            className="h-12 w-12 text-red-300 mb-4"
+            className="h-12 w-12 mb-4"
+            style={{ color: `rgb(var(--color-primary-300))` }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -125,66 +116,58 @@ export default function ProvidersPage() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
             />
           </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">
+          <p 
+            className="text-lg font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-400))` }}
+          >
             No hay proveedores
           </p>
-          <p className="text-sm text-red-300">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-primary-300))` }}
+          >
             Haz clic en &quot;Nuevo Proveedor&quot; para agregar uno.
           </p>
         </div>
       ) : (
-        <>
-          <div className="mt-6">
-            <ProviderTable
-              providers={providers}
-              onEdit={handleEdit}
-              onDelete={openDeleteModal}
-            />
-          </div>
-
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              className="mt-6"
-            />
-          )}
-        </>
+        <div className="mt-6">
+          <ProviderTable
+            providers={providers}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
       )}
 
-      {/* Drawer para crear/editar */}
       <Drawer
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={
-          editingProvider ? "Editar Proveedor" : "Nuevo Proveedor"
-        }
+        title={selectedProvider ? "Editar Proveedor" : "Nuevo Proveedor"}
         onSave={handleSave}
         isSaving={isSaving}
+        isFormValid={isFormValid}
       >
         <ProviderForm
           ref={formRef}
-          provider={editingProvider}
+          provider={selectedProvider}
           onClose={handleDrawerClose}
           onSuccess={handleFormSuccess}
           onSavingChange={setIsSaving}
+          onValidChange={setIsFormValid}
         />
       </Drawer>
 
-      {/* Modal de confirmación para eliminar */}
-      <DeleteProviderModal
-        provider={providerToDelete}
-        onClose={() => setProviderToDelete(null)}
-        onSuccess={() => {
-          setProviderToDelete(null);
-          fetchProviders(currentPage);
-        }}
-        onDeletingChange={setIsSaving}
-      />
+      {isDeleteModalOpen && selectedProvider && (
+        <DeleteProviderModal
+          provider={selectedProvider}
+          onClose={handleDeleteModalClose}
+          onSuccess={handleDeleteSuccess}
+          onDeletingChange={setIsSaving}
+        />
+      )}
     </div>
   );
 } 

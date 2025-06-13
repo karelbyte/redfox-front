@@ -64,19 +64,31 @@ const ProductDetailsForm = forwardRef<
     <form className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-red-400 mb-2">
+          <label 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             Nombre
           </label>
-          <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+          <div 
+            className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+            style={{ borderColor: `rgb(var(--color-primary-300))` }}
+          >
             {product.name}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-red-400 mb-2">
+          <label 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
             SKU
           </label>
-          <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+          <div 
+            className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+            style={{ borderColor: `rgb(var(--color-primary-300))` }}
+          >
             {product.sku}
           </div>
         </div>
@@ -84,37 +96,61 @@ const ProductDetailsForm = forwardRef<
         <div className="col-span-2">
           <div className="grid grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Peso (kg)
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {product.weight}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Ancho (m)
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {product.width}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Alto (m)
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {product.height}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Largo (m)
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {product.length}
               </div>
             </div>
@@ -124,10 +160,16 @@ const ProductDetailsForm = forwardRef<
         <div className="col-span-2">
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Marca
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {typeof product.brand === "object"
                   ? product.brand.description
                   : product.brand}
@@ -135,10 +177,16 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Categoría
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {typeof product.category === "object"
                   ? product.category.name
                   : product.category}
@@ -146,10 +194,16 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Unidad de Medida
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {typeof product.measurement_unit === "object"
                   ? `${product.measurement_unit.description} (${product.measurement_unit.code})`
                   : product.measurement_unit}
@@ -161,10 +215,16 @@ const ProductDetailsForm = forwardRef<
         <div className="col-span-2">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Impuesto
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {typeof product.tax === "object"
                   ? `${product.tax.name} (${product.tax.type})`
                   : product.tax}
@@ -172,10 +232,16 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-red-400 mb-2">
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
                 Tipo de Producto
               </label>
-              <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300 capitalize">
+              <div 
+                className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border capitalize"
+                style={{ borderColor: `rgb(var(--color-primary-300))` }}
+              >
                 {product.type}
               </div>
             </div>
@@ -184,43 +250,70 @@ const ProductDetailsForm = forwardRef<
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-red-400 mb-2">
+        <label 
+          className="block text-sm font-medium mb-2"
+          style={{ color: `rgb(var(--color-primary-500))` }}
+        >
           Descripción
         </label>
-        <div className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border border-red-300 min-h-[60px]">
+        <div 
+          className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border min-h-[60px]"
+          style={{ borderColor: `rgb(var(--color-primary-300))` }}
+        >
           {product.description}
         </div>
       </div>
 
       {/* Información de la apertura */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="text-sm font-semibold text-blue-800 mb-3">
+      <div>
+        <h3 
+          className="text-sm font-semibold mb-3"
+          style={{ color: `rgb(var(--color-primary-800))` }}
+        >
           Información de la Apertura
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-red-400 mb-2">
+            <label 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
               Cantidad en Apertura
             </label>
-            <div className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border border-blue-300">
+            <div 
+              className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
+              style={{ borderColor: `rgb(var(--color-primary-300))` }}
+            >
               {opening.quantity}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-red-400 mb-2">
+            <label 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
               Precio de Apertura
             </label>
-            <div className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border border-blue-300">
+            <div 
+              className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
+              style={{ borderColor: `rgb(var(--color-primary-300))` }}
+            >
               {formatPrice(opening.price)}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-red-400 mb-2">
+            <label 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
               Fecha de Apertura
             </label>
-            <div className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border border-blue-300">
+            <div 
+              className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
+              style={{ borderColor: `rgb(var(--color-primary-300))` }}
+            >
               {formatDate(opening.createdAt)}
             </div>
           </div>
