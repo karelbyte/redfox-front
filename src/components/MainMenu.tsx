@@ -1,11 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { ThemeSelectorCompact } from '@/components/ThemeSelector';
-import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { ThemeSelectorCompact } from "@/components/ThemeSelector";
+import { useRouter } from "next/navigation";
+import { useTheme } from "@/context/ThemeContext";
 
 export function MainMenu() {
+  const { currentTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
@@ -19,17 +21,29 @@ export function MainMenu() {
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = async () => {
     await logout();
-    router.push('/login');
+    router.push("/login");
   };
 
+  const getImageUrl = () => {
+    if (currentTheme === "blue") {
+      return "/nitrob.png";
+    } else if (currentTheme === "red") {
+      return "/nitro.png";
+    } else if (currentTheme === "green-gray") {
+      return "/nitrog.png";
+    }
+    else if (currentTheme === "gray") {
+      return "/nitrogy.png";
+    }
+  };
   return (
-    <nav 
+    <nav
       className="bg-white border-b"
       style={{ borderColor: `rgb(var(--color-primary-100))` }}
     >
@@ -38,11 +52,7 @@ export function MainMenu() {
           {/* Logo y nombre de la app */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <img 
-                src="/logo.png" 
-                alt="RedFox" 
-                className="h-8 w-auto"
-              />
+              <img src={getImageUrl()} alt="RedFox" className="h-8 w-auto" />
             </div>
           </div>
 
@@ -53,24 +63,28 @@ export function MainMenu() {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="flex items-center space-x-3 focus:outline-none"
               >
-                <div 
+                <div
                   className="h-8 w-8 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: `rgb(var(--color-primary-100))` }}
                 >
-                  <span 
+                  <span
                     className="font-medium"
                     style={{ color: `rgb(var(--color-primary-500))` }}
                   >
-                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium text-gray-900">{user?.name || 'Usuario'}</p>
-                  <p className="text-xs text-gray-500">{user?.roles?.[0]?.description || 'Rol'}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {user?.name || "Usuario"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {user?.roles?.[0]?.description || "Rol"}
+                  </p>
                 </div>
                 <svg
                   className={`h-5 w-5 text-gray-400 transition-transform ${
-                    isMenuOpen ? 'transform rotate-180' : ''
+                    isMenuOpen ? "transform rotate-180" : ""
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -86,11 +100,13 @@ export function MainMenu() {
 
               {/* Menú desplegable */}
               {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div className="absolute right-0 z-50 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                   <div className="p-4 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {user?.name}
+                    </p>
                     <p className="text-sm text-gray-500">{user?.email}</p>
-                    <p 
+                    <p
                       className="text-xs mt-1"
                       style={{ color: `rgb(var(--color-primary-500))` }}
                     >
@@ -100,7 +116,9 @@ export function MainMenu() {
 
                   {/* Selector de temas */}
                   <div className="p-4 border-b border-gray-100">
-                    <p className="text-xs text-gray-600 mb-2">Seleccionar tema</p>
+                    <p className="text-xs text-gray-600 mb-2">
+                      Seleccionar tema
+                    </p>
                     <ThemeSelectorCompact />
                   </div>
 
@@ -113,8 +131,8 @@ export function MainMenu() {
                         e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#374151';
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#374151";
                       }}
                       role="menuitem"
                     >
@@ -129,4 +147,4 @@ export function MainMenu() {
       </div>
     </nav>
   );
-} 
+}

@@ -157,11 +157,11 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 // Proveedor del contexto
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [currentTheme, setCurrentTheme] = useState<ThemeType>('red')
+  const [currentTheme, setCurrentTheme] = useState<ThemeType>('green-gray')
 
   // Cargar tema desde localStorage al montar el componente
   useEffect(() => {
-    const savedTheme = localStorage.getItem('redfox-theme') as ThemeType
+    const savedTheme = localStorage.getItem('nitro-theme') as ThemeType
     if (savedTheme && themeConfig[savedTheme]) {
       setCurrentTheme(savedTheme)
     }
@@ -195,7 +195,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (theme: ThemeType) => {
     setCurrentTheme(theme)
-    localStorage.setItem('redfox-theme', theme)
+    localStorage.setItem('nitro-theme', theme)
   }
 
   const contextValue: ThemeContextType = {

@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
+import { Input, TextArea } from "@/components/atoms";
 
 export interface ClientFormRef {
   submit: () => void;
@@ -80,27 +81,30 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
+        newErrors.code = "El código es requerido";
         isValid = false;
       }
 
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es requerido';
+        newErrors.name = "El nombre es requerido";
         isValid = false;
       }
 
       if (!formData.description.trim()) {
-        newErrors.description = 'La descripción es requerida';
+        newErrors.description = "La descripción es requerida";
         isValid = false;
       }
 
       if (!formData.tax_document.trim()) {
-        newErrors.tax_document = 'El documento fiscal es requerido';
+        newErrors.tax_document = "El documento fiscal es requerido";
         isValid = false;
       }
 
-      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        newErrors.email = 'El email no es válido';
+      if (
+        formData.email &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+      ) {
+        newErrors.email = "El email no es válido";
         isValid = false;
       }
 
@@ -159,189 +163,104 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
       submit: handleSubmit,
     }));
 
-    // Estilos para los inputs con focus dinámico
-    const getInputStyles = () => ({
-      appearance: 'none' as const,
-      display: 'block',
-      width: '100%',
-      padding: '0.75rem 1rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      color: '#111827',
-      backgroundColor: 'white',
-      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
-    });
-
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
-      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
-    };
-
-    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      e.target.style.borderColor = '#d1d5db';
-      e.target.style.boxShadow = 'none';
-    };
-
     return (
       <form className="space-y-6">
-        <div>
-          <label 
-            htmlFor="code" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Código <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="code"
-            value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: CLI001"
-            required
-          />
-          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
-        </div>
+        <Input
+          type="text"
+          id="code"
+          label="Código"
+          required
+          value={formData.code}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, code: e.target.value }))
+          }
+          placeholder="Ej: CLI001"
+          error={errors.code}
+        />
 
-        <div>
-          <label 
-            htmlFor="name" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: Cliente XYZ"
-            required
-          />
-          {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
-        </div>
+        <Input
+          type="text"
+          id="name"
+          label="Nombre"
+          required
+          value={formData.name}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, name: e.target.value }))
+          }
+          placeholder="Ej: Cliente XYZ"
+          error={errors.name}
+        />
 
-        <div>
-          <label 
-            htmlFor="description" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Descripción <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <textarea
-            id="description"
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            rows={3}
-            placeholder="Ej: Cliente general"
-            required
-          />
-          {errors.description && <p className="mt-1 text-xs text-gray-300">{errors.description}</p>}
-        </div>
+        <TextArea
+          id="description"
+          label="Descripción"
+          required
+          value={formData.description}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, description: e.target.value }))
+          }
+          rows={3}
+          placeholder="Ej: Cliente general"
+          error={errors.description}
+        />
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label 
-              htmlFor="phone" 
-              className="block text-sm font-medium mb-2"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Teléfono
-            </label>
-            <input
-              type="text"
-              id="phone"
-              value={formData.phone}
-              onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              style={getInputStyles()}
-              placeholder="Ej: +51 987654321"
-            />
-          </div>
-
-          <div>
-            <label 
-              htmlFor="email" 
-              className="block text-sm font-medium mb-2"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              style={getInputStyles()}
-              placeholder="Ej: contacto@cliente.com"
-            />
-            {errors.email && <p className="mt-1 text-xs text-gray-300">{errors.email}</p>}
-          </div>
-        </div>
-
-        <div>
-          <label 
-            htmlFor="address" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Dirección
-          </label>
-          <textarea
-            id="address"
-            value={formData.address}
-            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            rows={3}
-            placeholder="Ej: Av. Principal 123, Lima"
-          />
-        </div>
-
-        <div>
-          <label 
-            htmlFor="tax_document" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Documento Fiscal
-          </label>
-          <input
+          <Input
             type="text"
-            id="tax_document"
-            value={formData.tax_document}
-            onChange={(e) => setFormData(prev => ({ ...prev, tax_document: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: RUC 20123456789"
+            id="phone"
+            label="Teléfono"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, phone: e.target.value }))
+            }
+            placeholder="Ej: +51 987654321"
           />
-          {errors.tax_document && (
-            <p className="mt-1 text-xs text-gray-300">{errors.tax_document}</p>
-          )}
+
+          <Input
+            type="email"
+            id="email"
+            label="Email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, email: e.target.value }))
+            }
+            placeholder="Ej: contacto@cliente.com"
+            error={errors.email}
+          />
         </div>
+
+        <TextArea
+          id="address"
+          label="Dirección"
+          value={formData.address}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, address: e.target.value }))
+          }
+          rows={3}
+          placeholder="Ej: Av. Principal 123, Lima"
+        />
+
+        <Input
+          type="text"
+          id="tax_document"
+          label="Documento Fiscal"
+          required
+          value={formData.tax_document}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, tax_document: e.target.value }))
+          }
+          placeholder="Ej: RUC 20123456789"
+          error={errors.tax_document}
+        />
 
         <div className="flex items-center">
           <input
             type="checkbox"
             id="status"
             checked={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, status: e.target.checked }))
+            }
             className="h-4 w-4 border-gray-300 rounded"
             style={{
               accentColor: `rgb(var(--color-primary-500))`,
@@ -362,4 +281,4 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
 
 ClientForm.displayName = "ClientForm";
 
-export default ClientForm; 
+export default ClientForm;

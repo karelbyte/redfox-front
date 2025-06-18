@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   title: "Nitro",
   description: "Nitro - Sistema de gestión empresarial",
   icons: {
-    icon: '/wlogo.png',
-    shortcut: '/wlogo.png',
-    apple: '/wlogo.png',
+    icon: '/nitro-s.png',
+    shortcut: '/nitro-s.png',
+    apple: '/nitro-s.png',
   },
 };
 
