@@ -2,6 +2,7 @@
 
 import { Tax } from '@/types/tax';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Btn } from '@/components/atoms';
 
 interface TaxTableProps {
   taxes: Tax[];
@@ -19,29 +20,29 @@ export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Código
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Nombre
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Valor
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Tipo
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Estado
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Acciones
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {taxes.map((tax) => (
-            <tr key={tax.id}>
+            <tr key={tax.id} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tax.code}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{tax.name}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -61,20 +62,21 @@ export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <button
+                  <Btn
                     onClick={() => onEdit(tax)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<PencilIcon className="h-4 w-4" />}
                     title="Editar"
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button
+                  />
+                  <Btn
                     onClick={() => onDelete(tax)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<TrashIcon className="h-4 w-4" />}
                     title="Eliminar"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
+                    style={{ color: '#dc2626' }}
+                  />
                 </div>
               </td>
             </tr>

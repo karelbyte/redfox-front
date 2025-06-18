@@ -10,6 +10,8 @@ import DeleteBrandModal from '@/components/Brand/DeleteBrandModal';
 import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { BrandFormRef } from '@/components/Brand/BrandForm';
+import { Btn } from '@/components/atoms';
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 interface PaginatedResponse {
   data: Brand[];
@@ -106,46 +108,59 @@ export default function BrandsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">
+        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           Marcas
         </h1>
-        <button
+        <Btn
           onClick={() => {
             setEditingBrand(null);
             setShowDrawer(true);
           }}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          leftIcon={<PlusIcon className="h-5 w-5" />}
         >
           Nueva Marca
-        </button>
+        </Btn>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+          <div 
+            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
+            style={{ borderColor: `rgb(var(--color-primary-500))` }}
+          ></div>
         </div>
       ) : brands && brands.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
-                  <svg
-            className="h-12 w-12 text-red-300 mb-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
+        <div 
+          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
+          style={{ borderColor: `rgb(var(--color-primary-200))` }}
+        >
+          <svg
+            className="h-12 w-12 mb-4"
+            style={{ color: `rgb(var(--color-primary-300))` }}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">
+            />
+          </svg>
+          <p 
+            className="text-lg font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-400))` }}
+          >
             No hay marcas
           </p>
-          <p className="text-sm text-red-300">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-primary-300))` }}
+          >
             Haz clic en &quot;Nueva Marca&quot; para agregar una.
           </p>
-              </div>
+        </div>
       ) : (
         <>
           <div className="mt-6">
@@ -154,7 +169,7 @@ export default function BrandsPage() {
               onEdit={handleEdit}
               onDelete={openDeleteModal}
             />
-            </div>
+          </div>
 
           {totalPages > 1 && (
             <Pagination

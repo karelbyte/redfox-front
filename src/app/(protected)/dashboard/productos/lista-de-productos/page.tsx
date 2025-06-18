@@ -10,8 +10,10 @@ import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import ProductForm from '@/components/Product/ProductForm';
 import { ProductFormRef } from '@/components/Product/ProductForm';
+import { Btn } from '@/components/atoms';
+import { PlusIcon } from "@heroicons/react/24/outline";
 
-export default function ProductsPage() {
+export default function ListProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,7 +90,10 @@ export default function ProductsPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+        <div 
+          className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
+          style={{ borderColor: `rgb(var(--color-primary-500))` }}
+        ></div>
       </div>
     );
   }
@@ -96,24 +101,28 @@ export default function ProductsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">
+        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           Productos
         </h1>
-        <button
+        <Btn
           onClick={() => {
             setEditingProduct(null);
             setShowDrawer(true);
           }}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          leftIcon={<PlusIcon className="h-5 w-5" />}
         >
           Nuevo Producto
-        </button>
+        </Btn>
       </div>
 
       {products && products.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
+        <div 
+          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
+          style={{ borderColor: `rgb(var(--color-primary-200))` }}
+        >
           <svg
-            className="h-12 w-12 text-red-300 mb-4"
+            className="h-12 w-12 mb-4"
+            style={{ color: `rgb(var(--color-primary-300))` }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -125,10 +134,16 @@ export default function ProductsPage() {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">
+          <p 
+            className="text-lg font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-400))` }}
+          >
             No hay productos
           </p>
-          <p className="text-sm text-red-300">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-primary-300))` }}
+          >
             Haz clic en &quot;Nuevo Producto&quot; para agregar uno.
           </p>
         </div>

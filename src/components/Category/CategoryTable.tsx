@@ -3,6 +3,8 @@ import { PencilIcon, TrashIcon, ChevronDownIcon } from '@heroicons/react/24/outl
 import { useState, ReactElement } from 'react';
 import React from 'react';
 import Image from 'next/image';
+import { Btn } from '@/components/atoms';
+
 interface CategoryTableProps {
   categories: Category[];
   onEdit: (category: Category) => void;
@@ -34,20 +36,23 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
 
     return (
       <React.Fragment key={category.id}>
-        <tr className={`${isChild ? 'bg-gray-50' : ''}`}>
+        <tr className={`${isChild ? 'bg-gray-50' : ''} hover:bg-gray-50 transition-colors`}>
           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
             <div className="flex items-center">
               {hasChildren && (
-                <button
+                <Btn
                   onClick={() => toggleCategory(category.id)}
-                  className="mr-2 text-gray-500 hover:text-red-600 transition-colors"
-                >
-                  <ChevronDownIcon
-                    className={`h-5 w-5 transform transition-transform ${
-                      isExpanded ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
+                  variant="ghost"
+                  size="sm"
+                  leftIcon={
+                    <ChevronDownIcon
+                      className={`h-4 w-4 transform transition-transform ${
+                        isExpanded ? 'rotate-180' : ''
+                      }`}
+                    />
+                  }
+                  className="mr-2"
+                />
               )}
               <span className={hasChildren ? 'font-medium' : ''}>
                 {category.name}
@@ -83,20 +88,21 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
           </td>
           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
             <div className="flex justify-end space-x-2">
-              <button
+              <Btn
                 onClick={() => onEdit(category)}
-                className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                variant="ghost"
+                size="sm"
+                leftIcon={<PencilIcon className="h-4 w-4" />}
                 title="Editar"
-              >
-                <PencilIcon className="h-5 w-5" />
-              </button>
-              <button
+              />
+              <Btn
                 onClick={() => onDelete(category)}
-                className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                variant="ghost"
+                size="sm"
+                leftIcon={<TrashIcon className="h-4 w-4" />}
                 title="Eliminar"
-              >
-                <TrashIcon className="h-5 w-5" />
-              </button>
+                style={{ color: '#dc2626' }}
+              />
             </div>
           </td>
         </tr>
@@ -114,22 +120,22 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Nombre
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Slug
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Imagen
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Descripción
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Estado
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Acciones
             </th>
           </tr>

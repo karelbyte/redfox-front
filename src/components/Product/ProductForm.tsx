@@ -22,7 +22,7 @@ import MeasurementUnitForm from '@/components/Measurement/MeasurementUnitForm';
 import { MeasurementUnitFormRef } from '@/components/Measurement/MeasurementUnitForm';
 import TaxForm from '@/components/Tax/TaxForm';
 import { TaxFormRef } from '@/components/Tax/TaxForm';
-
+import { Input, TextArea } from '@/components/atoms';
 
 export enum ProductType {
   DIGITAL = 'digital',
@@ -378,7 +378,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       },
     }));
 
-    // Estilos para los inputs con focus dinámico
+    // Estilos para los selects con focus dinámico
     const getInputStyles = () => ({
       appearance: 'none' as const,
       display: 'block',
@@ -391,12 +391,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
     });
 
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleInputFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
       e.target.style.borderColor = `rgb(var(--color-primary-500))`;
       e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
     };
 
-    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleInputBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
       e.target.style.borderColor = '#d1d5db';
       e.target.style.boxShadow = 'none';
     };
@@ -405,131 +405,69 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       <>
         <form className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label 
-                htmlFor="name" 
-                className="block text-sm font-medium mb-2"
-                style={{ color: `rgb(var(--color-primary-500))` }}
-              >
-                Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                style={getInputStyles()}
-                placeholder="Ej: iPhone 15 Pro"
-                required
-              />
-              {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
-            </div>
+            <Input
+              type="text"
+              id="name"
+              label="Nombre"
+              required
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              placeholder="Ej: iPhone 15 Pro"
+              error={errors.name}
+            />
 
-            <div>
-              <label 
-                htmlFor="sku" 
-                className="block text-sm font-medium mb-2"
-                style={{ color: `rgb(var(--color-primary-500))` }}
-              >
-                SKU <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-              </label>
-              <input
-                type="text"
-                id="sku"
-                value={formData.sku}
-                onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                style={getInputStyles()}
-                placeholder="Ej: IPH15PRO-256"
-                required
-              />
-              {errors.sku && <p className="mt-1 text-xs text-gray-300">{errors.sku}</p>}
-            </div>
+            <Input
+              type="text"
+              id="sku"
+              label="SKU"
+              required
+              value={formData.sku}
+              onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
+              placeholder="Ej: IPH15PRO-256"
+              error={errors.sku}
+            />
 
             <div className="col-span-2">
               <div className="grid grid-cols-4 gap-4">
-                <div>
-                  <label 
-                    htmlFor="weight" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Peso (kg)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    id="weight"
-                    value={formData.weight}
-                    onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) }))}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                    style={getInputStyles()}
-                  />
-                </div>
+                <Input
+                  type="number"
+                  step="0.01"
+                  id="weight"
+                  label="Peso (kg)"
+                  value={formData.weight}
+                  onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) }))}
+                  error={errors.weight}
+                />
 
-                <div>
-                  <label 
-                    htmlFor="width" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Ancho (m)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    id="width"
-                    value={formData.width}
-                    onChange={(e) => setFormData(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                    style={getInputStyles()}
-                  />
-                </div>
+                <Input
+                  type="number"
+                  step="0.01"
+                  id="width"
+                  label="Ancho (m)"
+                  value={formData.width}
+                  onChange={(e) => setFormData(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
+                  error={errors.width}
+                />
 
-                <div>
-                  <label 
-                    htmlFor="height" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Alto (m)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    id="height"
-                    value={formData.height}
-                    onChange={(e) => setFormData(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                    style={getInputStyles()}
-                  />
-                </div>
+                <Input
+                  type="number"
+                  step="0.01"
+                  id="height"
+                  label="Alto (m)"
+                  value={formData.height}
+                  onChange={(e) => setFormData(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
+                  error={errors.height}
+                />
 
-                <div>
-                  <label 
-                    htmlFor="length" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Largo (m)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    id="length"
-                    value={formData.length}
-                    onChange={(e) => setFormData(prev => ({ ...prev, length: parseFloat(e.target.value) }))}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                    style={getInputStyles()}
-                  />
-                </div>
+                <Input
+                  type="number"
+                  step="0.01"
+                  id="length"
+                  label="Largo (m)"
+                  value={formData.length}
+                  onChange={(e) => setFormData(prev => ({ ...prev, length: parseFloat(e.target.value) }))}
+                  error={errors.length}
+                />
               </div>
             </div>
 
@@ -776,29 +714,19 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             </div>
           </div>
 
-          <div>
-            <label 
-              htmlFor="description" 
-              className="block text-sm font-medium mb-2"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Descripción
-            </label>
-            <textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              style={getInputStyles()}
-              placeholder="Descripción del producto"
-              rows={2}
-            />
-          </div>
+          <TextArea
+            id="description"
+            label="Descripción"
+            value={formData.description}
+            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            placeholder="Descripción del producto"
+            rows={2}
+            error={errors.description}
+          />
 
           <ImageCarousel
             images={images as File[]}
-            onChange={setImages}
+            onImagesChange={setImages}
           />
 
           <div className="flex items-center">

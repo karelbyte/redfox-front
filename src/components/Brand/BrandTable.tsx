@@ -1,6 +1,7 @@
 import { Brand } from '@/types/brand';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { Btn } from "@/components/atoms";
 
 interface BrandTableProps {
   brands: Brand[];
@@ -14,30 +15,50 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+    <div 
+      className="bg-white rounded-lg overflow-hidden"
+      style={{ 
+        boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+      }}
+    >
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               Código
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               Descripción
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               Imagen
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               Estado
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               Acciones
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {brands.map((brand) => (
-            <tr key={brand.id}>
+            <tr key={brand.id} className="hover:bg-primary-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{brand.code}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{brand.description}</td>
               <td className="px-6 py-4 whitespace-nowrap">
@@ -62,20 +83,21 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <button
+                  <Btn
+                    variant="ghost"
+                    size="sm"
                     onClick={() => onEdit(brand)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    leftIcon={<PencilIcon className="h-4 w-4" />}
                     title="Editar"
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button
+                  />
+                  <Btn
+                    variant="ghost"
+                    size="sm"
                     onClick={() => onDelete(brand)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    leftIcon={<TrashIcon className="h-4 w-4" />}
                     title="Eliminar"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
+                    style={{ color: '#dc2626' }}
+                  /> 
                 </div>
               </td>
             </tr>

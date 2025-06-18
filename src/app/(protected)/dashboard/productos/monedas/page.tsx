@@ -9,6 +9,8 @@ import { toastService } from '@/services/toast.service';
 import { currenciesService } from '@/services/currencies.service';
 import Pagination from '@/components/Pagination/Pagination';
 import DeleteCurrencyModal from '@/components/Currency/DeleteCurrencyModal';
+import { Btn } from '@/components/atoms';
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function CurrenciesPage() {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -90,7 +92,10 @@ export default function CurrenciesPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+        <div 
+          className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
+          style={{ borderColor: `rgb(var(--color-primary-500))` }}
+        ></div>
       </div>
     );
   }
@@ -98,24 +103,28 @@ export default function CurrenciesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">
+        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           Monedas
         </h1>
-        <button
+        <Btn
           onClick={() => {
             setEditingCurrency(null);
             setShowDrawer(true);
           }}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          leftIcon={<PlusIcon className="h-5 w-5" />}
         >
           Nueva Moneda
-        </button>
+        </Btn>
       </div>
 
       {currencies && currencies.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
+        <div 
+          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
+          style={{ borderColor: `rgb(var(--color-primary-200))` }}
+        >
           <svg
-            className="h-12 w-12 text-red-300 mb-4"
+            className="h-12 w-12 mb-4"
+            style={{ color: `rgb(var(--color-primary-300))` }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -127,10 +136,16 @@ export default function CurrenciesPage() {
               d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m-2.599-3.801C9.08 13.598 8 13.198 8 12.5v-.5"
             />
           </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">
+          <p 
+            className="text-lg font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-400))` }}
+          >
             No hay monedas
           </p>
-          <p className="text-sm text-red-300">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-primary-300))` }}
+          >
             Haz clic en &quot;Nueva Moneda&quot; para agregar una.
           </p>
         </div>
