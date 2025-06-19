@@ -168,6 +168,7 @@ export default function MeasurementUnitsPage() {
 
       {/* Drawer para crear/editar */}
       <Drawer
+        id="measurement-unit-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={

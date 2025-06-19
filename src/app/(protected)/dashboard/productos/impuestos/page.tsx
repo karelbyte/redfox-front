@@ -159,6 +159,7 @@ export default function TaxesPage() {
       )}
 
       <Drawer
+        id="tax-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={editingTax ? 'Editar Impuesto' : 'Nuevo Impuesto'}

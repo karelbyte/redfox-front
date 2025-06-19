@@ -1,7 +1,8 @@
-import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
 import { measurementUnitsService } from '@/services/measurement-units.service';
 import { toastService } from '@/services/toast.service';
 import { MeasurementUnit } from '@/types/measurement-unit';
+import { Input } from '@/components/atoms';
 
 export interface MeasurementUnitFormProps {
   unit: MeasurementUnit | null;
@@ -52,7 +53,7 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
       }
     }, [unit]);
 
-    const validateForm = (): boolean => {
+    const validateForm = useCallback((): boolean => {
       const newErrors: FormErrors = {};
       let isValid = true;
 
@@ -69,12 +70,11 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
-    };
+    }, [formData, onValidChange]);
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formData]);
+    }, [validateForm]);
 
     const handleSubmit = async () => {
       if (!validateForm()) {
@@ -113,74 +113,29 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
       submit: handleSubmit,
     }));
 
-    // Estilos para los inputs con focus dinámico
-    const getInputStyles = () => ({
-      appearance: 'none' as const,
-      display: 'block',
-      width: '100%',
-      padding: '0.75rem 1rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      color: '#111827',
-      backgroundColor: 'white',
-      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
-    });
-
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
-      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
-    };
-
-    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      e.target.style.borderColor = '#d1d5db';
-      e.target.style.boxShadow = 'none';
-    };
-
     return (
       <form className="space-y-6">
-        <div>
-          <label 
-            htmlFor="code" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Código <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="code"
-            value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: Lts"
-            required
-          />
-          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
-        </div>
+        <Input
+          type="text"
+          id="code"
+          label="Código"
+          required
+          value={formData.code}
+          onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+          placeholder="Ej: Lts"
+          error={errors.code}
+        />
 
-        <div>
-          <label 
-            htmlFor="description" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Descripción <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="description"
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: Litros"
-            required
-          />
-          {errors.description && <p className="mt-1 text-xs text-gray-300">{errors.description}</p>}
-        </div>
+        <Input
+          type="text"
+          id="description"
+          label="Descripción"
+          required
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          placeholder="Ej: Litros"
+          error={errors.description}
+        />
 
         <div className="flex items-center">
           <input

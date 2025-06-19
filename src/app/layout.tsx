@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { DrawerProvider } from "@/components/Drawer/Drawer";
 import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -30,17 +31,19 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <AuthProvider>
-            {children}
-            <Toaster
-              toastOptions={{
-                className: '',
-                style: {
-                  padding: '16px',
-                  borderRadius: '8px',
-                  maxWidth: '400px',
-                },
-              }}
-            />
+            <DrawerProvider>
+              {children}
+              <Toaster
+                toastOptions={{
+                  className: '',
+                  style: {
+                    padding: '16px',
+                    borderRadius: '8px',
+                    maxWidth: '400px',
+                  },
+                }}
+              />
+            </DrawerProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

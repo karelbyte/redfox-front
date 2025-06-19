@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef, useCallback } from 'react';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
 import { Product, ProductFormData } from '@/types/product';
@@ -206,7 +206,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       }
     }, [product]);
 
-    const validateForm = (): boolean => {
+    const validateForm = useCallback((): boolean => {
       const newErrors: FormErrors = {};
       let isValid = true;
 
@@ -248,11 +248,11 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
-    };
+    }, [formData, onValidChange]);
 
     useEffect(() => {
       validateForm();
-    }, [formData]);
+    }, [validateForm]);
 
     const handleSubmit = async () => {
       if (!validateForm()) {
@@ -726,7 +726,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
           <ImageCarousel
             images={images as File[]}
-            onImagesChange={setImages}
+            onChange={setImages}
           />
 
           <div className="flex items-center">
@@ -752,6 +752,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
         {/* Drawer para crear marcas */}
         <Drawer
+          id="brand-drawer"
+          parentId="product-drawer"
           isOpen={showBrandDrawer}
           onClose={handleBrandDrawerClose}
           title="Nueva Marca"
@@ -771,6 +773,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
         {/* Drawer para crear categorías */}
         <Drawer
+          id="category-drawer"
+          parentId="product-drawer"
           isOpen={showCategoryDrawer}
           onClose={handleCategoryDrawerClose}
           title="Nueva Categoría"
@@ -790,6 +794,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
         {/* Drawer para crear unidades de medida */}
         <Drawer
+          id="measurement-unit-drawer"
+          parentId="product-drawer"
           isOpen={showMeasurementUnitDrawer}
           onClose={handleMeasurementUnitDrawerClose}
           title="Nueva Unidad de Medida"
@@ -809,6 +815,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
         {/* Drawer para crear impuestos */}
         <Drawer
+          id="tax-drawer"
+          parentId="product-drawer"
           isOpen={showTaxDrawer}
           onClose={handleTaxDrawerClose}
           title="Nuevo Impuesto"

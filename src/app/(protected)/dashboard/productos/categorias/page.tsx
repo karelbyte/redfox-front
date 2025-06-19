@@ -158,6 +158,7 @@ export default function CategoriesPage() {
 
       {/* Drawer para crear/editar */}
       <Drawer
+        id="category-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}

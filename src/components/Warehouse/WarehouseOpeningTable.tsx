@@ -3,6 +3,7 @@
 import { WarehouseOpening } from "@/types/warehouse-opening";
 import { Warehouse } from "@/types/warehouse";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Btn } from "@/components/atoms";
 import Image from "next/image";
 
 interface WarehouseOpeningTableProps {
@@ -52,35 +53,35 @@ export default function WarehouseOpeningTable({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Producto
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               SKU
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Marca
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Categoría
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Cantidad
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Precio
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Fecha Creación
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Acciones
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {openings.map((opening) => (
-            <tr key={opening.id}>
+            <tr key={opening.id} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   {opening.product.images && opening.product.images.length > 0 && (
@@ -129,27 +130,28 @@ export default function WarehouseOpeningTable({
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <button
+                  <Btn
                     onClick={() => onEdit(opening)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<PencilIcon className="h-4 w-4" />}
                     title="Editar"
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button
+                  />
+                  <Btn
                     onClick={() => onViewDetails(opening)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<EyeIcon className="h-4 w-4" />}
                     title="Ver detalles"
-                  >
-                    <EyeIcon className="h-5 w-5" />
-                  </button>
-                  <button
+                  />
+                  <Btn
                     onClick={() => onDelete(opening)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<TrashIcon className="h-4 w-4" />}
                     title="Eliminar"
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
+                    style={{ color: '#dc2626' }}
+                  />
                 </div>
               </td>
             </tr>

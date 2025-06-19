@@ -143,6 +143,7 @@ export default function ProvidersPage() {
       )}
 
       <Drawer
+        id="provider-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={selectedProvider ? "Editar Proveedor" : "Nuevo Proveedor"}

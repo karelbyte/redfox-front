@@ -16,8 +16,10 @@ import DeleteWarehouseOpeningModal from "@/components/Warehouse/DeleteWarehouseO
 import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
 import Drawer from "@/components/Drawer/Drawer";
+import { Btn } from "@/components/atoms";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
-export default function AperturasPage() {
+export default function OpeningsPage() {
   const searchParams = useSearchParams();
   const warehouseId = searchParams.get('warehouse_id');
   const warehouseName = searchParams.get('warehouse_name');
@@ -153,10 +155,16 @@ export default function AperturasPage() {
     return (
       <div className="p-6">
         <div className="text-center">
-          <h1 className="text-xl font-semibold text-red-900 mb-4">
+          <h1 
+            className="text-xl font-semibold mb-4"
+            style={{ color: `rgb(var(--color-primary-800))` }}
+          >
             Error
           </h1>
-          <p className="text-gray-600">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-primary-600))` }}
+          >
             No se proporcionó un ID de almacén válido
           </p>
         </div>
@@ -168,34 +176,46 @@ export default function AperturasPage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-red-900">
+          <h1 
+            className="text-xl font-semibold"
+            style={{ color: `rgb(var(--color-primary-800))` }}
+          >
             Aperturas de Almacén
           </h1>
           {(warehouseName || warehouse) && (
-            <p className="text-sm text-gray-600 mt-1">
+            <p 
+              className="text-sm mt-1"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               Almacén: <span className="font-medium">{warehouseName || warehouse?.name}</span>
               {warehouse?.currency && (
-                <span className="ml-2 text-blue-600">
+                <span 
+                  className="ml-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                >
                   • Moneda: {warehouse.currency.code} - {warehouse.currency.name}
                 </span>
               )}
             </p>
           )}
           {total > 0 && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p 
+              className="text-sm mt-1"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
               Total: {total} productos
             </p>
           )}
         </div>
-        <button
+        <Btn
           onClick={() => {
             setDrawerMode('create');
             setShowDrawer(true);
           }}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          leftIcon={<PlusIcon className="h-5 w-5" />}
         >
           Nueva Apertura
-        </button>
+        </Btn>
       </div>
 
       {loading ? (
@@ -203,12 +223,16 @@ export default function AperturasPage() {
           <Loading size="lg" />
         </div>
       ) : openings && openings.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
+        <div 
+          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
+          style={{ borderColor: `rgb(var(--color-primary-200))` }}
+        >
           <svg
-            className="h-12 w-12 text-red-300 mb-4"
+            className="h-12 w-12 mb-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            style={{ color: `rgb(var(--color-primary-300))` }}
           >
             <path
               strokeLinecap="round"
@@ -217,10 +241,16 @@ export default function AperturasPage() {
               d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
             />
           </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">
+          <p 
+            className="text-lg font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-400))` }}
+          >
             No hay aperturas registradas
           </p>
-          <p className="text-sm text-red-300">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-primary-300))` }}
+          >
             Este almacén no tiene productos registrados en su apertura.
           </p>
         </div>
@@ -249,6 +279,7 @@ export default function AperturasPage() {
 
       {/* Drawer para crear/ver aperturas */}
       <Drawer
+        id="warehouse-opening-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={

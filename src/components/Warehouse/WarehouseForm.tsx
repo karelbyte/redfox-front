@@ -1,11 +1,15 @@
 'use client'
 
-import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Warehouse } from '@/types/warehouse';
 import { Currency } from '@/types/currency';
 import { api } from '@/services/api';
 import { toastService } from '@/services/toast.service';
 import { currenciesService } from '@/services/currencies.service';
+import { Input, TextArea } from '@/components/atoms';
+import CurrencyForm from '@/components/Currency/CurrencyForm';
+import { CurrencyFormRef } from '@/components/Currency/CurrencyForm';
+import Drawer from '@/components/Drawer/Drawer';
 
 interface WarehouseFormData {
   code: string;
@@ -51,6 +55,12 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
     const [loadingCurrencies, setLoadingCurrencies] = useState(true);
     const [errors, setErrors] = useState<WarehouseFormErrors>({});
 
+    // Estados para el drawer de monedas
+    const [showCurrencyDrawer, setShowCurrencyDrawer] = useState(false);
+    const [isSavingCurrency, setIsSavingCurrency] = useState(false);
+    const [isCurrencyFormValid, setIsCurrencyFormValid] = useState(false);
+    const currencyFormRef = useRef<CurrencyFormRef>(null);
+
     useEffect(() => {
       fetchCurrencies();
     }, []);
@@ -60,7 +70,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
         setLoadingCurrencies(true);
         const response = await currenciesService.getCurrencies(1);
         setCurrencies(response.data);
-      } catch (error) {
+      } catch {
         toastService.error('Error al cargar monedas');
       } finally {
         setLoadingCurrencies(false);
@@ -169,120 +179,199 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
       submit: handleSubmit,
     }));
 
+    // Handlers para el drawer de monedas
+    const handleCurrencyDrawerClose = () => {
+      setShowCurrencyDrawer(false);
+    };
+
+    const handleCurrencyFormSuccess = () => {
+      handleCurrencyDrawerClose();
+      fetchCurrencies(); // Recargar monedas
+    };
+
+    const handleCurrencySave = () => {
+      currencyFormRef.current?.submit();
+    };
+
+    // Estilos para el select con focus dinámico
+    const getSelectStyles = () => ({
+      appearance: 'none' as const,
+      display: 'block',
+      width: '100%',
+      padding: '0.75rem 1rem',
+      border: '1px solid #d1d5db',
+      borderRadius: '0.5rem',
+      color: '#111827',
+      backgroundColor: 'white',
+      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+    });
+
+    const handleSelectFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
+      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
+      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
+    };
+
+    const handleSelectBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
+      e.target.style.borderColor = '#d1d5db';
+      e.target.style.boxShadow = 'none';
+    };
+
     return (
-      <form className="space-y-6">
-        <div>
-          <label htmlFor="code" className="block text-sm font-medium text-red-400 mb-2">
-            Código <span className="text-red-500">*</span>
-          </label>
-          <input
+      <>
+        <form className="space-y-6">
+          <Input
             type="text"
             id="code"
+            label="Código"
+            required
             value={formData.code}
             onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
             placeholder="Ej: ALM-001"
-            required
+            error={errors.code}
           />
-          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
-        </div>
 
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-red-400 mb-2">
-            Nombre <span className="text-red-500">*</span>
-          </label>
-          <input
+          <Input
             type="text"
             id="name"
+            label="Nombre"
+            required
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
             placeholder="Ej: Almacén Central"
-            required
+            error={errors.name}
           />
-          {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
-        </div>
 
-        <div>
-          <label htmlFor="address" className="block text-sm font-medium text-red-400 mb-2">
-            Dirección <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
+          <TextArea
             id="address"
+            label="Dirección"
+            required
             value={formData.address}
             onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
             placeholder="Ej: Av. Principal #123"
-            required
+            error={errors.address}
           />
-          {errors.address && <p className="mt-1 text-xs text-gray-300">{errors.address}</p>}
-        </div>
 
-        <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-red-400 mb-2">
-            Teléfono <span className="text-red-500">*</span>
-          </label>
-          <input
+          <Input
             type="text"
             id="phone"
+            label="Teléfono"
+            required
             value={formData.phone}
             onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
             placeholder="Ej: +1234567890"
-            required
+            error={errors.phone}
           />
-          {errors.phone && <p className="mt-1 text-xs text-gray-300">{errors.phone}</p>}
-        </div>
 
-        <div>
-          <label htmlFor="currency_id" className="block text-sm font-medium text-red-400 mb-2">
-            Moneda <span className="text-red-500">*</span>
-            {warehouse && (
-              <span className="text-xs text-gray-500 font-normal ml-2">
-                (No se puede modificar en edición)
-              </span>
-            )}
-          </label>
-          {loadingCurrencies ? (
-            <div className="animate-pulse bg-gray-200 h-12 rounded-lg"></div>
-          ) : (
-            <select
-              id="currency_id"
-              value={formData.currency_id}
-              onChange={(e) => setFormData(prev => ({ ...prev, currency_id: e.target.value }))}
-              className={`appearance-none block w-full px-4 py-3 border rounded-lg text-black focus:outline-none transition-colors ${
-                warehouse 
-                  ? 'bg-gray-100 border-gray-300 cursor-not-allowed' 
-                  : 'border-red-300 placeholder-red-200 focus:ring-1 focus:ring-red-300 focus:border-red-300'
-              }`}
-              disabled={!!warehouse}
-              required
+          <div>
+            <label 
+              htmlFor="currency_id" 
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              <option value="">Seleccionar moneda...</option>
-              {currencies.map((currency) => (
-                <option key={currency.id} value={currency.id}>
-                  {currency.code} - {currency.name}
-                </option>
-              ))}
-            </select>
-          )}
-          {errors.currency_id && <p className="mt-1 text-xs text-gray-300">{errors.currency_id}</p>}
-        </div>
+              Moneda <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+              {warehouse && (
+                <span className="text-xs text-gray-500 font-normal ml-2">
+                  (No se puede modificar en edición)
+                </span>
+              )}
+            </label>
+            {loadingCurrencies ? (
+              <div className="animate-pulse bg-gray-200 h-12 rounded-lg"></div>
+            ) : (
+              <div className="relative">
+                <select
+                  id="currency_id"
+                  value={formData.currency_id}
+                  onChange={(e) => setFormData(prev => ({ ...prev, currency_id: e.target.value }))}
+                  onFocus={handleSelectFocus}
+                  onBlur={handleSelectBlur}
+                  style={{
+                    ...getSelectStyles(),
+                    paddingRight: '3rem', // Espacio para el botón
+                    ...(warehouse && {
+                      backgroundColor: '#f3f4f6',
+                      cursor: 'not-allowed',
+                    }),
+                  }}
+                  disabled={!!warehouse}
+                  required
+                >
+                  <option value="">Seleccionar moneda...</option>
+                  {currencies.map((currency) => (
+                    <option key={currency.id} value={currency.id}>
+                      {currency.code} - {currency.name}
+                    </option>
+                  ))}
+                </select>
+                {!warehouse && (
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrencyDrawer(true)}
+                    className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
+                    style={{ 
+                      backgroundColor: `rgb(var(--color-primary-500))`,
+                      borderColor: `rgb(var(--color-primary-600))`,
+                      borderTopRightRadius: '0.5rem',
+                      borderBottomRightRadius: '0.5rem',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
+                    }}
+                    title="Crear nueva moneda"
+                  >
+                    +
+                  </button>
+                )}
+              </div>
+            )}
+            {errors.currency_id && <p className="mt-1 text-xs text-gray-300">{errors.currency_id}</p>}
+          </div>
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="isActive"
-            checked={formData.isActive}
-            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-            className="h-4 w-4 text-red-600 focus:ring-red-500 border-red-300 rounded"
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isActive"
+              checked={formData.isActive}
+              onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+              className="h-4 w-4 border-gray-300 rounded"
+              style={{
+                accentColor: `rgb(var(--color-primary-500))`,
+              }}
+            />
+            <label 
+              htmlFor="isActive" 
+              className="ml-2 block text-sm"
+              style={{ color: `rgb(var(--color-primary-500))` }}
+            >
+              Activo
+            </label>
+          </div>
+        </form>
+
+        {/* Drawer para crear monedas */}
+        <Drawer
+          id="currency-drawer"
+          parentId="warehouse-drawer"
+          isOpen={showCurrencyDrawer}
+          onClose={handleCurrencyDrawerClose}
+          title="Nueva Moneda"
+          onSave={handleCurrencySave}
+          isSaving={isSavingCurrency}
+          isFormValid={isCurrencyFormValid}
+        >
+          <CurrencyForm
+            ref={currencyFormRef}
+            initialData={null}
+            onClose={handleCurrencyDrawerClose}
+            onSuccess={handleCurrencyFormSuccess}
+            onSavingChange={setIsSavingCurrency}
+            onValidChange={setIsCurrencyFormValid}
           />
-          <label htmlFor="isActive" className="ml-2 block text-sm text-red-400">
-            Activo
-          </label>
-        </div>
-      </form>
+        </Drawer>
+      </>
     );
   }
 );

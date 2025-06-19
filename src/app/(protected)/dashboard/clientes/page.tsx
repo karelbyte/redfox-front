@@ -143,6 +143,7 @@ export default function ClientsPage() {
       )}
 
       <Drawer
+        id="client-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={selectedClient ? "Editar Cliente" : "Nuevo Cliente"}

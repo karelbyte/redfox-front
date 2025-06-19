@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
 import { warehouseOpeningsService } from '@/services/warehouse-openings.service';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
 import { WarehouseOpeningFormData, WarehouseOpening } from '@/types/warehouse-opening';
 import { Product } from '@/types/product';
 import { Warehouse } from '@/types/warehouse';
+import { Input } from '@/components/atoms';
 
 export interface WarehouseOpeningFormProps {
   warehouseId: string;
@@ -75,7 +76,7 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       }
     };
 
-    const validateForm = (): boolean => {
+    const validateForm = useCallback((): boolean => {
       const newErrors: FormErrors = {};
       let isValid = true;
 
@@ -98,11 +99,11 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
-    };
+    }, [formData, opening, onValidChange]);
 
     useEffect(() => {
       validateForm();
-    }, [formData]);
+    }, [validateForm]);
 
     const handleSubmit = async () => {
       if (!validateForm()) {
@@ -142,11 +143,18 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
     return (
       <form className="space-y-6">
         <div>
-          <label htmlFor="productId" className="block text-sm font-medium text-red-400 mb-2">
-            Producto <span className="text-red-500">*</span>
+          <label 
+            htmlFor="productId" 
+            className="block text-sm font-medium mb-2"
+            style={{ color: `rgb(var(--color-primary-500))` }}
+          >
+            Producto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           {loadingProducts ? (
-            <div className="animate-pulse bg-gray-200 h-12 rounded-lg"></div>
+            <div 
+              className="animate-pulse h-12 rounded-lg"
+              style={{ backgroundColor: `rgb(var(--color-primary-100))` }}
+            ></div>
           ) : (
             <select
               id="productId"
@@ -155,8 +163,11 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
               className={`appearance-none block w-full px-4 py-3 border rounded-lg text-black focus:outline-none transition-colors ${
                 opening 
                   ? 'bg-gray-100 border-gray-300 cursor-not-allowed' 
-                  : 'border-red-300 placeholder-red-200 focus:ring-1 focus:ring-red-300 focus:border-red-300'
+                  : 'focus:ring-1 focus:border-gray-400'
               }`}
+              style={{
+                borderColor: opening ? '#d1d5db' : `rgb(var(--color-primary-300))`,
+              }}
               disabled={!!opening}
               required
             >
@@ -168,44 +179,41 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
               ))}
             </select>
           )}
-          {errors.productId && <p className="mt-1 text-xs text-gray-300">{errors.productId}</p>}
+          {errors.productId && (
+            <p 
+              className="mt-1 text-xs"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {errors.productId}
+            </p>
+          )}
         </div>
 
-        <div>
-          <label htmlFor="quantity" className="block text-sm font-medium text-red-400 mb-2">
-            Cantidad <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            id="quantity"
-            min="1"
-            step="1"
-            value={formData.quantity || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, quantity: Number(e.target.value) }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: 100"
-            required
-          />
-          {errors.quantity && <p className="mt-1 text-xs text-gray-300">{errors.quantity}</p>}
-        </div>
+        <Input
+          type="number"
+          id="quantity"
+          label="Cantidad"
+          required
+          min="1"
+          step="1"
+          value={formData.quantity || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, quantity: Number(e.target.value) }))}
+          placeholder="Ej: 100"
+          error={errors.quantity}
+        />
 
-        <div>
-          <label htmlFor="price" className="block text-sm font-medium text-red-400 mb-2">
-            Precio {warehouse?.currency && `(${warehouse.currency.code})`} <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            id="price"
-            min="0.01"
-            step="0.01"
-            value={formData.price || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: 25.50"
-            required
-          />
-          {errors.price && <p className="mt-1 text-xs text-gray-300">{errors.price}</p>}
-        </div>
+        <Input
+          type="number"
+          id="price"
+          label={`Precio ${warehouse?.currency ? `(${warehouse.currency.code})` : ''}`}
+          required
+          min="0.01"
+          step="0.01"
+          value={formData.price || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
+          placeholder="Ej: 25.50"
+          error={errors.price}
+        />
       </form>
     );
   }

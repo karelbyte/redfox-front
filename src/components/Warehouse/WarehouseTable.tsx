@@ -8,6 +8,7 @@ import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
 import ConfirmModal from '../Modal/ConfirmModal';
 import WarehouseCloseResultModal from './WarehouseCloseResultModal';
+import { Btn } from '@/components/atoms';
 
 interface WarehouseTableProps {
   warehouses: Warehouse[];
@@ -74,35 +75,35 @@ export default function WarehouseTable({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Código
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Nombre
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Dirección
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Teléfono
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Moneda
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Estado
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Apertura
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 Acciones
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {warehouses.map((warehouse) => (
-              <tr key={warehouse.id}>
+              <tr key={warehouse.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {warehouse.code}
                 </td>
@@ -158,25 +159,22 @@ export default function WarehouseTable({
                         Cerrar Apertura
                       </button>
                     )}
-                    <button
+                    <Btn
                       onClick={() => onEdit(warehouse)}
-                      className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
                       title="Editar"
-                    >
-                      <PencilIcon className="h-5 w-5" />
-                    </button>
-                    <button
+                    />
+                    <Btn
                       onClick={() => warehouse.is_open && onDelete(warehouse)}
-                      className={`p-1 transition-colors ${
-                        !warehouse.is_open 
-                          ? "text-gray-300 cursor-not-allowed" 
-                          : "text-gray-600 hover:text-red-600"
-                      }`}
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
                       title={!warehouse.is_open ? "No se puede eliminar un almacén cerrado" : "Eliminar"}
                       disabled={!warehouse.is_open}
-                    >
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
+                      style={!warehouse.is_open ? { color: '#9ca3af' } : { color: '#dc2626' }}
+                    />
                   </div>
                 </td>
               </tr>

@@ -171,6 +171,7 @@ export default function CurrenciesPage() {
       )}
 
       <Drawer
+        id="currency-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={editingCurrency ? 'Editar Moneda' : 'Nueva Moneda'}

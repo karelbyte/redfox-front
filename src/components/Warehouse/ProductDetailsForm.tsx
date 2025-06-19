@@ -40,13 +40,13 @@ const ProductDetailsForm = forwardRef<
   const formatPrice = (price: number) => {
     const numPrice = Number(price);
     if (isNaN(numPrice)) {
-      return '0.00';
+      return "0.00";
     }
-    
+
     if (!warehouse?.currency) {
       return numPrice.toFixed(2);
     }
-    
+
     return `${warehouse.currency.code} ${numPrice.toFixed(2)}`;
   };
 
@@ -64,13 +64,13 @@ const ProductDetailsForm = forwardRef<
     <form className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label 
+          <label
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
             Nombre
           </label>
-          <div 
+          <div
             className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
             style={{ borderColor: `rgb(var(--color-primary-300))` }}
           >
@@ -79,13 +79,13 @@ const ProductDetailsForm = forwardRef<
         </div>
 
         <div>
-          <label 
+          <label
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
             SKU
           </label>
-          <div 
+          <div
             className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
             style={{ borderColor: `rgb(var(--color-primary-300))` }}
           >
@@ -96,13 +96,13 @@ const ProductDetailsForm = forwardRef<
         <div className="col-span-2">
           <div className="grid grid-cols-4 gap-4">
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Peso (kg)
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -111,13 +111,13 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Ancho (m)
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -126,13 +126,13 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Alto (m)
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -141,13 +141,13 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Largo (m)
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -160,13 +160,13 @@ const ProductDetailsForm = forwardRef<
         <div className="col-span-2">
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Marca
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -177,13 +177,13 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Categoría
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -194,13 +194,13 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Unidad de Medida
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -215,13 +215,13 @@ const ProductDetailsForm = forwardRef<
         <div className="col-span-2">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Impuesto
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -232,13 +232,13 @@ const ProductDetailsForm = forwardRef<
             </div>
 
             <div>
-              <label 
+              <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
                 Tipo de Producto
               </label>
-              <div 
+              <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border capitalize"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
@@ -250,13 +250,13 @@ const ProductDetailsForm = forwardRef<
       </div>
 
       <div>
-        <label 
+        <label
           className="block text-sm font-medium mb-2"
           style={{ color: `rgb(var(--color-primary-500))` }}
         >
           Descripción
         </label>
-        <div 
+        <div
           className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border min-h-[60px]"
           style={{ borderColor: `rgb(var(--color-primary-300))` }}
         >
@@ -266,7 +266,7 @@ const ProductDetailsForm = forwardRef<
 
       {/* Información de la apertura */}
       <div>
-        <h3 
+        <h3
           className="text-sm font-semibold mb-3"
           style={{ color: `rgb(var(--color-primary-800))` }}
         >
@@ -274,13 +274,13 @@ const ProductDetailsForm = forwardRef<
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label 
+            <label
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
               Cantidad en Apertura
             </label>
-            <div 
+            <div
               className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
               style={{ borderColor: `rgb(var(--color-primary-300))` }}
             >
@@ -289,13 +289,13 @@ const ProductDetailsForm = forwardRef<
           </div>
 
           <div>
-            <label 
+            <label
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
               Precio de Apertura
             </label>
-            <div 
+            <div
               className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
               style={{ borderColor: `rgb(var(--color-primary-300))` }}
             >
@@ -304,13 +304,13 @@ const ProductDetailsForm = forwardRef<
           </div>
 
           <div>
-            <label 
+            <label
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
               Fecha de Apertura
             </label>
-            <div 
+            <div
               className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
               style={{ borderColor: `rgb(var(--color-primary-300))` }}
             >
@@ -323,7 +323,7 @@ const ProductDetailsForm = forwardRef<
       {/* Galería de imágenes */}
       {product.images && product.images.length > 0 && (
         <div>
-          <label 
+          <label
             className="block text-sm font-medium mb-3"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
@@ -351,7 +351,12 @@ const ProductDetailsForm = forwardRef<
       )}
 
       <div className="flex flex-col">
-        <label className="text-sm text-red-400">Estado del Producto</label>
+        <label
+          className="text-sm"
+          style={{ color: `rgb(var(--color-primary-500))` }}
+        >
+          Estado del Producto
+        </label>
         <div className="h-4 w-4">
           <span
             className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${

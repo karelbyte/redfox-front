@@ -170,6 +170,7 @@ export default function ListProductsPage() {
 
       {/* Drawer para crear/editar */}
       <Drawer
+        id="product-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={editingProduct ? 'Editar Producto' : 'Nuevo Producto'}

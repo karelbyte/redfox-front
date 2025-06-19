@@ -11,6 +11,8 @@ import Pagination from "@/components/Pagination/Pagination";
 import Drawer from "@/components/Drawer/Drawer";
 import { WarehouseFormRef } from "@/components/Warehouse/WarehouseForm";
 import Loading from "@/components/Loading/Loading";
+import { Btn } from "@/components/atoms";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function WarehousesPage() {
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
@@ -96,18 +98,18 @@ export default function WarehousesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">
+        <h1 className="text-xl font-semibold" style={{ color: 'rgb(var(--color-primary-800))' }}>
           Lista de Almacenes
         </h1>
-        <button
+        <Btn
           onClick={() => {
             setEditingWarehouse(null);
             setShowDrawer(true);
           }}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          leftIcon={<PlusIcon className="h-5 w-5" />}
         >
           Nuevo Almacén
-        </button>
+        </Btn>
       </div>
 
       {loading ? (
@@ -115,12 +117,13 @@ export default function WarehousesPage() {
           <Loading size="lg" />
         </div>
       ) : warehouses && warehouses.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed border-red-200">
+        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed" style={{ borderColor: 'rgb(var(--color-primary-200))' }}>
           <svg
-            className="h-12 w-12 text-red-300 mb-4"
+            className="h-12 w-12 mb-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            style={{ color: 'rgb(var(--color-primary-300))' }}
           >
             <path
               strokeLinecap="round"
@@ -129,10 +132,10 @@ export default function WarehousesPage() {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p className="text-lg font-medium text-red-400 mb-2">
+          <p className="text-lg font-medium mb-2" style={{ color: 'rgb(var(--color-primary-400))' }}>
             No hay almacenes
           </p>
-          <p className="text-sm text-red-300">
+          <p className="text-sm" style={{ color: 'rgb(var(--color-primary-300))' }}>
             Haz clic en &quot;Nuevo Almacén&quot; para agregar uno.
           </p>
         </div>
@@ -156,6 +159,7 @@ export default function WarehousesPage() {
 
       {/* Drawer para crear/editar */}
       <Drawer
+        id="warehouse-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={editingWarehouse ? 'Editar Almacén' : 'Nuevo Almacén'}

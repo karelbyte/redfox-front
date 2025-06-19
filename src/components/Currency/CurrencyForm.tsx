@@ -4,6 +4,7 @@ import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Currency } from '@/types/currency';
 import { api } from '@/services/api';
 import { toastService } from '@/services/toast.service';
+import { Input } from '@/components/atoms';
 
 interface CurrencyFormData {
   code: string;
@@ -113,37 +114,27 @@ const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
 
     return (
       <form className="space-y-6">
-        <div>
-          <label htmlFor="code" className="block text-sm font-medium text-red-400 mb-2">
-            Código <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            id="code"
-            value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: USD"
-            required
-          />
-          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
-        </div>
+        <Input
+          type="text"
+          id="code"
+          label="Código"
+          required
+          value={formData.code}
+          onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+          placeholder="Ej: USD"
+          error={errors.code}
+        />
 
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-red-400 mb-2">
-            Nombre <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg placeholder-red-200 text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
-            placeholder="Ej: Dólar Estadounidense"
-            required
-          />
-          {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
-        </div>
+        <Input
+          type="text"
+          id="name"
+          label="Nombre"
+          required
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          placeholder="Ej: Dólar Estadounidense"
+          error={errors.name}
+        />
       </form>
     );
   }

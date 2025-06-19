@@ -184,6 +184,7 @@ export default function BrandsPage() {
 
       {/* Drawer para crear/editar */}
       <Drawer
+        id="brand-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={editingBrand ? 'Editar Marca' : 'Nueva Marca'}

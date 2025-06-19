@@ -5,6 +5,7 @@ import { brandService } from '@/services/brand.service';
 import { toastService } from '@/services/toast.service';
 import { Brand, BrandFormData } from '@/types/brand';
 import ImageUpload from '@/components/ImageUpload/ImageUpload';
+import { Input } from '@/components/atoms';
 
 export interface BrandFormProps {
   brand: Brand | null;
@@ -124,74 +125,29 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
       submit: handleSubmit,
     }));
 
-    // Estilos para los inputs con focus dinámico
-    const getInputStyles = () => ({
-      appearance: 'none' as const,
-      display: 'block',
-      width: '100%',
-      padding: '0.75rem 1rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      color: '#111827',
-      backgroundColor: 'white',
-      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
-    });
-
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
-      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
-    };
-
-    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      e.target.style.borderColor = '#d1d5db';
-      e.target.style.boxShadow = 'none';
-    };
-
     return (
       <form className="space-y-6">
-        <div>
-          <label 
-            htmlFor="code" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Código <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="code"
-            value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: BRAND001"
-            required
-          />
-          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
-        </div>
+        <Input
+          type="text"
+          id="code"
+          label="Código"
+          required
+          value={formData.code}
+          onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+          placeholder="Ej: BRAND001"
+          error={errors.code}
+        />
 
-        <div>
-          <label 
-            htmlFor="description" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Descripción <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="description"
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: Marca de ropa deportiva"
-            required
-          />
-          {errors.description && <p className="mt-1 text-xs text-gray-300">{errors.description}</p>}
-        </div>
+        <Input
+          type="text"
+          id="description"
+          label="Descripción"
+          required
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          placeholder="Ej: Marca de ropa deportiva"
+          error={errors.description}
+        />
 
         <div>
           <label 

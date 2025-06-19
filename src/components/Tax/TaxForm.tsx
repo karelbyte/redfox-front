@@ -4,6 +4,7 @@ import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Tax, TaxType } from '@/types/tax';
 import { api } from '@/services/api';
 import { toastService } from '@/services/toast.service';
+import { Input } from '@/components/atoms';
 
 interface TaxFormData {
   code: string;
@@ -134,19 +135,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
       save: handleSubmit,
     }));
 
-    // Estilos para los inputs con focus dinámico
-    const getInputStyles = () => ({
-      appearance: 'none' as const,
-      display: 'block',
-      width: '100%',
-      padding: '0.75rem 1rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      color: '#111827',
-      backgroundColor: 'white',
-      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
-    });
-
+    // Estilos para el select con focus dinámico
     const getSelectStyles = () => ({
       appearance: 'none' as const,
       display: 'block',
@@ -159,85 +148,52 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
       transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
     });
 
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleSelectFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
       e.target.style.borderColor = `rgb(var(--color-primary-500))`;
       e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
     };
 
-    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleSelectBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
       e.target.style.borderColor = '#d1d5db';
       e.target.style.boxShadow = 'none';
     };
 
     return (
       <form className="space-y-6">
-        <div>
-          <label 
-            htmlFor="code" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Código <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="code"
-            value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: IVA"
-            required
-          />
-          {errors.code && <p className="mt-1 text-xs text-gray-300">{errors.code}</p>}
-        </div>
+        <Input
+          type="text"
+          id="code"
+          label="Código"
+          required
+          value={formData.code}
+          onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+          placeholder="Ej: IVA"
+          error={errors.code}
+        />
 
-        <div>
-          <label 
-            htmlFor="name" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Nombre <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: Impuesto al Valor Agregado"
-            required
-          />
-          {errors.name && <p className="mt-1 text-xs text-gray-300">{errors.name}</p>}
-        </div>
+        <Input
+          type="text"
+          id="name"
+          label="Nombre"
+          required
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          placeholder="Ej: Impuesto al Valor Agregado"
+          error={errors.name}
+        />
 
-        <div>
-          <label 
-            htmlFor="value" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Valor <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <input
-            type="number"
-            id="value"
-            value={formData.value}
-            onChange={(e) => setFormData(prev => ({ ...prev, value: parseFloat(e.target.value) || 0 }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            style={getInputStyles()}
-            placeholder="Ej: 19"
-            min="0"
-            step="0.01"
-            required
-          />
-          {errors.value && <p className="mt-1 text-xs text-gray-300">{errors.value}</p>}
-        </div>
+        <Input
+          type="number"
+          id="value"
+          label="Valor"
+          required
+          value={formData.value}
+          onChange={(e) => setFormData(prev => ({ ...prev, value: parseFloat(e.target.value) || 0 }))}
+          placeholder="Ej: 19"
+          min="0"
+          step="0.01"
+          error={errors.value}
+        />
 
         <div>
           <label 
@@ -251,8 +207,8 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
             id="type"
             value={formData.type}
             onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as TaxType }))}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
+            onFocus={handleSelectFocus}
+            onBlur={handleSelectBlur}
             style={getSelectStyles()}
             required
           >
