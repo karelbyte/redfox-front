@@ -55,8 +55,9 @@ export default function ListProductsPage() {
       toastService.success('Producto eliminado correctamente');
       fetchProducts(currentPage);
       setProductToDelete(null);
-    } catch {
-      toastService.error('Error al eliminar el producto');
+    } catch (error) {
+      setProductToDelete(null);
+      toastService.error(error as string);
     }
   };
 

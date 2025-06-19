@@ -1,13 +1,13 @@
-import { Brand } from '@/types/brand';
+import { Reception } from '@/types/reception';
 
-interface DeleteBrandModalProps {
-  brand: Brand | null;
+interface DeleteReceptionModalProps {
+  reception: Reception | null;
   onClose: () => void;
   onConfirm: () => void;
 }
 
-export default function DeleteBrandModal({ brand, onClose, onConfirm }: DeleteBrandModalProps) {
-  if (!brand) return null;
+export default function DeleteReceptionModal({ reception, onClose, onConfirm }: DeleteReceptionModalProps) {
+  if (!reception) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -32,11 +32,11 @@ export default function DeleteBrandModal({ brand, onClose, onConfirm }: DeleteBr
             </div>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Eliminar Marca
+                Eliminar Recepción
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar la marca &quot;{brand.code}&quot;? Esta acción no se puede deshacer.
+                  ¿Estás seguro de que deseas eliminar la recepción &quot;{reception.code}&quot;? Esta acción no se puede deshacer.
                 </p>
               </div>
             </div>

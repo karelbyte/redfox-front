@@ -39,6 +39,12 @@ export default function ThemeSelector({ className = '' }: ThemeSelectorProps) {
       name: themes['green-gray'].name,
       colors: { primary: themes['green-gray'].primary, secondary: themes['green-gray'].secondary },
       description: 'Tema natural y sofisticado'
+    },
+    {
+      key: 'brown',
+      name: themes.brown.name,
+      colors: { primary: themes.brown.primary, secondary: themes.brown.secondary },
+      description: 'Tema cálido y elegante'
     }
   ]
 
@@ -135,7 +141,8 @@ export function ThemeSelectorCompact({ className = '' }: ThemeSelectorProps) {
     { key: 'red', name: themes.red.name, color: themes.red.primary },
     { key: 'blue', name: themes.blue.name, color: themes.blue.primary },
     { key: 'gray', name: themes.gray.name, color: themes.gray.primary },
-    { key: 'green-gray', name: themes['green-gray'].name, color: themes['green-gray'].primary }
+    { key: 'green-gray', name: themes['green-gray'].name, color: themes['green-gray'].primary },
+    { key: 'brown', name: themes.brown.name, color: themes.brown.primary }
   ]
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ProductHistoryItem } from "@/types/product-history";
 import { ApiResponse } from "@/types/api";
@@ -8,6 +8,7 @@ import { productHistoryService } from "@/services/product-history.service";
 import { toastService } from "@/services/toast.service";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Pagination from "@/components/Pagination/Pagination";
+import { Btn } from "@/components/atoms";
 
 export default function ProductHistoryPage() {
   const router = useRouter();
@@ -23,19 +24,7 @@ export default function ProductHistoryPage() {
   const [productInfo, setProductInfo] = useState<{ sku: string; description: string } | null>(null);
   const [warehouseInfo, setWarehouseInfo] = useState<{ code: string; name: string } | null>(null);
 
-  useEffect(() => {
-    if (productId && warehouseId) {
-      fetchHistory(1);
-    }
-  }, [productId, warehouseId]);
-
-  useEffect(() => {
-    if (productId && warehouseId) {
-      fetchHistory(currentPage);
-    }
-  }, [currentPage]);
-
-  const fetchHistory = async (page: number) => {
+  const fetchHistory = useCallback(async (page: number) => {
     try {
       setLoading(true);
       const response: ApiResponse<ProductHistoryItem[]> = await productHistoryService.getProductHistory(
@@ -66,7 +55,19 @@ export default function ProductHistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId, warehouseId]);
+
+  useEffect(() => {
+    if (productId && warehouseId) {
+      fetchHistory(1);
+    }
+  }, [fetchHistory, productId, warehouseId]);
+
+  useEffect(() => {
+    if (productId && warehouseId) {
+      fetchHistory(currentPage);
+    }
+  }, [currentPage, fetchHistory]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -130,7 +131,13 @@ export default function ProductHistoryPage() {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+          <div 
+            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
+            style={{
+              borderColor: `rgb(var(--color-primary-500))`,
+              borderTopColor: 'transparent'
+            }}
+          ></div>
         </div>
       </div>
     );
@@ -140,40 +147,52 @@ export default function ProductHistoryPage() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <button
+          <Btn
+            variant="ghost"
             onClick={handleBack}
-            className="p-2 text-gray-600 hover:text-red-600 transition-colors"
+            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
             title="Volver"
-          >
-            <ArrowLeftIcon className="h-5 w-5" />
-          </button>
+          />
           <div>
-            <h1 className="text-xl font-semibold text-red-900">
+            <h1 
+              className="text-xl font-semibold"
+              style={{ color: `rgb(var(--color-primary-700))` }}
+            >
               Historial de Movimientos
             </h1>
             {productInfo && warehouseInfo && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p 
+                className="text-sm mt-1"
+                style={{ color: `rgb(var(--color-text-secondary))` }}
+              >
                 {productInfo.sku} - {productInfo.description} en {warehouseInfo.code} - {warehouseInfo.name}
               </p>
             )}
           </div>
         </div>
         {total > 0 && (
-          <p className="text-sm text-gray-500">
+          <p 
+            className="text-sm"
+            style={{ color: `rgb(var(--color-text-secondary))` }}
+          >
             {total} movimiento{total !== 1 ? "s" : ""} registrado{total !== 1 ? "s" : ""}
           </p>
         )}
       </div>
 
       {historyItems.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center">
-          <div className="text-gray-500">
+        <div 
+          className="rounded-lg shadow p-8 text-center"
+          style={{ backgroundColor: `rgb(var(--color-surface))` }}
+        >
+          <div style={{ color: `rgb(var(--color-text-secondary))` }}>
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               aria-hidden="true"
+              style={{ color: `rgb(var(--color-text-tertiary))` }}
             >
               <path
                 strokeLinecap="round"
@@ -182,41 +201,67 @@ export default function ProductHistoryPage() {
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
+            <h3 
+              className="mt-2 text-sm font-medium"
+              style={{ color: `rgb(var(--color-text-primary))` }}
+            >
               Sin historial
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p 
+              className="mt-1 text-sm"
+              style={{ color: `rgb(var(--color-text-secondary))` }}
+            >
               No hay movimientos registrados para este producto
             </p>
           </div>
         </div>
       ) : (
         <>
-          <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
+          <div 
+            className="bg-white rounded-lg overflow-hidden mb-6"
+            style={{ 
+              boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+            }}
+          >
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style={{ color: `rgb(var(--color-primary-600))` }}
+                  >
                     Fecha
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style={{ color: `rgb(var(--color-primary-600))` }}
+                  >
                     Tipo de Operación
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style={{ color: `rgb(var(--color-primary-600))` }}
+                  >
                     Cantidad
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style={{ color: `rgb(var(--color-primary-600))` }}
+                  >
                     Stock Actual
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style={{ color: `rgb(var(--color-primary-600))` }}
+                  >
                     ID Operación
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {historyItems.map((item) => (
-                  <tr key={item.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <tr key={item.id} className="hover:bg-primary-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatDate(item.created_at)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -244,7 +289,10 @@ export default function ProductHistoryPage() {
           </div>
 
           {totalPages > 1 && (
-            <div className="bg-white rounded-lg shadow p-4">
+            <div 
+              className="rounded-lg shadow p-4"
+              style={{ backgroundColor: `rgb(var(--color-surface))` }}
+            >
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

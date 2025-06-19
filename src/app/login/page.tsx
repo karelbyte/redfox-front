@@ -37,6 +37,8 @@ export default function LoginPage() {
     }
     else if (currentTheme === "gray") {
       return "/nitrogy.png";
+    } else if (currentTheme === "brown") {
+      return "/nitrobw.png";
     }
   };
 

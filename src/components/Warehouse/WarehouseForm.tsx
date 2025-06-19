@@ -269,9 +269,9 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
               Moneda <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-              {warehouse && (
+              {warehouse && !warehouse.is_open &&(
                 <span className="text-xs text-gray-500 font-normal ml-2">
-                  (No se puede modificar en edición)
+                  (No se puede modificar en cierre de almacén)
                 </span>
               )}
             </label>
@@ -288,12 +288,12 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
                   style={{
                     ...getSelectStyles(),
                     paddingRight: '3rem', // Espacio para el botón
-                    ...(warehouse && {
+                    ...(warehouse && !warehouse.is_open && {
                       backgroundColor: '#f3f4f6',
                       cursor: 'not-allowed',
                     }),
                   }}
-                  disabled={!!warehouse}
+                  disabled={(warehouse && !warehouse.is_open) || false}
                   required
                 >
                   <option value="">Seleccionar moneda...</option>

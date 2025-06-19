@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ClosedWarehouse } from "@/types/closed-warehouse";
 import { InventoryItem, InventoryResponse } from "@/types/inventory";
 import { closedWarehousesService } from "@/services/closed-warehouses.service";
@@ -31,24 +31,7 @@ export default function InventariosPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    fetchClosedWarehouses();
-  }, []);
-
-  useEffect(() => {
-    if (selectedWarehouseId) {
-      fetchWarehouseDetails();
-      fetchInventory(1);
-    }
-  }, [selectedWarehouseId]);
-
-  useEffect(() => {
-    if (selectedWarehouseId) {
-      fetchInventory(currentPage);
-    }
-  }, [currentPage]);
-
-  const fetchClosedWarehouses = async () => {
+  const fetchClosedWarehouses = useCallback(async () => {
     try {
       setLoading(true);
       const response = await closedWarehousesService.getClosedWarehouses();
@@ -63,9 +46,9 @@ export default function InventariosPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchWarehouseDetails = async () => {
+  const fetchWarehouseDetails = useCallback(async () => {
     if (!selectedWarehouseId) return;
 
     try {
@@ -76,9 +59,9 @@ export default function InventariosPage() {
     } catch {
       toastService.error("Error al cargar detalles del almacén");
     }
-  };
+  }, [selectedWarehouseId]);
 
-  const fetchInventory = async (page: number) => {
+  const fetchInventory = useCallback(async (page: number) => {
     if (!selectedWarehouseId) return;
 
     try {
@@ -97,7 +80,25 @@ export default function InventariosPage() {
     } finally {
       setLoadingInventory(false);
     }
-  };
+  }, [selectedWarehouseId]);
+
+  useEffect(() => {
+    fetchClosedWarehouses();
+  }, [fetchClosedWarehouses]);
+
+  useEffect(() => {
+    if (selectedWarehouseId) {
+      fetchWarehouseDetails();
+      fetchInventory(1);
+    }
+  }, [fetchInventory, fetchWarehouseDetails, selectedWarehouseId]);
+
+  useEffect(() => {
+    if (selectedWarehouseId) {
+      fetchInventory(currentPage);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, fetchInventory]);
 
   const handleWarehouseChange = (warehouseId: string) => {
     setSelectedWarehouseId(warehouseId);
@@ -127,7 +128,13 @@ export default function InventariosPage() {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+          <div 
+            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
+            style={{
+              borderColor: `rgb(var(--color-primary-500))`,
+              borderTopColor: 'transparent'
+            }}
+          ></div>
         </div>
       </div>
     );
@@ -136,28 +143,38 @@ export default function InventariosPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-red-900">Inventarios</h1>
+        <h1 
+          className="text-xl font-semibold"
+          style={{ color: `rgb(var(--color-primary-700))` }}
+        >
+          Inventarios
+        </h1>
       </div>
 
       <div className="mt-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Card de Selección */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div 
+            className="rounded-lg shadow p-6"
+            style={{ backgroundColor: `rgb(var(--color-surface))` }}
+          >
             <label
               htmlFor="warehouse-select"
-              className="block text-sm font-medium text-red-400 mb-2"
+              className="block text-sm font-medium mb-2"
+              style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              Seleccionar Almacén <span className="text-red-500">*</span>
+              Seleccionar Almacén <span style={{ color: `rgb(var(--color-error-500))` }}>*</span>
             </label>
             {closedWarehouses.length === 0 ? (
               <div className="text-center py-8">
-                <div className="text-gray-500">
+                <div style={{ color: `rgb(var(--color-text-secondary))` }}>
                   <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
+                    className="mx-auto h-12 w-12"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                     aria-hidden="true"
+                    style={{ color: `rgb(var(--color-text-tertiary))` }}
                   >
                     <path
                       strokeLinecap="round"
@@ -166,10 +183,16 @@ export default function InventariosPage() {
                       d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m0 0v2a1 1 0 001 1h2a1 1 0 001-1v-2M6 13h2"
                     />
                   </svg>
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                  <h3 
+                    className="mt-2 text-sm font-medium"
+                    style={{ color: `rgb(var(--color-text-primary))` }}
+                  >
                     No hay almacenes cerrados
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p 
+                    className="mt-1 text-sm"
+                    style={{ color: `rgb(var(--color-text-secondary))` }}
+                  >
                     Los inventarios solo están disponibles para almacenes
                     cerrados
                   </p>
@@ -180,7 +203,13 @@ export default function InventariosPage() {
                 id="warehouse-select"
                 value={selectedWarehouseId}
                 onChange={(e) => handleWarehouseChange(e.target.value)}
-                className="appearance-none block w-full px-4 py-3 border border-red-300 rounded-lg text-black focus:outline-none focus:ring-1 focus:ring-red-300 focus:border-red-300 transition-colors"
+                className="appearance-none block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 transition-colors"
+                style={{
+                  backgroundColor: `rgb(var(--color-surface))`,
+                  borderColor: `rgb(var(--color-border))`,
+                  color: `rgb(var(--color-text-primary))`,
+                  '--tw-ring-color': `rgb(var(--color-primary-500))`,
+                } as React.CSSProperties}
               >
                 <option value="">Seleccionar almacén...</option>
                 {closedWarehouses.map((warehouse) => (
@@ -195,17 +224,29 @@ export default function InventariosPage() {
 
           {/* Card de Información */}
           {selectedWarehouseId && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-lg font-medium text-gray-900">
+            <div 
+              className="rounded-lg shadow p-6"
+              style={{ backgroundColor: `rgb(var(--color-surface))` }}
+            >
+              <h2 
+                className="text-lg font-medium"
+                style={{ color: `rgb(var(--color-text-primary))` }}
+              >
                 Inventario del Almacén
               </h2>
               {total > 0 && (
-                <p className="text-sm text-gray-500 mt-1">
+                <p 
+                  className="text-sm mt-1"
+                  style={{ color: `rgb(var(--color-text-secondary))` }}
+                >
                   {total} producto{total !== 1 ? "s" : ""} en inventario
                 </p>
               )}
               {total === 0 && !loadingInventory && (
-                <p className="text-sm text-gray-500 mt-1">
+                <p 
+                  className="text-sm mt-1"
+                  style={{ color: `rgb(var(--color-text-secondary))` }}
+                >
                   Sin productos en inventario
                 </p>
               )}
@@ -216,22 +257,38 @@ export default function InventariosPage() {
         {selectedWarehouseId && (
           <>
             {loadingInventory ? (
-              <div className="bg-white rounded-lg shadow mb-6 p-8">
+              <div 
+                className="rounded-lg shadow mb-6 p-8"
+                style={{ backgroundColor: `rgb(var(--color-surface))` }}
+              >
                 <div className="animate-pulse space-y-4">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                  <div 
+                    className="h-4 rounded w-3/4"
+                    style={{ backgroundColor: `rgb(var(--color-border))` }}
+                  ></div>
+                  <div 
+                    className="h-4 rounded w-1/2"
+                    style={{ backgroundColor: `rgb(var(--color-border))` }}
+                  ></div>
+                  <div 
+                    className="h-4 rounded w-5/6"
+                    style={{ backgroundColor: `rgb(var(--color-border))` }}
+                  ></div>
                 </div>
               </div>
             ) : inventoryItems.length === 0 ? (
-              <div className="bg-white rounded-lg shadow mb-6 p-8 text-center">
-                <div className="text-gray-500">
+              <div 
+                className="rounded-lg shadow mb-6 p-8 text-center"
+                style={{ backgroundColor: `rgb(var(--color-surface))` }}
+              >
+                <div style={{ color: `rgb(var(--color-text-secondary))` }}>
                   <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
+                    className="mx-auto h-12 w-12"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                     aria-hidden="true"
+                    style={{ color: `rgb(var(--color-text-tertiary))` }}
                   >
                     <path
                       strokeLinecap="round"
@@ -240,10 +297,16 @@ export default function InventariosPage() {
                       d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m0 0v2a1 1 0 001 1h2a1 1 0 001-1v-2M6 13h2"
                     />
                   </svg>
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                  <h3 
+                    className="mt-2 text-sm font-medium"
+                    style={{ color: `rgb(var(--color-text-primary))` }}
+                  >
                     Sin inventario
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p 
+                    className="mt-1 text-sm"
+                    style={{ color: `rgb(var(--color-text-secondary))` }}
+                  >
                     No hay productos en el inventario de este almacén
                   </p>
                 </div>
@@ -260,7 +323,10 @@ export default function InventariosPage() {
             )}
 
             {!loadingInventory && totalPages > 1 && (
-              <div className="bg-white rounded-lg shadow p-4">
+              <div 
+                className="rounded-lg shadow p-4"
+                style={{ backgroundColor: `rgb(var(--color-surface))` }}
+              >
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}

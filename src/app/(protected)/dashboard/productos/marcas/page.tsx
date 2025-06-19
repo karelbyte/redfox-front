@@ -13,13 +13,6 @@ import { BrandFormRef } from '@/components/Brand/BrandForm';
 import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 
-interface PaginatedResponse {
-  data: Brand[];
-  meta: {
-    totalPages: number;
-    currentPage: number;
-  };
-}
 
 export default function BrandsPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -66,10 +59,11 @@ export default function BrandsPage() {
       fetchBrands(currentPage);
       setBrandToDelete(null);
     } catch (error) {
+      setBrandToDelete(null);
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error('Error al eliminar la marca');
+        toastService.error(error as string);
       }
     }
   };

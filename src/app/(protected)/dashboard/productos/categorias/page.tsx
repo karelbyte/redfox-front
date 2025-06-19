@@ -55,8 +55,9 @@ export default function CategoriesPage() {
       toastService.success("Categoría eliminada correctamente");
       fetchCategories(currentPage);
       setCategoryToDelete(null);
-    } catch {
-      toastService.error("Error al eliminar la categoría");
+    } catch (error) {
+      setCategoryToDelete(null);
+      toastService.error(error as string);
     }
   };
 

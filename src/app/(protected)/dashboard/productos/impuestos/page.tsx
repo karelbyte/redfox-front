@@ -53,8 +53,9 @@ export default function TaxesPage() {
       toastService.success('Impuesto eliminado correctamente');
       fetchTaxes(currentPage);
       setTaxToDelete(null);
-    } catch {
-      toastService.error('Error al eliminar el impuesto');
+    } catch (error) {
+      setTaxToDelete(null)
+      toastService.error(error as string);
     }
   };
 

@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 // Definición de tipos
-export type ThemeType = 'red' | 'blue' | 'gray' | 'green-gray'
+export type ThemeType = 'red' | 'blue' | 'gray' | 'green-gray' | 'brown'
 
 export interface ThemeContextType {
   currentTheme: ThemeType
@@ -13,6 +13,7 @@ export interface ThemeContextType {
     blue: { name: string; primary: string; secondary: string }
     gray: { name: string; primary: string; secondary: string }
     'green-gray': { name: string; primary: string; secondary: string }
+    brown: { name: string; primary: string; secondary: string }
   }
 }
 
@@ -149,6 +150,39 @@ const themeConfig = {
         950: '32, 36, 32',
       }
     }
+  },
+  brown: {
+    name: 'Marrón',
+    primary: '#593413',
+    secondary: '#8b7355',
+    colors: {
+      primary: {
+        50: '250, 248, 246',
+        100: '245, 241, 237',
+        200: '235, 229, 220',
+        300: '220, 214, 200',
+        400: '200, 188, 165',
+        500: '89, 52, 19',
+        600: '71, 42, 15',
+        700: '59, 35, 13',
+        800: '47, 28, 10',
+        900: '39, 23, 8',
+        950: '20, 12, 4',
+      },
+      secondary: {
+        50: '248, 246, 243',
+        100: '243, 240, 235',
+        200: '235, 230, 220',
+        300: '220, 214, 200',
+        400: '200, 188, 165',
+        500: '139, 115, 85',
+        600: '111, 92, 68',
+        700: '89, 74, 55',
+        800: '71, 59, 44',
+        900: '59, 49, 37',
+        950: '32, 27, 20',
+      }
+    }
   }
 }
 
@@ -185,7 +219,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Aplicar colores para el scrollbar
     const scrollbarColor = currentTheme === 'red' ? '#ef4444' : 
                           currentTheme === 'blue' ? '#3b82f6' : 
-                          currentTheme === 'gray' ? '#6b7280' : '#6b7c6b'
+                          currentTheme === 'gray' ? '#6b7280' : 
+                          currentTheme === 'brown' ? '#593413' : '#6b7c6b'
     
     root.style.setProperty('--scrollbar-thumb', scrollbarColor)
     
@@ -206,6 +241,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       blue: { name: themeConfig.blue.name, primary: themeConfig.blue.primary, secondary: themeConfig.blue.secondary },
       gray: { name: themeConfig.gray.name, primary: themeConfig.gray.primary, secondary: themeConfig.gray.secondary },
       'green-gray': { name: themeConfig['green-gray'].name, primary: themeConfig['green-gray'].primary, secondary: themeConfig['green-gray'].secondary },
+      brown: { name: themeConfig.brown.name, primary: themeConfig.brown.primary, secondary: themeConfig.brown.secondary },
     }
   }
 

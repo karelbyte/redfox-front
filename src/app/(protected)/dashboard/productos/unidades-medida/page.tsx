@@ -53,8 +53,9 @@ export default function MeasurementUnitsPage() {
       toastService.success("Unidad de medida eliminada correctamente");
       fetchUnits(currentPage);
       setUnitToDelete(null);
-    } catch {
-      toastService.error("Error al eliminar la unidad de medida");
+    } catch(error) {
+      setUnitToDelete(null);
+      toastService.error(error as string);
     }
   };
 

@@ -2,6 +2,7 @@
 
 import { InventoryItem } from "@/types/inventory";
 import { EyeIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { Btn } from "@/components/atoms";
 
 interface InventoryTableProps {
   inventoryItems: InventoryItem[];
@@ -42,35 +43,35 @@ export default function InventoryTable({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Producto
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               SKU
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Marca
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Categoría
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Cantidad
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Precio ({currencyCode})
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Fecha
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
               Acciones
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {inventoryItems.map((item) => (
-            <tr key={item.id}>
+            <tr key={item.id} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900">{item.product.name}</div>
                 <div className="text-sm text-gray-500">{item.product.description}</div>
@@ -104,20 +105,20 @@ export default function InventoryTable({
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <button
+                  <Btn
                     onClick={() => onViewProduct(item)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<EyeIcon className="h-4 w-4" />}
                     title="Ver producto"
-                  >
-                    <EyeIcon className="h-5 w-5" />
-                  </button>
-                  <button
+                  />
+                  <Btn
                     onClick={() => onViewHistory(item)}
-                    className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<ClockIcon className="h-4 w-4" />}
                     title="Ver historial"
-                  >
-                    <ClockIcon className="h-5 w-5" />
-                  </button>
+                  />
                 </div>
               </td>
             </tr>
