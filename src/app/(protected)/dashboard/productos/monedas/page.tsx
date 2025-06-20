@@ -52,6 +52,7 @@ export default function CurrenciesPage() {
 
   useEffect(() => {
     fetchCurrencies(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEdit = (currency: Currency) => {

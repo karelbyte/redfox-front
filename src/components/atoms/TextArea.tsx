@@ -17,13 +17,13 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     style,
     ...props 
   }, ref) => {
-    const baseTextAreaStyles: React.CSSProperties = {
+    const baseTextAreaStyles: React.CSSProperties & { [key: string]: string } = {
       border: `1px solid rgb(var(--color-secondary-300))`,
       '--tw-ring-color': `rgb(var(--color-primary-500))`,
       '--tw-ring-offset-color': 'white',
     };
 
-    const errorTextAreaStyles: React.CSSProperties = {
+    const errorTextAreaStyles: React.CSSProperties & { [key: string]: string } = {
       border: `1px solid rgb(var(--color-primary-500))`,
       '--tw-ring-color': `rgb(var(--color-primary-500))`,
       '--tw-ring-offset-color': 'white',
@@ -47,12 +47,12 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         <textarea
           ref={ref}
           className={`appearance-none block w-full px-4 py-3 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors resize-vertical ${className}`}
-          style={{ ...textAreaStyles, ...style } as React.CSSProperties}
+          style={{ ...textAreaStyles, ...style }}
           {...props}
         />
         
         {error && (
-          <p className="mt-1 text-xs text-gray-500">{error}</p>
+          <p className="mt-1 text-xs text-gray-300">{error}</p>
         )}
         
         {helperText && !error && (

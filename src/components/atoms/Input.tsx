@@ -17,13 +17,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     style,
     ...props 
   }, ref) => {
-    const baseInputStyles: React.CSSProperties = {
+    const baseInputStyles: React.CSSProperties & { [key: string]: string } = {
       border: `1px solid rgb(var(--color-secondary-300))`,
       '--tw-ring-color': `rgb(var(--color-primary-500))`,
       '--tw-ring-offset-color': 'white',
     };
 
-    const errorInputStyles: React.CSSProperties = {
+    const errorInputStyles: React.CSSProperties & { [key: string]: string } = {
       border: `1px solid rgb(var(--color-primary-500))`,
       '--tw-ring-color': `rgb(var(--color-primary-500))`,
       '--tw-ring-offset-color': 'white',
@@ -47,7 +47,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           className={`appearance-none block w-full px-4 py-3 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${className}`}
-          style={{ ...inputStyles, ...style } as React.CSSProperties}
+          style={{ ...inputStyles, ...style }}
           {...props}
         />
         

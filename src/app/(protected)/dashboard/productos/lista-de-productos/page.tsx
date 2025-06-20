@@ -54,6 +54,7 @@ export default function ListProductsPage() {
       initialFetchDone.current = true;
       fetchProducts(1);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async () => {

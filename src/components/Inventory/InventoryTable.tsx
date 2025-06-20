@@ -93,7 +93,7 @@ export default function InventoryTable({
                 <span className="font-medium">{item.quantity}</span>
                 <span className="text-gray-500 ml-1">
                   {typeof item.product.measurement_unit === "object"
-                    ? item.product.measurement_unit.abbreviation
+                    ? item.product.measurement_unit.code
                     : "pz"}
                 </span>
               </td>

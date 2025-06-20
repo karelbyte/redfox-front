@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react';
-
 export default function CreatePurchasePage() {
   return (
     <div className="p-6">

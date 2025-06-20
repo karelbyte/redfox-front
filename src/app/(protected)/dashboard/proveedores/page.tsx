@@ -53,6 +53,7 @@ export default function ProvidersPage() {
 
   useEffect(() => {
     fetchProviders(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEdit = (provider: Provider) => {

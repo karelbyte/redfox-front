@@ -9,4 +9,4 @@ export interface InventoryItem {
   createdAt: string;
 }
 
-export interface InventoryResponse extends ApiResponse<InventoryItem[]> {} 
+export type InventoryResponse = ApiResponse<InventoryItem[]>; 

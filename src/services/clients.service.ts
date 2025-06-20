@@ -1,19 +1,17 @@
 import { api } from "./api";
 import { Client, ClientsResponse } from "@/types/client";
 
-interface GetClientsParams {
-  page?: number;
-  term?: string;
-}
-
 export const clientsService = {
-  getClients: async (page: number = 1, term?: string): Promise<ClientsResponse> => {
-    const params: GetClientsParams = { page };
-    if (term && term.trim()) {
-      params.term = term.trim();
-    }
+  getClients: async (page?: number, term?: string): Promise<ClientsResponse> => {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (term) params.append('term', term);
     
-    return api.get<ClientsResponse>("/clients", params);
+    const queryString = params.toString();
+    const url = `/clients${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await api.get<ClientsResponse>(url);
+    return response;
   },
 
   createClient: async (client: Omit<Client, "id" | "created_at">): Promise<Client> => {

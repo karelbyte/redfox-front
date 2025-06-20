@@ -132,6 +132,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     useEffect(() => {
       validateForm();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async () => {

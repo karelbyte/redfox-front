@@ -85,6 +85,7 @@ export default function OpeningsPage() {
       fetchWarehouse();
       fetchOpenings(currentPage);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [warehouseId, currentPage]);
 
   const handlePageChange = (page: number) => {

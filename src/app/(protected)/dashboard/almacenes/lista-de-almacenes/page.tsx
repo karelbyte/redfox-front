@@ -45,6 +45,7 @@ export default function WarehousesPage() {
       initialFetchDone.current = true;
       fetchWarehouses(currentPage);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async () => {

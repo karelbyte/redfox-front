@@ -1,38 +1,38 @@
 import React, { forwardRef } from 'react';
 
-interface SelectOption {
+export interface SelectOption {
   value: string;
   label: string;
 }
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
+  options: SelectOption[];
+  placeholder?: string;
   error?: string;
   required?: boolean;
   helperText?: string;
-  options: SelectOption[];
-  placeholder?: string;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ 
     label, 
+    options, 
+    placeholder = "Seleccionar...",
     error, 
     required = false, 
     helperText,
-    options,
-    placeholder,
     className = "",
     style,
     ...props 
   }, ref) => {
-    const baseSelectStyles: React.CSSProperties = {
+    const baseSelectStyles: React.CSSProperties & { [key: string]: string } = {
       border: `1px solid rgb(var(--color-secondary-300))`,
       '--tw-ring-color': `rgb(var(--color-primary-500))`,
       '--tw-ring-offset-color': 'white',
     };
 
-    const errorSelectStyles: React.CSSProperties = {
+    const errorSelectStyles: React.CSSProperties & { [key: string]: string } = {
       border: `1px solid rgb(var(--color-primary-500))`,
       '--tw-ring-color': `rgb(var(--color-primary-500))`,
       '--tw-ring-offset-color': 'white',
@@ -48,7 +48,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
-            {label} 
+            {label}
             {required && <span style={{ color: `rgb(var(--color-primary-500))` }}> *</span>}
           </label>
         )}
@@ -56,14 +56,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <select
           ref={ref}
           className={`appearance-none block w-full px-4 py-3 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${className}`}
-          style={{ ...selectStyles, ...style } as React.CSSProperties}
+          style={{ ...selectStyles, ...style }}
           {...props}
         >
-          {placeholder && (
-            <option value="" disabled>
-              {placeholder}
-            </option>
-          )}
+          <option value="">{placeholder}</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}

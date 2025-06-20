@@ -53,6 +53,7 @@ export default function ClientsPage() {
 
   useEffect(() => {
     fetchClients(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEdit = (client: Client) => {

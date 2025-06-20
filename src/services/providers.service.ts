@@ -1,19 +1,17 @@
 import { api } from "./api";
 import { Provider, ProvidersResponse } from "@/types/provider";
 
-interface GetProvidersParams {
-  page?: number;
-  term?: string;
-}
-
 export const providersService = {
-  getProviders: async (page: number = 1, term?: string): Promise<ProvidersResponse> => {
-    const params: GetProvidersParams = { page };
-    if (term && term.trim()) {
-      params.term = term.trim();
-    }
+  getProviders: async (page?: number, term?: string): Promise<ProvidersResponse> => {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (term) params.append('term', term);
     
-    return api.get<ProvidersResponse>("/providers", params);
+    const queryString = params.toString();
+    const url = `/providers${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await api.get<ProvidersResponse>(url);
+    return response;
   },
 
   createProvider: async (provider: Omit<Provider, "id" | "created_at">): Promise<Provider> => {

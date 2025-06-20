@@ -52,6 +52,7 @@ export default function TaxesPage() {
 
   useEffect(() => {
     fetchTaxes(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEdit = (tax: Tax) => {

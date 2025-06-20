@@ -2,8 +2,15 @@ import { api } from './api';
 import { InventoryResponse } from '@/types/inventory';
 
 class InventoryService {
-  async getInventory(warehouseId: string, page: number = 1): Promise<InventoryResponse> {
-    const response = await api.get<InventoryResponse>(`/inventory?warehouse_id=${warehouseId}&page=${page}`);
+  async getInventory(warehouseId: string, page?: number): Promise<InventoryResponse> {
+    const params = new URLSearchParams();
+    params.append('warehouse_id', warehouseId);
+    if (page) params.append('page', page.toString());
+    
+    const queryString = params.toString();
+    const url = `/inventory${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await api.get<InventoryResponse>(url);
     return response;
   }
 }

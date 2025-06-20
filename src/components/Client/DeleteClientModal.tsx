@@ -73,7 +73,7 @@ const DeleteClientModal = ({
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar el cliente "{client.name}"? Esta acción no se puede deshacer.
+                  ¿Estás seguro de que deseas eliminar el cliente &quot;{client.name}&quot;? Esta acción no se puede deshacer.
                 </p>
               </div>
             </div>

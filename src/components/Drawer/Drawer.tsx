@@ -91,7 +91,7 @@ export default function Drawer({
   width = "max-w-md",
   parentId,
 }: DrawerProps) {
-  const { openDrawer, closeDrawer, isDrawerOpen, getDrawerStack, getParentId } = useDrawerContext();
+  const { openDrawer, closeDrawer, getDrawerStack, getParentId } = useDrawerContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const [hasChildOpen, setHasChildOpen] = useState(false);
 

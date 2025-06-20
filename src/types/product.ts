@@ -1,7 +1,7 @@
 import { Brand } from './brand';
 import { Category } from './category';
 import { Tax } from './tax';
-import { MeasurementUnit } from './measurementUnit';
+import { MeasurementUnit } from './measurement-unit';
 import { ProductType } from '@/components/Product/ProductForm';
 
 export interface Product {

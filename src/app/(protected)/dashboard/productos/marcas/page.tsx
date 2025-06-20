@@ -51,6 +51,7 @@ export default function BrandsPage() {
       initialFetchDone.current = true;
       fetchBrands(currentPage);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async () => {

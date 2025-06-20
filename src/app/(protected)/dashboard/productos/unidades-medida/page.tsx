@@ -52,6 +52,7 @@ export default function MeasurementUnitsPage() {
       initialFetchDone.current = true;
       fetchUnits(1);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async () => {
