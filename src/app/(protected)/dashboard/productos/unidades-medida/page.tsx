@@ -10,8 +10,9 @@ import DeleteMeasurementUnitModal from "@/components/Measurement/DeleteMeasureme
 import Pagination from "@/components/Pagination/Pagination";
 import Drawer from "@/components/Drawer/Drawer";
 import { MeasurementUnitFormRef } from "@/components/Measurement/MeasurementUnitForm";
-import { Btn } from '@/components/atoms';
+import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
+import Loading from '@/components/Loading/Loading';
 
 export default function MeasurementUnitsPage() {
   const [units, setUnits] = useState<MeasurementUnit[]>([]);
@@ -22,15 +23,23 @@ export default function MeasurementUnitsPage() {
   const [editingUnit, setEditingUnit] = useState<MeasurementUnit | null>(null);
   const [unitToDelete, setUnitToDelete] = useState<MeasurementUnit | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [hasInitialData, setHasInitialData] = useState(false);
   const formRef = useRef<MeasurementUnitFormRef>(null);
   const initialFetchDone = useRef(false);
 
-  const fetchUnits = async (page: number) => {
+  const fetchUnits = async (page: number, term?: string) => {
     try {
       setLoading(true);
-      const response = await measurementUnitsService.getMeasurementUnits(page);
+      const response = await measurementUnitsService.getMeasurementUnits(page, term);
       setUnits(response.data);
       setTotalPages(response.meta.totalPages);
+      setCurrentPage(page);
+      
+      // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
+      if (!hasInitialData && !term) {
+        setHasInitialData(true);
+      }
     } catch {
       toastService.error("Error al cargar las unidades de medida");
     } finally {
@@ -41,7 +50,7 @@ export default function MeasurementUnitsPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchUnits(currentPage);
+      fetchUnits(1);
     }
   }, []);
 
@@ -51,7 +60,7 @@ export default function MeasurementUnitsPage() {
     try {
       await measurementUnitsService.deleteMeasurementUnit(unitToDelete.id);
       toastService.success("Unidad de medida eliminada correctamente");
-      fetchUnits(currentPage);
+      fetchUnits(currentPage, searchTerm);
       setUnitToDelete(null);
     } catch(error) {
       setUnitToDelete(null);
@@ -72,7 +81,7 @@ export default function MeasurementUnitsPage() {
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchUnits(currentPage);
+    fetchUnits(currentPage, searchTerm);
   };
 
   const handleSave = () => {
@@ -86,8 +95,7 @@ export default function MeasurementUnitsPage() {
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    fetchUnits(page);
+    fetchUnits(page, searchTerm);
   };
 
   return (
@@ -107,45 +115,28 @@ export default function MeasurementUnitsPage() {
         </Btn>
       </div>
 
+      {/* Filtro de búsqueda */}
+      <div className="mt-6">
+        <SearchInput
+          placeholder="Buscar unidades de medida..."
+          onSearch={(term: string) => {
+            setSearchTerm(term);
+            fetchUnits(1, term);
+          }}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{ borderColor: `rgb(var(--color-primary-500))` }}
-          ></div>
+          <Loading size="lg" />
         </div>
       ) : units && units.length === 0 ? (
-        <div 
-          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
-          style={{ borderColor: `rgb(var(--color-primary-200))` }}
-        >
-          <svg
-            className="h-12 w-12 mb-4"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <p 
-            className="text-lg font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-400))` }}
-          >
-            No hay unidades de medida
-          </p>
-          <p 
-            className="text-sm"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-          >
-            Haz clic en &quot;Nueva Unidad&quot; para agregar una.
-          </p>
-        </div>
+        <EmptyState
+          searchTerm={searchTerm}
+          title="No hay unidades de medida"
+          description="Haz clic en 'Nueva Unidad' para agregar una."
+          searchDescription="No se encontraron resultados"
+        />
       ) : (
         <>
           <div className="mt-6">

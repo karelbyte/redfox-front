@@ -12,9 +12,15 @@ interface PaginatedResponse {
 }
 
 class TaxesService {
-  async getTaxes(page?: number): Promise<PaginatedResponse> {
-    const queryParam = page ? `?page=${page}` : '';
-    const response = await api.get<PaginatedResponse>(`/taxes${queryParam}`);
+  async getTaxes(page?: number, term?: string): Promise<PaginatedResponse> {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (term) params.append('term', term);
+    
+    const queryString = params.toString();
+    const url = `/taxes${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await api.get<PaginatedResponse>(url);
     return response;
   }
 

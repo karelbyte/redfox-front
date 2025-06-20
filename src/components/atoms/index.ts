@@ -18,8 +18,14 @@ export { default as Checkbox } from './Checkbox'
 // Componente SelectWithAdd
 export { default as SelectWithAdd } from './SelectWithAdd'
 
+// Componente SelectWithAddTest
+export { default as SelectWithAddScrolled } from './SelectWithAddScrolled'
+
 // Componente SearchInput
 export { default as SearchInput } from './SearchInput'
+
+// Componente EmptyState
+export { default as EmptyState } from './EmptyState'
 
 // Aquí se pueden agregar más componentes atoms en el futuro
 // export { default as Badge } from './Badge'

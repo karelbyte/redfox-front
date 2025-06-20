@@ -11,7 +11,7 @@ import Pagination from "@/components/Pagination/Pagination";
 import Drawer from "@/components/Drawer/Drawer";
 import { CategoryFormRef } from "@/components/Category/CategoryForm";
 import Loading from "@/components/Loading/Loading";
-import { Btn } from "@/components/atoms";
+import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function CategoriesPage() {
@@ -24,15 +24,23 @@ export default function CategoriesPage() {
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [hasInitialData, setHasInitialData] = useState(false);
   const formRef = useRef<CategoryFormRef>(null);
   const initialFetchDone = useRef(false);
 
-  const fetchCategories = async (page: number) => {
+  const fetchCategories = async (page: number, term?: string) => {
     try {
       setLoading(true);
-      const response = await categoriesService.getCategories(page);
+      const response = await categoriesService.getCategories(page, term);
       setCategories(response.data);
       setTotalPages(response.meta.totalPages);
+      setCurrentPage(page);
+      
+      // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
+      if (!hasInitialData && !term) {
+        setHasInitialData(true);
+      }
     } catch {
       toastService.error("Error al cargar las categorías");
     } finally {
@@ -43,7 +51,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchCategories(currentPage);
+      fetchCategories(1);
     }
   }, []);
 
@@ -53,7 +61,7 @@ export default function CategoriesPage() {
     try {
       await categoriesService.deleteCategory(categoryToDelete.id);
       toastService.success("Categoría eliminada correctamente");
-      fetchCategories(currentPage);
+      fetchCategories(currentPage, searchTerm);
       setCategoryToDelete(null);
     } catch (error) {
       setCategoryToDelete(null);
@@ -74,7 +82,7 @@ export default function CategoriesPage() {
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchCategories(currentPage);
+    fetchCategories(currentPage, searchTerm);
   };
 
   const handleSave = () => {
@@ -88,8 +96,7 @@ export default function CategoriesPage() {
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    fetchCategories(page);
+    fetchCategories(page, searchTerm);
   };
 
   return (
@@ -109,33 +116,28 @@ export default function CategoriesPage() {
         </Btn>
       </div>
 
+      {/* Filtro de búsqueda */}
+      <div className="mt-6">
+        <SearchInput
+          placeholder="Buscar categorías..."
+          onSearch={(term: string) => {
+            setSearchTerm(term);
+            fetchCategories(1, term);
+          }}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
         </div>
       ) : categories && categories.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed" style={{ borderColor: 'rgb(var(--color-primary-200))' }}>
-          <svg
-            className="h-12 w-12 mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            style={{ color: 'rgb(var(--color-primary-300))' }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <p className="text-lg font-medium mb-2" style={{ color: 'rgb(var(--color-primary-400))' }}>
-            No hay categorías
-          </p>
-          <p className="text-sm" style={{ color: 'rgb(var(--color-primary-300))' }}>
-            Haz clic en &quot;Nueva Categoría&quot; para agregar una.
-          </p>
-        </div>
+        <EmptyState
+          searchTerm={searchTerm}
+          title="No hay categorías"
+          description="Haz clic en 'Nueva Categoría' para agregar una."
+          searchDescription="No se encontraron resultados"
+        />
       ) : (
         <>
           <div className="mt-6">

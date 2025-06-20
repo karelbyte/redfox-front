@@ -10,8 +10,9 @@ import DeleteBrandModal from '@/components/Brand/DeleteBrandModal';
 import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { BrandFormRef } from '@/components/Brand/BrandForm';
-import { Btn } from '@/components/atoms';
+import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
+import Loading from '@/components/Loading/Loading';
 
 
 export default function BrandsPage() {
@@ -24,13 +25,14 @@ export default function BrandsPage() {
   const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const formRef = useRef<BrandFormRef>(null);
   const initialFetchDone = useRef(false);
 
-  const fetchBrands = async (page: number) => {
+  const fetchBrands = async (page: number, term?: string) => {
     try {
       setLoading(true);
-      const response = await brandService.getBrands(page);
+      const response = await brandService.getBrands(page, term);
       setBrands(response.data);
       setTotalPages(response.meta.totalPages);
     } catch (error) {
@@ -56,7 +58,7 @@ export default function BrandsPage() {
 
     try {
       await brandService.deleteBrand(brandToDelete.id);
-      fetchBrands(currentPage);
+      fetchBrands(currentPage, searchTerm);
       setBrandToDelete(null);
     } catch (error) {
       setBrandToDelete(null);
@@ -81,7 +83,7 @@ export default function BrandsPage() {
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchBrands(currentPage);
+    fetchBrands(currentPage, searchTerm);
   };
 
   const handleSave = () => {
@@ -96,7 +98,7 @@ export default function BrandsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchBrands(page);
+    fetchBrands(page, searchTerm);
   };
 
   return (
@@ -116,45 +118,27 @@ export default function BrandsPage() {
         </Btn>
       </div>
 
+      <div className="mt-6">
+        <SearchInput
+          placeholder="Buscar marcas..."
+          onSearch={(term: string) => {
+            setSearchTerm(term);
+            fetchBrands(1, term);
+          }}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{ borderColor: `rgb(var(--color-primary-500))` }}
-          ></div>
+           <Loading size="lg" />
         </div>
       ) : brands && brands.length === 0 ? (
-        <div 
-          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
-          style={{ borderColor: `rgb(var(--color-primary-200))` }}
-        >
-          <svg
-            className="h-12 w-12 mb-4"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <p 
-            className="text-lg font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-400))` }}
-          >
-            No hay marcas
-          </p>
-          <p 
-            className="text-sm"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-          >
-            Haz clic en &quot;Nueva Marca&quot; para agregar una.
-          </p>
-        </div>
+        <EmptyState
+          searchTerm={searchTerm}
+          title="No hay marcas"
+          description="Haz clic en 'Nueva Marca' para agregar una."
+          searchDescription="No se encontraron marcas"
+        />
       ) : (
         <>
           <div className="mt-6">

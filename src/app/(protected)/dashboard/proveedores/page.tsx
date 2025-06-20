@@ -10,8 +10,9 @@ import DeleteProviderModal from "@/components/Provider/DeleteProviderModal";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ProviderFormRef } from "@/components/Provider/ProviderForm";
-import { Btn, SearchInput } from "@/components/atoms";
+import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import Loading from '@/components/Loading/Loading';
+import Pagination from "@/components/Pagination/Pagination";
 
 export default function ProvidersPage() {
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -23,13 +24,17 @@ export default function ProvidersPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [hasInitialData, setHasInitialData] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<ProviderFormRef>(null);
 
-  const fetchProviders = async (term?: string) => {
+  const fetchProviders = async (page: number = 1, term?: string) => {
     try {
       setIsLoading(true);
-      const response = await providersService.getProviders(1, term);
+      const response = await providersService.getProviders(page, term);
       setProviders(response.data);
+      setTotalPages(response.meta.totalPages);
+      setCurrentPage(page);
       
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
       if (!hasInitialData && !term) {
@@ -47,7 +52,7 @@ export default function ProvidersPage() {
   };
 
   useEffect(() => {
-    fetchProviders();
+    fetchProviders(1);
   }, []);
 
   const handleEdit = (provider: Provider) => {
@@ -67,7 +72,7 @@ export default function ProvidersPage() {
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchProviders(searchTerm);
+    fetchProviders(currentPage, searchTerm);
   };
 
   const handleDeleteModalClose = () => {
@@ -77,11 +82,15 @@ export default function ProvidersPage() {
 
   const handleDeleteSuccess = () => {
     handleDeleteModalClose();
-    fetchProviders(searchTerm);
+    fetchProviders(currentPage, searchTerm);
   };
 
   const handleSave = () => {
     formRef.current?.submit();
+  };
+
+  const handlePageChange = (page: number) => {
+    fetchProviders(page, searchTerm);
   };
 
   return (
@@ -107,7 +116,7 @@ export default function ProvidersPage() {
           placeholder="Buscar proveedores..."
           onSearch={(term: string) => {
             setSearchTerm(term);
-            fetchProviders(term);
+            fetchProviders(1, term);
           }}
         />
       </div>
@@ -117,60 +126,31 @@ export default function ProvidersPage() {
           <Loading size="lg" />
         </div>
       ) : providers && providers.length === 0 ? (
-        <div 
-          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
-          style={{ borderColor: `rgb(var(--color-primary-200))` }}
-        >
-          <svg
-            className="h-12 w-12 mb-4"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            {searchTerm ? (
-              // Icono de búsqueda para "no hay resultados"
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            ) : (
-              // Icono de edificio para "no hay proveedores"
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            )}
-          </svg>
-          <p 
-            className="text-lg font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-400))` }}
-          >
-            {searchTerm ? 'No se encontraron resultados' : 'No hay proveedores'}
-          </p>
-          <p 
-            className="text-sm"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-          >
-            {searchTerm ? (
-              `No hay proveedores que coincidan con "${searchTerm}". Intenta con otros términos de búsqueda.`
-            ) : (
-              'Haz clic en "Nuevo Proveedor" para agregar uno.'
-            )}
-          </p>
-        </div>
+        <EmptyState
+          searchTerm={searchTerm}
+          title="No hay proveedores"
+          description="Haz clic en 'Nuevo Proveedor' para agregar uno."
+          searchDescription="No se encontraron resultados"
+        />
       ) : (
-        <div className="mt-6">
-          <ProviderTable
-            providers={providers}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
+        <>
+          <div className="mt-6">
+            <ProviderTable
+              providers={providers}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className="mt-6"
+            />
+          )}
+        </>
       )}
 
       <Drawer

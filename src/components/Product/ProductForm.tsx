@@ -1,33 +1,46 @@
-'use client'
+"use client";
 
-import { useState, useEffect, forwardRef, useImperativeHandle, useRef, useCallback } from 'react';
-import { productService } from '@/services/products.service';
-import { toastService } from '@/services/toast.service';
-import { Product, ProductFormData } from '@/types/product';
-import { Brand } from '@/types/brand';
-import { Category } from '@/types/category';
-import { MeasurementUnit } from '@/types/measurement-unit';
-import { brandService } from '@/services/brand.service';
-import { categoriesService } from '@/services/categories.service';
-import { measurementUnitsService } from '@/services/measurement-units.service';
-import { taxesService } from '@/services/taxes.service';
-import { Tax, TaxType } from '@/types/tax';
-import ImageCarousel from '@/components/ImageCarousel/ImageCarousel';
-import Drawer from '@/components/Drawer/Drawer';
-import BrandForm from '@/components/Brand/BrandForm';
-import { BrandFormRef } from '@/components/Brand/BrandForm';
-import CategoryForm from '@/components/Category/CategoryForm';
-import { CategoryFormRef } from '@/components/Category/CategoryForm';
-import MeasurementUnitForm from '@/components/Measurement/MeasurementUnitForm';
-import { MeasurementUnitFormRef } from '@/components/Measurement/MeasurementUnitForm';
-import TaxForm from '@/components/Tax/TaxForm';
-import { TaxFormRef } from '@/components/Tax/TaxForm';
-import { Input, TextArea, Select, SelectWithAdd, Checkbox } from '@/components/atoms';
+import {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useCallback,
+} from "react";
+import { productService } from "@/services/products.service";
+import { toastService } from "@/services/toast.service";
+import { Product, ProductFormData } from "@/types/product";
+import { Brand } from "@/types/brand";
+import { Category } from "@/types/category";
+import { MeasurementUnit } from "@/types/measurement-unit";
+import { brandService } from "@/services/brand.service";
+import { categoriesService } from "@/services/categories.service";
+import { measurementUnitsService } from "@/services/measurement-units.service";
+import { taxesService } from "@/services/taxes.service";
+import { Tax, TaxType } from "@/types/tax";
+import ImageCarousel from "@/components/ImageCarousel/ImageCarousel";
+import Drawer from "@/components/Drawer/Drawer";
+import BrandForm from "@/components/Brand/BrandForm";
+import { BrandFormRef } from "@/components/Brand/BrandForm";
+import CategoryForm from "@/components/Category/CategoryForm";
+import { CategoryFormRef } from "@/components/Category/CategoryForm";
+import MeasurementUnitForm from "@/components/Measurement/MeasurementUnitForm";
+import { MeasurementUnitFormRef } from "@/components/Measurement/MeasurementUnitForm";
+import TaxForm from "@/components/Tax/TaxForm";
+import { TaxFormRef } from "@/components/Tax/TaxForm";
+import {
+  Input,
+  TextArea,
+  Select,
+  Checkbox,
+  SelectWithAddScrolled,
+} from "@/components/atoms";
 
 export enum ProductType {
-  DIGITAL = 'digital',
-  SERVICE = 'service',
-  TANGIBLE = 'tangible',
+  DIGITAL = "digital",
+  SERVICE = "service",
+  TANGIBLE = "tangible",
 }
 
 export interface ProductFormProps {
@@ -62,18 +75,18 @@ interface FormErrors {
 const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
   ({ product, onSuccess, onSavingChange, onValidChange }, ref) => {
     const [formData, setFormData] = useState<ProductFormData>({
-      name: '',
-      slug: '',
-      description: '',
-      sku: '',
+      name: "",
+      slug: "",
+      description: "",
+      sku: "",
       weight: 0,
       width: 0,
       height: 0,
       length: 0,
-      measurement_unit_id: '',
-      category_id: '',
-      brand_id: '',
-      tax_id: '',
+      measurement_unit_id: "",
+      category_id: "",
+      brand_id: "",
+      tax_id: "",
       is_active: true,
       type: ProductType.TANGIBLE,
     });
@@ -81,7 +94,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     const [images, setImages] = useState<(File | string)[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [measurementUnits, setMeasurementUnits] = useState<MeasurementUnit[]>([]);
+    const [measurementUnits, setMeasurementUnits] = useState<MeasurementUnit[]>(
+      []
+    );
     const [taxes, setTaxes] = useState<Tax[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
 
@@ -98,9 +113,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     const categoryFormRef = useRef<CategoryFormRef>(null);
 
     // Estados para el drawer de unidades de medida
-    const [showMeasurementUnitDrawer, setShowMeasurementUnitDrawer] = useState(false);
-    const [isSavingMeasurementUnit, setIsSavingMeasurementUnit] = useState(false);
-    const [isMeasurementUnitFormValid, setIsMeasurementUnitFormValid] = useState(false);
+    const [showMeasurementUnitDrawer, setShowMeasurementUnitDrawer] =
+      useState(false);
+    const [isSavingMeasurementUnit, setIsSavingMeasurementUnit] =
+      useState(false);
+    const [isMeasurementUnitFormValid, setIsMeasurementUnitFormValid] =
+      useState(false);
     const measurementUnitFormRef = useRef<MeasurementUnitFormRef>(null);
 
     // Estados para el drawer de impuestos
@@ -114,7 +132,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         const brandsData = await brandService.getBrands();
         setBrands(brandsData.data);
       } catch (error) {
-        console.error('Error fetching brands:', error);
+        console.error("Error fetching brands:", error);
       }
     };
 
@@ -123,16 +141,17 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         const categoriesData = await categoriesService.getCategories();
         setCategories(categoriesData.data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
     const fetchMeasurementUnits = async () => {
       try {
-        const measurementUnitsData = await measurementUnitsService.getMeasurementUnits();
+        const measurementUnitsData =
+          await measurementUnitsService.getMeasurementUnits();
         setMeasurementUnits(measurementUnitsData.data);
       } catch (error) {
-        console.error('Error fetching measurement units:', error);
+        console.error("Error fetching measurement units:", error);
       }
     };
 
@@ -141,26 +160,27 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         const taxesData = await taxesService.getTaxes();
         setTaxes(taxesData.data);
       } catch (error) {
-        console.error('Error fetching taxes:', error);
+        console.error("Error fetching taxes:", error);
       }
     };
 
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const [brandsData, categoriesData, measurementUnitsData, taxesData] = await Promise.all([
-            brandService.getBrands(),
-            categoriesService.getCategories(),
-            measurementUnitsService.getMeasurementUnits(),
-            taxesService.getTaxes(),
-          ]);
+          const [brandsData, categoriesData, measurementUnitsData, taxesData] =
+            await Promise.all([
+              brandService.getBrands(),
+              categoriesService.getCategories(),
+              measurementUnitsService.getMeasurementUnits(),
+              taxesService.getTaxes(),
+            ]);
 
           setBrands(brandsData.data);
           setCategories(categoriesData.data);
           setMeasurementUnits(measurementUnitsData.data);
           setTaxes(taxesData.data);
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error("Error fetching data:", error);
         }
       };
 
@@ -171,35 +191,45 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       if (product) {
         setFormData({
           name: product.name,
-          slug: product.slug || '',
-          description: product.description || '',
+          slug: product.slug || "",
+          description: product.description || "",
           sku: product.sku,
           weight: Number(product.weight) || 0,
           width: Number(product.width) || 0,
           height: Number(product.height) || 0,
           length: Number(product.length) || 0,
-          measurement_unit_id: typeof product.measurement_unit === 'object' ? product.measurement_unit.id : product.measurement_unit,
-          category_id: typeof product.category === 'object' ? product.category.id : product.category,
-          brand_id: typeof product.brand === 'object' ? product.brand.id : product.brand,
-          tax_id: typeof product.tax === 'object' ? product.tax.id : product.tax,
+          measurement_unit_id:
+            typeof product.measurement_unit === "object"
+              ? product.measurement_unit.id
+              : product.measurement_unit,
+          category_id:
+            typeof product.category === "object"
+              ? product.category.id
+              : product.category,
+          brand_id:
+            typeof product.brand === "object"
+              ? product.brand.id
+              : product.brand,
+          tax_id:
+            typeof product.tax === "object" ? product.tax.id : product.tax,
           is_active: product.is_active,
           type: product.type || ProductType.TANGIBLE,
         });
         setImages(product.images || []);
       } else {
         setFormData({
-          name: '',
-          slug: '',
-          description: '',
-          sku: '',
+          name: "",
+          slug: "",
+          description: "",
+          sku: "",
           weight: 0,
           width: 0,
           height: 0,
           length: 0,
-          measurement_unit_id: '',
-          category_id: '',
-          brand_id: '',
-          tax_id: '',
+          measurement_unit_id: "",
+          category_id: "",
+          brand_id: "",
+          tax_id: "",
           is_active: true,
           type: ProductType.TANGIBLE,
         });
@@ -211,37 +241,37 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       let isValid = true;
 
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es requerido';
+        newErrors.name = "El nombre es requerido";
         isValid = false;
       }
 
       if (!formData.sku.trim()) {
-        newErrors.sku = 'El SKU es requerido';
+        newErrors.sku = "El SKU es requerido";
         isValid = false;
       }
 
       if (!formData.brand_id) {
-        newErrors.brand_id = 'La marca es requerida';
+        newErrors.brand_id = "La marca es requerida";
         isValid = false;
       }
 
       if (!formData.category_id) {
-        newErrors.category_id = 'La categoría es requerida';
+        newErrors.category_id = "La categoría es requerida";
         isValid = false;
       }
 
       if (!formData.measurement_unit_id) {
-        newErrors.measurement_unit_id = 'La unidad de medida es requerida';
+        newErrors.measurement_unit_id = "La unidad de medida es requerida";
         isValid = false;
       }
 
       if (!formData.tax_id) {
-        newErrors.tax_id = 'El impuesto es requerido';
+        newErrors.tax_id = "El impuesto es requerido";
         isValid = false;
       }
 
       if (!formData.type) {
-        newErrors.type = 'El tipo de producto es requerido';
+        newErrors.type = "El tipo de producto es requerido";
         isValid = false;
       }
 
@@ -266,11 +296,17 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           name: formData.name.trim(),
           description: formData.description.trim(),
           sku: formData.sku.trim(),
-          slug: formData.slug.trim() || formData.name.trim().toLowerCase().replace(/\s+/g, '-'),
+          slug:
+            formData.slug.trim() ||
+            formData.name.trim().toLowerCase().replace(/\s+/g, "-"),
         };
 
         if (product) {
-          await productService.updateProduct(product.id, data, images as File[]);
+          await productService.updateProduct(
+            product.id,
+            data,
+            images as File[]
+          );
         } else {
           await productService.createProduct(data, images as File[]);
         }
@@ -280,7 +316,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar el producto');
+          toastService.error("Error al guardar el producto");
         }
       } finally {
         onSavingChange?.(false);
@@ -297,7 +333,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleBrandDrawerClose();
       // Refrescar la lista de marcas
       fetchBrands();
-      toastService.success('Marca creada correctamente');
+      toastService.success("Marca creada correctamente");
     };
 
     const handleBrandSave = () => {
@@ -314,7 +350,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleCategoryDrawerClose();
       // Refrescar la lista de categorías
       fetchCategories();
-      toastService.success('Categoría creada correctamente');
+      toastService.success("Categoría creada correctamente");
     };
 
     const handleCategorySave = () => {
@@ -331,7 +367,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleMeasurementUnitDrawerClose();
       // Refrescar la lista de unidades de medida
       fetchMeasurementUnits();
-      toastService.success('Unidad de medida creada correctamente');
+      toastService.success("Unidad de medida creada correctamente");
     };
 
     const handleMeasurementUnitSave = () => {
@@ -348,7 +384,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleTaxDrawerClose();
       // Refrescar la lista de impuestos
       fetchTaxes();
-      toastService.success('Impuesto creado correctamente');
+      toastService.success("Impuesto creado correctamente");
     };
 
     const handleTaxSave = () => {
@@ -356,21 +392,21 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     };
 
     useImperativeHandle(ref, () => ({
-      submit: handleSubmit, 
+      submit: handleSubmit,
       reset: () => {
         setFormData({
-          name: '',
-          slug: '',
-          description: '',
-          sku: '',
+          name: "",
+          slug: "",
+          description: "",
+          sku: "",
           weight: 0,
           width: 0,
           height: 0,
           length: 0,
-          measurement_unit_id: '',
-          category_id: '',
-          brand_id: '',
-          tax_id: '',
+          measurement_unit_id: "",
+          category_id: "",
+          brand_id: "",
+          tax_id: "",
           is_active: true,
           type: ProductType.TANGIBLE,
         });
@@ -379,9 +415,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     }));
 
     const productTypeOptions = [
-      { value: ProductType.TANGIBLE, label: 'Tangible' },
-      { value: ProductType.DIGITAL, label: 'Digital' },
-      { value: ProductType.SERVICE, label: 'Servicio' },
+      { value: ProductType.TANGIBLE, label: "Tangible" },
+      { value: ProductType.DIGITAL, label: "Digital" },
+      { value: ProductType.SERVICE, label: "Servicio" },
     ];
 
     return (
@@ -394,7 +430,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               label="Nombre"
               required
               value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
               placeholder="Ej: iPhone 15 Pro"
               error={errors.name}
             />
@@ -405,7 +443,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               label="SKU"
               required
               value={formData.sku}
-              onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, sku: e.target.value }))
+              }
               placeholder="Ej: IPH15PRO-256"
               error={errors.sku}
             />
@@ -418,7 +458,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="weight"
                   label="Peso (kg)"
                   value={formData.weight}
-                  onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      weight: parseFloat(e.target.value),
+                    }))
+                  }
                   error={errors.weight}
                 />
 
@@ -428,7 +473,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="width"
                   label="Ancho (m)"
                   value={formData.width}
-                  onChange={(e) => setFormData(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      width: parseFloat(e.target.value),
+                    }))
+                  }
                   error={errors.width}
                 />
 
@@ -438,7 +488,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="height"
                   label="Alto (m)"
                   value={formData.height}
-                  onChange={(e) => setFormData(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      height: parseFloat(e.target.value),
+                    }))
+                  }
                   error={errors.height}
                 />
 
@@ -448,7 +503,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="length"
                   label="Largo (m)"
                   value={formData.length}
-                  onChange={(e) => setFormData(prev => ({ ...prev, length: parseFloat(e.target.value) }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      length: parseFloat(e.target.value),
+                    }))
+                  }
                   error={errors.length}
                 />
               </div>
@@ -456,31 +516,41 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
             <div className="col-span-2">
               <div className="grid grid-cols-3 gap-4">
-                <SelectWithAdd
+                <SelectWithAddScrolled
                   id="brand"
                   label="Marca"
                   value={formData.brand_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, brand_id: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      brand_id: e.target.value,
+                    }))
+                  }
                   options={brands.map((brand) => ({
                     value: brand.id,
-                    label: `${brand.code} - ${brand.description}`
+                    label: `${brand.code} - ${brand.description}`,
                   }))}
-                  placeholder="Seleccione una marca"
                   required
+                  placeholder="Seleccione una marca"
                   error={errors.brand_id}
-                  showAddButton
+                  showAddButton={true}
                   onAddClick={() => setShowBrandDrawer(true)}
                   addButtonTitle="Crear nueva marca"
                 />
 
-                <SelectWithAdd
+                <SelectWithAddScrolled
                   id="category"
                   label="Categoría"
                   value={formData.category_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      category_id: e.target.value,
+                    }))
+                  }
                   options={categories.map((category) => ({
                     value: category.id,
-                    label: category.name
+                    label: category.name,
                   }))}
                   placeholder="Seleccione una categoría"
                   required
@@ -490,14 +560,19 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   addButtonTitle="Crear nueva categoría"
                 />
 
-                <SelectWithAdd
+                <SelectWithAddScrolled
                   id="measurement_unit"
                   label="Unidad de Medida"
                   value={formData.measurement_unit_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, measurement_unit_id: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      measurement_unit_id: e.target.value,
+                    }))
+                  }
                   options={measurementUnits.map((unit) => ({
                     value: unit.id,
-                    label: `${unit.code} - ${unit.description}`
+                    label: `${unit.code} - ${unit.description}`,
                   }))}
                   placeholder="Seleccione una unidad"
                   required
@@ -511,14 +586,18 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
             <div className="col-span-2">
               <div className="grid grid-cols-2 gap-4">
-                <SelectWithAdd
+                <SelectWithAddScrolled
                   id="tax"
                   label="Impuesto"
                   value={formData.tax_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, tax_id: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, tax_id: e.target.value }))
+                  }
                   options={taxes.map((tax) => ({
                     value: tax.id,
-                    label: `${tax.name} (${tax.value}${tax.type === TaxType.PERCENTAGE ? '%' : ' fijo'})`
+                    label: `${tax.name} (${tax.value}${
+                      tax.type === TaxType.PERCENTAGE ? "%" : " fijo"
+                    })`,
                   }))}
                   placeholder="Seleccione un impuesto"
                   required
@@ -532,7 +611,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   id="type"
                   label="Tipo de Producto"
                   value={formData.type}
-                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProductType }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      type: e.target.value as ProductType,
+                    }))
+                  }
                   options={productTypeOptions}
                   required
                   error={errors.type}
@@ -545,22 +629,23 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             id="description"
             label="Descripción"
             value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
+            }
             placeholder="Descripción del producto"
             rows={2}
             error={errors.description}
           />
 
-          <ImageCarousel
-            images={images as File[]}
-            onChange={setImages}
-          />
+          <ImageCarousel images={images as File[]} onChange={setImages} />
 
           <Checkbox
             id="isActive"
             label="Activo"
             checked={formData.is_active}
-            onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, is_active: e.target.checked }))
+            }
           />
         </form>
 
@@ -652,6 +737,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
   }
 );
 
-ProductForm.displayName = 'ProductForm';
+ProductForm.displayName = "ProductForm";
 
-export default ProductForm; 
+export default ProductForm;

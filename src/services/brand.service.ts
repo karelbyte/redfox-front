@@ -13,9 +13,15 @@ interface PaginatedResponse {
 }
 
 class BrandService {
-  async getBrands(page?: number): Promise<PaginatedResponse> {
-    const queryParam = page ? `?page=${page}` : '';
-    const response = await api.get<PaginatedResponse>(`/brands${queryParam}`);
+  async getBrands(page?: number, term?: string): Promise<PaginatedResponse> {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (term) params.append('term', term);
+    
+    const queryString = params.toString();
+    const url = `/brands${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await api.get<PaginatedResponse>(url);
     return response;
   }
 

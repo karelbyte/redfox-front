@@ -12,8 +12,15 @@ interface PaginatedResponse {
 }
 
 class CurrenciesService {
-  async getCurrencies(page: number = 1): Promise<PaginatedResponse> {
-    const response = await api.get<PaginatedResponse>(`/currencies?page=${page}`);
+  async getCurrencies(page: number = 1, term?: string): Promise<PaginatedResponse> {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (term) params.append('term', term);
+    
+    const queryString = params.toString();
+    const url = `/currencies${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await api.get<PaginatedResponse>(url);
     return response;
   }
 

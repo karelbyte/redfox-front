@@ -14,9 +14,15 @@ interface PaginatedResponse<T> {
 }
 
 export const measurementUnitsService = {
-  async getMeasurementUnits(page?: number): Promise<PaginatedResponse<MeasurementUnit>> {
-    const queryParam = page ? `?page=${page}` : '';
-    const response = await api.get<PaginatedResponse<MeasurementUnit>>(`/measurement-units${queryParam}`);
+  async getMeasurementUnits(page?: number, term?: string): Promise<PaginatedResponse<MeasurementUnit>> {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (term) params.append('term', term);
+    
+    const queryString = params.toString();
+    const url = `/measurement-units${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await api.get<PaginatedResponse<MeasurementUnit>>(url);
     return response;
   },
 
