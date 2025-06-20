@@ -2,7 +2,7 @@ import { useState, useEffect, forwardRef, useImperativeHandle, useCallback } fro
 import { measurementUnitsService } from '@/services/measurement-units.service';
 import { toastService } from '@/services/toast.service';
 import { MeasurementUnit } from '@/types/measurement-unit';
-import { Input } from '@/components/atoms';
+import { Input, Checkbox } from '@/components/atoms';
 
 export interface MeasurementUnitFormProps {
   unit: MeasurementUnit | null;
@@ -74,6 +74,7 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
 
     useEffect(() => {
       validateForm();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [validateForm]);
 
     const handleSubmit = async () => {
@@ -138,23 +139,12 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
         />
 
         <div className="flex items-center">
-          <input
-            type="checkbox"
+          <Checkbox
             id="status"
+            label="Activo"
             checked={formData.status}
             onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
-            className="h-4 w-4 border-gray-300 rounded"
-            style={{
-              accentColor: `rgb(var(--color-primary-500))`,
-            }}
           />
-          <label 
-            htmlFor="status" 
-            className="ml-2 block text-sm"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Activo
-          </label>
         </div>
       </form>
     );

@@ -11,9 +11,19 @@ interface PaginatedResponse {
   };
 }
 
+interface GetProductsParams {
+  page?: number;
+  term?: string;
+}
+
 class ProductService {
-  async getProducts(page: number = 1): Promise<PaginatedResponse> {
-    const response = await api.get<PaginatedResponse>(`/products?page=${page}`);
+  async getProducts(page: number = 1, term?: string): Promise<PaginatedResponse> {
+    const params: GetProductsParams = { page };
+    if (term && term.trim()) {
+      params.term = term.trim();
+    }
+    
+    const response = await api.get<PaginatedResponse>('/products', params);
     return response;
   }
 

@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { Provider } from "@/types/provider";
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
-import { Input, TextArea } from "@/components/atoms";
+import { Input, TextArea, Checkbox } from "@/components/atoms";
 
 export interface ProviderFormRef {
   submit: () => void;
@@ -35,7 +35,7 @@ interface FormErrors {
 }
 
 const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
-  ({ provider, onClose, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ provider, onSuccess, onSavingChange, onValidChange }, ref) => {
     const [formData, setFormData] = useState<FormData>({
       code: provider?.code || "",
       name: provider?.name || "",
@@ -228,25 +228,12 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
           placeholder="Ej: Av. Principal 123, Lima"
         />
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="status"
-            checked={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
-            className="h-4 w-4 border-gray-300 rounded"
-            style={{
-              accentColor: `rgb(var(--color-primary-500))`,
-            }}
-          />
-          <label 
-            htmlFor="status" 
-            className="ml-2 block text-sm"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Activo
-          </label>
-        </div>
+        <Checkbox
+          id="status"
+          label="Activo"
+          checked={formData.status}
+          onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
+        />
       </form>
     );
   }

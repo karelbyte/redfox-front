@@ -14,13 +14,13 @@ const sizeStyles = {
 const Loading: React.FC<LoadingProps> = ({ size = 'md', className = '' }) => {
   return (
     <div 
-      className="loader" 
+      className={`loader ${className}`}
       style={{
         ...sizeStyles[size],
         position: 'relative',
         display: 'inline-block',
         borderRadius: '50%',
-        borderTop: '4px solid #f2a53f',
+        borderTop: `4px solid rgb(var(--color-primary-500))`,
         borderRight: '4px solid transparent',
         boxSizing: 'border-box',
         animation: 'rotation 1s linear infinite'
@@ -44,7 +44,7 @@ const Loading: React.FC<LoadingProps> = ({ size = 'md', className = '' }) => {
           width: 100%;
           height: 100%;
           border-radius: 50%;
-          border-left: 4px solid #FF3D00;
+          border-left: 4px solid rgb(var(--color-secondary-500));
           border-bottom: 4px solid transparent;
           animation: rotation 0.5s linear infinite reverse;
         }

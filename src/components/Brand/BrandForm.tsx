@@ -5,7 +5,7 @@ import { brandService } from '@/services/brand.service';
 import { toastService } from '@/services/toast.service';
 import { Brand, BrandFormData } from '@/types/brand';
 import ImageUpload from '@/components/ImageUpload/ImageUpload';
-import { Input } from '@/components/atoms';
+import { Input, Checkbox } from '@/components/atoms';
 
 export interface BrandFormProps {
   brand: Brand | null;
@@ -79,6 +79,7 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
 
     useEffect(() => {
       validateForm();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData, imageFile]);
 
     const handleImageChange = (file: File | null) => {
@@ -163,25 +164,12 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
           />
         </div>
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="isActive"
-            checked={formData.isActive}
-            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-            className="h-4 w-4 border-gray-300 rounded"
-            style={{
-              accentColor: `rgb(var(--color-primary-500))`,
-            }}
-          />
-          <label 
-            htmlFor="isActive" 
-            className="ml-2 block text-sm"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Activo
-          </label>
-        </div>
+        <Checkbox
+          id="isActive"
+          label="Activo"
+          checked={formData.isActive}
+          onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+        />
       </form>
     );
   }

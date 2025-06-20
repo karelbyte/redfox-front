@@ -10,8 +10,9 @@ import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import ProductForm from '@/components/Product/ProductForm';
 import { ProductFormRef } from '@/components/Product/ProductForm';
-import { Btn } from '@/components/atoms';
+import { Btn, SearchInput } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
+import Loading from '@/components/Loading/Loading';
 
 export default function ListProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -23,15 +24,23 @@ export default function ListProductsPage() {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [hasInitialData, setHasInitialData] = useState(false);
   const formRef = useRef<ProductFormRef>(null);
   const initialFetchDone = useRef(false);
 
-  const fetchProducts = async (page: number) => {
+  const fetchProducts = async (page: number, term?: string) => {
     try {
       setLoading(true);
-      const response = await productService.getProducts(page);
+      const response = await productService.getProducts(page, term);
       setProducts(response.data);
       setTotalPages(response.meta.totalPages);
+      setCurrentPage(page);
+      
+      // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
+      if (!hasInitialData && !term) {
+        setHasInitialData(true);
+      }
     } catch (err) {
       console.error('Error fetching products:', err);
       toastService.error("Error al cargar los productos");
@@ -43,7 +52,7 @@ export default function ListProductsPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchProducts(currentPage);
+      fetchProducts(1);
     }
   }, []);
 
@@ -53,7 +62,7 @@ export default function ListProductsPage() {
     try {
       await productService.deleteProduct(productToDelete.id);
       toastService.success('Producto eliminado correctamente');
-      fetchProducts(currentPage);
+      fetchProducts(currentPage, searchTerm);
       setProductToDelete(null);
     } catch (error) {
       setProductToDelete(null);
@@ -74,7 +83,7 @@ export default function ListProductsPage() {
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchProducts(currentPage);
+    fetchProducts(currentPage, searchTerm);
   };
 
   const handleSave = () => {
@@ -84,20 +93,8 @@ export default function ListProductsPage() {
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    fetchProducts(page);
+    fetchProducts(page, searchTerm);
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div 
-          className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-          style={{ borderColor: `rgb(var(--color-primary-500))` }}
-        ></div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6">
@@ -116,7 +113,22 @@ export default function ListProductsPage() {
         </Btn>
       </div>
 
-      {products && products.length === 0 ? (
+      {/* Filtro de búsqueda */}
+      <div className="mt-6">
+        <SearchInput
+          placeholder="Buscar productos..."
+          onSearch={(term: string) => {
+            setSearchTerm(term);
+            fetchProducts(1, term);
+          }}
+        />
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loading size="lg" />
+        </div>
+      ) : products && products.length === 0 ? (
         <div 
           className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
           style={{ borderColor: `rgb(var(--color-primary-200))` }}
@@ -128,24 +140,39 @@ export default function ListProductsPage() {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
+            {searchTerm ? (
+              // Icono de búsqueda para "no hay resultados"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            ) : (
+              // Icono de documento para "no hay productos"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            )}
           </svg>
           <p 
             className="text-lg font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-400))` }}
           >
-            No hay productos
+            {searchTerm ? 'No se encontraron resultados' : 'No hay productos'}
           </p>
           <p 
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-300))` }}
           >
-            Haz clic en &quot;Nuevo Producto&quot; para agregar uno.
+            {searchTerm ? (
+              `No hay productos que coincidan con "${searchTerm}". Intenta con otros términos de búsqueda.`
+            ) : (
+              'Haz clic en "Nuevo Producto" para agregar uno.'
+            )}
           </p>
         </div>
       ) : (

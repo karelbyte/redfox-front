@@ -10,7 +10,9 @@ import DeleteClientModal from "@/components/Client/DeleteClientModal";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ClientFormRef } from "@/components/Client/ClientForm";
-import { Btn } from "@/components/atoms";
+import { Btn, SearchInput } from "@/components/atoms";
+import Pagination from "@/components/Pagination/Pagination";
+import Loading from '@/components/Loading/Loading';
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -20,13 +22,24 @@ export default function ClientsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [hasInitialData, setHasInitialData] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<ClientFormRef>(null);
 
-  const fetchClients = async () => {
+  const fetchClients = async (page: number = 1, term?: string) => {
     try {
       setIsLoading(true);
-      const response = await clientsService.getClients();
+      const response = await clientsService.getClients(page, term);
       setClients(response.data);
+      setTotalPages(response.meta.totalPages);
+      setCurrentPage(page);
+      
+      // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
+      if (!hasInitialData && !term) {
+        setHasInitialData(true);
+      }
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
@@ -39,7 +52,7 @@ export default function ClientsPage() {
   };
 
   useEffect(() => {
-    fetchClients();
+    fetchClients(1);
   }, []);
 
   const handleEdit = (client: Client) => {
@@ -59,7 +72,7 @@ export default function ClientsPage() {
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchClients();
+    fetchClients(currentPage, searchTerm);
   };
 
   const handleDeleteModalClose = () => {
@@ -69,11 +82,15 @@ export default function ClientsPage() {
 
   const handleDeleteSuccess = () => {
     handleDeleteModalClose();
-    fetchClients();
+    fetchClients(currentPage, searchTerm);
   };
 
   const handleSave = () => {
     formRef.current?.submit();
+  };
+
+  const handlePageChange = (page: number) => {
+    fetchClients(page, searchTerm);
   };
 
   return (
@@ -93,12 +110,20 @@ export default function ClientsPage() {
         </Btn>
       </div>
 
+      {/* Filtro de búsqueda */}
+      <div className="mt-6">
+        <SearchInput
+          placeholder="Buscar clientes..."
+          onSearch={(term: string) => {
+            setSearchTerm(term);
+            fetchClients(1, term);
+          }}
+        />
+      </div>
+
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{ borderColor: `rgb(var(--color-primary-500))` }}
-          ></div>
+          <Loading size="lg" />
         </div>
       ) : clients && clients.length === 0 ? (
         <div 
@@ -112,34 +137,60 @@ export default function ClientsPage() {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
+            {searchTerm ? (
+              // Icono de búsqueda para "no hay resultados"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            ) : (
+              // Icono de documento para "no hay clientes"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            )}
           </svg>
           <p 
             className="text-lg font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-400))` }}
           >
-            No hay clientes
+            {searchTerm ? 'No se encontraron resultados' : 'No hay clientes'}
           </p>
           <p 
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-300))` }}
           >
-            Haz clic en &quot;Nuevo Cliente&quot; para agregar uno.
+            {searchTerm ? (
+              `No hay clientes que coincidan con "${searchTerm}". Intenta con otros términos de búsqueda.`
+            ) : (
+              'Haz clic en "Nuevo Cliente" para agregar uno.'
+            )}
           </p>
         </div>
       ) : (
-        <div className="mt-6">
-          <ClientTable
-            clients={clients}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
+        <>
+          <div className="mt-6">
+            <ClientTable
+              clients={clients}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className="mt-6"
+            />
+          )}
+        </>
       )}
 
       <Drawer

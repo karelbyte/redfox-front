@@ -22,7 +22,7 @@ import MeasurementUnitForm from '@/components/Measurement/MeasurementUnitForm';
 import { MeasurementUnitFormRef } from '@/components/Measurement/MeasurementUnitForm';
 import TaxForm from '@/components/Tax/TaxForm';
 import { TaxFormRef } from '@/components/Tax/TaxForm';
-import { Input, TextArea } from '@/components/atoms';
+import { Input, TextArea, Select, SelectWithAdd, Checkbox } from '@/components/atoms';
 
 export enum ProductType {
   DIGITAL = 'digital',
@@ -378,28 +378,11 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       },
     }));
 
-    // Estilos para los selects con focus dinámico
-    const getInputStyles = () => ({
-      appearance: 'none' as const,
-      display: 'block',
-      width: '100%',
-      padding: '0.75rem 1rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      color: '#111827',
-      backgroundColor: 'white',
-      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
-    });
-
-    const handleInputFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
-      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
-    };
-
-    const handleInputBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = '#d1d5db';
-      e.target.style.boxShadow = 'none';
-    };
+    const productTypeOptions = [
+      { value: ProductType.TANGIBLE, label: 'Tangible' },
+      { value: ProductType.DIGITAL, label: 'Digital' },
+      { value: ProductType.SERVICE, label: 'Servicio' },
+    ];
 
     return (
       <>
@@ -473,243 +456,87 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
             <div className="col-span-2">
               <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label 
-                    htmlFor="brand" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Marca <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="brand"
-                      value={formData.brand_id}
-                      onChange={(e) => setFormData(prev => ({ ...prev, brand_id: e.target.value }))}
-                      onFocus={handleInputFocus}
-                      onBlur={handleInputBlur}
-                      style={{
-                        ...getInputStyles(),
-                        paddingRight: '3rem', // Espacio para el botón
-                      }}
-                      required
-                    >
-                      <option value="">Seleccione una marca</option>
-                      {brands.map((brand) => (
-                        <option key={brand.id} value={brand.id}>
-                          {brand.code} - {brand.description}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => setShowBrandDrawer(true)}
-                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
-                      style={{ 
-                        backgroundColor: `rgb(var(--color-primary-500))`,
-                        borderColor: `rgb(var(--color-primary-600))`,
-                        borderTopRightRadius: '0.5rem',
-                        borderBottomRightRadius: '0.5rem',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
-                      }}
-                      title="Crear nueva marca"
-                    >
-                      +
-                    </button>
-                  </div>
-                  {errors.brand_id && <p className="mt-1 text-xs text-gray-300">{errors.brand_id}</p>}
-                </div>
+                <SelectWithAdd
+                  id="brand"
+                  label="Marca"
+                  value={formData.brand_id}
+                  onChange={(e) => setFormData(prev => ({ ...prev, brand_id: e.target.value }))}
+                  options={brands.map((brand) => ({
+                    value: brand.id,
+                    label: `${brand.code} - ${brand.description}`
+                  }))}
+                  placeholder="Seleccione una marca"
+                  required
+                  error={errors.brand_id}
+                  showAddButton
+                  onAddClick={() => setShowBrandDrawer(true)}
+                  addButtonTitle="Crear nueva marca"
+                />
 
-                <div>
-                  <label 
-                    htmlFor="category" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Categoría <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="category"
-                      value={formData.category_id}
-                      onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
-                      onFocus={handleInputFocus}
-                      onBlur={handleInputBlur}
-                      style={{
-                        ...getInputStyles(),
-                        paddingRight: '3rem', // Espacio para el botón
-                      }}
-                      required
-                    >
-                      <option value="">Seleccione una categoría</option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => setShowCategoryDrawer(true)}
-                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
-                      style={{ 
-                        backgroundColor: `rgb(var(--color-primary-500))`,
-                        borderColor: `rgb(var(--color-primary-600))`,
-                        borderTopRightRadius: '0.5rem',
-                        borderBottomRightRadius: '0.5rem',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
-                      }}
-                      title="Crear nueva categoría"
-                    >
-                      +
-                    </button>
-                  </div>
-                  {errors.category_id && <p className="mt-1 text-xs text-gray-300">{errors.category_id}</p>}
-                </div>
+                <SelectWithAdd
+                  id="category"
+                  label="Categoría"
+                  value={formData.category_id}
+                  onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
+                  options={categories.map((category) => ({
+                    value: category.id,
+                    label: category.name
+                  }))}
+                  placeholder="Seleccione una categoría"
+                  required
+                  error={errors.category_id}
+                  showAddButton
+                  onAddClick={() => setShowCategoryDrawer(true)}
+                  addButtonTitle="Crear nueva categoría"
+                />
 
-                <div>
-                  <label 
-                    htmlFor="measurement_unit" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Unidad de Medida <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="measurement_unit"
-                      value={formData.measurement_unit_id}
-                      onChange={(e) => setFormData(prev => ({ ...prev, measurement_unit_id: e.target.value }))}
-                      onFocus={handleInputFocus}
-                      onBlur={handleInputBlur}
-                      style={{
-                        ...getInputStyles(),
-                        paddingRight: '3rem', // Espacio para el botón
-                      }}
-                      required
-                    >
-                      <option value="">Seleccione una unidad</option>
-                      {measurementUnits.map((unit) => (
-                        <option key={unit.id} value={unit.id}>
-                          {unit.code} - {unit.description}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => setShowMeasurementUnitDrawer(true)}
-                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
-                      style={{ 
-                        backgroundColor: `rgb(var(--color-primary-500))`,
-                        borderColor: `rgb(var(--color-primary-600))`,
-                        borderTopRightRadius: '0.5rem',
-                        borderBottomRightRadius: '0.5rem',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
-                      }}
-                      title="Crear nueva unidad de medida"
-                    >
-                      +
-                    </button>
-                  </div>
-                  {errors.measurement_unit_id && (
-                    <p className="mt-1 text-xs text-gray-300">{errors.measurement_unit_id}</p>
-                  )}
-                </div>
+                <SelectWithAdd
+                  id="measurement_unit"
+                  label="Unidad de Medida"
+                  value={formData.measurement_unit_id}
+                  onChange={(e) => setFormData(prev => ({ ...prev, measurement_unit_id: e.target.value }))}
+                  options={measurementUnits.map((unit) => ({
+                    value: unit.id,
+                    label: `${unit.code} - ${unit.description}`
+                  }))}
+                  placeholder="Seleccione una unidad"
+                  required
+                  error={errors.measurement_unit_id}
+                  showAddButton
+                  onAddClick={() => setShowMeasurementUnitDrawer(true)}
+                  addButtonTitle="Crear nueva unidad de medida"
+                />
               </div>
             </div>
 
             <div className="col-span-2">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label 
-                    htmlFor="tax" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Impuesto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="tax"
-                      value={formData.tax_id}
-                      onChange={(e) => setFormData(prev => ({ ...prev, tax_id: e.target.value }))}
-                      onFocus={handleInputFocus}
-                      onBlur={handleInputBlur}
-                      style={{
-                        ...getInputStyles(),
-                        paddingRight: '3rem', // Espacio para el botón
-                      }}
-                      required
-                    >
-                      <option value="">Seleccione un impuesto</option>
-                      {taxes.map((tax) => (
-                        <option key={tax.id} value={tax.id}>
-                          {tax.name} ({tax.value}{tax.type === TaxType.PERCENTAGE ? '%' : ' fijo'})
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => setShowTaxDrawer(true)}
-                      className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
-                      style={{ 
-                        backgroundColor: `rgb(var(--color-primary-500))`,
-                        borderColor: `rgb(var(--color-primary-600))`,
-                        borderTopRightRadius: '0.5rem',
-                        borderBottomRightRadius: '0.5rem',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
-                      }}
-                      title="Crear nuevo impuesto"
-                    >
-                      +
-                    </button>
-                  </div>
-                  {errors.tax_id && <p className="mt-1 text-xs text-gray-300">{errors.tax_id}</p>}
-                </div>
+                <SelectWithAdd
+                  id="tax"
+                  label="Impuesto"
+                  value={formData.tax_id}
+                  onChange={(e) => setFormData(prev => ({ ...prev, tax_id: e.target.value }))}
+                  options={taxes.map((tax) => ({
+                    value: tax.id,
+                    label: `${tax.name} (${tax.value}${tax.type === TaxType.PERCENTAGE ? '%' : ' fijo'})`
+                  }))}
+                  placeholder="Seleccione un impuesto"
+                  required
+                  error={errors.tax_id}
+                  showAddButton
+                  onAddClick={() => setShowTaxDrawer(true)}
+                  addButtonTitle="Crear nuevo impuesto"
+                />
 
-                <div>
-                  <label 
-                    htmlFor="type" 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                  >
-                    Tipo de Producto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-                  </label>
-                  <select
-                    id="type"
-                    value={formData.type}
-                    onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProductType }))}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                    style={getInputStyles()}
-                    required
-                  >
-                    <option value={ProductType.TANGIBLE}>Tangible</option>
-                    <option value={ProductType.DIGITAL}>Digital</option>
-                    <option value={ProductType.SERVICE}>Servicio</option>
-                  </select>
-                  {errors.type && <p className="mt-1 text-xs text-gray-300">{errors.type}</p>}
-                </div>
+                <Select
+                  id="type"
+                  label="Tipo de Producto"
+                  value={formData.type}
+                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProductType }))}
+                  options={productTypeOptions}
+                  required
+                  error={errors.type}
+                />
               </div>
             </div>
           </div>
@@ -729,25 +556,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             onChange={setImages}
           />
 
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="isActive"
-              checked={formData.is_active}
-              onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
-              className="h-4 w-4 border-gray-300 rounded"
-              style={{
-                accentColor: `rgb(var(--color-primary-500))`,
-              }}
-            />
-            <label 
-              htmlFor="isActive" 
-              className="ml-2 block text-sm"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Activo
-            </label>
-          </div>
+          <Checkbox
+            id="isActive"
+            label="Activo"
+            checked={formData.is_active}
+            onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+          />
         </form>
 
         {/* Drawer para crear marcas */}

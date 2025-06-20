@@ -13,18 +13,31 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
       <button
         onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
         disabled={currentPage === 1}
-        className="p-2 text-gray-600 hover:text-red-600 disabled:opacity-50 disabled:hover:text-gray-600 transition-colors"
+        className="p-2 transition-colors disabled:opacity-50"
+        style={{
+          color: `rgb(var(--color-secondary-600))`,
+          '--tw-hover-color': `rgb(var(--color-primary-600))`,
+        } as React.CSSProperties}
         title="Página anterior"
       >
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
-      <span className="px-3 py-1 text-sm text-gray-600">
+      
+      <span 
+        className="px-3 py-1 text-sm"
+        style={{ color: `rgb(var(--color-secondary-600))` }}
+      >
         Página {currentPage} de {totalPages}
       </span>
+      
       <button
         onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
         disabled={currentPage === totalPages}
-        className="p-2 text-gray-600 hover:text-red-600 disabled:opacity-50 disabled:hover:text-gray-600 transition-colors"
+        className="p-2 transition-colors disabled:opacity-50"
+        style={{
+          color: `rgb(var(--color-secondary-600))`,
+          '--tw-hover-color': `rgb(var(--color-primary-600))`,
+        } as React.CSSProperties}
         title="Página siguiente"
       >
         <ChevronRightIcon className="h-5 w-5" />

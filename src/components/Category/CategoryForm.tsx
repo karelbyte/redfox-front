@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { categoriesService } from '@/services/categories.service';
 import { toastService } from '@/services/toast.service';
 import { Category, CategoryFormData } from '@/types/category';
 import ImageUpload from '@/components/ImageUpload/ImageUpload';
-import { Input } from '@/components/atoms';
+import { Input, Checkbox } from '@/components/atoms';
 
 export interface CategoryFormProps {
   category: Category | null;
@@ -88,6 +87,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
 
     useEffect(() => {
       validateForm();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData, imageFile]);
 
     const handleImageChange = (file: File | null) => {
@@ -192,25 +192,12 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
           min="1"
         />
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="isActive"
-            checked={formData.isActive}
-            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-            className="h-4 w-4 border-gray-300 rounded"
-            style={{
-              accentColor: `rgb(var(--color-primary-500))`,
-            }}
-          />
-          <label 
-            htmlFor="isActive" 
-            className="ml-2 block text-sm"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Activo
-          </label>
-        </div>
+        <Checkbox
+          id="isActive"
+          label="Activo"
+          checked={formData.isActive}
+          onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+        />
       </form>
     );
   }

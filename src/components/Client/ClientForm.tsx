@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
-import { Input, TextArea } from "@/components/atoms";
+import { Input, TextArea, Checkbox } from "@/components/atoms";
 
 export interface ClientFormRef {
   submit: () => void;
@@ -253,27 +253,14 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           error={errors.tax_document}
         />
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="status"
-            checked={formData.status}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, status: e.target.checked }))
-            }
-            className="h-4 w-4 border-gray-300 rounded"
-            style={{
-              accentColor: `rgb(var(--color-primary-500))`,
-            }}
-          />
-          <label 
-            htmlFor="status" 
-            className="ml-2 block text-sm"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Activo
-          </label>
-        </div>
+        <Checkbox
+          id="status"
+          label="Activo"
+          checked={formData.status}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, status: e.target.checked }))
+          }
+        />
       </form>
     );
   }

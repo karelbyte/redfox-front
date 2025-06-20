@@ -29,8 +29,8 @@
   --color-secondary-900: 78, 78, 78;
   --color-secondary-950: 40, 40, 40;
   
-  /* Variable para el color del scrollbar */
-  --scrollbar-thumb: #ef4444;
+  /* Variable para el color del scrollbar - usa el color del tema */
+  --scrollbar-thumb: rgb(var(--color-primary-500));
 }
 
 @media (prefers-color-scheme: dark) {

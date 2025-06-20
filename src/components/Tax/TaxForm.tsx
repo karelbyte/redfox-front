@@ -4,7 +4,7 @@ import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Tax, TaxType } from '@/types/tax';
 import { api } from '@/services/api';
 import { toastService } from '@/services/toast.service';
-import { Input } from '@/components/atoms';
+import { Input, Select, Checkbox } from '@/components/atoms';
 
 interface TaxFormData {
   code: string;
@@ -45,6 +45,11 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
     });
 
     const [errors, setErrors] = useState<TaxFormErrors>({});
+
+    const taxTypeOptions = [
+      { value: TaxType.PERCENTAGE, label: 'Porcentaje (%)' },
+      { value: TaxType.FIXED, label: 'Valor Fijo' },
+    ];
 
     useEffect(() => {
       if (initialData) {
@@ -135,29 +140,6 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
       save: handleSubmit,
     }));
 
-    // Estilos para el select con focus dinámico
-    const getSelectStyles = () => ({
-      appearance: 'none' as const,
-      display: 'block',
-      width: '100%',
-      padding: '0.75rem 1rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      color: '#111827',
-      backgroundColor: 'white',
-      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
-    });
-
-    const handleSelectFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
-      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
-    };
-
-    const handleSelectBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = '#d1d5db';
-      e.target.style.boxShadow = 'none';
-    };
-
     return (
       <form className="space-y-6">
         <Input
@@ -195,49 +177,24 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
           error={errors.value}
         />
 
-        <div>
-          <label 
-            htmlFor="type" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Tipo <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          <select
-            id="type"
-            value={formData.type}
-            onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as TaxType }))}
-            onFocus={handleSelectFocus}
-            onBlur={handleSelectBlur}
-            style={getSelectStyles()}
-            required
-          >
-            <option value="">Seleccione un tipo</option>
-            <option value={TaxType.PERCENTAGE}>Porcentaje (%)</option>
-            <option value={TaxType.FIXED}>Valor Fijo</option>
-          </select>
-          {errors.type && <p className="mt-1 text-xs text-gray-300">{errors.type}</p>}
-        </div>
+        <Select
+          id="type"
+          label="Tipo"
+          required
+          value={formData.type}
+          onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as TaxType }))}
+          options={taxTypeOptions}
+          placeholder="Seleccione un tipo"
+          error={errors.type}
+        />
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="isActive"
-            checked={formData.isActive}
-            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-            className="h-4 w-4 border-gray-300 rounded"
-            style={{
-              accentColor: `rgb(var(--color-primary-500))`,
-            }}
-          />
-          <label 
-            htmlFor="isActive" 
-            className="ml-2 block text-sm"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            Activo
-          </label>
-        </div>
+        <Checkbox
+          id="isActive"
+          label="Activo"
+          checked={formData.isActive}
+          onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+          error={errors.isActive}
+        />
       </form>
     );
   }

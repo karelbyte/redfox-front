@@ -6,7 +6,7 @@ import { Currency } from '@/types/currency';
 import { api } from '@/services/api';
 import { toastService } from '@/services/toast.service';
 import { currenciesService } from '@/services/currencies.service';
-import { Input, TextArea } from '@/components/atoms';
+import { Input, TextArea, SelectWithAdd, Checkbox } from '@/components/atoms';
 import CurrencyForm from '@/components/Currency/CurrencyForm';
 import { CurrencyFormRef } from '@/components/Currency/CurrencyForm';
 import Drawer from '@/components/Drawer/Drawer';
@@ -193,29 +193,6 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
       currencyFormRef.current?.submit();
     };
 
-    // Estilos para el select con focus dinámico
-    const getSelectStyles = () => ({
-      appearance: 'none' as const,
-      display: 'block',
-      width: '100%',
-      padding: '0.75rem 1rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      color: '#111827',
-      backgroundColor: 'white',
-      transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
-    });
-
-    const handleSelectFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
-      e.target.style.boxShadow = `0 0 0 1px rgba(var(--color-primary-500), 0.1)`;
-    };
-
-    const handleSelectBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = '#d1d5db';
-      e.target.style.boxShadow = 'none';
-    };
-
     return (
       <>
         <form className="space-y-6">
@@ -262,93 +239,32 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
             error={errors.phone}
           />
 
-          <div>
-            <label 
-              htmlFor="currency_id" 
-              className="block text-sm font-medium mb-2"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Moneda <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-              {warehouse && !warehouse.is_open &&(
-                <span className="text-xs text-gray-500 font-normal ml-2">
-                  (No se puede modificar en cierre de almacén)
-                </span>
-              )}
-            </label>
-            {loadingCurrencies ? (
-              <div className="animate-pulse bg-gray-200 h-12 rounded-lg"></div>
-            ) : (
-              <div className="relative">
-                <select
-                  id="currency_id"
-                  value={formData.currency_id}
-                  onChange={(e) => setFormData(prev => ({ ...prev, currency_id: e.target.value }))}
-                  onFocus={handleSelectFocus}
-                  onBlur={handleSelectBlur}
-                  style={{
-                    ...getSelectStyles(),
-                    paddingRight: '3rem', // Espacio para el botón
-                    ...(warehouse && !warehouse.is_open && {
-                      backgroundColor: '#f3f4f6',
-                      cursor: 'not-allowed',
-                    }),
-                  }}
-                  disabled={(warehouse && !warehouse.is_open) || false}
-                  required
-                >
-                  <option value="">Seleccionar moneda...</option>
-                  {currencies.map((currency) => (
-                    <option key={currency.id} value={currency.id}>
-                      {currency.code} - {currency.name}
-                    </option>
-                  ))}
-                </select>
-                {!warehouse && (
-                  <button
-                    type="button"
-                    onClick={() => setShowCurrencyDrawer(true)}
-                    className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
-                    style={{ 
-                      backgroundColor: `rgb(var(--color-primary-500))`,
-                      borderColor: `rgb(var(--color-primary-600))`,
-                      borderTopRightRadius: '0.5rem',
-                      borderBottomRightRadius: '0.5rem',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
-                    }}
-                    title="Crear nueva moneda"
-                  >
-                    +
-                  </button>
-                )}
-              </div>
-            )}
-            {errors.currency_id && <p className="mt-1 text-xs text-gray-300">{errors.currency_id}</p>}
-          </div>
+          <SelectWithAdd
+            id="currency_id"
+            label="Moneda"
+            value={formData.currency_id}
+            onChange={(e) => setFormData(prev => ({ ...prev, currency_id: e.target.value }))}
+            options={currencies.map((currency) => ({
+              value: currency.id,
+              label: `${currency.code} - ${currency.name}`
+            }))}
+            placeholder="Seleccionar moneda..."
+            required
+            disabled={warehouse && !warehouse.is_open}
+            error={errors.currency_id}
+            loading={loadingCurrencies}
+            showAddButton={!warehouse}
+            onAddClick={() => setShowCurrencyDrawer(true)}
+            addButtonTitle="Crear nueva moneda"
+            helperText={warehouse && !warehouse.is_open ? "(No se puede modificar en cierre de almacén)" : undefined}
+          />
 
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="isActive"
-              checked={formData.isActive}
-              onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-              className="h-4 w-4 border-gray-300 rounded"
-              style={{
-                accentColor: `rgb(var(--color-primary-500))`,
-              }}
-            />
-            <label 
-              htmlFor="isActive" 
-              className="ml-2 block text-sm"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Activo
-            </label>
-          </div>
+          <Checkbox
+            id="isActive"
+            label="Activo"
+            checked={formData.isActive}
+            onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+          />
         </form>
 
         {/* Drawer para crear monedas */}

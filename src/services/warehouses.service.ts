@@ -2,8 +2,9 @@ import { api } from './api';
 import { Warehouse, WarehouseResponse, WarehouseCloseResponse } from '@/types/warehouse';
 
 class WarehousesService {
-  async getWarehouses(page: number = 1): Promise<WarehouseResponse> {
-    const response = await api.get<WarehouseResponse>(`/warehouses?page=${page}`);
+  async getWarehouses(page?: number): Promise<WarehouseResponse> {
+    const queryParam = page ? `?page=${page}` : '';
+    const response = await api.get<WarehouseResponse>(`/warehouses${queryParam}`);
     return response;
   }
 

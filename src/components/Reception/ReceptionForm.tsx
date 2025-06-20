@@ -8,7 +8,7 @@ import { toastService } from '@/services/toast.service';
 import { Reception, ReceptionFormData } from '@/types/reception';
 import { Provider } from '@/types/provider';
 import { Warehouse } from '@/types/warehouse';
-import { Input } from '@/components/atoms';
+import { Input, Select, SelectWithAdd } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import ProviderForm from '@/components/Provider/ProviderForm';
 import { ProviderFormRef } from '@/components/Provider/ProviderForm';
@@ -89,7 +89,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     const loadWarehouses = async () => {
       try {
-        const response = await warehousesService.getWarehouses(1);
+        const response = await warehousesService.getWarehouses();
         setWarehouses(response.data || []);
       } catch (error) {
         console.error('Error cargando almacenes:', error);
@@ -182,27 +182,6 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
       }
     };
 
-    const getInputStyles = () => ({
-      width: '100%',
-      padding: '0.5rem 0.75rem',
-      border: '1px solid #d1d5db',
-      borderRadius: '0.5rem',
-      fontSize: '0.875rem',
-      lineHeight: '1.25rem',
-      outline: 'none',
-      transition: 'all 0.2s',
-    });
-
-    const handleInputFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = `rgb(var(--color-primary-500))`;
-      e.target.style.boxShadow = `0 0 0 3px rgba(var(--color-primary-500), 0.1)`;
-    };
-
-    const handleInputBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
-      e.target.style.borderColor = '#d1d5db';
-      e.target.style.boxShadow = 'none';
-    };
-
     useImperativeHandle(ref, () => ({
       submit: handleSubmit,
     }));
@@ -231,88 +210,36 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
             error={errors.date}
           />
 
-          <div>
-            <label 
-              htmlFor="provider" 
-              className="block text-sm font-medium mb-2"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Proveedor <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-            </label>
-            <div className="relative">
-              <select
-                id="provider"
-                value={formData.providerId}
-                onChange={(e) => setFormData(prev => ({ ...prev, providerId: e.target.value }))}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                style={{
-                  ...getInputStyles(),
-                  paddingRight: '3rem', // Espacio para el botón
-                }}
-                required
-              >
-                <option value="">Seleccione un proveedor</option>
-                {providers.map((provider) => (
-                  <option key={provider.id} value={provider.id}>
-                    {provider.code} - {provider.name}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={() => setShowProviderDrawer(true)}
-                className="absolute right-0 top-0 h-full px-3 text-white transition-colors border-l font-bold text-lg"
-                style={{ 
-                  backgroundColor: `rgb(var(--color-primary-500))`,
-                  borderColor: `rgb(var(--color-primary-600))`,
-                  borderTopRightRadius: '0.5rem',
-                  borderBottomRightRadius: '0.5rem',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
-                }}
-                title="Crear nuevo proveedor"
-              >
-                +
-              </button>
-            </div>
-            {errors.providerId && (
-              <p className="mt-1 text-xs text-gray-300">{errors.providerId}</p>
-            )}
-          </div>
+          <SelectWithAdd
+            id="provider"
+            label="Proveedor"
+            value={formData.providerId}
+            onChange={(e) => setFormData(prev => ({ ...prev, providerId: e.target.value }))}
+            options={providers.map((provider) => ({
+              value: provider.id,
+              label: `${provider.code} - ${provider.name}`
+            }))}
+            placeholder="Seleccione un proveedor"
+            required
+            error={errors.providerId}
+            showAddButton
+            onAddClick={() => setShowProviderDrawer(true)}
+            addButtonTitle="Crear nuevo proveedor"
+          />
 
-          <div>
-            <label 
-              htmlFor="warehouse" 
-              className="block text-sm font-medium mb-2"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              Almacén <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-            </label>
-            <select
-              id="warehouse"
-              value={formData.warehouseId}
-              onChange={(e) => setFormData(prev => ({ ...prev, warehouseId: e.target.value }))}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              style={getInputStyles()}
-              required
-            >
-              <option value="">Seleccione un almacén</option>
-              {warehouses.map((warehouse) => (
-                <option key={warehouse.id} value={warehouse.id}>
-                  {warehouse.code} - {warehouse.name}
-                </option>
-              ))}
-            </select>
-            {errors.warehouseId && (
-              <p className="mt-1 text-xs text-gray-300">{errors.warehouseId}</p>
-            )}
-          </div>
+          <Select
+            id="warehouse"
+            label="Almacén"
+            value={formData.warehouseId}
+            onChange={(e) => setFormData(prev => ({ ...prev, warehouseId: e.target.value }))}
+            options={warehouses.map((warehouse) => ({
+              value: warehouse.id,
+              label: `${warehouse.code} - ${warehouse.name}`
+            }))}
+            placeholder="Seleccione un almacén"
+            required
+            error={errors.warehouseId}
+          />
 
           <Input
             type="text"
