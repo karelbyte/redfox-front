@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ThemeSelectorCompact } from "@/components/ThemeSelector";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
+import { useLocale } from "next-intl";
 
 export function MainMenu() {
   const { currentTheme } = useTheme();
@@ -12,6 +13,7 @@ export function MainMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
   const router = useRouter();
+  const locale = useLocale();
 
   // Cerrar el menú cuando se hace clic fuera
   useEffect(() => {
@@ -27,7 +29,7 @@ export function MainMenu() {
 
   const handleLogout = async () => {
     await logout();
-    router.push("/login");
+    // El logout ya maneja la redirección con locale, así que no necesitamos hacer nada aquí
   };
 
   const getImageUrl = () => {

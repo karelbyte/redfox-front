@@ -1,0 +1,250 @@
+{
+  "common": {
+    "actions": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "create": "Crear",
+      "update": "Actualizar",
+      "close": "Cerrar",
+      "back": "Volver",
+      "add": "Añadir",
+      "view": "Ver",
+      "search": "Buscar",
+      "clear": "Limpiar",
+      "confirm": "Confirmar",
+      "loading": "Cargando...",
+      "saving": "Guardando...",
+      "deleting": "Eliminando..."
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "open": "Abierto",
+      "closed": "Cerrado",
+      "opened": "Abierta",
+      "closed_female": "Cerrada"
+    },
+    "messages": {
+      "confirmDelete": "¿Estás seguro de que deseas eliminar {item}? Esta acción no se puede deshacer.",
+      "confirmClose": "¿Estás seguro de que deseas cerrar {item}? Esta acción no se puede deshacer.",
+      "noData": "No hay datos",
+      "noResults": "No se encontraron resultados",
+      "errorLoading": "Error al cargar los datos",
+      "successCreated": "{item} creado exitosamente",
+      "successUpdated": "{item} actualizado exitosamente",
+      "successDeleted": "{item} eliminado exitosamente",
+      "successClosed": "{item} cerrado exitosamente"
+    },
+    "labels": {
+      "code": "Código",
+      "name": "Nombre",
+      "description": "Descripción",
+      "date": "Fecha",
+      "amount": "Monto",
+      "price": "Precio",
+      "quantity": "Cantidad",
+      "status": "Estado",
+      "actions": "Acciones",
+      "select": "Seleccionar",
+      "searchPlaceholder": "Buscar...",
+      "noDataMessage": "No hay datos disponibles",
+      "noResultsMessage": "No se encontraron resultados para tu búsqueda"
+    }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "warehouses": "Almacenes",
+    "products": "Productos",
+    "categories": "Categorías",
+    "brands": "Marcas",
+    "taxes": "Impuestos",
+    "currencies": "Monedas",
+    "measurementUnits": "Unidades de Medida",
+    "providers": "Proveedores",
+    "clients": "Clientes",
+    "inventory": "Inventarios",
+    "purchases": "Compras",
+    "receptions": "Recepciones",
+    "warehouseOpenings": "Aperturas de Almacén"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Panel de control principal"
+    },
+    "warehouses": {
+      "title": "Almacenes",
+      "newWarehouse": "Nuevo Almacén",
+      "editWarehouse": "Editar Almacén",
+      "deleteWarehouse": "Eliminar Almacén",
+      "warehouseInfo": "Información del Almacén",
+      "warehouseDetails": "Detalles del Almacén"
+    },
+    "products": {
+      "title": "Productos",
+      "newProduct": "Nuevo Producto",
+      "editProduct": "Editar Producto",
+      "deleteProduct": "Eliminar Producto",
+      "addProduct": "Añadir Producto",
+      "productDetails": "Detalles del Producto",
+      "productType": "Tipo de Producto",
+      "measurementUnit": "Unidad de Medida",
+      "tax": "Impuesto",
+      "brand": "Marca",
+      "category": "Categoría"
+    },
+    "categories": {
+      "title": "Categorías",
+      "newCategory": "Nueva Categoría",
+      "editCategory": "Editar Categoría",
+      "deleteCategory": "Eliminar Categoría"
+    },
+    "brands": {
+      "title": "Marcas",
+      "newBrand": "Nueva Marca",
+      "editBrand": "Editar Marca",
+      "deleteBrand": "Eliminar Marca"
+    },
+    "taxes": {
+      "title": "Impuestos",
+      "newTax": "Nuevo Impuesto",
+      "editTax": "Editar Impuesto",
+      "deleteTax": "Eliminar Impuesto",
+      "taxType": "Tipo de Impuesto"
+    },
+    "currencies": {
+      "title": "Monedas",
+      "newCurrency": "Nueva Moneda",
+      "editCurrency": "Editar Moneda",
+      "deleteCurrency": "Eliminar Moneda",
+      "currencyCode": "Código de Moneda",
+      "currencyName": "Nombre de Moneda"
+    },
+    "measurementUnits": {
+      "title": "Unidades de Medida",
+      "newUnit": "Nueva Unidad de Medida",
+      "editUnit": "Editar Unidad de Medida",
+      "deleteUnit": "Eliminar Unidad de Medida",
+      "unitCode": "Código de Unidad",
+      "unitDescription": "Descripción de Unidad"
+    },
+    "providers": {
+      "title": "Proveedores",
+      "newProvider": "Nuevo Proveedor",
+      "editProvider": "Editar Proveedor",
+      "deleteProvider": "Eliminar Proveedor",
+      "providerInfo": "Información del Proveedor"
+    },
+    "clients": {
+      "title": "Clientes",
+      "newClient": "Nuevo Cliente",
+      "editClient": "Editar Cliente",
+      "deleteClient": "Eliminar Cliente",
+      "clientInfo": "Información del Cliente"
+    },
+    "inventory": {
+      "title": "Inventarios",
+      "selectWarehouse": "Seleccionar Almacén",
+      "warehouseInventory": "Inventario del Almacén",
+      "noClosedWarehouses": "No hay almacenes cerrados",
+      "noClosedWarehousesDesc": "Los inventarios solo están disponibles para almacenes cerrados",
+      "productsInInventory": "{count} producto{count, plural, one {} other {s}} en inventario",
+      "noProductsInInventory": "Sin productos en inventario",
+      "productHistory": "Historial del Producto",
+      "operationTypes": {
+        "WAREHOUSE_OPENING": "Apertura de Almacén",
+        "RECEPTION": "Recepción",
+        "PURCHASE": "Compra",
+        "TRANSFER_IN": "Transferencia Entrada",
+        "ADJUSTMENT_IN": "Ajuste Entrada",
+        "RETURN_IN": "Devolución Entrada",
+        "SALE": "Venta",
+        "WITHDRAWAL": "Retiro",
+        "TRANSFER_OUT": "Transferencia Salida",
+        "ADJUSTMENT_OUT": "Ajuste Salida",
+        "DETERIORATION": "Deterioro",
+        "RETURN_OUT": "Devolución Salida",
+        "DAMAGE": "Daño"
+      }
+    },
+    "warehouseOpenings": {
+      "title": "Aperturas de Almacén",
+      "newOpening": "Nueva Apertura",
+      "editOpening": "Editar Apertura",
+      "deleteOpening": "Eliminar Apertura",
+      "warehouse": "Almacén",
+      "currency": "Moneda",
+      "totalProducts": "Total: {count} productos",
+      "openingClosedSuccessfully": "Apertura Cerrada Exitosamente",
+      "transferredProducts": "Productos transferidos",
+      "totalQuantity": "Cantidad total",
+      "closingDate": "Fecha de cierre"
+    },
+    "receptions": {
+      "title": "Recepciones",
+      "newReception": "Nueva Recepción",
+      "editReception": "Editar Recepción",
+      "deleteReception": "Eliminar Recepción",
+      "closeReception": "Cerrar Recepción",
+      "receptionDetails": "Detalles de la Recepción",
+      "receptionInfo": "Información de la Recepción",
+      "provider": "Proveedor",
+      "document": "Documento",
+      "generalInfo": "Información General",
+      "receptionProducts": "Productos de la Recepción",
+      "noProducts": "No hay productos",
+      "noProductsDesc": "Añade productos a esta recepción para comenzar.",
+      "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
+      "addProduct": "Añadir Producto"
+    },
+    "login": {
+      "title": "Iniciar Sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "loginButton": "Iniciar sesión",
+      "loggingIn": "Iniciando sesión...",
+      "forgotPassword": "¿Olvidaste tu contraseña?"
+    },
+    "construction": {
+      "title": "En Construcción",
+      "description": "La funcionalidad estará disponible pronto.",
+      "backToList": "Volver a la Lista"
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "Este campo es requerido",
+      "email": "Ingrese un correo electrónico válido",
+      "minLength": "Mínimo {min} caracteres",
+      "maxLength": "Máximo {max} caracteres",
+      "numeric": "Debe ser un número válido",
+      "positive": "Debe ser un número positivo"
+    },
+    "placeholders": {
+      "enterCode": "Ingrese código",
+      "enterName": "Ingrese nombre",
+      "enterDescription": "Ingrese descripción",
+      "enterEmail": "Ingrese correo electrónico",
+      "enterPassword": "Ingrese contraseña",
+      "selectOption": "Seleccionar opción..."
+    }
+  },
+  "modals": {
+    "delete": {
+      "title": "Eliminar {item}",
+      "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
+    },
+    "close": {
+      "title": "Cerrar {item}",
+      "message": "¿Estás seguro de que deseas cerrar {item} \"{name}\"? Esta acción no se puede deshacer."
+    }
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "showing": "Mostrando {from} a {to} de {total} resultados",
+    "page": "Página {page} de {total}"
+  }
+} 

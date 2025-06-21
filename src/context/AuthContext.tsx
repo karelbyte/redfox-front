@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService } from '@/services/auth.service';
 import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 
 interface User {
   id: string;
@@ -33,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const locale = useLocale();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -55,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.login(email, password);
       const currentUser = await authService.getCurrentUser();
       setUser(currentUser);
-      router.push('/dashboard');
+      router.push(`/${locale}/dashboard`);
     } catch (error) {
       throw error;
     } finally {
@@ -68,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       authService.logout();
       setUser(null);
-      router.push('/login');
+      router.push(`/${locale}/login`);
     } catch (error) {
       console.error('Error during logout:', error);
     } finally {

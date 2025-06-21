@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, ThemeType } from "@/context/ThemeContext";
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@redfox.com");
@@ -12,6 +13,8 @@ export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const { currentTheme, setTheme, themes } = useTheme();
+  const t = useTranslations('pages.login');
+  const locale = useLocale();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +22,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.push("/dashboard");
+      router.push(`/${locale}/dashboard`);
     } catch {
       // El error ya se maneja en el servicio de autenticación
     } finally {
@@ -85,7 +88,7 @@ export default function LoginPage() {
             className="text-center text-4xl font-bold"
             style={{ color: `rgb(var(--color-primary-600))` }}
           >
-            Bienvenido
+            {t('title')}
           </h2>
           <p
             className="text-center"
@@ -103,7 +106,7 @@ export default function LoginPage() {
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-secondary-700))` }}
               >
-                Correo electrónico
+                {t('email')}
               </label>
               <input
                 id="email"
@@ -129,7 +132,7 @@ export default function LoginPage() {
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-secondary-700))` }}
               >
-                Contraseña
+                {t('password')}
               </label>
               <input
                 id="password"
@@ -176,10 +179,10 @@ export default function LoginPage() {
               {loading ? (
                 <span className="flex items-center">
                   <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                  Iniciando sesión...
+                  {t('loggingIn')}
                 </span>
               ) : (
-                "Iniciar sesión"
+                t('loginButton')
               )}
             </button>
 
@@ -195,7 +198,7 @@ export default function LoginPage() {
                   e.currentTarget.style.color = `rgb(var(--color-primary-500))`;
                 }}
               >
-                ¿Olvidaste tu contraseña?
+                {t('forgotPassword')}
               </a>
             </div>
           </div>

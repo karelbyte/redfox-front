@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 
 interface EmptyStateProps {
   searchTerm?: string;
@@ -19,10 +20,11 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   customIcon,
   actionButton
 }) => {
+  const t = useTranslations('common.labels');
   const isSearchState = searchTerm && searchTerm.trim() !== '';
   const displayTitle = isSearchState ? (searchDescription || title) : title;
   const displayDescription = isSearchState 
-    ? `No hay elementos que coincidan con "${searchTerm}". Intenta con otros términos de búsqueda.`
+    ? t('noResultsMessage', { term: searchTerm })
     : description;
 
   const renderIcon = () => {

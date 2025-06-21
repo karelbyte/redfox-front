@@ -1,0 +1,250 @@
+{
+  "common": {
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "create": "Create",
+      "update": "Update",
+      "close": "Close",
+      "back": "Back",
+      "add": "Add",
+      "view": "View",
+      "search": "Search",
+      "clear": "Clear",
+      "confirm": "Confirm",
+      "loading": "Loading...",
+      "saving": "Saving...",
+      "deleting": "Deleting..."
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "open": "Open",
+      "closed": "Closed",
+      "opened": "Opened",
+      "closed_female": "Closed"
+    },
+    "messages": {
+      "confirmDelete": "Are you sure you want to delete {item}? This action cannot be undone.",
+      "confirmClose": "Are you sure you want to close {item}? This action cannot be undone.",
+      "noData": "No data",
+      "noResults": "No results found",
+      "errorLoading": "Error loading data",
+      "successCreated": "{item} created successfully",
+      "successUpdated": "{item} updated successfully",
+      "successDeleted": "{item} deleted successfully",
+      "successClosed": "{item} closed successfully"
+    },
+    "labels": {
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "date": "Date",
+      "amount": "Amount",
+      "price": "Price",
+      "quantity": "Quantity",
+      "status": "Status",
+      "actions": "Actions",
+      "select": "Select",
+      "searchPlaceholder": "Search...",
+      "noDataMessage": "No data available",
+      "noResultsMessage": "No results found for your search"
+    }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "warehouses": "Warehouses",
+    "products": "Products",
+    "categories": "Categories",
+    "brands": "Brands",
+    "taxes": "Taxes",
+    "currencies": "Currencies",
+    "measurementUnits": "Measurement Units",
+    "providers": "Providers",
+    "clients": "Clients",
+    "inventory": "Inventory",
+    "purchases": "Purchases",
+    "receptions": "Receptions",
+    "warehouseOpenings": "Warehouse Openings"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Main control panel"
+    },
+    "warehouses": {
+      "title": "Warehouses",
+      "newWarehouse": "New Warehouse",
+      "editWarehouse": "Edit Warehouse",
+      "deleteWarehouse": "Delete Warehouse",
+      "warehouseInfo": "Warehouse Information",
+      "warehouseDetails": "Warehouse Details"
+    },
+    "products": {
+      "title": "Products",
+      "newProduct": "New Product",
+      "editProduct": "Edit Product",
+      "deleteProduct": "Delete Product",
+      "addProduct": "Add Product",
+      "productDetails": "Product Details",
+      "productType": "Product Type",
+      "measurementUnit": "Measurement Unit",
+      "tax": "Tax",
+      "brand": "Brand",
+      "category": "Category"
+    },
+    "categories": {
+      "title": "Categories",
+      "newCategory": "New Category",
+      "editCategory": "Edit Category",
+      "deleteCategory": "Delete Category"
+    },
+    "brands": {
+      "title": "Brands",
+      "newBrand": "New Brand",
+      "editBrand": "Edit Brand",
+      "deleteBrand": "Delete Brand"
+    },
+    "taxes": {
+      "title": "Taxes",
+      "newTax": "New Tax",
+      "editTax": "Edit Tax",
+      "deleteTax": "Delete Tax",
+      "taxType": "Tax Type"
+    },
+    "currencies": {
+      "title": "Currencies",
+      "newCurrency": "New Currency",
+      "editCurrency": "Edit Currency",
+      "deleteCurrency": "Delete Currency",
+      "currencyCode": "Currency Code",
+      "currencyName": "Currency Name"
+    },
+    "measurementUnits": {
+      "title": "Measurement Units",
+      "newUnit": "New Measurement Unit",
+      "editUnit": "Edit Measurement Unit",
+      "deleteUnit": "Delete Measurement Unit",
+      "unitCode": "Unit Code",
+      "unitDescription": "Unit Description"
+    },
+    "providers": {
+      "title": "Providers",
+      "newProvider": "New Provider",
+      "editProvider": "Edit Provider",
+      "deleteProvider": "Delete Provider",
+      "providerInfo": "Provider Information"
+    },
+    "clients": {
+      "title": "Clients",
+      "newClient": "New Client",
+      "editClient": "Edit Client",
+      "deleteClient": "Delete Client",
+      "clientInfo": "Client Information"
+    },
+    "inventory": {
+      "title": "Inventory",
+      "selectWarehouse": "Select Warehouse",
+      "warehouseInventory": "Warehouse Inventory",
+      "noClosedWarehouses": "No closed warehouses",
+      "noClosedWarehousesDesc": "Inventory is only available for closed warehouses",
+      "productsInInventory": "{count} product{count, plural, one {} other {s}} in inventory",
+      "noProductsInInventory": "No products in inventory",
+      "productHistory": "Product History",
+      "operationTypes": {
+        "WAREHOUSE_OPENING": "Warehouse Opening",
+        "RECEPTION": "Reception",
+        "PURCHASE": "Purchase",
+        "TRANSFER_IN": "Transfer In",
+        "ADJUSTMENT_IN": "Adjustment In",
+        "RETURN_IN": "Return In",
+        "SALE": "Sale",
+        "WITHDRAWAL": "Withdrawal",
+        "TRANSFER_OUT": "Transfer Out",
+        "ADJUSTMENT_OUT": "Adjustment Out",
+        "DETERIORATION": "Deterioration",
+        "RETURN_OUT": "Return Out",
+        "DAMAGE": "Damage"
+      }
+    },
+    "warehouseOpenings": {
+      "title": "Warehouse Openings",
+      "newOpening": "New Opening",
+      "editOpening": "Edit Opening",
+      "deleteOpening": "Delete Opening",
+      "warehouse": "Warehouse",
+      "currency": "Currency",
+      "totalProducts": "Total: {count} products",
+      "openingClosedSuccessfully": "Opening Closed Successfully",
+      "transferredProducts": "Transferred products",
+      "totalQuantity": "Total quantity",
+      "closingDate": "Closing date"
+    },
+    "receptions": {
+      "title": "Receptions",
+      "newReception": "New Reception",
+      "editReception": "Edit Reception",
+      "deleteReception": "Delete Reception",
+      "closeReception": "Close Reception",
+      "receptionDetails": "Reception Details",
+      "receptionInfo": "Reception Information",
+      "provider": "Provider",
+      "document": "Document",
+      "generalInfo": "General Information",
+      "receptionProducts": "Reception Products",
+      "noProducts": "No products",
+      "noProductsDesc": "Add products to this reception to get started.",
+      "noProductsClosedDesc": "This reception has no registered products.",
+      "addProduct": "Add Product"
+    },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "loginButton": "Login",
+      "loggingIn": "Logging in...",
+      "forgotPassword": "Forgot your password?"
+    },
+    "construction": {
+      "title": "Under Construction",
+      "description": "This functionality will be available soon.",
+      "backToList": "Back to List"
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email",
+      "minLength": "Minimum {min} characters",
+      "maxLength": "Maximum {max} characters",
+      "numeric": "Must be a valid number",
+      "positive": "Must be a positive number"
+    },
+    "placeholders": {
+      "enterCode": "Enter code",
+      "enterName": "Enter name",
+      "enterDescription": "Enter description",
+      "enterEmail": "Enter email",
+      "enterPassword": "Enter password",
+      "selectOption": "Select option..."
+    }
+  },
+  "modals": {
+    "delete": {
+      "title": "Delete {item}",
+      "message": "Are you sure you want to delete {item} \"{name}\"? This action cannot be undone."
+    },
+    "close": {
+      "title": "Close {item}",
+      "message": "Are you sure you want to close {item} \"{name}\"? This action cannot be undone."
+    }
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "showing": "Showing {from} to {to} of {total} results",
+    "page": "Page {page} of {total}"
+  }
+} 
