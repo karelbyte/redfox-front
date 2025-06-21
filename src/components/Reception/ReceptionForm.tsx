@@ -28,8 +28,8 @@ export interface ReceptionFormRef {
 interface FormErrors {
   code?: string;
   date?: string;
-  providerId?: string;
-  warehouseId?: string;
+  provider_id?: string;
+  warehouse_id?: string;
   document?: string;
 }
 
@@ -38,8 +38,8 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
     const [formData, setFormData] = useState<ReceptionFormData>({
       code: '',
       date: '',
-      providerId: '',
-      warehouseId: '',
+      provider_id: '',
+      warehouse_id: '',
       document: '',
     });
 
@@ -63,16 +63,16 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
         setFormData({
           code: reception.code,
           date: reception.date,
-          providerId: reception.provider.id,
-          warehouseId: reception.warehouse.id,
+          provider_id: reception.provider.id,
+          warehouse_id: reception.warehouse.id,
           document: reception.document,
         });
       } else {
         setFormData({
           code: '',
           date: new Date().toISOString().split('T')[0], // Fecha actual
-          providerId: '',
-          warehouseId: '',
+          provider_id: '',
+          warehouse_id: '',
           document: '',
         });
       }
@@ -89,7 +89,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     const loadWarehouses = async () => {
       try {
-        const response = await warehousesService.getWarehouses();
+        const response = await warehousesService.getWarehouses({isClosed: true});
         setWarehouses(response.data || []);
       } catch (error) {
         console.error('Error cargando almacenes:', error);
@@ -110,13 +110,13 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
         isValid = false;
       }
 
-      if (!formData.providerId) {
-        newErrors.providerId = 'El proveedor es requerido';
+      if (!formData.provider_id) {
+        newErrors.provider_id = 'El proveedor es requerido';
         isValid = false;
       }
 
-      if (!formData.warehouseId) {
-        newErrors.warehouseId = 'El almacén es requerido';
+      if (!formData.warehouse_id) {
+        newErrors.warehouse_id = 'El almacén es requerido';
         isValid = false;
       }
 
@@ -214,15 +214,15 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
           <SelectWithAdd
             id="provider"
             label="Proveedor"
-            value={formData.providerId}
-            onChange={(e) => setFormData(prev => ({ ...prev, providerId: e.target.value }))}
+            value={formData.provider_id}
+            onChange={(e) => setFormData(prev => ({ ...prev, provider_id: e.target.value }))}
             options={providers.map((provider) => ({
               value: provider.id,
               label: `${provider.code} - ${provider.name}`
             }))}
             placeholder="Seleccione un proveedor"
             required
-            error={errors.providerId}
+            error={errors.provider_id}
             showAddButton
             onAddClick={() => setShowProviderDrawer(true)}
             addButtonTitle="Crear nuevo proveedor"
@@ -231,15 +231,15 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
           <Select
             id="warehouse"
             label="Almacén"
-            value={formData.warehouseId}
-            onChange={(e) => setFormData(prev => ({ ...prev, warehouseId: e.target.value }))}
+            value={formData.warehouse_id}
+            onChange={(e) => setFormData(prev => ({ ...prev, warehouse_id: e.target.value }))}
             options={warehouses.map((warehouse) => ({
               value: warehouse.id,
               label: `${warehouse.code} - ${warehouse.name}`
             }))}
             placeholder="Seleccione un almacén"
             required
-            error={errors.warehouseId}
+            error={errors.warehouse_id}
           />
 
           <Input

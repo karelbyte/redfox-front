@@ -1,14 +1,14 @@
-import { Warehouse } from "@/types/warehouse";
+import { Reception } from "@/types/reception";
 import { Btn } from "@/components/atoms";
 
-interface DeleteWarehouseModalProps {
-  warehouse: Warehouse | null;
+interface CloseReceptionModalProps {
+  reception: Reception | null;
   onClose: () => void;
   onConfirm: () => void;
 }
 
-export default function DeleteWarehouseModal({ warehouse, onClose, onConfirm }: DeleteWarehouseModalProps) {
-  if (!warehouse) return null;
+export default function CloseReceptionModal({ reception, onClose, onConfirm }: CloseReceptionModalProps) {
+  if (!reception) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -37,11 +37,11 @@ export default function DeleteWarehouseModal({ warehouse, onClose, onConfirm }: 
             </div>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Eliminar Almacén
+                Cerrar Recepción
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar el almacén &quot;{warehouse.name}&quot;? Esta acción no se puede deshacer.
+                  ¿Estás seguro de que deseas cerrar la recepción &quot;{reception.code}&quot;? Esta acción no se puede deshacer.
                 </p>
               </div>
             </div>
@@ -52,7 +52,7 @@ export default function DeleteWarehouseModal({ warehouse, onClose, onConfirm }: 
               onClick={onConfirm}
               className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
             >
-              Eliminar
+              Cerrar Recepción
             </Btn>
             <Btn
               variant="outline"

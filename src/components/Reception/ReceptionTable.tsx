@@ -1,14 +1,16 @@
 import { Reception } from '@/types/reception';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, EyeIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 
 interface ReceptionTableProps {
   receptions: Reception[];
   onEdit: (reception: Reception) => void;
   onDelete: (reception: Reception) => void;
+  onDetails: (reception: Reception) => void;
+  onClose: (reception: Reception) => void;
 }
 
-export default function ReceptionTable({ receptions, onEdit, onDelete }: ReceptionTableProps) {
+export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails, onClose }: ReceptionTableProps) {
   if (!Array.isArray(receptions)) {
     return null;
   }
@@ -109,11 +111,28 @@ export default function ReceptionTable({ receptions, onEdit, onDelete }: Recepti
                     reception.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {reception.status ? 'Activo' : 'Inactivo'}
+                  {reception.status ? 'Abierta' : 'Cerrada'}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
+                  <Btn
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDetails(reception)}
+                    leftIcon={<EyeIcon className="h-4 w-4" />}
+                    title="Ver Detalles"
+                  />
+                  {reception.status && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onClose(reception)}
+                      leftIcon={<XMarkIcon className="h-4 w-4" />}
+                      title="Cerrar Recepción"
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
                   <Btn
                     variant="ghost"
                     size="sm"

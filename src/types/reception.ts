@@ -41,8 +41,8 @@ export interface Reception {
 export interface ReceptionFormData {
   code: string;
   date: string;
-  providerId: string;
-  warehouseId: string;
+  provider_id: string;
+  warehouse_id: string;
   document: string;
 }
 

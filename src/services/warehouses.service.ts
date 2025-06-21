@@ -1,10 +1,27 @@
 import { api } from './api';
 import { Warehouse, WarehouseResponse, WarehouseCloseResponse } from '@/types/warehouse';
 
+interface GetWarehousesParams {
+  page?: number;
+  isClosed?: boolean;
+}
+
 class WarehousesService {
-  async getWarehouses(page?: number): Promise<WarehouseResponse> {
-    const queryParam = page ? `?page=${page}` : '';
-    const response = await api.get<WarehouseResponse>(`/warehouses${queryParam}`);
+  async getWarehouses(params: GetWarehousesParams): Promise<WarehouseResponse> {
+    const searchParams = new URLSearchParams();
+    
+    if (params.page !== undefined) {
+      searchParams.append('page', params.page.toString());
+    }
+    
+    if (params.isClosed !== undefined) {
+      searchParams.append('isClosed', params.isClosed.toString());
+    }
+    
+    const queryString = searchParams.toString();
+    const url = queryString ? `/warehouses?${queryString}` : '/warehouses';
+    
+    const response = await api.get<WarehouseResponse>(url);
     return response;
   }
 

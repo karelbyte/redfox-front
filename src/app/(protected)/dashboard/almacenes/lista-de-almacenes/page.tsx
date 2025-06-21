@@ -30,7 +30,7 @@ export default function WarehousesPage() {
   const fetchWarehouses = async (page: number) => {
     try {
       setLoading(true);
-      const response = await warehousesService.getWarehouses(page);
+      const response = await warehousesService.getWarehouses({page});
       setWarehouses(response.data);
       setTotalPages(response.meta.totalPages);
     } catch {

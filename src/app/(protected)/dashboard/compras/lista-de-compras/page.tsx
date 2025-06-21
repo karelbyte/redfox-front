@@ -2,12 +2,14 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Reception } from '@/types/reception';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
 import ReceptionTable from '@/components/Reception/ReceptionTable';
 import ReceptionForm from '@/components/Reception/ReceptionForm';
 import DeleteReceptionModal from '@/components/Reception/DeleteReceptionModal';
+import CloseReceptionModal from '@/components/Reception/CloseReceptionModal';
 import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { ReceptionFormRef } from '@/components/Reception/ReceptionForm';
@@ -15,6 +17,7 @@ import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function RecepcionesPage() {
+  const router = useRouter();
   const [receptions, setReceptions] = useState<Reception[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,6 +25,7 @@ export default function RecepcionesPage() {
   const [showDrawer, setShowDrawer] = useState(false);
   const [editingReception, setEditingReception] = useState<Reception | null>(null);
   const [receptionToDelete, setReceptionToDelete] = useState<Reception | null>(null);
+  const [receptionToClose, setReceptionToClose] = useState<Reception | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<ReceptionFormRef>(null);
@@ -68,6 +72,29 @@ export default function RecepcionesPage() {
     }
   };
 
+  const handleClose = async () => {
+    if (!receptionToClose) return;
+
+    try {
+      // Aquí deberías llamar al método del servicio para cerrar la recepción
+      // await receptionService.closeReception(receptionToClose.id);
+      toastService.success('Recepción cerrada correctamente');
+      fetchReceptions(currentPage);
+      setReceptionToClose(null);
+    } catch (error) {
+      setReceptionToClose(null);
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error('Error al cerrar la recepción');
+      }
+    }
+  };
+
+  const handleDetails = (reception: Reception) => {
+    router.push(`/dashboard/compras/recepciones/${reception.id}`);
+  };
+
   const handleEdit = (reception: Reception) => {
     setEditingReception(reception);
     setShowDrawer(true);
@@ -92,6 +119,10 @@ export default function RecepcionesPage() {
 
   const openDeleteModal = (reception: Reception) => {
     setReceptionToDelete(reception);
+  };
+
+  const openCloseModal = (reception: Reception) => {
+    setReceptionToClose(reception);
   };
 
   const handlePageChange = (page: number) => {
@@ -162,6 +193,8 @@ export default function RecepcionesPage() {
               receptions={receptions}
               onEdit={handleEdit}
               onDelete={openDeleteModal}
+              onDetails={handleDetails}
+              onClose={openCloseModal}
             />
           </div>
 
@@ -201,6 +234,13 @@ export default function RecepcionesPage() {
         reception={receptionToDelete}
         onClose={() => setReceptionToDelete(null)}
         onConfirm={handleDelete}
+      />
+
+      {/* Modal de confirmación para cerrar */}
+      <CloseReceptionModal
+        reception={receptionToClose}
+        onClose={() => setReceptionToClose(null)}
+        onConfirm={handleClose}
       />
     </div>
   );
