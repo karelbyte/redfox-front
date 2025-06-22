@@ -1,4 +1,5 @@
 import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import { useTranslations } from 'next-intl';
 import { Provider } from "@/types/provider";
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
@@ -36,6 +37,8 @@ interface FormErrors {
 
 const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
   ({ provider, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.providers');
+    
     const [formData, setFormData] = useState<FormData>({
       code: provider?.code || "",
       name: provider?.name || "",
@@ -80,22 +83,22 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
+        newErrors.code = t('form.errors.codeRequired');
         isValid = false;
       }
 
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es requerido';
+        newErrors.name = t('form.errors.nameRequired');
         isValid = false;
       }
 
       if (!formData.description.trim()) {
-        newErrors.description = 'La descripción es requerida';
+        newErrors.description = t('form.errors.descriptionRequired');
         isValid = false;
       }
 
       if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        newErrors.email = 'El email no es válido';
+        newErrors.email = t('form.errors.invalidEmail');
         isValid = false;
       }
 
@@ -129,10 +132,10 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
 
         if (provider) {
           await providersService.updateProvider(provider.id, data);
-          toastService.success("Proveedor actualizado correctamente");
+          toastService.success(t('messages.providerUpdated'));
         } else {
           await providersService.createProvider(data);
-          toastService.success("Proveedor creado correctamente");
+          toastService.success(t('messages.providerCreated'));
         }
         onSuccess();
       } catch (error) {
@@ -141,8 +144,8 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
         } else {
           toastService.error(
             provider
-              ? "Error al actualizar el proveedor"
-              : "Error al crear el proveedor"
+              ? t('messages.errorUpdating')
+              : t('messages.errorCreating')
           );
         }
       } finally {
@@ -159,33 +162,33 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
         <Input
           type="text"
           id="code"
-          label="Código"
+          label={t('form.code')}
           required
           value={formData.code}
           onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-          placeholder="Ej: PROV001"
+          placeholder={t('form.placeholders.code')}
           error={errors.code}
         />
 
         <Input
           type="text"
           id="name"
-          label="Nombre"
+          label={t('form.name')}
           required
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          placeholder="Ej: Proveedor XYZ"
+          placeholder={t('form.placeholders.name')}
           error={errors.name}
         />
 
         <TextArea
           id="description"
-          label="Descripción"
+          label={t('form.description')}
           required
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           rows={3}
-          placeholder="Ej: Proveedor de materiales de construcción"
+          placeholder={t('form.placeholders.description')}
           error={errors.description}
         />
 
@@ -193,44 +196,44 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
           <Input
             type="text"
             id="document"
-            label="Documento"
+            label={t('form.document')}
             value={formData.document}
             onChange={(e) => setFormData(prev => ({ ...prev, document: e.target.value }))}
-            placeholder="Ej: RUC 12345678901"
+            placeholder={t('form.placeholders.document')}
           />
 
           <Input
             type="text"
             id="phone"
-            label="Teléfono"
+            label={t('form.phone')}
             value={formData.phone}
             onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-            placeholder="Ej: +51 987654321"
+            placeholder={t('form.placeholders.phone')}
           />
         </div>
 
         <Input
           type="email"
           id="email"
-          label="Email"
+          label={t('form.email')}
           value={formData.email}
           onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-          placeholder="Ej: contacto@proveedor.com"
+          placeholder={t('form.placeholders.email')}
           error={errors.email}
         />
 
         <TextArea
           id="address"
-          label="Dirección"
+          label={t('form.address')}
           value={formData.address}
           onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
           rows={3}
-          placeholder="Ej: Av. Principal 123, Lima"
+          placeholder={t('form.placeholders.address')}
         />
 
         <Checkbox
           id="status"
-          label="Activo"
+          label={t('form.active')}
           checked={formData.status}
           onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
         />

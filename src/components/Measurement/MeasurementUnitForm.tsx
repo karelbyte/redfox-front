@@ -74,7 +74,6 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
 
     useEffect(() => {
       validateForm();
-     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [validateForm]);
 
     const handleSubmit = async () => {

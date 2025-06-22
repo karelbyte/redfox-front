@@ -16,7 +16,8 @@
       "confirm": "Confirmar",
       "loading": "Cargando...",
       "saving": "Guardando...",
-      "deleting": "Eliminando..."
+      "deleting": "Eliminando...",
+      "logout": "Cerrar sesión"
     },
     "status": {
       "active": "Activo",
@@ -51,6 +52,16 @@
       "searchPlaceholder": "Buscar...",
       "noDataMessage": "No hay datos disponibles",
       "noResultsMessage": "No se encontraron resultados para tu búsqueda"
+    },
+    "userMenu": {
+      "selectTheme": "Seleccionar tema",
+      "selectLanguage": "Seleccionar idioma",
+      "user": "Usuario",
+      "role": "Rol"
+    },
+    "languages": {
+      "es": "Español",
+      "en": "Inglés"
     }
   },
   "navigation": {
@@ -67,12 +78,34 @@
     "inventory": "Inventarios",
     "purchases": "Compras",
     "receptions": "Recepciones",
-    "warehouseOpenings": "Aperturas de Almacén"
+    "warehouseOpenings": "Aperturas de Almacén",
+    "entities": "Entidades",
+    "sales": "Ventas",
+    "settings": "Configuración",
+    "addProduct": "Añadir Producto",
+    "productList": "Lista de Productos",
+    "addWarehouse": "Crear Almacén",
+    "warehouseList": "Lista de almacenes",
+    "createPurchase": "Crear Compra",
+    "purchaseList": "Lista de Compras",
+    "salesList": "Lista de Ventas",
+    "addSale": "Añadir Venta",
+    "pos": "POS",
+    "users": "Usuarios",
+    "roles": "Roles",
+    "emailConfig": "Configuración de Correo",
+    "paymentGateway": "Pasarela de Pago",
+    "backup": "Respaldo"
   },
   "pages": {
     "dashboard": {
       "title": "Dashboard",
-      "description": "Panel de control principal"
+      "description": "Panel de control principal",
+      "userInfo": "Información del usuario",
+      "logout": "Cerrar sesión",
+      "userName": "Nombre",
+      "userEmail": "Email",
+      "userRole": "Rol"
     },
     "warehouses": {
       "title": "Almacenes",
@@ -87,13 +120,78 @@
       "newProduct": "Nuevo Producto",
       "editProduct": "Editar Producto",
       "deleteProduct": "Eliminar Producto",
-      "addProduct": "Añadir Producto",
-      "productDetails": "Detalles del Producto",
-      "productType": "Tipo de Producto",
-      "measurementUnit": "Unidad de Medida",
-      "tax": "Impuesto",
-      "brand": "Marca",
-      "category": "Categoría"
+      "addNewProduct": "Agregar Nuevo Producto",
+      "productInfo": "Información del Producto",
+      "searchProducts": "Buscar productos...",
+      "noProducts": "No hay productos",
+      "noProductsDesc": "Haz clic en 'Nuevo Producto' para agregar uno.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "name": "Nombre",
+        "slug": "Slug",
+        "description": "Descripción",
+        "sku": "SKU",
+        "weight": "Peso",
+        "width": "Ancho",
+        "height": "Alto",
+        "length": "Largo",
+        "measurementUnit": "Unidad de Medida",
+        "category": "Categoría",
+        "brand": "Marca",
+        "tax": "Impuesto",
+        "type": "Tipo",
+        "status": "Estado",
+        "active": "Activo",
+        "images": "Imágenes",
+        "placeholders": {
+          "name": "Ej: Producto XYZ",
+          "slug": "Ej: producto-xyz",
+          "description": "Ej: Descripción del producto",
+          "sku": "Ej: SKU001",
+          "weight": "Ej: 1.5",
+          "width": "Ej: 10",
+          "height": "Ej: 5",
+          "length": "Ej: 15"
+        },
+        "types": {
+          "digital": "Digital",
+          "service": "Servicio",
+          "tangible": "Tangible"
+        },
+        "errors": {
+          "nameRequired": "El nombre es requerido",
+          "slugRequired": "El slug es requerido",
+          "descriptionRequired": "La descripción es requerida",
+          "skuRequired": "El SKU es requerido",
+          "categoryRequired": "La categoría es requerida",
+          "brandRequired": "La marca es requerida",
+          "measurementUnitRequired": "La unidad de medida es requerida",
+          "taxRequired": "El impuesto es requerido",
+          "typeRequired": "El tipo de producto es requerido",
+          "invalidWeight": "El peso debe ser un número válido",
+          "invalidWidth": "El ancho debe ser un número válido",
+          "invalidHeight": "El alto debe ser un número válido",
+          "invalidLength": "El largo debe ser un número válido"
+        }
+      },
+      "table": {
+        "name": "Nombre",
+        "sku": "SKU",
+        "brand": "Marca",
+        "category": "Categoría",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "productCreated": "Producto creado correctamente",
+        "productUpdated": "Producto actualizado correctamente",
+        "productDeleted": "Producto eliminado correctamente",
+        "errorLoading": "Error al cargar los productos",
+        "errorCreating": "Error al crear el producto",
+        "errorUpdating": "Error al actualizar el producto",
+        "errorDeleting": "Error al eliminar el producto",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el producto \"{name}\"? Esta acción no se puede deshacer."
+      }
     },
     "categories": {
       "title": "Categorías",
@@ -135,14 +233,112 @@
       "newProvider": "Nuevo Proveedor",
       "editProvider": "Editar Proveedor",
       "deleteProvider": "Eliminar Proveedor",
-      "providerInfo": "Información del Proveedor"
+      "providerInfo": "Información del Proveedor",
+      "searchProviders": "Buscar proveedores...",
+      "noProviders": "No hay proveedores",
+      "noProvidersDesc": "Haz clic en 'Nuevo Proveedor' para agregar uno.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "document": "Documento",
+        "phone": "Teléfono",
+        "email": "Email",
+        "address": "Dirección",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: PROV001",
+          "name": "Ej: Proveedor XYZ",
+          "description": "Ej: Proveedor de materiales de construcción",
+          "document": "Ej: RUC 12345678901",
+          "phone": "Ej: +51 987654321",
+          "email": "Ej: contacto@proveedor.com",
+          "address": "Ej: Av. Principal 123, Lima"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "nameRequired": "El nombre es requerido",
+          "descriptionRequired": "La descripción es requerida",
+          "invalidEmail": "El email no es válido"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "email": "Email",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "providerCreated": "Proveedor creado correctamente",
+        "providerUpdated": "Proveedor actualizado correctamente",
+        "providerDeleted": "Proveedor eliminado correctamente",
+        "errorLoading": "Error al cargar los proveedores",
+        "errorCreating": "Error al crear el proveedor",
+        "errorUpdating": "Error al actualizar el proveedor",
+        "errorDeleting": "Error al eliminar el proveedor",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el proveedor \"{name}\"? Esta acción no se puede deshacer."
+      }
     },
     "clients": {
       "title": "Clientes",
       "newClient": "Nuevo Cliente",
       "editClient": "Editar Cliente",
       "deleteClient": "Eliminar Cliente",
-      "clientInfo": "Información del Cliente"
+      "clientInfo": "Información del Cliente",
+      "searchClients": "Buscar clientes...",
+      "noClients": "No hay clientes",
+      "noClientsDesc": "Haz clic en 'Nuevo Cliente' para agregar uno.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "phone": "Teléfono",
+        "email": "Email",
+        "address": "Dirección",
+        "taxDocument": "Documento Fiscal",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: CLI001",
+          "name": "Ej: Cliente XYZ",
+          "description": "Ej: Cliente general",
+          "phone": "Ej: +51 987654321",
+          "email": "Ej: contacto@cliente.com",
+          "address": "Ej: Av. Principal 123, Lima",
+          "taxDocument": "Ej: RUC 20123456789"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "nameRequired": "El nombre es requerido",
+          "descriptionRequired": "La descripción es requerida",
+          "taxDocumentRequired": "El documento fiscal es requerido",
+          "invalidEmail": "El email no es válido"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "email": "Email",
+        "taxDocument": "Documento Fiscal",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "clientCreated": "Cliente creado correctamente",
+        "clientUpdated": "Cliente actualizado correctamente",
+        "clientDeleted": "Cliente eliminado correctamente",
+        "errorLoading": "Error al cargar los clientes",
+        "errorCreating": "Error al crear el cliente",
+        "errorUpdating": "Error al actualizar el cliente",
+        "errorDeleting": "Error al eliminar el cliente",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el cliente \"{name}\"? Esta acción no se puede deshacer."
+      }
     },
     "inventory": {
       "title": "Inventarios",

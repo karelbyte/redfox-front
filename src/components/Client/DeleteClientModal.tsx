@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
@@ -17,6 +18,8 @@ const DeleteClientModal = ({
   onSuccess,
   onDeletingChange,
 }: DeleteClientModalProps) => {
+  const t = useTranslations('pages.clients');
+  const tCommon = useTranslations('common');
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -26,13 +29,13 @@ const DeleteClientModal = ({
       setIsDeleting(true);
       onDeletingChange(true);
       await clientsService.deleteClient(client.id);
-      toastService.success("Cliente eliminado correctamente");
+      toastService.success(t('messages.clientDeleted'));
       onSuccess();
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al eliminar el cliente");
+        toastService.error(t('messages.errorDeleting'));
       }
     } finally {
       setIsDeleting(false);
@@ -69,11 +72,11 @@ const DeleteClientModal = ({
             </div>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Eliminar Cliente
+                {t('deleteClient')}
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar el cliente &quot;{client.name}&quot;? Esta acción no se puede deshacer.
+                  {t('messages.confirmDelete', { name: client.name })}
                 </p>
               </div>
             </div>
@@ -86,7 +89,7 @@ const DeleteClientModal = ({
               loading={isDeleting}
               className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
             >
-              Eliminar
+              {tCommon('actions.delete')}
             </Btn>
             <Btn
               variant="outline"
@@ -94,7 +97,7 @@ const DeleteClientModal = ({
               disabled={isDeleting}
               className="mt-3 inline-flex w-full justify-center text-sm sm:mt-0 sm:w-auto"
             >
-              Cancelar
+              {tCommon('actions.cancel')}
             </Btn>
           </div>
         </div>

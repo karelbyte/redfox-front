@@ -1,4 +1,5 @@
 import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
@@ -37,6 +38,8 @@ interface FormErrors {
 
 const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
   ({ client, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.clients');
+    
     const [formData, setFormData] = useState<FormData>({
       code: client?.code || "",
       name: client?.name || "",
@@ -81,22 +84,22 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = "El código es requerido";
+        newErrors.code = t('form.errors.codeRequired');
         isValid = false;
       }
 
       if (!formData.name.trim()) {
-        newErrors.name = "El nombre es requerido";
+        newErrors.name = t('form.errors.nameRequired');
         isValid = false;
       }
 
       if (!formData.description.trim()) {
-        newErrors.description = "La descripción es requerida";
+        newErrors.description = t('form.errors.descriptionRequired');
         isValid = false;
       }
 
       if (!formData.tax_document.trim()) {
-        newErrors.tax_document = "El documento fiscal es requerido";
+        newErrors.tax_document = t('form.errors.taxDocumentRequired');
         isValid = false;
       }
 
@@ -104,7 +107,7 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
         formData.email &&
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
       ) {
-        newErrors.email = "El email no es válido";
+        newErrors.email = t('form.errors.invalidEmail');
         isValid = false;
       }
 
@@ -138,10 +141,10 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
 
         if (client) {
           await clientsService.updateClient(client.id, data);
-          toastService.success("Cliente actualizado correctamente");
+          toastService.success(t('messages.clientUpdated'));
         } else {
           await clientsService.createClient(data);
-          toastService.success("Cliente creado correctamente");
+          toastService.success(t('messages.clientCreated'));
         }
         onSuccess();
       } catch (error) {
@@ -150,8 +153,8 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
         } else {
           toastService.error(
             client
-              ? "Error al actualizar el cliente"
-              : "Error al crear el cliente"
+              ? t('messages.errorUpdating')
+              : t('messages.errorCreating')
           );
         }
       } finally {
@@ -168,39 +171,39 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
         <Input
           type="text"
           id="code"
-          label="Código"
+          label={t('form.code')}
           required
           value={formData.code}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, code: e.target.value }))
           }
-          placeholder="Ej: CLI001"
+          placeholder={t('form.placeholders.code')}
           error={errors.code}
         />
 
         <Input
           type="text"
           id="name"
-          label="Nombre"
+          label={t('form.name')}
           required
           value={formData.name}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, name: e.target.value }))
           }
-          placeholder="Ej: Cliente XYZ"
+          placeholder={t('form.placeholders.name')}
           error={errors.name}
         />
 
         <TextArea
           id="description"
-          label="Descripción"
+          label={t('form.description')}
           required
           value={formData.description}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, description: e.target.value }))
           }
           rows={3}
-          placeholder="Ej: Cliente general"
+          placeholder={t('form.placeholders.description')}
           error={errors.description}
         />
 
@@ -208,54 +211,54 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           <Input
             type="text"
             id="phone"
-            label="Teléfono"
+            label={t('form.phone')}
             value={formData.phone}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, phone: e.target.value }))
             }
-            placeholder="Ej: +51 987654321"
+            placeholder={t('form.placeholders.phone')}
           />
 
           <Input
             type="email"
             id="email"
-            label="Email"
+            label={t('form.email')}
             value={formData.email}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, email: e.target.value }))
             }
-            placeholder="Ej: contacto@cliente.com"
+            placeholder={t('form.placeholders.email')}
             error={errors.email}
           />
         </div>
 
         <TextArea
           id="address"
-          label="Dirección"
+          label={t('form.address')}
           value={formData.address}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, address: e.target.value }))
           }
           rows={3}
-          placeholder="Ej: Av. Principal 123, Lima"
+          placeholder={t('form.placeholders.address')}
         />
 
         <Input
           type="text"
           id="tax_document"
-          label="Documento Fiscal"
+          label={t('form.taxDocument')}
           required
           value={formData.tax_document}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, tax_document: e.target.value }))
           }
-          placeholder="Ej: RUC 20123456789"
+          placeholder={t('form.placeholders.taxDocument')}
           error={errors.tax_document}
         />
 
         <Checkbox
           id="status"
-          label="Activo"
+          label={t('form.active')}
           checked={formData.status}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, status: e.target.checked }))

@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
@@ -9,6 +10,9 @@ interface ClientTableProps {
 }
 
 export default function ClientTable({ clients, onEdit, onDelete }: ClientTableProps) {
+  const t = useTranslations('pages.clients');
+  const tCommon = useTranslations('common');
+
   if (!Array.isArray(clients)) {
     return null;
   }
@@ -27,43 +31,43 @@ export default function ClientTable({ clients, onEdit, onDelete }: ClientTablePr
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Código
+              {t('table.code')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Nombre
+              {t('table.name')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Descripción
+              {t('table.description')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Email
+              {t('table.email')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Documento Fiscal
+              {t('table.taxDocument')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Estado
+              {t('table.status')}
             </th>
             <th 
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -93,7 +97,7 @@ export default function ClientTable({ clients, onEdit, onDelete }: ClientTablePr
                       : "bg-red-100 text-red-800"
                   }`}
                 >
-                  {client.status ? "Activo" : "Inactivo"}
+                  {client.status ? tCommon('status.active') : tCommon('status.inactive')}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -103,14 +107,14 @@ export default function ClientTable({ clients, onEdit, onDelete }: ClientTablePr
                     size="sm"
                     onClick={() => onEdit(client)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={tCommon('actions.edit')}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(client)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={tCommon('actions.delete')}
                     style={{ color: '#dc2626' }}
                   /> 
                 </div>

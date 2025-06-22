@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from 'next-intl';
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
 import { Provider } from "@/types/provider";
@@ -15,6 +16,7 @@ import Loading from '@/components/Loading/Loading';
 import Pagination from "@/components/Pagination/Pagination";
 
 export default function ProvidersPage() {
+  const t = useTranslations('pages.providers');
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -44,7 +46,7 @@ export default function ProvidersPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al cargar los proveedores");
+        toastService.error(t('messages.errorLoading'));
       }
     } finally {
       setIsLoading(false);
@@ -98,7 +100,7 @@ export default function ProvidersPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          Proveedores
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -107,14 +109,14 @@ export default function ProvidersPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nuevo Proveedor
+          {t('newProvider')}
         </Btn>
       </div>
 
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar proveedores..."
+          placeholder={t('searchProviders')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchProviders(1, term);
@@ -129,9 +131,9 @@ export default function ProvidersPage() {
       ) : providers && providers.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay proveedores"
-          description="Haz clic en 'Nuevo Proveedor' para agregar uno."
-          searchDescription="No se encontraron resultados"
+          title={t('noProviders')}
+          description={t('noProvidersDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -158,7 +160,7 @@ export default function ProvidersPage() {
         id="provider-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={selectedProvider ? "Editar Proveedor" : "Nuevo Proveedor"}
+        title={selectedProvider ? t('editProvider') : t('newProvider')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}

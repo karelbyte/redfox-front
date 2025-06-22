@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Product } from '@/types/product';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
@@ -15,6 +16,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 
 export default function ListProductsPage() {
+  const t = useTranslations('pages.products');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +45,7 @@ export default function ListProductsPage() {
       }
     } catch (err) {
       console.error('Error fetching products:', err);
-      toastService.error("Error al cargar los productos");
+      toastService.error(t('messages.errorLoading'));
     } finally {
       setLoading(false);
     }
@@ -62,7 +64,7 @@ export default function ListProductsPage() {
 
     try {
       await productService.deleteProduct(productToDelete.id);
-      toastService.success('Producto eliminado correctamente');
+      toastService.success(t('messages.productDeleted'));
       fetchProducts(currentPage, searchTerm);
       setProductToDelete(null);
     } catch (error) {
@@ -101,7 +103,7 @@ export default function ListProductsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          Productos
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -110,14 +112,14 @@ export default function ListProductsPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nuevo Producto
+          {t('newProduct')}
         </Btn>
       </div>
 
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar productos..."
+          placeholder={t('searchProducts')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchProducts(1, term);
@@ -132,9 +134,9 @@ export default function ListProductsPage() {
       ) : products && products.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay productos"
-          description="Haz clic en 'Nuevo Producto' para agregar uno."
-          searchDescription="No se encontraron resultados"
+          title={t('noProducts')}
+          description={t('noProductsDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -162,7 +164,7 @@ export default function ListProductsPage() {
         id="product-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
+        title={editingProduct ? t('editProduct') : t('newProduct')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}

@@ -16,7 +16,8 @@
       "confirm": "Confirm",
       "loading": "Loading...",
       "saving": "Saving...",
-      "deleting": "Deleting..."
+      "deleting": "Deleting...",
+      "logout": "Logout"
     },
     "status": {
       "active": "Active",
@@ -51,6 +52,16 @@
       "searchPlaceholder": "Search...",
       "noDataMessage": "No data available",
       "noResultsMessage": "No results found for your search"
+    },
+    "userMenu": {
+      "selectTheme": "Select theme",
+      "selectLanguage": "Select language",
+      "user": "User",
+      "role": "Role"
+    },
+    "languages": {
+      "es": "Spanish",
+      "en": "English"
     }
   },
   "navigation": {
@@ -67,12 +78,34 @@
     "inventory": "Inventory",
     "purchases": "Purchases",
     "receptions": "Receptions",
-    "warehouseOpenings": "Warehouse Openings"
+    "warehouseOpenings": "Warehouse Openings",
+    "entities": "Entities",
+    "sales": "Sales",
+    "settings": "Settings",
+    "addProduct": "Add Product",
+    "productList": "Product List",
+    "addWarehouse": "Create Warehouse",
+    "warehouseList": "Warehouse List",
+    "createPurchase": "Create Purchase",
+    "purchaseList": "Purchase List",
+    "salesList": "Sales List",
+    "addSale": "Add Sale",
+    "pos": "POS",
+    "users": "Users",
+    "roles": "Roles",
+    "emailConfig": "Email Configuration",
+    "paymentGateway": "Payment Gateway",
+    "backup": "Backup"
   },
   "pages": {
     "dashboard": {
       "title": "Dashboard",
-      "description": "Main control panel"
+      "description": "Main control panel",
+      "userInfo": "User Information",
+      "logout": "Logout",
+      "userName": "Name",
+      "userEmail": "Email",
+      "userRole": "Role"
     },
     "warehouses": {
       "title": "Warehouses",
@@ -87,13 +120,78 @@
       "newProduct": "New Product",
       "editProduct": "Edit Product",
       "deleteProduct": "Delete Product",
-      "addProduct": "Add Product",
-      "productDetails": "Product Details",
-      "productType": "Product Type",
-      "measurementUnit": "Measurement Unit",
-      "tax": "Tax",
-      "brand": "Brand",
-      "category": "Category"
+      "addNewProduct": "Add New Product",
+      "productInfo": "Product Information",
+      "searchProducts": "Search products...",
+      "noProducts": "No products",
+      "noProductsDesc": "Click on 'New Product' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "name": "Name",
+        "slug": "Slug",
+        "description": "Description",
+        "sku": "SKU",
+        "weight": "Weight",
+        "width": "Width",
+        "height": "Height",
+        "length": "Length",
+        "measurementUnit": "Measurement Unit",
+        "category": "Category",
+        "brand": "Brand",
+        "tax": "Tax",
+        "type": "Type",
+        "status": "Status",
+        "active": "Active",
+        "images": "Images",
+        "placeholders": {
+          "name": "Ex: Product XYZ",
+          "slug": "Ex: product-xyz",
+          "description": "Ex: Product description",
+          "sku": "Ex: SKU001",
+          "weight": "Ex: 1.5",
+          "width": "Ex: 10",
+          "height": "Ex: 5",
+          "length": "Ex: 15"
+        },
+        "types": {
+          "digital": "Digital",
+          "service": "Service",
+          "tangible": "Tangible"
+        },
+        "errors": {
+          "nameRequired": "Name is required",
+          "slugRequired": "Slug is required",
+          "descriptionRequired": "Description is required",
+          "skuRequired": "SKU is required",
+          "categoryRequired": "Category is required",
+          "brandRequired": "Brand is required",
+          "measurementUnitRequired": "Measurement unit is required",
+          "taxRequired": "Tax is required",
+          "typeRequired": "Product type is required",
+          "invalidWeight": "Weight must be a valid number",
+          "invalidWidth": "Width must be a valid number",
+          "invalidHeight": "Height must be a valid number",
+          "invalidLength": "Length must be a valid number"
+        }
+      },
+      "table": {
+        "name": "Name",
+        "sku": "SKU",
+        "brand": "Brand",
+        "category": "Category",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "productCreated": "Product created successfully",
+        "productUpdated": "Product updated successfully",
+        "productDeleted": "Product deleted successfully",
+        "errorLoading": "Error loading products",
+        "errorCreating": "Error creating product",
+        "errorUpdating": "Error updating product",
+        "errorDeleting": "Error deleting product",
+        "confirmDelete": "Are you sure you want to delete the product \"{name}\"? This action cannot be undone."
+      }
     },
     "categories": {
       "title": "Categories",
@@ -135,14 +233,112 @@
       "newProvider": "New Provider",
       "editProvider": "Edit Provider",
       "deleteProvider": "Delete Provider",
-      "providerInfo": "Provider Information"
+      "providerInfo": "Provider Information",
+      "searchProviders": "Search providers...",
+      "noProviders": "No providers",
+      "noProvidersDesc": "Click on 'New Provider' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "document": "Document",
+        "phone": "Phone",
+        "email": "Email",
+        "address": "Address",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: PROV001",
+          "name": "Ex: Provider XYZ",
+          "description": "Ex: Construction materials provider",
+          "document": "Ex: RUC 12345678901",
+          "phone": "Ex: +51 987654321",
+          "email": "Ex: contact@provider.com",
+          "address": "Ex: Main St 123, Lima"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "nameRequired": "Name is required",
+          "descriptionRequired": "Description is required",
+          "invalidEmail": "Email is not valid"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "email": "Email",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "providerCreated": "Provider created successfully",
+        "providerUpdated": "Provider updated successfully",
+        "providerDeleted": "Provider deleted successfully",
+        "errorLoading": "Error loading providers",
+        "errorCreating": "Error creating provider",
+        "errorUpdating": "Error updating provider",
+        "errorDeleting": "Error deleting provider",
+        "confirmDelete": "Are you sure you want to delete the provider \"{name}\"? This action cannot be undone."
+      }
     },
     "clients": {
       "title": "Clients",
       "newClient": "New Client",
       "editClient": "Edit Client",
       "deleteClient": "Delete Client",
-      "clientInfo": "Client Information"
+      "clientInfo": "Client Information",
+      "searchClients": "Search clients...",
+      "noClients": "No clients",
+      "noClientsDesc": "Click on 'New Client' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "phone": "Phone",
+        "email": "Email",
+        "address": "Address",
+        "taxDocument": "Tax Document",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: CLI001",
+          "name": "Ex: Client XYZ",
+          "description": "Ex: General client",
+          "phone": "Ex: +51 987654321",
+          "email": "Ex: contact@client.com",
+          "address": "Ex: Main St 123, Lima",
+          "taxDocument": "Ex: RUC 20123456789"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "nameRequired": "Name is required",
+          "descriptionRequired": "Description is required",
+          "taxDocumentRequired": "Tax document is required",
+          "invalidEmail": "Email is not valid"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "email": "Email",
+        "taxDocument": "Tax Document",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "clientCreated": "Client created successfully",
+        "clientUpdated": "Client updated successfully",
+        "clientDeleted": "Client deleted successfully",
+        "errorLoading": "Error loading clients",
+        "errorCreating": "Error creating client",
+        "errorUpdating": "Error updating client",
+        "errorDeleting": "Error deleting client",
+        "confirmDelete": "Are you sure you want to delete the client \"{name}\"? This action cannot be undone."
+      }
     },
     "inventory": {
       "title": "Inventory",

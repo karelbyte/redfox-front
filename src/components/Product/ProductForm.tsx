@@ -8,6 +8,7 @@ import {
   useRef,
   useCallback,
 } from "react";
+import { useTranslations } from 'next-intl';
 import { productService } from "@/services/products.service";
 import { toastService } from "@/services/toast.service";
 import { Product, ProductFormData } from "@/types/product";
@@ -74,6 +75,8 @@ interface FormErrors {
 
 const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
   ({ product, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.products');
+    
     const [formData, setFormData] = useState<ProductFormData>({
       name: "",
       slug: "",
@@ -236,49 +239,49 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       }
     }, [product]);
 
-    const validateForm = useCallback((): boolean => {
+    const validateForm = useCallback(() => {
       const newErrors: FormErrors = {};
       let isValid = true;
 
       if (!formData.name.trim()) {
-        newErrors.name = "El nombre es requerido";
+        newErrors.name = t('form.errors.nameRequired');
         isValid = false;
       }
 
       if (!formData.sku.trim()) {
-        newErrors.sku = "El SKU es requerido";
+        newErrors.sku = t('form.errors.skuRequired');
         isValid = false;
       }
 
       if (!formData.brand_id) {
-        newErrors.brand_id = "La marca es requerida";
+        newErrors.brand_id = t('form.errors.brandRequired');
         isValid = false;
       }
 
       if (!formData.category_id) {
-        newErrors.category_id = "La categoría es requerida";
+        newErrors.category_id = t('form.errors.categoryRequired');
         isValid = false;
       }
 
       if (!formData.measurement_unit_id) {
-        newErrors.measurement_unit_id = "La unidad de medida es requerida";
+        newErrors.measurement_unit_id = t('form.errors.measurementUnitRequired');
         isValid = false;
       }
 
       if (!formData.tax_id) {
-        newErrors.tax_id = "El impuesto es requerido";
+        newErrors.tax_id = t('form.errors.taxRequired');
         isValid = false;
       }
 
       if (!formData.type) {
-        newErrors.type = "El tipo de producto es requerido";
+        newErrors.type = t('form.errors.typeRequired');
         isValid = false;
       }
 
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
-    }, [formData, onValidChange]);
+    }, [formData, onValidChange, t]);
 
     useEffect(() => {
       validateForm();
@@ -307,8 +310,10 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             data,
             images as File[]
           );
+          toastService.success(t('messages.productUpdated'));
         } else {
           await productService.createProduct(data, images as File[]);
+          toastService.success(t('messages.productCreated'));
         }
 
         onSuccess();
@@ -316,7 +321,11 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error("Error al guardar el producto");
+          toastService.error(
+            product
+              ? t('messages.errorUpdating')
+              : t('messages.errorCreating')
+          );
         }
       } finally {
         onSavingChange?.(false);
@@ -415,9 +424,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     }));
 
     const productTypeOptions = [
-      { value: ProductType.TANGIBLE, label: "Tangible" },
-      { value: ProductType.DIGITAL, label: "Digital" },
-      { value: ProductType.SERVICE, label: "Servicio" },
+      { value: ProductType.TANGIBLE, label: t('form.types.tangible') },
+      { value: ProductType.DIGITAL, label: t('form.types.digital') },
+      { value: ProductType.SERVICE, label: t('form.types.service') },
     ];
 
     return (
@@ -427,26 +436,26 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             <Input
               type="text"
               id="name"
-              label="Nombre"
+              label={t('form.name')}
               required
               value={formData.name}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              placeholder="Ej: iPhone 15 Pro"
+              placeholder={t('form.placeholders.name')}
               error={errors.name}
             />
 
             <Input
               type="text"
               id="sku"
-              label="SKU"
+              label={t('form.sku')}
               required
               value={formData.sku}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, sku: e.target.value }))
               }
-              placeholder="Ej: IPH15PRO-256"
+              placeholder={t('form.placeholders.sku')}
               error={errors.sku}
             />
 
@@ -456,7 +465,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   type="number"
                   step="0.01"
                   id="weight"
-                  label="Peso (kg)"
+                  label={t('form.weight')}
                   value={formData.weight}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -471,7 +480,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   type="number"
                   step="0.01"
                   id="width"
-                  label="Ancho (m)"
+                  label={t('form.width')}
                   value={formData.width}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -486,7 +495,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   type="number"
                   step="0.01"
                   id="height"
-                  label="Alto (m)"
+                  label={t('form.height')}
                   value={formData.height}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -501,7 +510,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   type="number"
                   step="0.01"
                   id="length"
-                  label="Largo (m)"
+                  label={t('form.length')}
                   value={formData.length}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -514,139 +523,111 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               </div>
             </div>
 
-            <div className="col-span-2">
-              <div className="grid grid-cols-3 gap-4">
-                <SelectWithAddScrolled
-                  id="brand"
-                  label="Marca"
-                  value={formData.brand_id}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      brand_id: e.target.value,
-                    }))
-                  }
-                  options={brands.map((brand) => ({
-                    value: brand.id,
-                    label: `${brand.code} - ${brand.description}`,
-                  }))}
-                  required
-                  placeholder="Seleccione una marca"
-                  error={errors.brand_id}
-                  showAddButton={true}
-                  onAddClick={() => setShowBrandDrawer(true)}
-                  addButtonTitle="Crear nueva marca"
-                />
+            <TextArea
+              id="description"
+              label={t('form.description')}
+              value={formData.description}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, description: e.target.value }))
+              }
+              rows={3}
+              placeholder={t('form.placeholders.description')}
+              error={errors.description}
+            />
 
-                <SelectWithAddScrolled
-                  id="category"
-                  label="Categoría"
-                  value={formData.category_id}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      category_id: e.target.value,
-                    }))
-                  }
-                  options={categories.map((category) => ({
-                    value: category.id,
-                    label: category.name,
-                  }))}
-                  placeholder="Seleccione una categoría"
-                  required
-                  error={errors.category_id}
-                  showAddButton
-                  onAddClick={() => setShowCategoryDrawer(true)}
-                  addButtonTitle="Crear nueva categoría"
-                />
+            <Select
+              id="type"
+              label={t('form.type')}
+              value={formData.type}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, type: e.target.value as ProductType }))
+              }
+              options={productTypeOptions}
+              error={errors.type}
+            />
 
-                <SelectWithAddScrolled
-                  id="measurement_unit"
-                  label="Unidad de Medida"
-                  value={formData.measurement_unit_id}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      measurement_unit_id: e.target.value,
-                    }))
-                  }
-                  options={measurementUnits.map((unit) => ({
-                    value: unit.id,
-                    label: `${unit.code} - ${unit.description}`,
-                  }))}
-                  placeholder="Seleccione una unidad"
-                  required
-                  error={errors.measurement_unit_id}
-                  showAddButton
-                  onAddClick={() => setShowMeasurementUnitDrawer(true)}
-                  addButtonTitle="Crear nueva unidad de medida"
-                />
-              </div>
-            </div>
+            <SelectWithAddScrolled
+              id="brand_id"
+              label={t('form.brand')}
+              value={formData.brand_id}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, brand_id: e.target.value }))
+              }
+              options={brands.map((brand) => ({
+                value: brand.id.toString(),
+                label: brand.description,
+              }))}
+              onAddNew={() => setShowBrandDrawer(true)}
+              error={errors.brand_id}
+            />
 
-            <div className="col-span-2">
-              <div className="grid grid-cols-2 gap-4">
-                <SelectWithAddScrolled
-                  id="tax"
-                  label="Impuesto"
-                  value={formData.tax_id}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, tax_id: e.target.value }))
-                  }
-                  options={taxes.map((tax) => ({
-                    value: tax.id,
-                    label: `${tax.name} (${tax.value}${
-                      tax.type === TaxType.PERCENTAGE ? "%" : " fijo"
-                    })`,
-                  }))}
-                  placeholder="Seleccione un impuesto"
-                  required
-                  error={errors.tax_id}
-                  showAddButton
-                  onAddClick={() => setShowTaxDrawer(true)}
-                  addButtonTitle="Crear nuevo impuesto"
-                />
+            <SelectWithAddScrolled
+              id="category_id"
+              label={t('form.category')}
+              value={formData.category_id}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, category_id: e.target.value }))
+              }
+              options={categories.map((category) => ({
+                value: category.id.toString(),
+                label: category.name,
+              }))}
+              onAddNew={() => setShowCategoryDrawer(true)}
+              error={errors.category_id}
+            />
 
-                <Select
-                  id="type"
-                  label="Tipo de Producto"
-                  value={formData.type}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      type: e.target.value as ProductType,
-                    }))
-                  }
-                  options={productTypeOptions}
-                  required
-                  error={errors.type}
-                />
-              </div>
-            </div>
+            <SelectWithAddScrolled
+              id="measurement_unit_id"
+              label={t('form.measurementUnit')}
+              value={formData.measurement_unit_id}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  measurement_unit_id: e.target.value,
+                }))
+              }
+              options={measurementUnits.map((unit) => ({
+                value: unit.id.toString(),
+                label: unit.description,
+              }))}
+              onAddNew={() => setShowMeasurementUnitDrawer(true)}
+              error={errors.measurement_unit_id}
+            />
+
+            <SelectWithAddScrolled
+              id="tax_id"
+              label={t('form.tax')}
+              value={formData.tax_id}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, tax_id: e.target.value }))
+              }
+              options={taxes.map((tax) => ({
+                value: tax.id.toString(),
+                label: `${tax.name} (${tax.value}%)`,
+              }))}
+              onAddNew={() => setShowTaxDrawer(true)}
+              error={errors.tax_id}
+            />
+
+            <Checkbox
+              id="is_active"
+              label={t('form.active')}
+              checked={formData.is_active}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, is_active: e.target.checked }))
+              }
+            />
           </div>
 
-          <TextArea
-            id="description"
-            label="Descripción"
-            value={formData.description}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, description: e.target.value }))
-            }
-            placeholder="Descripción del producto"
-            rows={2}
-            error={errors.description}
-          />
-
-          <ImageCarousel images={images as File[]} onChange={setImages} />
-
-          <Checkbox
-            id="isActive"
-            label="Activo"
-            checked={formData.is_active}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, is_active: e.target.checked }))
-            }
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('form.images')}
+            </label>
+            <ImageCarousel
+              images={images}
+              onChange={setImages}
+            />
+          </div>
         </form>
 
         {/* Drawer para crear marcas */}

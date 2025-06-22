@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
@@ -15,6 +16,8 @@ import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
 
 export default function ClientsPage() {
+  const t = useTranslations('pages.clients');
+  
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -44,7 +47,7 @@ export default function ClientsPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al cargar los clientes");
+        toastService.error(t('messages.errorLoading'));
       }
     } finally {
       setIsLoading(false);
@@ -101,7 +104,7 @@ export default function ClientsPage() {
           className="text-xl font-semibold"
           style={{ color: `rgb(var(--color-primary-800))` }}
         >
-          Clientes
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -110,13 +113,13 @@ export default function ClientsPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nuevo Cliente
+          {t('newClient')}
         </Btn>
       </div>
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar clientes..."
+          placeholder={t('searchClients')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchClients(1, term);
@@ -130,9 +133,9 @@ export default function ClientsPage() {
       ) : clients && clients.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay clientes"
-          description="Haz clic en 'Nuevo Cliente' para agregar uno."
-          searchDescription="No se encontraron resultados"
+          title={t('noClients')}
+          description={t('noClientsDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -158,7 +161,7 @@ export default function ClientsPage() {
         id="client-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={selectedClient ? "Editar Cliente" : "Nuevo Cliente"}
+        title={selectedClient ? t('editClient') : t('newClient')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}

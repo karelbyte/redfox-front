@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface MenuItem {
   name: string;
@@ -19,6 +19,7 @@ interface MenuItem {
 export function SideMenu() {
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations('navigation');
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
   const toggleSubmenu = (path: string) => {
@@ -30,7 +31,7 @@ export function SideMenu() {
 
   const menuItems: MenuItem[] = [
     {
-      name: 'Dashboard',
+      name: t('dashboard'),
       path: getLocalizedPath('/dashboard'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +40,7 @@ export function SideMenu() {
       ),
     },
     {
-      name: 'Entidades',
+      name: t('entities'),
       path: getLocalizedPath('/dashboard/entidades'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +49,7 @@ export function SideMenu() {
       ),
       subItems: [
         {
-          name: 'Clientes',
+          name: t('clients'),
           path: getLocalizedPath('/dashboard/clientes'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +58,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Proveedores',
+          name: t('providers'),
           path: getLocalizedPath('/dashboard/proveedores'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +69,7 @@ export function SideMenu() {
       ],
     },
     {
-      name: 'Productos',
+      name: t('products'),
       path: getLocalizedPath('/dashboard/productos'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +78,7 @@ export function SideMenu() {
       ),
       subItems: [
         {
-          name: 'Añadir Producto',
+          name: t('addProduct'),
           path: getLocalizedPath('/dashboard/productos/agregar-producto'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,7 +87,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Lista de Productos',
+          name: t('productList'),
           path: getLocalizedPath('/dashboard/productos/lista-de-productos'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +96,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Unidades de Medida',
+          name: t('measurementUnits'),
           path: getLocalizedPath('/dashboard/productos/unidades-medida'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +105,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Categorías',
+          name: t('categories'),
           path: getLocalizedPath('/dashboard/productos/categorias'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +114,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Marcas',
+          name: t('brands'),
           path: getLocalizedPath('/dashboard/productos/marcas'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +123,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Impuestos',
+          name: t('taxes'),
           path: getLocalizedPath('/dashboard/productos/impuestos'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +132,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Monedas',
+          name: t('currencies'),
           path: getLocalizedPath('/dashboard/productos/monedas'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +143,7 @@ export function SideMenu() {
       ],
     },
     {
-      name: 'Almacenes',
+      name: t('warehouses'),
       path: getLocalizedPath('/dashboard/almacenes'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +152,7 @@ export function SideMenu() {
       ),
       subItems: [
         {
-          name: 'Crear Almacén',
+          name: t('addWarehouse'),
           path: getLocalizedPath('/dashboard/almacenes/agregar-almacen'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +161,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Lista de almacenes',
+          name: t('warehouseList'),
           path: getLocalizedPath('/dashboard/almacenes/lista-de-almacenes'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,7 +172,7 @@ export function SideMenu() {
       ],
     },
     {
-      name: 'Inventarios',
+      name: t('inventory'),
       path: getLocalizedPath('/dashboard/inventarios'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,7 +181,7 @@ export function SideMenu() {
       ),
     },
     {
-      name: 'Compras',
+      name: t('purchases'),
       path: getLocalizedPath('/dashboard/compras'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,7 +190,7 @@ export function SideMenu() {
       ),
       subItems: [
         {
-          name: 'Crear Compra',
+          name: t('createPurchase'),
           path: getLocalizedPath('/dashboard/compras/crear-compra'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -198,7 +199,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Lista de Compras',
+          name: t('purchaseList'),
           path: getLocalizedPath('/dashboard/compras/lista-de-compras'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,7 +208,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Recepciones',
+          name: t('receptions'),
           path: getLocalizedPath('/dashboard/compras/recepciones'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,7 +219,7 @@ export function SideMenu() {
       ],
     },
     {
-      name: 'Ventas',
+      name: t('sales'),
       path: getLocalizedPath('/dashboard/ventas'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,7 +228,7 @@ export function SideMenu() {
       ),
       subItems: [
         {
-          name: 'Lista de Ventas',
+          name: t('salesList'),
           path: getLocalizedPath('/dashboard/ventas'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +237,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Añadir Venta',
+          name: t('addSale'),
           path: getLocalizedPath('/dashboard/ventas/agregar-venta'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -245,7 +246,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'POS',
+          name: t('pos'),
           path: getLocalizedPath('/dashboard/ventas/pos'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -256,7 +257,7 @@ export function SideMenu() {
       ],
     },
     {
-      name: 'Configuración',
+      name: t('settings'),
       path: getLocalizedPath('/dashboard/configuracion'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,7 +267,7 @@ export function SideMenu() {
       ),
       subItems: [
         {
-          name: 'Usuarios',
+          name: t('users'),
           path: getLocalizedPath('/dashboard/configuracion/usuarios'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,7 +276,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Roles',
+          name: t('roles'),
           path: getLocalizedPath('/dashboard/configuracion/roles'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -284,7 +285,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Configuración de Correo',
+          name: t('emailConfig'),
           path: getLocalizedPath('/dashboard/configuracion/correo'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,7 +294,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Pasarela de Pago',
+          name: t('paymentGateway'),
           path: getLocalizedPath('/dashboard/configuracion/pasarela-pago'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -302,7 +303,7 @@ export function SideMenu() {
           ),
         },
         {
-          name: 'Respaldo',
+          name: t('backup'),
           path: getLocalizedPath('/dashboard/configuracion/respaldo'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

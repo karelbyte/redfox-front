@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import ProductForm from '@/components/Product/ProductForm';
 import { Product } from '@/types/product';
 import { ProductFormRef } from '@/components/Product/ProductForm';
@@ -7,6 +8,8 @@ import { toastService } from '@/services/toast.service';
 import { Btn } from '@/components/atoms';
 
 export default function AgregarProductoPage() {
+  const t = useTranslations('pages.products');
+  const tCommon = useTranslations('common');
   const [product] = useState<Product | null>(null);
   const formRef = useRef<ProductFormRef>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -19,7 +22,7 @@ export default function AgregarProductoPage() {
   };
 
   const handleOnSuccess = () => {
-    toastService.success('Producto creado correctamente');
+    toastService.success(t('messages.productCreated'));
     if (formRef.current) {
       formRef.current.reset();
     }
@@ -32,7 +35,7 @@ export default function AgregarProductoPage() {
           className="text-2xl font-bold"
           style={{ color: `rgb(var(--color-primary-800))` }}
         >
-          Agregar Nuevo Producto
+          {t('addNewProduct')}
         </h1>
         {handleSave && (
           <Btn
@@ -40,7 +43,7 @@ export default function AgregarProductoPage() {
             disabled={!isFormValid}
             loading={isSaving}
           >
-            Guardar
+            {tCommon('actions.save')}
           </Btn>
         )}
       </div>

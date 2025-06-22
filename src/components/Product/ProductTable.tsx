@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Product } from '@/types/product';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
@@ -9,6 +10,9 @@ interface ProductTableProps {
 }
 
 export default function ProductTable({ products, onEdit, onDelete }: ProductTableProps) {
+  const t = useTranslations('pages.products');
+  const tCommon = useTranslations('common');
+
   if (!Array.isArray(products)) {
     return null;
   }
@@ -27,37 +31,37 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Nombre
+              {t('table.name')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              SKU
+              {t('table.sku')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Marca
+              {t('table.brand')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Categoría
+              {t('table.category')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Estado
+              {t('table.status')}
             </th>
             <th 
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -81,7 +85,7 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
                     product.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {product.is_active ? 'Activo' : 'Inactivo'}
+                  {product.is_active ? tCommon('status.active') : tCommon('status.inactive')}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -91,14 +95,14 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
                     size="sm"
                     onClick={() => onEdit(product)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={tCommon('actions.edit')}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(product)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={tCommon('actions.delete')}
                     style={{ color: '#dc2626' }}
                   /> 
                 </div>
