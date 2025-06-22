@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { receptionService } from '@/services/receptions.service';
 import { providersService } from '@/services/providers.service';
 import { warehousesService } from '@/services/warehouses.service';
@@ -35,6 +36,7 @@ interface FormErrors {
 
 const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
   ({ reception, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.receptions');
     const [formData, setFormData] = useState<ReceptionFormData>({
       code: '',
       date: '',
@@ -89,7 +91,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     const loadWarehouses = async () => {
       try {
-        const response = await warehousesService.getWarehouses({isClosed: true});
+        const response = await warehousesService.getWarehouses(1);
         setWarehouses(response.data || []);
       } catch (error) {
         console.error('Error cargando almacenes:', error);
@@ -98,41 +100,35 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     const validateForm = (): boolean => {
       const newErrors: FormErrors = {};
-      let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
-        isValid = false;
+        newErrors.code = t('form.errors.codeRequired');
       }
 
       if (!formData.date) {
-        newErrors.date = 'La fecha es requerida';
-        isValid = false;
+        newErrors.date = t('form.errors.dateRequired');
       }
 
       if (!formData.provider_id) {
-        newErrors.provider_id = 'El proveedor es requerido';
-        isValid = false;
+        newErrors.provider_id = t('form.errors.providerRequired');
       }
 
       if (!formData.warehouse_id) {
-        newErrors.warehouse_id = 'El almacén es requerido';
-        isValid = false;
+        newErrors.warehouse_id = t('form.errors.warehouseRequired');
       }
 
       if (!formData.document.trim()) {
-        newErrors.document = 'El documento es requerido';
-        isValid = false;
+        newErrors.document = t('form.errors.documentRequired');
       }
 
       setErrors(newErrors);
+      const isValid = Object.keys(newErrors).length === 0;
       onValidChange?.(isValid);
       return isValid;
     };
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async () => {
@@ -159,7 +155,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar la recepción');
+          toastService.error(t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -193,18 +189,18 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
           <Input
             type="text"
             id="code"
-            label="Código"
+            label={t('form.code')}
             required
             value={formData.code}
             onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            placeholder="Ej: REC-2024-001"
+            placeholder={t('form.placeholders.code')}
             error={errors.code}
           />
 
           <Input
             type="date"
             id="date"
-            label="Fecha"
+            label={t('form.date')}
             required
             value={formData.date}
             onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
@@ -213,7 +209,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
           <SelectWithAdd
             id="provider"
-            label="Proveedor"
+            label={t('form.provider')}
             value={formData.provider_id}
             onChange={(e) => setFormData(prev => ({ ...prev, provider_id: e.target.value }))}
             options={providers.map((provider) => ({
@@ -225,12 +221,12 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
             error={errors.provider_id}
             showAddButton
             onAddClick={() => setShowProviderDrawer(true)}
-            addButtonTitle="Crear nuevo proveedor"
+            addButtonTitle={t('actions.createNewProvider')}
           />
 
           <Select
             id="warehouse"
-            label="Almacén"
+            label={t('form.warehouse')}
             value={formData.warehouse_id}
             onChange={(e) => setFormData(prev => ({ ...prev, warehouse_id: e.target.value }))}
             options={warehouses.map((warehouse) => ({
@@ -245,11 +241,11 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
           <Input
             type="text"
             id="document"
-            label="Documento"
+            label={t('form.document')}
             required
             value={formData.document}
             onChange={(e) => setFormData(prev => ({ ...prev, document: e.target.value }))}
-            placeholder="Ej: FACT-001-2024"
+            placeholder={t('form.placeholders.document')}
             error={errors.document}
           />
         </form>

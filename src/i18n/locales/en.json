@@ -88,6 +88,8 @@
     "warehouseList": "Warehouse List",
     "createPurchase": "Create Purchase",
     "purchaseList": "Purchase List",
+    "createReception": "Create Reception",
+    "receptionList": "Reception List",
     "salesList": "Sales List",
     "addSale": "Add Sale",
     "pos": "POS",
@@ -639,6 +641,55 @@
         "DETERIORATION": "Deterioration",
         "RETURN_OUT": "Return Out",
         "DAMAGE": "Damage"
+      },
+      "form": {
+        "selectWarehouse": "Select warehouse...",
+        "required": "Required"
+      },
+      "table": {
+        "product": "Product",
+        "sku": "SKU",
+        "brand": "Brand",
+        "category": "Category",
+        "quantity": "Quantity",
+        "price": "Price",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "viewProduct": "View product",
+        "viewHistory": "View history"
+      },
+      "messages": {
+        "errorLoadingClosedWarehouses": "Error loading closed warehouses",
+        "errorLoadingWarehouseDetails": "Error loading warehouse details",
+        "errorLoadingInventory": "Error loading inventory",
+        "errorLoadingHistory": "Error loading product history"
+      },
+      "history": {
+        "title": "Movement History",
+        "noHistory": "No history",
+        "noHistoryDesc": "No movements recorded for this product",
+        "movementsRegistered": "{count} movement{count, plural, one {} other {s}} registered",
+        "table": {
+          "date": "Date",
+          "operationType": "Operation Type",
+          "quantity": "Quantity",
+          "currentStock": "Current Stock",
+          "operationId": "Operation ID"
+        }
+      },
+      "modal": {
+        "title": "Product Details",
+        "basicInfo": "Basic Information",
+        "inventoryInfo": "Inventory Information",
+        "name": "Name",
+        "sku": "SKU",
+        "description": "Description",
+        "quantity": "Quantity",
+        "price": "Price",
+        "date": "Date",
+        "close": "Close"
       }
     },
     "warehouseOpenings": {
@@ -739,7 +790,97 @@
       "noProducts": "No products",
       "noProductsDesc": "Add products to this reception to get started.",
       "noProductsClosedDesc": "This reception has no registered products.",
-      "addProduct": "Add Product"
+      "addProduct": "Add Product",
+      "noReceptions": "No receptions",
+      "noReceptionsDesc": "Click on \"New Reception\" to add one.",
+      "searchReceptions": "Search receptions...",
+      "form": {
+        "code": "Code",
+        "date": "Date",
+        "provider": "Provider",
+        "warehouse": "Warehouse",
+        "document": "Document",
+        "amount": "Amount",
+        "status": "Status",
+        "placeholders": {
+          "code": "Ex: REC-2024-001",
+          "document": "Ex: FACT-001-2024"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "dateRequired": "Date is required",
+          "providerRequired": "Provider is required",
+          "warehouseRequired": "Warehouse is required",
+          "documentRequired": "Document is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "date": "Date",
+        "provider": "Provider",
+        "warehouse": "Warehouse",
+        "document": "Document",
+        "amount": "Amount",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "open": "Open",
+        "closed": "Closed"
+      },
+      "actions": {
+        "viewDetails": "View Details",
+        "closeReception": "Close Reception",
+        "edit": "Edit",
+        "delete": "Delete",
+        "createNewProvider": "Create new provider"
+      },
+      "messages": {
+        "receptionCreated": "Reception created successfully",
+        "receptionUpdated": "Reception updated successfully",
+        "receptionDeleted": "Reception deleted successfully",
+        "receptionClosed": "Reception closed successfully",
+        "errorLoading": "Error loading receptions",
+        "errorCreating": "Error creating reception",
+        "errorUpdating": "Error updating reception",
+        "errorDeleting": "Error deleting reception",
+        "errorClosing": "Error closing reception",
+        "confirmDelete": "Are you sure you want to delete the reception \"{code}\"? This action cannot be undone.",
+        "confirmClose": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone."
+      },
+      "modals": {
+        "delete": {
+          "title": "Delete Reception",
+          "message": "Are you sure you want to delete the reception \"{code}\"? This action cannot be undone."
+        },
+        "close": {
+          "title": "Close Reception",
+          "message": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone."
+        }
+      },
+      "details": {
+        "title": "Reception {code}",
+        "subtitle": "Reception details",
+        "back": "Back",
+        "notFound": "Reception not found",
+        "errorLoading": "Error loading reception",
+        "generalInfo": "General Information",
+        "provider": "Provider",
+        "warehouse": "Warehouse",
+        "receptionProducts": "Reception Products",
+        "noProducts": "No products",
+        "noProductsDesc": "Add products to this reception to get started.",
+        "noProductsClosedDesc": "This reception has no registered products.",
+        "addProduct": "Add Product",
+        "labels": {
+          "code": "Code",
+          "date": "Date",
+          "status": "Status",
+          "name": "Name",
+          "document": "Document",
+          "totalAmount": "Total Amount"
+        }
+      }
     },
     "login": {
       "title": "Login",

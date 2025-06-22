@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { InventoryItem } from "@/types/inventory";
 import { EyeIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { Btn } from "@/components/atoms";
@@ -17,6 +18,8 @@ export default function InventoryTable({
   onViewProduct,
   onViewHistory,
 }: InventoryTableProps) {
+  const t = useTranslations('pages.inventory');
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-ES", {
       minimumFractionDigits: 2,
@@ -44,28 +47,28 @@ export default function InventoryTable({
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Producto
+              {t('table.product')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              SKU
+              {t('table.sku')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Marca
+              {t('table.brand')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Categoría
+              {t('table.category')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Cantidad
+              {t('table.quantity')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Precio ({currencyCode})
+              {t('table.price')} ({currencyCode})
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Fecha
+              {t('table.date')}
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -110,14 +113,14 @@ export default function InventoryTable({
                     variant="ghost"
                     size="sm"
                     leftIcon={<EyeIcon className="h-4 w-4" />}
-                    title="Ver producto"
+                    title={t('actions.viewProduct')}
                   />
                   <Btn
                     onClick={() => onViewHistory(item)}
                     variant="ghost"
                     size="sm"
                     leftIcon={<ClockIcon className="h-4 w-4" />}
-                    title="Ver historial"
+                    title={t('actions.viewHistory')}
                   />
                 </div>
               </td>

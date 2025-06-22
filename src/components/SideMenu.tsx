@@ -1,8 +1,8 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 
 interface MenuItem {
@@ -16,14 +16,73 @@ interface MenuItem {
   }[];
 }
 
+const EXPANDED_MENU_STORAGE_KEY = 'nitro-expanded-menu';
+
 export function SideMenu() {
   const pathname = usePathname();
+  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('navigation');
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
+  // Load expanded menu state from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem(EXPANDED_MENU_STORAGE_KEY);
+        if (stored) {
+          setExpandedMenu(stored);
+        }
+      } catch (error) {
+        console.warn('Error reading expanded menu from localStorage:', error);
+      }
+    }
+  }, []);
+
   const toggleSubmenu = (path: string) => {
-    setExpandedMenu(expandedMenu === path ? null : path);
+    const newExpandedMenu = expandedMenu === path ? null : path;
+    setExpandedMenu(newExpandedMenu);
+    
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        if (newExpandedMenu) {
+          localStorage.setItem(EXPANDED_MENU_STORAGE_KEY, newExpandedMenu);
+        } else {
+          localStorage.removeItem(EXPANDED_MENU_STORAGE_KEY);
+        }
+      } catch (error) {
+        console.warn('Error saving expanded menu to localStorage:', error);
+      }
+    }
+  };
+
+  // Handle click on menu item with submenus
+  const handleMenuClick = (item: MenuItem) => {
+    if (item.subItems) {
+      // If clicking on a different menu, expand it and close others
+      if (expandedMenu !== item.path) {
+        setExpandedMenu(item.path);
+        // Save to localStorage
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(EXPANDED_MENU_STORAGE_KEY, item.path);
+          } catch (error) {
+            console.warn('Error saving expanded menu to localStorage:', error);
+          }
+        }
+        
+        // Navigate to the first submenu if we're not already on a submenu of this item
+        const isOnSubmenuOfThisItem = item.subItems.some(subItem => pathname === subItem.path);
+        if (!isOnSubmenuOfThisItem && item.subItems.length > 0) {
+          // Navigate to the first submenu
+          router.push(item.subItems[0].path);
+        }
+      } else {
+        // If clicking on the same menu, toggle it
+        toggleSubmenu(item.path);
+      }
+    }
   };
 
   // Función para construir rutas con locale
@@ -181,8 +240,8 @@ export function SideMenu() {
       ),
     },
     {
-      name: t('purchases'),
-      path: getLocalizedPath('/dashboard/compras'),
+      name: t('receptions'),
+      path: getLocalizedPath('/dashboard/recepciones'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -190,8 +249,8 @@ export function SideMenu() {
       ),
       subItems: [
         {
-          name: t('createPurchase'),
-          path: getLocalizedPath('/dashboard/compras/crear-compra'),
+          name: t('createReception'),
+          path: getLocalizedPath('/dashboard/recepciones/crear-recepcion'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -199,17 +258,8 @@ export function SideMenu() {
           ),
         },
         {
-          name: t('purchaseList'),
-          path: getLocalizedPath('/dashboard/compras/lista-de-compras'),
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          ),
-        },
-        {
-          name: t('receptions'),
-          path: getLocalizedPath('/dashboard/compras/recepciones'),
+          name: t('receptionList'),
+          path: getLocalizedPath('/dashboard/recepciones/lista-de-recepciones'),
           icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -315,6 +365,25 @@ export function SideMenu() {
     },
   ];
 
+  // Auto-expand menu when on a submenu page
+  useEffect(() => {
+    const currentMenuItem = menuItems.find(item => 
+      item.subItems?.some(subItem => pathname === subItem.path)
+    );
+    
+    if (currentMenuItem && expandedMenu !== currentMenuItem.path) {
+      setExpandedMenu(currentMenuItem.path);
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(EXPANDED_MENU_STORAGE_KEY, currentMenuItem.path);
+        } catch (error) {
+          console.warn('Error saving expanded menu to localStorage:', error);
+        }
+      }
+    }
+  }, [pathname, expandedMenu, menuItems]);
+
   return (
     <aside 
       className="w-64 flex-shrink-0 bg-white border-r h-full"
@@ -330,7 +399,7 @@ export function SideMenu() {
               <div key={item.path}>
                 {item.subItems ? (
                   <button
-                    onClick={() => toggleSubmenu(item.path)}
+                    onClick={() => handleMenuClick(item)}
                     className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
                     style={{
                       backgroundColor: isActive ? `rgb(var(--color-primary-50))` : 'transparent',

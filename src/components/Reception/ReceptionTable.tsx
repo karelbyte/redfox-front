@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Reception } from '@/types/reception';
 import { PencilIcon, TrashIcon, EyeIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
@@ -11,6 +12,8 @@ interface ReceptionTableProps {
 }
 
 export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails, onClose }: ReceptionTableProps) {
+  const t = useTranslations('pages.receptions');
+  
   if (!Array.isArray(receptions)) {
     return null;
   }
@@ -40,49 +43,49 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Código
+              {t('table.code')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Fecha
+              {t('table.date')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Proveedor
+              {t('table.provider')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Almacén
+              {t('table.warehouse')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Documento
+              {t('table.document')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Monto
+              {t('table.amount')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Estado
+              {t('table.status')}
             </th>
             <th 
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -111,7 +114,7 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
                     reception.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {reception.status ? 'Abierta' : 'Cerrada'}
+                  {reception.status ? t('status.open') : t('status.closed')}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -121,7 +124,7 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
                     size="sm"
                     onClick={() => onDetails(reception)}
                     leftIcon={<EyeIcon className="h-4 w-4" />}
-                    title="Ver Detalles"
+                    title={t('actions.viewDetails')}
                   />
                   {reception.status && (
                     <Btn
@@ -129,7 +132,7 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
                       size="sm"
                       onClick={() => onClose(reception)}
                       leftIcon={<XMarkIcon className="h-4 w-4" />}
-                      title="Cerrar Recepción"
+                      title={t('actions.closeReception')}
                       style={{ color: '#dc2626' }}
                     />
                   )}
@@ -138,14 +141,14 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
                     size="sm"
                     onClick={() => onEdit(reception)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={t('actions.edit')}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(reception)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={t('actions.delete')}
                     style={{ color: '#dc2626' }}
                   /> 
                 </div>

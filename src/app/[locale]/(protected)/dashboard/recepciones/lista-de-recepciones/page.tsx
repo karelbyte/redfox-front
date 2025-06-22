@@ -3,6 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { Reception } from '@/types/reception';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
@@ -18,6 +19,8 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function RecepcionesPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('pages.receptions');
   const [receptions, setReceptions] = useState<Reception[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +44,7 @@ export default function RecepcionesPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error('Error al cargar las recepciones');
+        toastService.error(t('messages.errorLoading'));
       }
     } finally {
       setLoading(false);
@@ -67,7 +70,7 @@ export default function RecepcionesPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error(error as string);
+        toastService.error(t('messages.errorDeleting'));
       }
     }
   };
@@ -78,7 +81,7 @@ export default function RecepcionesPage() {
     try {
       // Aquí deberías llamar al método del servicio para cerrar la recepción
       // await receptionService.closeReception(receptionToClose.id);
-      toastService.success('Recepción cerrada correctamente');
+      toastService.success(t('messages.receptionClosed'));
       fetchReceptions(currentPage);
       setReceptionToClose(null);
     } catch (error) {
@@ -86,13 +89,13 @@ export default function RecepcionesPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error('Error al cerrar la recepción');
+        toastService.error(t('messages.errorClosing'));
       }
     }
   };
 
   const handleDetails = (reception: Reception) => {
-    router.push(`/dashboard/compras/recepciones/${reception.id}`);
+    router.push(`/${locale}/dashboard/recepciones/recepciones/${reception.id}`);
   };
 
   const handleEdit = (reception: Reception) => {
@@ -134,7 +137,7 @@ export default function RecepcionesPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          Recepciones
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -143,7 +146,7 @@ export default function RecepcionesPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nueva Recepción
+          {t('newReception')}
         </Btn>
       </div>
 
@@ -177,13 +180,13 @@ export default function RecepcionesPage() {
             className="text-lg font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-400))` }}
           >
-            No hay recepciones
+            {t('noReceptions')}
           </p>
           <p 
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-300))` }}
           >
-            Haz clic en &quot;Nueva Recepción&quot; para agregar una.
+            {t('noReceptionsDesc')}
           </p>
         </div>
       ) : (
@@ -199,29 +202,30 @@ export default function RecepcionesPage() {
           </div>
 
           {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              className="mt-6"
-            />
+            <div className="mt-6">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
           )}
         </>
       )}
 
-      {/* Drawer para crear/editar */}
+      {/* Drawer para crear/editar recepciones */}
       <Drawer
         id="reception-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingReception ? 'Editar Recepción' : 'Nueva Recepción'}
+        title={editingReception ? t('editReception') : t('newReception')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
       >
         <ReceptionForm
           ref={formRef}
-          reception={editingReception || null}
+          reception={editingReception}
           onClose={handleDrawerClose}
           onSuccess={handleFormSuccess}
           onSavingChange={setIsSaving}
@@ -229,14 +233,14 @@ export default function RecepcionesPage() {
         />
       </Drawer>
 
-      {/* Modal de confirmación para eliminar */}
+      {/* Modal para eliminar recepción */}
       <DeleteReceptionModal
         reception={receptionToDelete}
         onClose={() => setReceptionToDelete(null)}
         onConfirm={handleDelete}
       />
 
-      {/* Modal de confirmación para cerrar */}
+      {/* Modal para cerrar recepción */}
       <CloseReceptionModal
         reception={receptionToClose}
         onClose={() => setReceptionToClose(null)}

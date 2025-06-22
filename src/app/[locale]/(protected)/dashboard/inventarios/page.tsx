@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { ClosedWarehouse } from "@/types/closed-warehouse";
 import { InventoryItem, InventoryResponse } from "@/types/inventory";
 import { closedWarehousesService } from "@/services/closed-warehouses.service";
@@ -12,9 +13,13 @@ import InventoryTable from "@/components/Inventory/InventoryTable";
 import ProductDetailsModal from "@/components/Inventory/ProductDetailsModal";
 import Pagination from "@/components/Pagination/Pagination";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading/Loading";
+import EmptyState from "@/components/atoms/EmptyState";
 
 export default function InventariosPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('pages.inventory');
   const [closedWarehouses, setClosedWarehouses] = useState<ClosedWarehouse[]>(
     []
   );
@@ -42,11 +47,11 @@ export default function InventariosPage() {
         setSelectedWarehouseId(response[0].id);
       }
     } catch {
-      toastService.error("Error al cargar almacenes cerrados");
+      toastService.error(t('messages.errorLoadingClosedWarehouses'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const fetchWarehouseDetails = useCallback(async () => {
     if (!selectedWarehouseId) return;
@@ -57,9 +62,9 @@ export default function InventariosPage() {
       );
       setSelectedWarehouse(warehouse);
     } catch {
-      toastService.error("Error al cargar detalles del almacén");
+      toastService.error(t('messages.errorLoadingWarehouseDetails'));
     }
-  }, [selectedWarehouseId]);
+  }, [selectedWarehouseId, t]);
 
   const fetchInventory = useCallback(async (page: number) => {
     if (!selectedWarehouseId) return;
@@ -75,12 +80,12 @@ export default function InventariosPage() {
       setTotal(response.meta?.total || 0);
       setCurrentPage(page);
     } catch {
-      toastService.error("Error al cargar inventario");
+      toastService.error(t('messages.errorLoadingInventory'));
       setInventoryItems([]);
     } finally {
       setLoadingInventory(false);
     }
-  }, [selectedWarehouseId]);
+  }, [selectedWarehouseId, t]);
 
   useEffect(() => {
     fetchClosedWarehouses();
@@ -112,7 +117,7 @@ export default function InventariosPage() {
   };
 
   const handleViewHistory = (item: InventoryItem) => {
-    router.push(`/dashboard/inventarios/historial/${item.product.id}/${selectedWarehouseId}`);
+    router.push(`/${locale}/dashboard/inventarios/historial/${item.product.id}/${selectedWarehouseId}`);
   };
 
   const handleCloseModal = () => {
@@ -128,13 +133,7 @@ export default function InventariosPage() {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{
-              borderColor: `rgb(var(--color-primary-500))`,
-              borderTopColor: 'transparent'
-            }}
-          ></div>
+          <Loading size="lg" />
         </div>
       </div>
     );
@@ -147,7 +146,7 @@ export default function InventariosPage() {
           className="text-xl font-semibold"
           style={{ color: `rgb(var(--color-primary-700))` }}
         >
-          Inventarios
+          {t('title')}
         </h1>
       </div>
 
@@ -163,41 +162,13 @@ export default function InventariosPage() {
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              Seleccionar Almacén <span style={{ color: `rgb(var(--color-error-500))` }}>*</span>
+              {t('selectWarehouse')} <span style={{ color: `rgb(var(--color-error-500))` }}>*</span>
             </label>
             {closedWarehouses.length === 0 ? (
-              <div className="text-center py-8">
-                <div style={{ color: `rgb(var(--color-text-secondary))` }}>
-                  <svg
-                    className="mx-auto h-12 w-12"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    style={{ color: `rgb(var(--color-text-tertiary))` }}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m0 0v2a1 1 0 001 1h2a1 1 0 001-1v-2M6 13h2"
-                    />
-                  </svg>
-                  <h3 
-                    className="mt-2 text-sm font-medium"
-                    style={{ color: `rgb(var(--color-text-primary))` }}
-                  >
-                    No hay almacenes cerrados
-                  </h3>
-                  <p 
-                    className="mt-1 text-sm"
-                    style={{ color: `rgb(var(--color-text-secondary))` }}
-                  >
-                    Los inventarios solo están disponibles para almacenes
-                    cerrados
-                  </p>
-                </div>
-              </div>
+              <EmptyState
+                title={t('noClosedWarehouses')}
+                description={t('noClosedWarehousesDesc')}
+              />
             ) : (
               <select
                 id="warehouse-select"
@@ -211,7 +182,7 @@ export default function InventariosPage() {
                   '--tw-ring-color': `rgb(var(--color-primary-500))`,
                 } as React.CSSProperties}
               >
-                <option value="">Seleccionar almacén...</option>
+                <option value="">{t('form.selectWarehouse')}</option>
                 {closedWarehouses.map((warehouse) => (
                   <option key={warehouse.id} value={warehouse.id}>
                     {warehouse.code} - {warehouse.name}{" "}
@@ -232,14 +203,14 @@ export default function InventariosPage() {
                 className="text-lg font-medium"
                 style={{ color: `rgb(var(--color-text-primary))` }}
               >
-                Inventario del Almacén
+                {t('warehouseInventory')}
               </h2>
               {total > 0 && (
                 <p 
                   className="text-sm mt-1"
                   style={{ color: `rgb(var(--color-text-secondary))` }}
                 >
-                  {total} producto{total !== 1 ? "s" : ""} en inventario
+                  {t('productsInInventory', { count: total })}
                 </p>
               )}
               {total === 0 && !loadingInventory && (
@@ -247,7 +218,7 @@ export default function InventariosPage() {
                   className="text-sm mt-1"
                   style={{ color: `rgb(var(--color-text-secondary))` }}
                 >
-                  Sin productos en inventario
+                  {t('noProductsInInventory')}
                 </p>
               )}
             </div>
@@ -277,40 +248,10 @@ export default function InventariosPage() {
                 </div>
               </div>
             ) : inventoryItems.length === 0 ? (
-              <div 
-                className="rounded-lg shadow mb-6 p-8 text-center"
-                style={{ backgroundColor: `rgb(var(--color-surface))` }}
-              >
-                <div style={{ color: `rgb(var(--color-text-secondary))` }}>
-                  <svg
-                    className="mx-auto h-12 w-12"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    style={{ color: `rgb(var(--color-text-tertiary))` }}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m0 0v2a1 1 0 001 1h2a1 1 0 001-1v-2M6 13h2"
-                    />
-                  </svg>
-                  <h3 
-                    className="mt-2 text-sm font-medium"
-                    style={{ color: `rgb(var(--color-text-primary))` }}
-                  >
-                    Sin inventario
-                  </h3>
-                  <p 
-                    className="mt-1 text-sm"
-                    style={{ color: `rgb(var(--color-text-secondary))` }}
-                  >
-                    No hay productos en el inventario de este almacén
-                  </p>
-                </div>
-              </div>
+              <EmptyState
+                title={t('noProductsInInventory')}
+                description="No hay productos en el inventario de este almacén"
+              />
             ) : (
               <div className="mb-6">
                 <InventoryTable

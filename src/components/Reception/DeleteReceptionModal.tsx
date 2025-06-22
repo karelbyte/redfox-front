@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Reception } from '@/types/reception';
 
 interface DeleteReceptionModalProps {
@@ -7,6 +8,8 @@ interface DeleteReceptionModalProps {
 }
 
 export default function DeleteReceptionModal({ reception, onClose, onConfirm }: DeleteReceptionModalProps) {
+  const t = useTranslations('pages.receptions');
+  
   if (!reception) return null;
 
   return (
@@ -32,11 +35,11 @@ export default function DeleteReceptionModal({ reception, onClose, onConfirm }: 
             </div>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Eliminar Recepción
+                {t('modals.delete.title')}
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar la recepción &quot;{reception.code}&quot;? Esta acción no se puede deshacer.
+                  {t('modals.delete.message', { code: reception.code })}
                 </p>
               </div>
             </div>
@@ -47,7 +50,7 @@ export default function DeleteReceptionModal({ reception, onClose, onConfirm }: 
               className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
               onClick={onConfirm}
             >
-              Eliminar
+              {t('actions.delete')}
             </button>
             <button
               type="button"

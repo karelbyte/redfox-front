@@ -88,6 +88,8 @@
     "warehouseList": "Lista de almacenes",
     "createPurchase": "Crear Compra",
     "purchaseList": "Lista de Compras",
+    "createReception": "Crear Recepción",
+    "receptionList": "Lista de Recepciones",
     "salesList": "Lista de Ventas",
     "addSale": "Añadir Venta",
     "pos": "POS",
@@ -639,6 +641,55 @@
         "DETERIORATION": "Deterioro",
         "RETURN_OUT": "Devolución Salida",
         "DAMAGE": "Daño"
+      },
+      "form": {
+        "selectWarehouse": "Seleccionar almacén...",
+        "required": "Requerido"
+      },
+      "table": {
+        "product": "Producto",
+        "sku": "SKU",
+        "brand": "Marca",
+        "category": "Categoría",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "date": "Fecha",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "viewProduct": "Ver producto",
+        "viewHistory": "Ver historial"
+      },
+      "messages": {
+        "errorLoadingClosedWarehouses": "Error al cargar almacenes cerrados",
+        "errorLoadingWarehouseDetails": "Error al cargar detalles del almacén",
+        "errorLoadingInventory": "Error al cargar inventario",
+        "errorLoadingHistory": "Error al cargar el historial del producto"
+      },
+      "history": {
+        "title": "Historial de Movimientos",
+        "noHistory": "Sin historial",
+        "noHistoryDesc": "No hay movimientos registrados para este producto",
+        "movementsRegistered": "{count} movimiento{count, plural, one {} other {s}} registrado{count, plural, one {} other {s}}",
+        "table": {
+          "date": "Fecha",
+          "operationType": "Tipo de Operación",
+          "quantity": "Cantidad",
+          "currentStock": "Stock Actual",
+          "operationId": "ID Operación"
+        }
+      },
+      "modal": {
+        "title": "Detalles del Producto",
+        "basicInfo": "Información Básica",
+        "inventoryInfo": "Información del Inventario",
+        "name": "Nombre",
+        "sku": "SKU",
+        "description": "Descripción",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "date": "Fecha",
+        "close": "Cerrar"
       }
     },
     "warehouseOpenings": {
@@ -739,7 +790,97 @@
       "noProducts": "No hay productos",
       "noProductsDesc": "Añade productos a esta recepción para comenzar.",
       "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
-      "addProduct": "Añadir Producto"
+      "addProduct": "Añadir Producto",
+      "noReceptions": "No hay recepciones",
+      "noReceptionsDesc": "Haz clic en \"Nueva Recepción\" para agregar una.",
+      "searchReceptions": "Buscar recepciones...",
+      "form": {
+        "code": "Código",
+        "date": "Fecha",
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
+        "document": "Documento",
+        "amount": "Monto",
+        "status": "Estado",
+        "placeholders": {
+          "code": "Ej: REC-2024-001",
+          "document": "Ej: FACT-001-2024"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "dateRequired": "La fecha es requerida",
+          "providerRequired": "El proveedor es requerido",
+          "warehouseRequired": "El almacén es requerido",
+          "documentRequired": "El documento es requerido"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "date": "Fecha",
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
+        "document": "Documento",
+        "amount": "Monto",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "open": "Abierta",
+        "closed": "Cerrada"
+      },
+      "actions": {
+        "viewDetails": "Ver Detalles",
+        "closeReception": "Cerrar Recepción",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "createNewProvider": "Crear nuevo proveedor"
+      },
+      "messages": {
+        "receptionCreated": "Recepción creada correctamente",
+        "receptionUpdated": "Recepción actualizada correctamente",
+        "receptionDeleted": "Recepción eliminada correctamente",
+        "receptionClosed": "Recepción cerrada correctamente",
+        "errorLoading": "Error al cargar las recepciones",
+        "errorCreating": "Error al crear la recepción",
+        "errorUpdating": "Error al actualizar la recepción",
+        "errorDeleting": "Error al eliminar la recepción",
+        "errorClosing": "Error al cerrar la recepción",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la recepción \"{code}\"? Esta acción no se puede deshacer.",
+        "confirmClose": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer."
+      },
+      "modals": {
+        "delete": {
+          "title": "Eliminar Recepción",
+          "message": "¿Estás seguro de que deseas eliminar la recepción \"{code}\"? Esta acción no se puede deshacer."
+        },
+        "close": {
+          "title": "Cerrar Recepción",
+          "message": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer."
+        }
+      },
+      "details": {
+        "title": "Recepción {code}",
+        "subtitle": "Detalles de la recepción",
+        "back": "Volver",
+        "notFound": "Recepción no encontrada",
+        "errorLoading": "Error al cargar la recepción",
+        "generalInfo": "Información General",
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
+        "receptionProducts": "Productos de la Recepción",
+        "noProducts": "No hay productos",
+        "noProductsDesc": "Añade productos a esta recepción para comenzar.",
+        "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
+        "addProduct": "Añadir Producto",
+        "labels": {
+          "code": "Código",
+          "date": "Fecha",
+          "status": "Estado",
+          "name": "Nombre",
+          "document": "Documento",
+          "totalAmount": "Monto Total"
+        }
+      }
     },
     "login": {
       "title": "Iniciar Sesión",

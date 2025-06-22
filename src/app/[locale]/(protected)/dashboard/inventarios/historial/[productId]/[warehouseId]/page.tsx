@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ProductHistoryItem } from "@/types/product-history";
 import { ApiResponse } from "@/types/api";
 import { productHistoryService } from "@/services/product-history.service";
@@ -10,10 +11,14 @@ import { toastService } from "@/services/toast.service";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Pagination from "@/components/Pagination/Pagination";
 import { Btn } from "@/components/atoms";
+import Loading from "@/components/Loading/Loading";
+import EmptyState from "@/components/atoms/EmptyState";
 
 export default function ProductHistoryPage() {
   const router = useRouter();
   const params = useParams();
+  const t = useTranslations('pages.inventory');
+  const tCommon = useTranslations('common');
   const productId = params.productId as string;
   const warehouseId = params.warehouseId as string;
 
@@ -51,12 +56,12 @@ export default function ProductHistoryPage() {
         });
       }
     } catch {
-      toastService.error("Error al cargar el historial del producto");
+      toastService.error(t('messages.errorLoadingHistory'));
       setHistoryItems([]);
     } finally {
       setLoading(false);
     }
-  }, [productId, warehouseId]);
+  }, [productId, warehouseId, t]);
 
   useEffect(() => {
     if (productId && warehouseId) {
@@ -89,19 +94,19 @@ export default function ProductHistoryPage() {
   };
 
   const operationTypeDictionary = {
-    WAREHOUSE_OPENING: "Apertura de Almacén",
-    RECEPTION: "Recepción",
-    PURCHASE: "Compra",
-    TRANSFER_IN: "Transferencia Entrada",
-    ADJUSTMENT_IN: "Ajuste Entrada",
-    RETURN_IN: "Devolución Entrada",
-    SALE: "Venta",
-    WITHDRAWAL: "Retiro",
-    TRANSFER_OUT: "Transferencia Salida",
-    ADJUSTMENT_OUT: "Ajuste Salida",
-    DETERIORATION: "Deterioro",
-    RETURN_OUT: "Devolución Salida",
-    DAMAGE: "Daño",
+    WAREHOUSE_OPENING: t('operationTypes.WAREHOUSE_OPENING'),
+    RECEPTION: t('operationTypes.RECEPTION'),
+    PURCHASE: t('operationTypes.PURCHASE'),
+    TRANSFER_IN: t('operationTypes.TRANSFER_IN'),
+    ADJUSTMENT_IN: t('operationTypes.ADJUSTMENT_IN'),
+    RETURN_IN: t('operationTypes.RETURN_IN'),
+    SALE: t('operationTypes.SALE'),
+    WITHDRAWAL: t('operationTypes.WITHDRAWAL'),
+    TRANSFER_OUT: t('operationTypes.TRANSFER_OUT'),
+    ADJUSTMENT_OUT: t('operationTypes.ADJUSTMENT_OUT'),
+    DETERIORATION: t('operationTypes.DETERIORATION'),
+    RETURN_OUT: t('operationTypes.RETURN_OUT'),
+    DAMAGE: t('operationTypes.DAMAGE'),
   };
 
   const getOperationTypeText = (type: string) => {
@@ -132,13 +137,7 @@ export default function ProductHistoryPage() {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{
-              borderColor: `rgb(var(--color-primary-500))`,
-              borderTopColor: 'transparent'
-            }}
-          ></div>
+          <Loading size="lg" />
         </div>
       </div>
     );
@@ -152,14 +151,14 @@ export default function ProductHistoryPage() {
             variant="ghost"
             onClick={handleBack}
             leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
-            title="Volver"
+            title={tCommon('actions.back')}
           />
           <div>
             <h1 
               className="text-xl font-semibold"
               style={{ color: `rgb(var(--color-primary-700))` }}
             >
-              Historial de Movimientos
+              {t('history.title')}
             </h1>
             {productInfo && warehouseInfo && (
               <p 
@@ -176,46 +175,16 @@ export default function ProductHistoryPage() {
             className="text-sm"
             style={{ color: `rgb(var(--color-text-secondary))` }}
           >
-            {total} movimiento{total !== 1 ? "s" : ""} registrado{total !== 1 ? "s" : ""}
+            {t('history.movementsRegistered', { count: total })}
           </p>
         )}
       </div>
 
       {historyItems.length === 0 ? (
-        <div 
-          className="rounded-lg shadow p-8 text-center"
-          style={{ backgroundColor: `rgb(var(--color-surface))` }}
-        >
-          <div style={{ color: `rgb(var(--color-text-secondary))` }}>
-            <svg
-              className="mx-auto h-12 w-12"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-              style={{ color: `rgb(var(--color-text-tertiary))` }}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <h3 
-              className="mt-2 text-sm font-medium"
-              style={{ color: `rgb(var(--color-text-primary))` }}
-            >
-              Sin historial
-            </h3>
-            <p 
-              className="mt-1 text-sm"
-              style={{ color: `rgb(var(--color-text-secondary))` }}
-            >
-              No hay movimientos registrados para este producto
-            </p>
-          </div>
-        </div>
+        <EmptyState
+          title={t('history.noHistory')}
+          description={t('history.noHistoryDesc')}
+        />
       ) : (
         <>
           <div 
@@ -231,31 +200,31 @@ export default function ProductHistoryPage() {
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     style={{ color: `rgb(var(--color-primary-600))` }}
                   >
-                    Fecha
+                    {t('history.table.date')}
                   </th>
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     style={{ color: `rgb(var(--color-primary-600))` }}
                   >
-                    Tipo de Operación
+                    {t('history.table.operationType')}
                   </th>
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     style={{ color: `rgb(var(--color-primary-600))` }}
                   >
-                    Cantidad
+                    {t('history.table.quantity')}
                   </th>
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     style={{ color: `rgb(var(--color-primary-600))` }}
                   >
-                    Stock Actual
+                    {t('history.table.currentStock')}
                   </th>
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                     style={{ color: `rgb(var(--color-primary-600))` }}
                   >
-                    ID Operación
+                    {t('history.table.operationId')}
                   </th>
                 </tr>
               </thead>

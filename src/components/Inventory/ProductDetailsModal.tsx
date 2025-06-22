@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { InventoryItem } from '@/types/inventory';
 
 interface ProductDetailsModalProps {
@@ -13,6 +14,8 @@ export default function ProductDetailsModal({
   item,
   currencyCode,
 }: ProductDetailsModalProps) {
+  const t = useTranslations('pages.inventory.modal');
+
   if (!isOpen || !item) return null;
 
   const { product } = item;
@@ -57,24 +60,24 @@ export default function ProductDetailsModal({
             </div>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Detalles del Producto
+                {t('title')}
               </h3>
               <div className="mt-4 space-y-4">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700">Información Básica</h4>
+                  <h4 className="text-sm font-medium text-gray-700">{t('basicInfo')}</h4>
                   <div className="mt-1 text-sm text-gray-500">
-                    <p><span className="font-medium">Nombre:</span> {product.name}</p>
-                    <p><span className="font-medium">SKU:</span> {product.sku}</p>
-                    <p><span className="font-medium">Descripción:</span> {product.description}</p>
+                    <p><span className="font-medium">{t('name')}:</span> {product.name}</p>
+                    <p><span className="font-medium">{t('sku')}:</span> {product.sku}</p>
+                    <p><span className="font-medium">{t('description')}:</span> {product.description}</p>
                   </div>
                 </div>
                 
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700">Información del Inventario</h4>
+                  <h4 className="text-sm font-medium text-gray-700">{t('inventoryInfo')}</h4>
                   <div className="mt-1 text-sm text-gray-500">
-                    <p><span className="font-medium">Cantidad:</span> {item.quantity}</p>
-                    <p><span className="font-medium">Precio:</span> {currencyCode} {formatPrice(item.price)}</p>
-                    <p><span className="font-medium">Fecha:</span> {formatDate(item.createdAt)}</p>
+                    <p><span className="font-medium">{t('quantity')}:</span> {item.quantity}</p>
+                    <p><span className="font-medium">{t('price')}:</span> {currencyCode} {formatPrice(item.price)}</p>
+                    <p><span className="font-medium">{t('date')}:</span> {formatDate(item.createdAt)}</p>
                   </div>
                 </div>
               </div>
@@ -86,7 +89,7 @@ export default function ProductDetailsModal({
               className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
               onClick={onClose}
             >
-              Cerrar
+              {t('close')}
             </button>
           </div>
         </div>

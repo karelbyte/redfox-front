@@ -7,6 +7,8 @@ import { LanguageSelectorCompact } from "@/components/LanguageSelectorCompact";
 
 import { useTranslations } from "next-intl";
 
+const USER_MENU_STORAGE_KEY = 'nitro-user-menu-open';
+
 export function UserMenu() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,17 +16,52 @@ export function UserMenu() {
   const { user, logout } = useAuth();
   const t = useTranslations('common');
 
+  // Load menu state from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem(USER_MENU_STORAGE_KEY);
+        if (stored === 'true') {
+          setIsMenuOpen(true);
+        }
+      } catch (error) {
+        console.warn('Error reading user menu state from localStorage:', error);
+      }
+    }
+  }, []);
+
   // Cerrar el menú cuando se hace clic fuera
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
+        // Save to localStorage
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(USER_MENU_STORAGE_KEY, 'false');
+          } catch (error) {
+            console.warn('Error saving user menu state to localStorage:', error);
+          }
+        }
       }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleMenuToggle = () => {
+    const newState = !isMenuOpen;
+    setIsMenuOpen(newState);
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(USER_MENU_STORAGE_KEY, newState.toString());
+      } catch (error) {
+        console.warn('Error saving user menu state to localStorage:', error);
+      }
+    }
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -35,7 +72,7 @@ export function UserMenu() {
     <div className="flex items-center">
       <div className="relative" ref={menuRef}>
         <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={handleMenuToggle}
           className="flex items-center space-x-3 focus:outline-none"
         >
           <div

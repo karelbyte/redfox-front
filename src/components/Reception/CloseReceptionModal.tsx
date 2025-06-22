@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Reception } from "@/types/reception";
 import { Btn } from "@/components/atoms";
 
@@ -8,6 +9,8 @@ interface CloseReceptionModalProps {
 }
 
 export default function CloseReceptionModal({ reception, onClose, onConfirm }: CloseReceptionModalProps) {
+  const t = useTranslations('pages.receptions');
+  
   if (!reception) return null;
 
   return (
@@ -37,11 +40,11 @@ export default function CloseReceptionModal({ reception, onClose, onConfirm }: C
             </div>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Cerrar Recepción
+                {t('modals.close.title')}
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas cerrar la recepción &quot;{reception.code}&quot;? Esta acción no se puede deshacer.
+                  {t('modals.close.message', { code: reception.code })}
                 </p>
               </div>
             </div>
@@ -52,7 +55,7 @@ export default function CloseReceptionModal({ reception, onClose, onConfirm }: C
               onClick={onConfirm}
               className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
             >
-              Cerrar Recepción
+              {t('actions.closeReception')}
             </Btn>
             <Btn
               variant="outline"
