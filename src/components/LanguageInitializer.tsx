@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { locales, defaultLocale } from '@/i18n/config';
+import { locales } from '@/i18n/config';
 
 const LANGUAGE_STORAGE_KEY = 'nitro-language';
 

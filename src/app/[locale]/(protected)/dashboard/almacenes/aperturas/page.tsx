@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from 'next-intl';
 import { warehouseOpeningsService } from "@/services/warehouse-openings.service";
 import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
@@ -16,10 +17,11 @@ import DeleteWarehouseOpeningModal from "@/components/Warehouse/DeleteWarehouseO
 import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
 import Drawer from "@/components/Drawer/Drawer";
-import { Btn } from "@/components/atoms";
+import { Btn, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function OpeningsPage() {
+  const t = useTranslations('pages.warehouseOpenings');
   const searchParams = useSearchParams();
   const warehouseId = searchParams.get('warehouse_id');
   const warehouseName = searchParams.get('warehouse_name');
@@ -42,7 +44,7 @@ export default function OpeningsPage() {
 
   const fetchWarehouse = async () => {
     if (!warehouseId) {
-      toastService.error("ID de almacén no proporcionado");
+      toastService.error(t('error.warehouseIdRequired'));
       setLoading(false);
       return;
     }
@@ -51,13 +53,13 @@ export default function OpeningsPage() {
       const warehouseResponse = await warehousesService.getWarehouse(warehouseId);
       setWarehouse(warehouseResponse);
     } catch {
-      toastService.error("Error al cargar la información del almacén");
+      toastService.error(t('error.errorLoadingWarehouse'));
     }
   };
 
   const fetchOpenings = async (page: number) => {
     if (!warehouseId) {
-      toastService.error("ID de almacén no proporcionado");
+      toastService.error(t('error.warehouseIdRequired'));
       setLoading(false);
       return;
     }
@@ -73,7 +75,7 @@ export default function OpeningsPage() {
       setTotalPages(response.meta.totalPages);
       setTotal(response.meta.total);
     } catch {
-      toastService.error("Error al cargar las aperturas");
+      toastService.error(t('error.errorLoadingOpenings'));
     } finally {
       setLoading(false);
     }
@@ -136,14 +138,14 @@ export default function OpeningsPage() {
 
     try {
       await warehouseOpeningsService.deleteWarehouseOpening(openingToDelete.id);
-      toastService.success("Apertura eliminada correctamente");
+      toastService.success(t('messages.openingDeleted'));
       fetchOpenings(currentPage);
       setOpeningToDelete(undefined);
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al eliminar la apertura");
+        toastService.error(t('error.errorDeleting'));
       }
     }
   };
@@ -160,13 +162,13 @@ export default function OpeningsPage() {
             className="text-xl font-semibold mb-4"
             style={{ color: `rgb(var(--color-primary-800))` }}
           >
-            Error
+            {t('error.title')}
           </h1>
           <p 
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-600))` }}
           >
-            No se proporcionó un ID de almacén válido
+            {t('error.noWarehouseId')}
           </p>
         </div>
       </div>
@@ -181,20 +183,20 @@ export default function OpeningsPage() {
             className="text-xl font-semibold"
             style={{ color: `rgb(var(--color-primary-800))` }}
           >
-            Aperturas de Almacén
+            {t('title')}
           </h1>
           {(warehouseName || warehouse) && (
             <p 
               className="text-sm mt-1"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Almacén: <span className="font-medium">{warehouseName || warehouse?.name}</span>
+              {t('warehouse')} <span className="font-medium">{warehouseName || warehouse?.name}</span>
               {warehouse?.currency && (
                 <span 
                   className="ml-2"
                   style={{ color: `rgb(var(--color-primary-500))` }}
                 >
-                  • Moneda: {warehouse.currency.code} - {warehouse.currency.name}
+                  • {t('currency')} {warehouse.currency.code} - {warehouse.currency.name}
                 </span>
               )}
             </p>
@@ -204,7 +206,7 @@ export default function OpeningsPage() {
               className="text-sm mt-1"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              Total: {total} productos
+              {t('totalProducts', { count: total })}
             </p>
           )}
         </div>
@@ -215,7 +217,7 @@ export default function OpeningsPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nueva Apertura
+          {t('newOpening')}
         </Btn>
       </div>
 
@@ -224,37 +226,10 @@ export default function OpeningsPage() {
           <Loading size="lg" />
         </div>
       ) : openings && openings.length === 0 ? (
-        <div 
-          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
-          style={{ borderColor: `rgb(var(--color-primary-200))` }}
-        >
-          <svg
-            className="h-12 w-12 mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-            />
-          </svg>
-          <p 
-            className="text-lg font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-400))` }}
-          >
-            No hay aperturas registradas
-          </p>
-          <p 
-            className="text-sm"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-          >
-            Este almacén no tiene productos registrados en su apertura.
-          </p>
-        </div>
+        <EmptyState
+          title={t('noOpenings')}
+          description={t('noOpeningsDesc')}
+        />
       ) : (
         <>
           <div className="mt-6">
@@ -285,10 +260,10 @@ export default function OpeningsPage() {
         onClose={handleDrawerClose}
         title={
           drawerMode === 'create' 
-            ? 'Nueva Apertura' 
+            ? t('newOpening')
             : drawerMode === 'edit' 
-            ? 'Editar Apertura'
-            : 'Detalles del Producto'
+            ? t('editOpening')
+            : t('productDetailsName')
         }
         onSave={drawerMode === 'details' ? undefined : handleSave}
         isSaving={isSaving}

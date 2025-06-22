@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { warehouseOpeningsService } from '@/services/warehouse-openings.service';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
@@ -31,6 +32,7 @@ interface FormErrors {
 
 const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpeningFormProps>(
   ({ warehouseId, warehouse, opening, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.warehouseOpenings');
     const [formData, setFormData] = useState<WarehouseOpeningFormData>({
       warehouseId: warehouseId,
       productId: '',
@@ -70,7 +72,7 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
         const response = await productService.getProducts(1);
         setProducts(response.data);
       } catch {
-        toastService.error('Error al cargar productos');
+        toastService.error(t('messages.errorLoadingProducts'));
       } finally {
         setLoadingProducts(false);
       }
@@ -82,24 +84,24 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
 
       // Solo validar productId si no estamos editando (cuando opening es null)
       if (!opening && !formData.productId) {
-        newErrors.productId = 'El producto es requerido';
+        newErrors.productId = t('form.errors.productRequired');
         isValid = false;
       }
 
       if (!formData.quantity || formData.quantity <= 0) {
-        newErrors.quantity = 'La cantidad debe ser mayor a 0';
+        newErrors.quantity = t('form.errors.quantityRequired');
         isValid = false;
       }
 
       if (!formData.price || formData.price <= 0) {
-        newErrors.price = 'El precio debe ser mayor a 0';
+        newErrors.price = t('form.errors.priceRequired');
         isValid = false;
       }
 
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
-    }, [formData, opening, onValidChange]);
+    }, [formData, opening, onValidChange, t]);
 
     useEffect(() => {
       validateForm();
@@ -118,18 +120,18 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
             quantity: formData.quantity,
             price: formData.price
           });
-          toastService.success('Apertura actualizada correctamente');
+          toastService.success(t('messages.openingUpdated'));
         } else {
           // Crear nueva apertura
           await warehouseOpeningsService.createWarehouseOpening(formData);
-          toastService.success('Apertura creada correctamente');
+          toastService.success(t('messages.openingCreated'));
         }
         onSuccess();
       } catch (error) {
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error(opening ? 'Error al actualizar la apertura' : 'Error al crear la apertura');
+          toastService.error(opening ? t('messages.errorUpdating') : t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -148,7 +150,7 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
-            Producto <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
+            {t('form.product')} <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
           </label>
           {loadingProducts ? (
             <div 
@@ -171,7 +173,7 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
               disabled={!!opening}
               required
             >
-              <option value="">Seleccionar producto...</option>
+              <option value="">{t('form.selectProduct')}</option>
               {products.map((product) => (
                 <option key={product.id} value={product.id}>
                   {product.name} - {product.sku}
@@ -192,26 +194,26 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
         <Input
           type="number"
           id="quantity"
-          label="Cantidad"
+          label={t('form.quantity')}
           required
           min="1"
           step="1"
           value={formData.quantity || ''}
           onChange={(e) => setFormData(prev => ({ ...prev, quantity: Number(e.target.value) }))}
-          placeholder="Ej: 100"
+          placeholder={t('form.placeholders.quantity')}
           error={errors.quantity}
         />
 
         <Input
           type="number"
           id="price"
-          label={`Precio ${warehouse?.currency ? `(${warehouse.currency.code})` : ''}`}
+          label={`${t('form.price')} ${warehouse?.currency ? `(${warehouse.currency.code})` : ''}`}
           required
           min="0.01"
           step="0.01"
           value={formData.price || ''}
           onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
-          placeholder="Ej: 25.50"
+          placeholder={t('form.placeholders.price')}
           error={errors.price}
         />
       </form>

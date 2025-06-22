@@ -1,6 +1,8 @@
 {
   "name": "nitro-front",
   "version": "0.1.0",
+  "description": "Nitro Front",
+  "author": "Karel Puerto Diaz",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 5501",

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from 'next-intl';
 import { WarehouseOpening } from "@/types/warehouse-opening";
 import { Warehouse } from "@/types/warehouse";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -21,6 +22,8 @@ export default function WarehouseOpeningTable({
   onEdit,
   onDelete,
 }: WarehouseOpeningTableProps) {
+  const t = useTranslations('pages.warehouseOpenings');
+  
   if (!Array.isArray(openings)) {
     return null;
   }
@@ -54,28 +57,28 @@ export default function WarehouseOpeningTable({
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Producto
+              {t('table.product')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              SKU
+              {t('table.sku')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Marca
+              {t('table.brand')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Categoría
+              {t('table.category')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Cantidad
+              {t('table.quantity')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Precio
+              {t('table.price')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Fecha Creación
+              {t('table.creationDate')}
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -135,21 +138,21 @@ export default function WarehouseOpeningTable({
                     variant="ghost"
                     size="sm"
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={t('actions.edit')}
                   />
                   <Btn
                     onClick={() => onViewDetails(opening)}
                     variant="ghost"
                     size="sm"
                     leftIcon={<EyeIcon className="h-4 w-4" />}
-                    title="Ver detalles"
+                    title={t('actions.viewDetails')}
                   />
                   <Btn
                     onClick={() => onDelete(opening)}
                     variant="ghost"
                     size="sm"
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={t('actions.delete')}
                     style={{ color: '#dc2626' }}
                   />
                 </div>

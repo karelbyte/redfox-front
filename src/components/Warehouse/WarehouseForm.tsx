@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Warehouse } from '@/types/warehouse';
 import { Currency } from '@/types/currency';
 import { api } from '@/services/api';
@@ -42,6 +43,7 @@ export interface WarehouseFormRef {
 
 const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
   ({ warehouse, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.warehouses');
     const [formData, setFormData] = useState<WarehouseFormData>({
       code: warehouse?.code || '',
       name: warehouse?.name || '',
@@ -71,7 +73,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
         const response = await currenciesService.getCurrencies(1);
         setCurrencies(response.data);
       } catch {
-        toastService.error('Error al cargar monedas');
+        toastService.error(t('currency.errorLoading'));
       } finally {
         setLoadingCurrencies(false);
       }
@@ -104,28 +106,28 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
+        newErrors.code = t('form.errors.codeRequired');
         isValid = false;
       }
 
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es requerido';
+        newErrors.name = t('form.errors.nameRequired');
         isValid = false;
       }
 
       if (!formData.address.trim()) {
-        newErrors.address = 'La dirección es requerida';
+        newErrors.address = t('form.errors.addressRequired');
         isValid = false;
       }
 
       if (!formData.phone.trim()) {
-        newErrors.phone = 'El teléfono es requerido';
+        newErrors.phone = t('form.errors.phoneRequired');
         isValid = false;
       }
 
       // Solo validar currency_id si no estamos editando o si estamos creando
       if (!formData.currency_id && !warehouse) {
-        newErrors.currency_id = 'La moneda es requerida';
+        newErrors.currency_id = t('form.errors.currencyRequired');
         isValid = false;
       }
 
@@ -157,10 +159,10 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
 
         if (warehouse) {
           await api.put(`/warehouses/${warehouse.id}`, data);
-          toastService.success('Almacén actualizado correctamente');
+          toastService.success(t('messages.warehouseUpdated'));
         } else {
           await api.post('/warehouses', data);
-          toastService.success('Almacén creado correctamente');
+          toastService.success(t('messages.warehouseCreated'));
         }
 
         onSuccess();
@@ -168,7 +170,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar el almacén');
+          toastService.error(warehouse ? t('messages.errorUpdating') : t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -199,69 +201,69 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
           <Input
             type="text"
             id="code"
-            label="Código"
+            label={t('form.code')}
             required
             value={formData.code}
             onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-            placeholder="Ej: ALM-001"
+            placeholder={t('form.placeholders.code')}
             error={errors.code}
           />
 
           <Input
             type="text"
             id="name"
-            label="Nombre"
+            label={t('form.name')}
             required
             value={formData.name}
             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            placeholder="Ej: Almacén Central"
+            placeholder={t('form.placeholders.name')}
             error={errors.name}
           />
 
           <TextArea
             id="address"
-            label="Dirección"
+            label={t('form.address')}
             required
             value={formData.address}
             onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            placeholder="Ej: Av. Principal #123"
+            placeholder={t('form.placeholders.address')}
             error={errors.address}
           />
 
           <Input
             type="text"
             id="phone"
-            label="Teléfono"
+            label={t('form.phone')}
             required
             value={formData.phone}
             onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-            placeholder="Ej: +1234567890"
+            placeholder={t('form.placeholders.phone')}
             error={errors.phone}
           />
 
           <SelectWithAdd
             id="currency_id"
-            label="Moneda"
+            label={t('form.currency')}
             value={formData.currency_id}
             onChange={(e) => setFormData(prev => ({ ...prev, currency_id: e.target.value }))}
             options={currencies.map((currency) => ({
               value: currency.id,
               label: `${currency.code} - ${currency.name}`
             }))}
-            placeholder="Seleccionar moneda..."
+            placeholder={t('currency.selectCurrency')}
             required
             disabled={warehouse && !warehouse.is_open}
             error={errors.currency_id}
             loading={loadingCurrencies}
             showAddButton={!warehouse}
             onAddClick={() => setShowCurrencyDrawer(true)}
-            addButtonTitle="Crear nueva moneda"
-            helperText={warehouse && !warehouse.is_open ? "(No se puede modificar en cierre de almacén)" : undefined}
+            addButtonTitle={t('currency.createNewCurrency')}
+            helperText={warehouse && !warehouse.is_open ? t('currency.cannotModifyClosed') : undefined}
           />
 
           <Checkbox
             id="isActive"
-            label="Activo"
+            label={t('form.active')}
             checked={formData.isActive}
             onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
           />
@@ -273,7 +275,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
           parentId="warehouse-drawer"
           isOpen={showCurrencyDrawer}
           onClose={handleCurrencyDrawerClose}
-          title="Nueva Moneda"
+          title={t('currency.newCurrency')}
           onSave={handleCurrencySave}
           isSaving={isSavingCurrency}
           isFormValid={isCurrencyFormValid}

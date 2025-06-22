@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useImperativeHandle } from "react";
+import { useTranslations } from 'next-intl';
 import { WarehouseOpening } from "@/types/warehouse-opening";
 import { Warehouse } from "@/types/warehouse";
 import Image from "next/image";
@@ -22,6 +23,8 @@ const ProductDetailsForm = forwardRef<
   ProductDetailsFormRef,
   ProductDetailsFormProps
 >(({ opening, warehouse, onSuccess }, ref) => {
+  const t = useTranslations('pages.warehouseOpenings');
+  
   const handleSubmit = async () => {
     // No hay envío en vista de detalles, solo cerramos
     onSuccess();
@@ -32,7 +35,7 @@ const ProductDetailsForm = forwardRef<
   }));
 
   if (!opening) {
-    return <div>No hay datos para mostrar</div>;
+    return <div>{t('productDetails.noData')}</div>;
   }
 
   const { product } = opening;
@@ -68,7 +71,7 @@ const ProductDetailsForm = forwardRef<
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
-            Nombre
+            {t('productDetails.name')}
           </label>
           <div
             className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -83,7 +86,7 @@ const ProductDetailsForm = forwardRef<
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
-            SKU
+            {t('productDetails.sku')}
           </label>
           <div
             className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -100,7 +103,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Peso (kg)
+                {t('productDetails.weight')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -115,7 +118,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Ancho (m)
+                {t('productDetails.width')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -130,7 +133,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Alto (m)
+                {t('productDetails.height')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -145,7 +148,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Largo (m)
+                {t('productDetails.length')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -164,7 +167,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Marca
+                {t('productDetails.brand')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -181,7 +184,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Categoría
+                {t('productDetails.category')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -198,7 +201,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Unidad de Medida
+                {t('productDetails.measurementUnit')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -219,7 +222,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Impuesto
+                {t('productDetails.tax')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
@@ -236,7 +239,7 @@ const ProductDetailsForm = forwardRef<
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                Tipo de Producto
+                {t('productDetails.productType')}
               </label>
               <div
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border capitalize"
@@ -254,7 +257,7 @@ const ProductDetailsForm = forwardRef<
           className="block text-sm font-medium mb-2"
           style={{ color: `rgb(var(--color-primary-500))` }}
         >
-          Descripción
+          {t('productDetails.description')}
         </label>
         <div
           className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border min-h-[60px]"
@@ -270,7 +273,7 @@ const ProductDetailsForm = forwardRef<
           className="text-sm font-semibold mb-3"
           style={{ color: `rgb(var(--color-primary-800))` }}
         >
-          Información de la Apertura
+          {t('productDetails.openingInfo')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -278,7 +281,7 @@ const ProductDetailsForm = forwardRef<
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              Cantidad en Apertura
+              {t('productDetails.openingQuantity')}
             </label>
             <div
               className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
@@ -293,7 +296,7 @@ const ProductDetailsForm = forwardRef<
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              Precio de Apertura
+              {t('productDetails.openingPrice')}
             </label>
             <div
               className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
@@ -308,7 +311,7 @@ const ProductDetailsForm = forwardRef<
               className="block text-sm font-medium mb-2"
               style={{ color: `rgb(var(--color-primary-500))` }}
             >
-              Fecha de Apertura
+              {t('productDetails.openingDate')}
             </label>
             <div
               className="text-sm text-gray-900 bg-white px-4 py-3 rounded-lg border"
@@ -327,7 +330,7 @@ const ProductDetailsForm = forwardRef<
             className="block text-sm font-medium mb-3"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
-            Imágenes ({product.images.length})
+            {t('productDetails.images', { count: product.images.length })}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {product.images.map((image, index) => (
@@ -341,7 +344,7 @@ const ProductDetailsForm = forwardRef<
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-200 rounded-lg flex items-center justify-center">
                   <span className="text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 px-2 py-1 rounded">
-                    Imagen {index + 1}
+                    {t('productDetails.image', { index: index + 1 })}
                   </span>
                 </div>
               </div>
@@ -355,7 +358,7 @@ const ProductDetailsForm = forwardRef<
           className="text-sm"
           style={{ color: `rgb(var(--color-primary-500))` }}
         >
-          Estado del Producto
+          {t('productDetails.productStatus')}
         </label>
         <div className="h-4 w-4">
           <span
@@ -365,7 +368,7 @@ const ProductDetailsForm = forwardRef<
                 : "bg-red-100 text-red-800"
             }`}
           >
-            {product.is_active ? "Activo" : "Inactivo"}
+            {product.is_active ? t('productDetails.active') : t('productDetails.inactive')}
           </span>
         </div>
       </div>

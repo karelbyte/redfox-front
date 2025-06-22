@@ -108,12 +108,86 @@
       "userRole": "Rol"
     },
     "warehouses": {
-      "title": "Almacenes",
+      "title": "Lista de Almacenes",
       "newWarehouse": "Nuevo Almacén",
       "editWarehouse": "Editar Almacén",
       "deleteWarehouse": "Eliminar Almacén",
-      "warehouseInfo": "Información del Almacén",
-      "warehouseDetails": "Detalles del Almacén"
+      "searchWarehouses": "Buscar almacenes...",
+      "noWarehouses": "No hay almacenes",
+      "noWarehousesDesc": "Haz clic en 'Nuevo Almacén' para agregar uno.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "name": "Nombre",
+        "address": "Dirección",
+        "phone": "Teléfono",
+        "currency": "Moneda",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: ALM-001",
+          "name": "Ej: Almacén Central",
+          "address": "Ej: Av. Principal #123",
+          "phone": "Ej: +1234567890"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "nameRequired": "El nombre es requerido",
+          "addressRequired": "La dirección es requerida",
+          "phoneRequired": "El teléfono es requerido",
+          "currencyRequired": "La moneda es requerida"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "address": "Dirección",
+        "phone": "Teléfono",
+        "currency": "Moneda",
+        "status": "Estado",
+        "opening": "Apertura",
+        "actions": "Acciones"
+      },
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "open": "Abierto",
+        "closed": "Cerrado"
+      },
+      "actions": {
+        "open": "Aperturar",
+        "close": "Cerrar Apertura",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cannotDeleteClosed": "No se puede eliminar un almacén cerrado"
+      },
+      "messages": {
+        "warehouseCreated": "Almacén creado correctamente",
+        "warehouseUpdated": "Almacén actualizado correctamente",
+        "warehouseDeleted": "Almacén eliminado correctamente",
+        "errorLoading": "Error al cargar los almacenes",
+        "errorCreating": "Error al crear el almacén",
+        "errorUpdating": "Error al actualizar el almacén",
+        "errorDeleting": "Error al eliminar el almacén",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el almacén \"{name}\"? Esta acción no se puede deshacer.",
+        "confirmClose": "¿Estás seguro que deseas cerrar la apertura del almacén {name}? Esta acción transferirá todos los productos al inventario y no se puede deshacer.",
+        "errorClosing": "Error al cerrar la apertura del almacén"
+      },
+      "currency": {
+        "newCurrency": "Nueva Moneda",
+        "createNewCurrency": "Crear nueva moneda",
+        "selectCurrency": "Seleccionar moneda...",
+        "errorLoading": "Error al cargar monedas",
+        "cannotModifyClosed": "(No se puede modificar en cierre de almacén)"
+      },
+      "closeResult": {
+        "title": "Apertura Cerrada Exitosamente",
+        "warehouse": "Almacén:",
+        "transferredProducts": "Productos transferidos:",
+        "totalQuantity": "Cantidad total:",
+        "closeDate": "Fecha de cierre:",
+        "accept": "Aceptar"
+      }
     },
     "products": {
       "title": "Productos",
@@ -572,13 +646,83 @@
       "newOpening": "Nueva Apertura",
       "editOpening": "Editar Apertura",
       "deleteOpening": "Eliminar Apertura",
-      "warehouse": "Almacén",
-      "currency": "Moneda",
+      "productDetailsName": "Detalles del Producto",
+      "warehouse": "Almacén:",
+      "currency": "Moneda:",
       "totalProducts": "Total: {count} productos",
-      "openingClosedSuccessfully": "Apertura Cerrada Exitosamente",
-      "transferredProducts": "Productos transferidos",
-      "totalQuantity": "Cantidad total",
-      "closingDate": "Fecha de cierre"
+      "noOpenings": "No hay aperturas registradas",
+      "noOpeningsDesc": "Este almacén no tiene productos registrados en su apertura.",
+      "error": {
+        "title": "Error",
+        "noWarehouseId": "No se proporcionó un ID de almacén válido",
+        "warehouseIdRequired": "ID de almacén no proporcionado",
+        "errorLoadingWarehouse": "Error al cargar la información del almacén",
+        "errorLoadingOpenings": "Error al cargar las aperturas",
+        "errorDeleting": "Error al eliminar la apertura"
+      },
+      "form": {
+        "product": "Producto",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "selectProduct": "Seleccionar producto...",
+        "placeholders": {
+          "quantity": "Ej: 100",
+          "price": "Ej: 25.50"
+        },
+        "errors": {
+          "productRequired": "El producto es requerido",
+          "quantityRequired": "La cantidad debe ser mayor a 0",
+          "priceRequired": "El precio debe ser mayor a 0"
+        }
+      },
+      "table": {
+        "product": "Producto",
+        "sku": "SKU",
+        "brand": "Marca",
+        "category": "Categoría",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "creationDate": "Fecha Creación",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "edit": "Editar",
+        "viewDetails": "Ver detalles",
+        "delete": "Eliminar"
+      },
+      "messages": {
+        "openingDeleted": "Apertura eliminada correctamente",
+        "openingCreated": "Apertura creada correctamente",
+        "openingUpdated": "Apertura actualizada correctamente",
+        "errorLoadingProducts": "Error al cargar productos",
+        "errorCreating": "Error al crear la apertura",
+        "errorUpdating": "Error al actualizar la apertura",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la apertura del producto \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "productDetails": {
+        "noData": "No hay datos para mostrar",
+        "name": "Nombre",
+        "sku": "SKU",
+        "weight": "Peso (kg)",
+        "width": "Ancho (m)",
+        "height": "Alto (m)",
+        "length": "Largo (m)",
+        "brand": "Marca",
+        "category": "Categoría",
+        "measurementUnit": "Unidad de Medida",
+        "tax": "Impuesto",
+        "productType": "Tipo de Producto",
+        "description": "Descripción",
+        "openingInfo": "Información de la Apertura",
+        "openingQuantity": "Cantidad en Apertura",
+        "openingPrice": "Precio de Apertura",
+        "openingDate": "Fecha de Apertura",
+        "images": "Imágenes ({count})",
+        "image": "Imagen {index}",
+        "productStatus": "Estado del Producto",
+        "active": "Activo",
+        "inactive": "Inactivo"
+      }
     },
     "receptions": {
       "title": "Recepciones",

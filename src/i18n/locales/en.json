@@ -108,12 +108,86 @@
       "userRole": "Role"
     },
     "warehouses": {
-      "title": "Warehouses",
+      "title": "Warehouse List",
       "newWarehouse": "New Warehouse",
       "editWarehouse": "Edit Warehouse",
       "deleteWarehouse": "Delete Warehouse",
-      "warehouseInfo": "Warehouse Information",
-      "warehouseDetails": "Warehouse Details"
+      "searchWarehouses": "Search warehouses...",
+      "noWarehouses": "No warehouses",
+      "noWarehousesDesc": "Click on 'New Warehouse' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "name": "Name",
+        "address": "Address",
+        "phone": "Phone",
+        "currency": "Currency",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: WH-001",
+          "name": "Ex: Central Warehouse",
+          "address": "Ex: Main St #123",
+          "phone": "Ex: +1234567890"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "nameRequired": "Name is required",
+          "addressRequired": "Address is required",
+          "phoneRequired": "Phone is required",
+          "currencyRequired": "Currency is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "address": "Address",
+        "phone": "Phone",
+        "currency": "Currency",
+        "status": "Status",
+        "opening": "Opening",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "open": "Open",
+        "closed": "Closed"
+      },
+      "actions": {
+        "open": "Open",
+        "close": "Close Opening",
+        "edit": "Edit",
+        "delete": "Delete",
+        "cannotDeleteClosed": "Cannot delete a closed warehouse"
+      },
+      "messages": {
+        "warehouseCreated": "Warehouse created successfully",
+        "warehouseUpdated": "Warehouse updated successfully",
+        "warehouseDeleted": "Warehouse deleted successfully",
+        "errorLoading": "Error loading warehouses",
+        "errorCreating": "Error creating warehouse",
+        "errorUpdating": "Error updating warehouse",
+        "errorDeleting": "Error deleting warehouse",
+        "confirmDelete": "Are you sure you want to delete the warehouse \"{name}\"? This action cannot be undone.",
+        "confirmClose": "Are you sure you want to close the warehouse opening {name}? This action will transfer all products to inventory and cannot be undone.",
+        "errorClosing": "Error closing warehouse opening"
+      },
+      "currency": {
+        "newCurrency": "New Currency",
+        "createNewCurrency": "Create new currency",
+        "selectCurrency": "Select currency...",
+        "errorLoading": "Error loading currencies",
+        "cannotModifyClosed": "(Cannot modify in warehouse closure)"
+      },
+      "closeResult": {
+        "title": "Opening Closed Successfully",
+        "warehouse": "Warehouse:",
+        "transferredProducts": "Transferred products:",
+        "totalQuantity": "Total quantity:",
+        "closeDate": "Close date:",
+        "accept": "Accept"
+      }
     },
     "products": {
       "title": "Products",
@@ -572,13 +646,83 @@
       "newOpening": "New Opening",
       "editOpening": "Edit Opening",
       "deleteOpening": "Delete Opening",
-      "warehouse": "Warehouse",
-      "currency": "Currency",
+      "productDetailsName": "Product Details",
+      "warehouse": "Warehouse:",
+      "currency": "Currency:",
       "totalProducts": "Total: {count} products",
-      "openingClosedSuccessfully": "Opening Closed Successfully",
-      "transferredProducts": "Transferred products",
-      "totalQuantity": "Total quantity",
-      "closingDate": "Closing date"
+      "noOpenings": "No openings registered",
+      "noOpeningsDesc": "This warehouse has no products registered in its opening.",
+      "error": {
+        "title": "Error",
+        "noWarehouseId": "No valid warehouse ID provided",
+        "warehouseIdRequired": "Warehouse ID not provided",
+        "errorLoadingWarehouse": "Error loading warehouse information",
+        "errorLoadingOpenings": "Error loading openings",
+        "errorDeleting": "Error deleting opening"
+      },
+      "form": {
+        "product": "Product",
+        "quantity": "Quantity",
+        "price": "Price",
+        "selectProduct": "Select product...",
+        "placeholders": {
+          "quantity": "Ex: 100",
+          "price": "Ex: 25.50"
+        },
+        "errors": {
+          "productRequired": "Product is required",
+          "quantityRequired": "Quantity must be greater than 0",
+          "priceRequired": "Price must be greater than 0"
+        }
+      },
+      "table": {
+        "product": "Product",
+        "sku": "SKU",
+        "brand": "Brand",
+        "category": "Category",
+        "quantity": "Quantity",
+        "price": "Price",
+        "creationDate": "Creation Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit",
+        "viewDetails": "View details",
+        "delete": "Delete"
+      },
+      "messages": {
+        "openingDeleted": "Opening deleted successfully",
+        "openingCreated": "Opening created successfully",
+        "openingUpdated": "Opening updated successfully",
+        "errorLoadingProducts": "Error loading products",
+        "errorCreating": "Error creating opening",
+        "errorUpdating": "Error updating opening",
+        "confirmDelete": "Are you sure you want to delete the opening for product \"{name}\"? This action cannot be undone."
+      },
+      "productDetails": {
+        "noData": "No data to display",
+        "name": "Name",
+        "sku": "SKU",
+        "weight": "Weight (kg)",
+        "width": "Width (m)",
+        "height": "Height (m)",
+        "length": "Length (m)",
+        "brand": "Brand",
+        "category": "Category",
+        "measurementUnit": "Measurement Unit",
+        "tax": "Tax",
+        "productType": "Product Type",
+        "description": "Description",
+        "openingInfo": "Opening Information",
+        "openingQuantity": "Opening Quantity",
+        "openingPrice": "Opening Price",
+        "openingDate": "Opening Date",
+        "images": "Images ({count})",
+        "image": "Image {index}",
+        "productStatus": "Product Status",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
     },
     "receptions": {
       "title": "Receptions",

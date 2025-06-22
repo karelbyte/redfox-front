@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { Warehouse, WarehouseCloseResponse } from "@/types/warehouse";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { warehousesService } from "@/services/warehouses.service";
@@ -23,7 +24,9 @@ export default function WarehouseTable({
   onDelete,
   onReload,
 }: WarehouseTableProps) {
+  const t = useTranslations('pages.warehouses');
   const router = useRouter();
+  const locale = useLocale();
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
@@ -35,7 +38,7 @@ export default function WarehouseTable({
   };
 
   const handleOpenAperturas = (warehouse: Warehouse) => {
-    router.push(`/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id}&warehouse_name=${encodeURIComponent(warehouse.name)}`);
+    router.push(`/${locale}/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id}&warehouse_name=${encodeURIComponent(warehouse.name)}`);
   };
 
   const handleConfirmClose = async () => {
@@ -50,7 +53,7 @@ export default function WarehouseTable({
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al cerrar la apertura del almacén");
+        toastService.error(t('messages.errorClosing'));
       }
       setIsConfirmModalOpen(false);
       setSelectedWarehouse(null);
@@ -76,28 +79,28 @@ export default function WarehouseTable({
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Código
+                {t('table.code')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Nombre
+                {t('table.name')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Dirección
+                {t('table.address')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Teléfono
+                {t('table.phone')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Moneda
+                {t('table.currency')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Estado
+                {t('table.status')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Apertura
+                {t('table.opening')}
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                Acciones
+                {t('table.actions')}
               </th>
             </tr>
           </thead>
@@ -127,7 +130,7 @@ export default function WarehouseTable({
                         : "bg-red-100 text-red-800"
                     }`}
                   >
-                    {warehouse.status ? "Activo" : "Inactivo"}
+                    {warehouse.status ? t('status.active') : t('status.inactive')}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -138,7 +141,7 @@ export default function WarehouseTable({
                         : "bg-red-100 text-red-800"
                     }`}
                   >
-                    {warehouse.is_open ? "Abierto" : "Cerrado"}
+                    {warehouse.is_open ? t('status.open') : t('status.closed')}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -148,7 +151,7 @@ export default function WarehouseTable({
                         onClick={() => handleOpenAperturas(warehouse)}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
                       >
-                        Aperturar
+                        {t('actions.open')}
                       </button>
                     )}
                     {warehouse.is_open && (
@@ -156,7 +159,7 @@ export default function WarehouseTable({
                         onClick={() => handleCloseWarehouse(warehouse)}
                         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
                       >
-                        Cerrar Apertura
+                        {t('actions.close')}
                       </button>
                     )}
                     <Btn
@@ -164,14 +167,14 @@ export default function WarehouseTable({
                       variant="ghost"
                       size="sm"
                       leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title="Editar"
+                      title={t('actions.edit')}
                     />
                     <Btn
                       onClick={() => warehouse.is_open && onDelete(warehouse)}
                       variant="ghost"
                       size="sm"
                       leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={!warehouse.is_open ? "No se puede eliminar un almacén cerrado" : "Eliminar"}
+                      title={!warehouse.is_open ? t('actions.cannotDeleteClosed') : t('actions.delete')}
                       disabled={!warehouse.is_open}
                       style={!warehouse.is_open ? { color: '#9ca3af' } : { color: '#dc2626' }}
                     />
@@ -190,13 +193,13 @@ export default function WarehouseTable({
           setSelectedWarehouse(null);
         }}
         onConfirm={handleConfirmClose}
-        title="Cerrar Apertura"
+        title={t('actions.close')}
         message={
           <>
-            ¿Estás seguro que deseas cerrar la apertura del almacén <span className="font-bold">{selectedWarehouse?.name}</span>? Esta acción transferirá todos los productos al inventario y no se puede deshacer.
+            {t('messages.confirmClose', { name: selectedWarehouse?.name || '' })}
           </>
         }
-        confirmText="Cerrar Apertura"
+        confirmText={t('actions.close')}
       />
 
       <WarehouseCloseResultModal

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from 'next-intl';
 import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
 import { Warehouse } from "@/types/warehouse";
@@ -11,10 +12,11 @@ import Pagination from "@/components/Pagination/Pagination";
 import Drawer from "@/components/Drawer/Drawer";
 import { WarehouseFormRef } from "@/components/Warehouse/WarehouseForm";
 import Loading from "@/components/Loading/Loading";
-import { Btn } from "@/components/atoms";
+import { Btn, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function WarehousesPage() {
+  const t = useTranslations('pages.warehouses');
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +36,7 @@ export default function WarehousesPage() {
       setWarehouses(response.data);
       setTotalPages(response.meta.totalPages);
     } catch {
-      toastService.error("Error al cargar los almacenes");
+      toastService.error(t('messages.errorLoading'));
     } finally {
       setLoading(false);
     }
@@ -53,11 +55,11 @@ export default function WarehousesPage() {
 
     try {
       await warehousesService.deleteWarehouse(warehouseToDelete.id);
-      toastService.success("Almacén eliminado correctamente");
+      toastService.success(t('messages.warehouseDeleted'));
       fetchWarehouses(currentPage);
       setWarehouseToDelete(null);
     } catch {
-      toastService.error("Error al eliminar el almacén");
+      toastService.error(t('messages.errorDeleting'));
     }
   };
 
@@ -100,7 +102,7 @@ export default function WarehousesPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: 'rgb(var(--color-primary-800))' }}>
-          Lista de Almacenes
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -109,7 +111,7 @@ export default function WarehousesPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nuevo Almacén
+          {t('newWarehouse')}
         </Btn>
       </div>
 
@@ -118,28 +120,10 @@ export default function WarehousesPage() {
           <Loading size="lg" />
         </div>
       ) : warehouses && warehouses.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed" style={{ borderColor: 'rgb(var(--color-primary-200))' }}>
-          <svg
-            className="h-12 w-12 mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            style={{ color: 'rgb(var(--color-primary-300))' }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <p className="text-lg font-medium mb-2" style={{ color: 'rgb(var(--color-primary-400))' }}>
-            No hay almacenes
-          </p>
-          <p className="text-sm" style={{ color: 'rgb(var(--color-primary-300))' }}>
-            Haz clic en &quot;Nuevo Almacén&quot; para agregar uno.
-          </p>
-        </div>
+        <EmptyState
+          title={t('noWarehouses')}
+          description={t('noWarehousesDesc')}
+        />
       ) : (
         <>
           <WarehouseTable
@@ -163,7 +147,7 @@ export default function WarehousesPage() {
         id="warehouse-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingWarehouse ? 'Editar Almacén' : 'Nuevo Almacén'}
+        title={editingWarehouse ? t('editWarehouse') : t('newWarehouse')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
