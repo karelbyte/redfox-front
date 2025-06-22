@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { MeasurementUnit } from '@/types/measurement-unit';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
@@ -9,6 +10,9 @@ interface MeasurementUnitTableProps {
 }
 
 export default function MeasurementUnitTable({ units, onEdit, onDelete }: MeasurementUnitTableProps) {
+  const t = useTranslations('pages.measurementUnits');
+  const commonT = useTranslations('common');
+
   if (!Array.isArray(units)) {
     return null;
   }
@@ -27,25 +31,25 @@ export default function MeasurementUnitTable({ units, onEdit, onDelete }: Measur
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Código
+              {t('table.code')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Descripción
+              {t('table.description')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Estado
+              {t('table.status')}
             </th>
             <th 
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -60,7 +64,7 @@ export default function MeasurementUnitTable({ units, onEdit, onDelete }: Measur
                     unit.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {unit.status ? 'Activo' : 'Inactivo'}
+                  {unit.status ? commonT('status.active') : commonT('status.inactive')}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -70,14 +74,14 @@ export default function MeasurementUnitTable({ units, onEdit, onDelete }: Measur
                     size="sm"
                     onClick={() => onEdit(unit)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={commonT('actions.edit')}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(unit)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={commonT('actions.delete')}
                     style={{ color: '#dc2626' }}
                   /> 
                 </div>

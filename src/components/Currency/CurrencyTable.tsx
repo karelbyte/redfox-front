@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl';
 import { Currency } from '@/types/currency';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
@@ -11,6 +12,9 @@ interface CurrencyTableProps {
 }
 
 export default function CurrencyTable({ currencies, onEdit, onDelete }: CurrencyTableProps) {
+  const t = useTranslations('pages.currencies');
+  const commonT = useTranslations('common');
+
   if (!Array.isArray(currencies)) {
     return null;
   }
@@ -29,19 +33,19 @@ export default function CurrencyTable({ currencies, onEdit, onDelete }: Currency
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Código
+              {t('form.code')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Nombre
+              {t('form.name')}
             </th>
             <th 
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -57,14 +61,14 @@ export default function CurrencyTable({ currencies, onEdit, onDelete }: Currency
                     size="sm"
                     onClick={() => onEdit(currency)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={commonT('actions.edit')}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(currency)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={commonT('actions.delete')}
                     style={{ color: '#dc2626' }}
                   /> 
                 </div>

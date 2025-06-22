@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from 'next-intl';
 import { categoriesService } from "@/services/categories.service";
 import { toastService } from "@/services/toast.service";
 import { Category } from "@/types/category";
@@ -16,6 +17,7 @@ import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function CategoriesPage() {
+  const t = useTranslations('pages.categories');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +45,7 @@ export default function CategoriesPage() {
         setHasInitialData(true);
       }
     } catch {
-      toastService.error("Error al cargar las categorías");
+      toastService.error(t('messages.errorLoading'));
     } finally {
       setLoading(false);
     }
@@ -61,7 +63,7 @@ export default function CategoriesPage() {
 
     try {
       await categoriesService.deleteCategory(categoryToDelete.id);
-      toastService.success("Categoría eliminada correctamente");
+      toastService.success(t('messages.categoryDeleted'));
       fetchCategories(currentPage, searchTerm);
       setCategoryToDelete(null);
     } catch (error) {
@@ -104,7 +106,7 @@ export default function CategoriesPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: 'rgb(var(--color-primary-800))' }}>
-          Categorías
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -113,14 +115,14 @@ export default function CategoriesPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nueva Categoría
+          {t('newCategory')}
         </Btn>
       </div>
 
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar categorías..."
+          placeholder={t('searchCategories')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchCategories(1, term);
@@ -135,9 +137,9 @@ export default function CategoriesPage() {
       ) : categories && categories.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay categorías"
-          description="Haz clic en 'Nueva Categoría' para agregar una."
-          searchDescription="No se encontraron resultados"
+          title={t('noCategories')}
+          description={t('noCategoriesDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -165,7 +167,7 @@ export default function CategoriesPage() {
         id="category-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
+        title={editingCategory ? t('editCategory') : t('newCategory')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}

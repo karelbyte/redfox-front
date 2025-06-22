@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Brand } from '@/types/brand';
 
 interface DeleteBrandModalProps {
@@ -7,6 +8,9 @@ interface DeleteBrandModalProps {
 }
 
 export default function DeleteBrandModal({ brand, onClose, onConfirm }: DeleteBrandModalProps) {
+  const t = useTranslations('pages.brands');
+  const commonT = useTranslations('common');
+
   if (!brand) return null;
 
   return (
@@ -32,11 +36,11 @@ export default function DeleteBrandModal({ brand, onClose, onConfirm }: DeleteBr
             </div>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
               <h3 className="text-base font-semibold leading-6 text-gray-900">
-                Eliminar Marca
+                {t('deleteBrand')}
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que deseas eliminar la marca &quot;{brand.code}&quot;? Esta acción no se puede deshacer.
+                  {t('messages.confirmDelete', { name: brand.code })}
                 </p>
               </div>
             </div>
@@ -47,14 +51,14 @@ export default function DeleteBrandModal({ brand, onClose, onConfirm }: DeleteBr
               className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
               onClick={onConfirm}
             >
-              Eliminar
+              {commonT('actions.delete')}
             </button>
             <button
               type="button"
               className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
               onClick={onClose}
             >
-              Cancelar
+              {commonT('actions.cancel')}
             </button>
           </div>
         </div>

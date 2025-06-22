@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Currency } from '@/types/currency';
 import CurrencyTable from '@/components/Currency/CurrencyTable';
 import CurrencyForm, { CurrencyFormRef } from '@/components/Currency/CurrencyForm';
@@ -14,6 +15,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 
 export default function CurrenciesPage() {
+  const t = useTranslations('pages.currencies');
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [selectedCurrency, setSelectedCurrency] = useState<Currency | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -43,7 +45,7 @@ export default function CurrenciesPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al cargar las monedas");
+        toastService.error(t('messages.errorLoading'));
       }
     } finally {
       setIsLoading(false);
@@ -97,7 +99,7 @@ export default function CurrenciesPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          Monedas
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -106,14 +108,14 @@ export default function CurrenciesPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nueva Moneda
+          {t('newCurrency')}
         </Btn>
       </div>
 
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar monedas..."
+          placeholder={t('searchCurrencies')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchCurrencies(1, term);
@@ -128,9 +130,9 @@ export default function CurrenciesPage() {
       ) : currencies && currencies.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay monedas"
-          description="Haz clic en 'Nueva Moneda' para agregar una."
-          searchDescription="No se encontraron resultados"
+          title={t('noCurrencies')}
+          description={t('noCurrenciesDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -157,7 +159,7 @@ export default function CurrenciesPage() {
         id="currency-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={selectedCurrency ? "Editar Moneda" : "Nueva Moneda"}
+        title={selectedCurrency ? t('editCurrency') : t('newCurrency')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}

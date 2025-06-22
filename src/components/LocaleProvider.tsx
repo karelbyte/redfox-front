@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { DrawerProvider } from "@/components/Drawer/Drawer";
+import { LanguageInitializer } from "@/components/LanguageInitializer";
 import { Toaster } from 'react-hot-toast';
 
 interface LocaleProviderProps {
@@ -18,6 +19,7 @@ export function LocaleProvider({ messages, locale, children }: LocaleProviderPro
       <ThemeProvider>
         <AuthProvider>
           <DrawerProvider>
+            <LanguageInitializer />
             {children}
             <Toaster
               toastOptions={{

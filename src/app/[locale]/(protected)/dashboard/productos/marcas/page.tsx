@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Brand } from '@/types/brand';
 import { brandService } from '@/services/brand.service';
 import { toastService } from '@/services/toast.service';
@@ -16,6 +17,7 @@ import Loading from '@/components/Loading/Loading';
 
 
 export default function BrandsPage() {
+  const t = useTranslations('pages.brands');
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,7 +41,7 @@ export default function BrandsPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error('Error al cargar las marcas');
+        toastService.error(t('messages.errorLoading'));
       }
     } finally {
       setLoading(false);
@@ -59,6 +61,7 @@ export default function BrandsPage() {
 
     try {
       await brandService.deleteBrand(brandToDelete.id);
+      toastService.success(t('messages.brandDeleted'));
       fetchBrands(currentPage, searchTerm);
       setBrandToDelete(null);
     } catch (error) {
@@ -106,7 +109,7 @@ export default function BrandsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          Marcas
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -115,13 +118,13 @@ export default function BrandsPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nueva Marca
+          {t('newBrand')}
         </Btn>
       </div>
 
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar marcas..."
+          placeholder={t('searchBrands')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchBrands(1, term);
@@ -136,9 +139,9 @@ export default function BrandsPage() {
       ) : brands && brands.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay marcas"
-          description="Haz clic en 'Nueva Marca' para agregar una."
-          searchDescription="No se encontraron marcas"
+          title={t('noBrands')}
+          description={t('noBrandsDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -166,7 +169,7 @@ export default function BrandsPage() {
         id="brand-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingBrand ? 'Editar Marca' : 'Nueva Marca'}
+        title={editingBrand ? t('editBrand') : t('newBrand')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useTranslations } from 'next-intl';
 import { brandService } from '@/services/brand.service';
 import { toastService } from '@/services/toast.service';
 import { Brand, BrandFormData } from '@/types/brand';
@@ -27,6 +28,7 @@ interface FormErrors {
 
 const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
   ({ brand, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.brands');
     const [formData, setFormData] = useState<BrandFormData>({
       code: '',
       description: '',
@@ -63,12 +65,12 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
+        newErrors.code = t('form.errors.codeRequired');
         isValid = false;
       }
 
       if (!formData.description.trim()) {
-        newErrors.description = 'La descripción es requerida';
+        newErrors.description = t('form.errors.descriptionRequired');
         isValid = false;
       }
 
@@ -106,8 +108,10 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
 
         if (brand) {
           await brandService.updateBrand(brand.id, data, imageFile || undefined);
+          toastService.success(t('messages.brandUpdated'));
         } else {
           await brandService.createBrand(data, imageFile || undefined);
+          toastService.success(t('messages.brandCreated'));
         }
 
         onSuccess();
@@ -115,7 +119,7 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar la marca');
+          toastService.error(brand ? t('messages.errorUpdating') : t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -131,22 +135,22 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
         <Input
           type="text"
           id="code"
-          label="Código"
+          label={t('form.code')}
           required
           value={formData.code}
           onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-          placeholder="Ej: BRAND001"
+          placeholder={t('form.placeholders.code')}
           error={errors.code}
         />
 
         <Input
           type="text"
           id="description"
-          label="Descripción"
+          label={t('form.description')}
           required
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-          placeholder="Ej: Marca de ropa deportiva"
+          placeholder={t('form.placeholders.description')}
           error={errors.description}
         />
 
@@ -155,7 +159,7 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
-            Imagen {!brand && <span style={{ color: `rgb(var(--color-primary-500))` }}></span>}
+            {t('form.image')} {!brand && <span style={{ color: `rgb(var(--color-primary-500))` }}></span>}
           </label>
           <ImageUpload
             value={brand?.img || undefined}
@@ -166,7 +170,7 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
 
         <Checkbox
           id="isActive"
-          label="Activo"
+          label={t('form.active')}
           checked={formData.isActive}
           onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
         />

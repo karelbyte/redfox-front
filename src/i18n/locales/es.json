@@ -197,20 +197,146 @@
       "title": "Categorías",
       "newCategory": "Nueva Categoría",
       "editCategory": "Editar Categoría",
-      "deleteCategory": "Eliminar Categoría"
+      "deleteCategory": "Eliminar Categoría",
+      "searchCategories": "Buscar categorías...",
+      "noCategories": "No hay categorías",
+      "noCategoriesDesc": "Haz clic en 'Nueva Categoría' para agregar una.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "slug": "Slug",
+        "image": "Imagen",
+        "position": "Posición",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: CAT001",
+          "name": "Ej: Electrónicos",
+          "description": "Ej: Productos electrónicos y tecnología",
+          "slug": "Ej: electronicos",
+          "position": "Ej: 1"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "nameRequired": "El nombre es requerido",
+          "descriptionRequired": "La descripción es requerida",
+          "slugRequired": "El slug es requerido"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "categoryCreated": "Categoría creada correctamente",
+        "categoryUpdated": "Categoría actualizada correctamente",
+        "categoryDeleted": "Categoría eliminada correctamente",
+        "errorLoading": "Error al cargar las categorías",
+        "errorCreating": "Error al crear la categoría",
+        "errorUpdating": "Error al actualizar la categoría",
+        "errorDeleting": "Error al eliminar la categoría",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la categoría \"{name}\"? Esta acción no se puede deshacer."
+      }
     },
     "brands": {
       "title": "Marcas",
       "newBrand": "Nueva Marca",
       "editBrand": "Editar Marca",
-      "deleteBrand": "Eliminar Marca"
+      "deleteBrand": "Eliminar Marca",
+      "searchBrands": "Buscar marcas...",
+      "noBrands": "No hay marcas",
+      "noBrandsDesc": "Haz clic en 'Nueva Marca' para agregar una.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "image": "Imagen",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: BRD001",
+          "name": "Ej: Samsung",
+          "description": "Ej: Marca líder en tecnología"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "nameRequired": "El nombre es requerido",
+          "descriptionRequired": "La descripción es requerida"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "brandCreated": "Marca creada correctamente",
+        "brandUpdated": "Marca actualizada correctamente",
+        "brandDeleted": "Marca eliminada correctamente",
+        "errorLoading": "Error al cargar las marcas",
+        "errorCreating": "Error al crear la marca",
+        "errorUpdating": "Error al actualizar la marca",
+        "errorDeleting": "Error al eliminar la marca",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la marca \"{name}\"? Esta acción no se puede deshacer."
+      }
     },
     "taxes": {
       "title": "Impuestos",
       "newTax": "Nuevo Impuesto",
       "editTax": "Editar Impuesto",
       "deleteTax": "Eliminar Impuesto",
-      "taxType": "Tipo de Impuesto"
+      "taxType": "Tipo de Impuesto",
+      "searchTaxes": "Buscar impuestos...",
+      "noTaxes": "No hay impuestos",
+      "noTaxesDesc": "Haz clic en 'Nuevo Impuesto' para agregar uno.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "rate": "Tasa",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: IGV",
+          "name": "Ej: IGV",
+          "description": "Ej: Impuesto General a las Ventas",
+          "rate": "Ej: 18"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "nameRequired": "El nombre es requerido",
+          "descriptionRequired": "La descripción es requerida",
+          "rateRequired": "La tasa es requerida",
+          "invalidRate": "La tasa debe ser un número válido"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "rate": "Tasa (%)",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "taxCreated": "Impuesto creado correctamente",
+        "taxUpdated": "Impuesto actualizado correctamente",
+        "taxDeleted": "Impuesto eliminado correctamente",
+        "errorLoading": "Error al cargar los impuestos",
+        "errorCreating": "Error al crear el impuesto",
+        "errorUpdating": "Error al actualizar el impuesto",
+        "errorDeleting": "Error al eliminar el impuesto",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el impuesto \"{name}\"? Esta acción no se puede deshacer."
+      }
     },
     "currencies": {
       "title": "Monedas",
@@ -218,7 +344,49 @@
       "editCurrency": "Editar Moneda",
       "deleteCurrency": "Eliminar Moneda",
       "currencyCode": "Código de Moneda",
-      "currencyName": "Nombre de Moneda"
+      "currencyName": "Nombre de Moneda",
+      "searchCurrencies": "Buscar monedas...",
+      "noCurrencies": "No hay monedas",
+      "noCurrenciesDesc": "Haz clic en 'Nueva Moneda' para agregar una.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "symbol": "Símbolo",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: PEN",
+          "name": "Ej: Sol Peruano",
+          "description": "Ej: Moneda oficial del Perú",
+          "symbol": "Ej: S/"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "nameRequired": "El nombre es requerido",
+          "descriptionRequired": "La descripción es requerida",
+          "symbolRequired": "El símbolo es requerido"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "description": "Descripción",
+        "symbol": "Símbolo",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "currencyCreated": "Moneda creada correctamente",
+        "currencyUpdated": "Moneda actualizada correctamente",
+        "currencyDeleted": "Moneda eliminada correctamente",
+        "errorLoading": "Error al cargar las monedas",
+        "errorCreating": "Error al crear la moneda",
+        "errorUpdating": "Error al actualizar la moneda",
+        "errorDeleting": "Error al eliminar la moneda",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la moneda \"{name}\"? Esta acción no se puede deshacer."
+      }
     },
     "measurementUnits": {
       "title": "Unidades de Medida",
@@ -226,7 +394,41 @@
       "editUnit": "Editar Unidad de Medida",
       "deleteUnit": "Eliminar Unidad de Medida",
       "unitCode": "Código de Unidad",
-      "unitDescription": "Descripción de Unidad"
+      "unitDescription": "Descripción de Unidad",
+      "searchUnits": "Buscar unidades de medida...",
+      "noUnits": "No hay unidades de medida",
+      "noUnitsDesc": "Haz clic en 'Nueva Unidad' para agregar una.",
+      "noResultsDesc": "No se encontraron resultados",
+      "form": {
+        "code": "Código",
+        "description": "Descripción",
+        "status": "Estado",
+        "active": "Activo",
+        "placeholders": {
+          "code": "Ej: Lts",
+          "description": "Ej: Litros"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "descriptionRequired": "La descripción es requerida"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "description": "Descripción",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "messages": {
+        "unitCreated": "Unidad de medida creada correctamente",
+        "unitUpdated": "Unidad de medida actualizada correctamente",
+        "unitDeleted": "Unidad de medida eliminada correctamente",
+        "errorLoading": "Error al cargar las unidades de medida",
+        "errorCreating": "Error al crear la unidad de medida",
+        "errorUpdating": "Error al actualizar la unidad de medida",
+        "errorDeleting": "Error al eliminar la unidad de medida",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la unidad de medida \"{description}\"? Esta acción no se puede deshacer."
+      }
     },
     "providers": {
       "title": "Proveedores",

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useTranslations } from 'next-intl';
 import { Currency } from '@/types/currency';
 import { api } from '@/services/api';
 import { toastService } from '@/services/toast.service';
@@ -30,6 +31,7 @@ export interface CurrencyFormRef {
 
 const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
   ({ initialData, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.currencies');
     const [formData, setFormData] = useState<CurrencyFormData>({
       code: initialData?.code || '',
       name: initialData?.name || '',
@@ -56,12 +58,12 @@ const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
+        newErrors.code = t('form.errors.codeRequired');
         isValid = false;
       }
 
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es requerido';
+        newErrors.name = t('form.errors.nameRequired');
         isValid = false;
       }
 
@@ -90,10 +92,10 @@ const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
 
         if (initialData) {
           await api.put(`/currencies/${initialData.id}`, data);
-          toastService.success('Moneda actualizada correctamente');
+          toastService.success(t('messages.currencyUpdated'));
         } else {
           await api.post('/currencies', data);
-          toastService.success('Moneda creada correctamente');
+          toastService.success(t('messages.currencyCreated'));
         }
 
         onSuccess();
@@ -101,7 +103,7 @@ const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar la moneda');
+          toastService.error(initialData ? t('messages.errorUpdating') : t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -117,22 +119,22 @@ const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
         <Input
           type="text"
           id="code"
-          label="Código"
+          label={t('form.code')}
           required
           value={formData.code}
           onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-          placeholder="Ej: USD"
+          placeholder={t('form.placeholders.code')}
           error={errors.code}
         />
 
         <Input
           type="text"
           id="name"
-          label="Nombre"
+          label={t('form.name')}
           required
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          placeholder="Ej: Dólar Estadounidense"
+          placeholder={t('form.placeholders.name')}
           error={errors.name}
         />
       </form>

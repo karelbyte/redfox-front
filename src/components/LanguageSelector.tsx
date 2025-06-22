@@ -1,32 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import { locales } from '@/i18n/config';
 import { Btn } from '@/components/atoms';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function LanguageSelector() {
-  const router = useRouter();
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { currentLocale, changeLanguage } = useLanguage();
   
-  // Extract locale from pathname
-  const pathSegments = pathname.split('/');
-  const currentLocale = pathSegments[1] || 'es'; // Default to 'es' if no locale in path
- 
   const handleLanguageChange = (newLocale: string) => {
-    // Don't navigate if clicking on the current locale
-    if (newLocale === currentLocale) {
-      setIsOpen(false);
-      return;
-    }
-
-    // Remove the current locale from the pathname
-    const pathWithoutLocale = pathname.replace(`/${currentLocale}`, '') || '/';
-    
-    // Navigate to the new locale
-    router.push(`/${newLocale}${pathWithoutLocale}`);
+    changeLanguage(newLocale);
     setIsOpen(false);
   };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from 'next-intl';
 import { measurementUnitsService } from "@/services/measurement-units.service";
 import { toastService } from "@/services/toast.service";
 import { MeasurementUnit } from "@/types/measurement-unit";
@@ -15,6 +16,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 
 export default function MeasurementUnitsPage() {
+  const t = useTranslations('pages.measurementUnits');
   const [units, setUnits] = useState<MeasurementUnit[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +43,7 @@ export default function MeasurementUnitsPage() {
         setHasInitialData(true);
       }
     } catch {
-      toastService.error("Error al cargar las unidades de medida");
+      toastService.error(t('messages.errorLoading'));
     } finally {
       setLoading(false);
     }
@@ -60,7 +62,7 @@ export default function MeasurementUnitsPage() {
 
     try {
       await measurementUnitsService.deleteMeasurementUnit(unitToDelete.id);
-      toastService.success("Unidad de medida eliminada correctamente");
+      toastService.success(t('messages.unitDeleted'));
       fetchUnits(currentPage, searchTerm);
       setUnitToDelete(null);
     } catch(error) {
@@ -103,7 +105,7 @@ export default function MeasurementUnitsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          Unidades de Medida
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -112,14 +114,14 @@ export default function MeasurementUnitsPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nueva Unidad
+          {t('newUnit')}
         </Btn>
       </div>
 
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar unidades de medida..."
+          placeholder={t('searchUnits')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchUnits(1, term);
@@ -134,9 +136,9 @@ export default function MeasurementUnitsPage() {
       ) : units && units.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay unidades de medida"
-          description="Haz clic en 'Nueva Unidad' para agregar una."
-          searchDescription="No se encontraron resultados"
+          title={t('noUnits')}
+          description={t('noUnitsDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -165,7 +167,7 @@ export default function MeasurementUnitsPage() {
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={
-          editingUnit ? "Editar Unidad de Medida" : "Nueva Unidad de Medida"
+          editingUnit ? t('editUnit') : t('newUnit')
         }
         onSave={handleSave}
         isSaving={isSaving}

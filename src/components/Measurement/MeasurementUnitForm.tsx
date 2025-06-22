@@ -1,4 +1,5 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { measurementUnitsService } from '@/services/measurement-units.service';
 import { toastService } from '@/services/toast.service';
 import { MeasurementUnit } from '@/types/measurement-unit';
@@ -29,6 +30,7 @@ interface FormErrors {
 
 const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFormProps>(
   ({ unit, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.measurementUnits');
     const [formData, setFormData] = useState<FormData>({
       code: '',
       description: '',
@@ -58,19 +60,19 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
+        newErrors.code = t('form.errors.codeRequired');
         isValid = false;
       }
 
       if (!formData.description.trim()) {
-        newErrors.description = 'La descripción es requerida';
+        newErrors.description = t('form.errors.descriptionRequired');
         isValid = false;
       }
 
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
-    }, [formData, onValidChange]);
+    }, [formData, onValidChange, t]);
 
     useEffect(() => {
       validateForm();
@@ -91,10 +93,10 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
 
         if (unit) {
           await measurementUnitsService.updateMeasurementUnit(unit.id, data);
-          toastService.success('Unidad de medida actualizada correctamente');
+          toastService.success(t('messages.unitUpdated'));
         } else {
           await measurementUnitsService.createMeasurementUnit(data);
-          toastService.success('Unidad de medida creada correctamente');
+          toastService.success(t('messages.unitCreated'));
         }
 
         onSuccess();
@@ -102,7 +104,7 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar la unidad de medida');
+          toastService.error(unit ? t('messages.errorUpdating') : t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -118,29 +120,29 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
         <Input
           type="text"
           id="code"
-          label="Código"
+          label={t('form.code')}
           required
           value={formData.code}
           onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-          placeholder="Ej: Lts"
+          placeholder={t('form.placeholders.code')}
           error={errors.code}
         />
 
         <Input
           type="text"
           id="description"
-          label="Descripción"
+          label={t('form.description')}
           required
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-          placeholder="Ej: Litros"
+          placeholder={t('form.placeholders.description')}
           error={errors.description}
         />
 
         <div className="flex items-center">
           <Checkbox
             id="status"
-            label="Activo"
+            label={t('form.active')}
             checked={formData.status}
             onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
           />

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useTranslations } from 'next-intl';
 import { Tax, TaxType } from '@/types/tax';
 import { api } from '@/services/api';
 import { toastService } from '@/services/toast.service';
@@ -36,6 +37,7 @@ export interface TaxFormRef {
 
 const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
   ({ initialData, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.taxes');
     const [formData, setFormData] = useState<TaxFormData>({
       code: initialData?.code || '',
       name: initialData?.name || '',
@@ -76,20 +78,20 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = 'El código es requerido';
+        newErrors.code = t('form.errors.codeRequired');
         isValid = false;
       }
 
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es requerido';
+        newErrors.name = t('form.errors.nameRequired');
         isValid = false;
       }
 
       if (formData.value === undefined || formData.value === null) {
-        newErrors.value = 'El valor es requerido';
+        newErrors.value = t('form.errors.rateRequired');
         isValid = false;
       } else if (formData.value < 0) {
-        newErrors.value = 'El valor debe ser un número positivo';
+        newErrors.value = t('form.errors.invalidRate');
         isValid = false;
       }
 
@@ -118,10 +120,10 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
 
         if (initialData) {
           await api.put(`/taxes/${initialData.id}`, data);
-          toastService.success('Impuesto actualizado correctamente');
+          toastService.success(t('messages.taxUpdated'));
         } else {
           await api.post('/taxes', data);
-          toastService.success('Impuesto creado correctamente');
+          toastService.success(t('messages.taxCreated'));
         }
 
         onSuccess();
@@ -129,7 +131,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar el impuesto');
+          toastService.error(initialData ? t('messages.errorUpdating') : t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -145,33 +147,33 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
         <Input
           type="text"
           id="code"
-          label="Código"
+          label={t('form.code')}
           required
           value={formData.code}
           onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-          placeholder="Ej: IVA"
+          placeholder={t('form.placeholders.code')}
           error={errors.code}
         />
 
         <Input
           type="text"
           id="name"
-          label="Nombre"
+          label={t('form.name')}
           required
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          placeholder="Ej: Impuesto al Valor Agregado"
+          placeholder={t('form.placeholders.name')}
           error={errors.name}
         />
 
         <Input
           type="number"
           id="value"
-          label="Valor"
+          label={t('form.rate')}
           required
           value={formData.value}
           onChange={(e) => setFormData(prev => ({ ...prev, value: parseFloat(e.target.value) || 0 }))}
-          placeholder="Ej: 19"
+          placeholder={t('form.placeholders.rate')}
           min="0"
           step="0.01"
           error={errors.value}
@@ -179,7 +181,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
 
         <Select
           id="type"
-          label="Tipo"
+          label={t('taxType')}
           required
           value={formData.type}
           onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as TaxType }))}
@@ -190,7 +192,7 @@ const TaxForm = forwardRef<TaxFormRef, TaxFormProps>(
 
         <Checkbox
           id="isActive"
-          label="Activo"
+          label={t('form.active')}
           checked={formData.isActive}
           onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
           error={errors.isActive}

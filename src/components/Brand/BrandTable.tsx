@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Brand } from '@/types/brand';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
@@ -10,6 +11,9 @@ interface BrandTableProps {
 }
 
 export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps) {
+  const t = useTranslations('pages.brands');
+  const commonT = useTranslations('common');
+
   if (!Array.isArray(brands)) {
     return null;
   }
@@ -28,31 +32,31 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Código
+              {t('form.code')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Descripción
+              {t('form.description')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Imagen
+              {t('form.image')}
             </th>
             <th 
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Estado
+              {t('form.status')}
             </th>
             <th 
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -78,7 +82,7 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
                     brand.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {brand.isActive ? 'Activo' : 'Inactivo'}
+                  {brand.isActive ? commonT('status.active') : commonT('status.inactive')}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -88,14 +92,14 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
                     size="sm"
                     onClick={() => onEdit(brand)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={commonT('actions.edit')}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(brand)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={commonT('actions.delete')}
                     style={{ color: '#dc2626' }}
                   /> 
                 </div>

@@ -32,7 +32,7 @@ export function MainMenu() {
           {/* Logo y nombre de la app */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <img src={getImageUrl()} alt="RedFox" className="h-8 w-auto" />
+              <img src={getImageUrl()} alt="Nitro" className="h-8 w-auto" />
             </div>
           </div>
 

@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl';
 import { Tax } from '@/types/tax';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
@@ -11,6 +12,9 @@ interface TaxTableProps {
 }
 
 export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
+  const t = useTranslations('pages.taxes');
+  const commonT = useTranslations('common');
+
   if (!Array.isArray(taxes)) {
     return null;
   }
@@ -21,22 +25,22 @@ export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Código
+              {t('form.code')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Nombre
+              {t('form.name')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Valor
+              {t('table.rate')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Tipo
+              {t('taxType')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Estado
+              {t('form.status')}
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>
@@ -57,7 +61,7 @@ export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
                     tax.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {tax.isActive ? 'Activo' : 'Inactivo'}
+                  {tax.isActive ? commonT('status.active') : commonT('status.inactive')}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -67,14 +71,14 @@ export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
                     variant="ghost"
                     size="sm"
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title="Editar"
+                    title={commonT('actions.edit')}
                   />
                   <Btn
                     onClick={() => onDelete(tax)}
                     variant="ghost"
                     size="sm"
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title="Eliminar"
+                    title={commonT('actions.delete')}
                     style={{ color: '#dc2626' }}
                   />
                 </div>

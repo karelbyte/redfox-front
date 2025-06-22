@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Category } from '@/types/category';
 import { PencilIcon, TrashIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useState, ReactElement } from 'react';
@@ -12,6 +13,8 @@ interface CategoryTableProps {
 }
 
 export default function CategoryTable({ categories, onEdit, onDelete }: CategoryTableProps) {
+  const t = useTranslations('pages.categories');
+  const commonT = useTranslations('common');
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   if (!Array.isArray(categories)) {
@@ -83,7 +86,7 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                 category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
               }`}
             >
-              {category.isActive ? 'Activo' : 'Inactivo'}
+              {category.isActive ? commonT('status.active') : commonT('status.inactive')}
             </span>
           </td>
           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -93,14 +96,14 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
                 variant="ghost"
                 size="sm"
                 leftIcon={<PencilIcon className="h-4 w-4" />}
-                title="Editar"
+                title={commonT('actions.edit')}
               />
               <Btn
                 onClick={() => onDelete(category)}
                 variant="ghost"
                 size="sm"
                 leftIcon={<TrashIcon className="h-4 w-4" />}
-                title="Eliminar"
+                title={commonT('actions.delete')}
                 style={{ color: '#dc2626' }}
               />
             </div>
@@ -121,22 +124,22 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Nombre
+              {t('form.name')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Slug
+              {t('form.slug')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Imagen
+              {t('form.image')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Descripción
+              {t('form.description')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Estado
+              {t('form.status')}
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              Acciones
+              {t('table.actions')}
             </th>
           </tr>
         </thead>

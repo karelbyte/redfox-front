@@ -26,7 +26,7 @@ export default function ThemeDemoPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Sistema de Temas RedFox
+            Sistema de Temas Nitro
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Experimenta con nuestros 4 temas disponibles: Rojo, Azul, Gris y Verde Gris. 

@@ -197,20 +197,146 @@
       "title": "Categories",
       "newCategory": "New Category",
       "editCategory": "Edit Category",
-      "deleteCategory": "Delete Category"
+      "deleteCategory": "Delete Category",
+      "searchCategories": "Search categories...",
+      "noCategories": "No categories",
+      "noCategoriesDesc": "Click on 'New Category' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "slug": "Slug",
+        "image": "Image",
+        "position": "Position",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: CAT001",
+          "name": "Ex: Electronics",
+          "description": "Ex: Electronic products and technology",
+          "slug": "Ex: electronics",
+          "position": "Ex: 1"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "nameRequired": "Name is required",
+          "descriptionRequired": "Description is required",
+          "slugRequired": "Slug is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "categoryCreated": "Category created successfully",
+        "categoryUpdated": "Category updated successfully",
+        "categoryDeleted": "Category deleted successfully",
+        "errorLoading": "Error loading categories",
+        "errorCreating": "Error creating category",
+        "errorUpdating": "Error updating category",
+        "errorDeleting": "Error deleting category",
+        "confirmDelete": "Are you sure you want to delete the category \"{name}\"? This action cannot be undone."
+      }
     },
     "brands": {
       "title": "Brands",
       "newBrand": "New Brand",
       "editBrand": "Edit Brand",
-      "deleteBrand": "Delete Brand"
+      "deleteBrand": "Delete Brand",
+      "searchBrands": "Search brands...",
+      "noBrands": "No brands",
+      "noBrandsDesc": "Click on 'New Brand' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "image": "Image",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: BRD001",
+          "name": "Ex: Samsung",
+          "description": "Ex: Leading technology brand"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "nameRequired": "Name is required",
+          "descriptionRequired": "Description is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "brandCreated": "Brand created successfully",
+        "brandUpdated": "Brand updated successfully",
+        "brandDeleted": "Brand deleted successfully",
+        "errorLoading": "Error loading brands",
+        "errorCreating": "Error creating brand",
+        "errorUpdating": "Error updating brand",
+        "errorDeleting": "Error deleting brand",
+        "confirmDelete": "Are you sure you want to delete the brand \"{name}\"? This action cannot be undone."
+      }
     },
     "taxes": {
       "title": "Taxes",
       "newTax": "New Tax",
       "editTax": "Edit Tax",
       "deleteTax": "Delete Tax",
-      "taxType": "Tax Type"
+      "taxType": "Tax Type",
+      "searchTaxes": "Search taxes...",
+      "noTaxes": "No taxes",
+      "noTaxesDesc": "Click on 'New Tax' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "rate": "Rate",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: VAT",
+          "name": "Ex: VAT",
+          "description": "Ex: Value Added Tax",
+          "rate": "Ex: 18"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "nameRequired": "Name is required",
+          "descriptionRequired": "Description is required",
+          "rateRequired": "Rate is required",
+          "invalidRate": "Rate must be a valid number"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "rate": "Rate (%)",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "taxCreated": "Tax created successfully",
+        "taxUpdated": "Tax updated successfully",
+        "taxDeleted": "Tax deleted successfully",
+        "errorLoading": "Error loading taxes",
+        "errorCreating": "Error creating tax",
+        "errorUpdating": "Error updating tax",
+        "errorDeleting": "Error deleting tax",
+        "confirmDelete": "Are you sure you want to delete the tax \"{name}\"? This action cannot be undone."
+      }
     },
     "currencies": {
       "title": "Currencies",
@@ -218,7 +344,49 @@
       "editCurrency": "Edit Currency",
       "deleteCurrency": "Delete Currency",
       "currencyCode": "Currency Code",
-      "currencyName": "Currency Name"
+      "currencyName": "Currency Name",
+      "searchCurrencies": "Search currencies...",
+      "noCurrencies": "No currencies",
+      "noCurrenciesDesc": "Click on 'New Currency' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "symbol": "Symbol",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: USD",
+          "name": "Ex: US Dollar",
+          "description": "Ex: United States Dollar",
+          "symbol": "Ex: $"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "nameRequired": "Name is required",
+          "descriptionRequired": "Description is required",
+          "symbolRequired": "Symbol is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "description": "Description",
+        "symbol": "Symbol",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "currencyCreated": "Currency created successfully",
+        "currencyUpdated": "Currency updated successfully",
+        "currencyDeleted": "Currency deleted successfully",
+        "errorLoading": "Error loading currencies",
+        "errorCreating": "Error creating currency",
+        "errorUpdating": "Error updating currency",
+        "errorDeleting": "Error deleting currency",
+        "confirmDelete": "Are you sure you want to delete the currency \"{name}\"? This action cannot be undone."
+      }
     },
     "measurementUnits": {
       "title": "Measurement Units",
@@ -226,7 +394,41 @@
       "editUnit": "Edit Measurement Unit",
       "deleteUnit": "Delete Measurement Unit",
       "unitCode": "Unit Code",
-      "unitDescription": "Unit Description"
+      "unitDescription": "Unit Description",
+      "searchUnits": "Search measurement units...",
+      "noUnits": "No measurement units",
+      "noUnitsDesc": "Click on 'New Unit' to add one.",
+      "noResultsDesc": "No results found",
+      "form": {
+        "code": "Code",
+        "description": "Description",
+        "status": "Status",
+        "active": "Active",
+        "placeholders": {
+          "code": "Ex: Lts",
+          "description": "Ex: Liters"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "descriptionRequired": "Description is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "description": "Description",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "messages": {
+        "unitCreated": "Measurement unit created successfully",
+        "unitUpdated": "Measurement unit updated successfully",
+        "unitDeleted": "Measurement unit deleted successfully",
+        "errorLoading": "Error loading measurement units",
+        "errorCreating": "Error creating measurement unit",
+        "errorUpdating": "Error updating measurement unit",
+        "errorDeleting": "Error deleting measurement unit",
+        "confirmDelete": "Are you sure you want to delete the measurement unit \"{description}\"? This action cannot be undone."
+      }
     },
     "providers": {
       "title": "Providers",

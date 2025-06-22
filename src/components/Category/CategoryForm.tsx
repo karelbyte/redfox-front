@@ -1,4 +1,5 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useTranslations } from 'next-intl';
 import { categoriesService } from '@/services/categories.service';
 import { toastService } from '@/services/toast.service';
 import { Category, CategoryFormData } from '@/types/category';
@@ -26,6 +27,7 @@ interface FormErrors {
 
 const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
   ({ category, onSuccess, onSavingChange, onValidChange }, ref) => {
+    const t = useTranslations('pages.categories');
     const [formData, setFormData] = useState<CategoryFormData>({
       name: '',
       slug: '',
@@ -71,12 +73,12 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
       let isValid = true;
 
       if (!formData.name.trim()) {
-        newErrors.name = 'El nombre es requerido';
+        newErrors.name = t('form.errors.nameRequired');
         isValid = false;
       }
 
       if (!formData.slug.trim()) {
-        newErrors.slug = 'El slug es requerido';
+        newErrors.slug = t('form.errors.slugRequired');
         isValid = false;
       }
 
@@ -114,10 +116,10 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
 
         if (category) {
           await categoriesService.updateCategory(category.id, data, imageFile || undefined);
-          toastService.success('Categoría actualizada correctamente');
+          toastService.success(t('messages.categoryUpdated'));
         } else {
           await categoriesService.createCategory(data, imageFile || undefined);
-          toastService.success('Categoría creada correctamente');
+          toastService.success(t('messages.categoryCreated'));
         }
 
         onSuccess();
@@ -125,7 +127,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error('Error al guardar la categoría');
+          toastService.error(category ? t('messages.errorUpdating') : t('messages.errorCreating'));
         }
       } finally {
         onSavingChange?.(false);
@@ -141,32 +143,32 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         <Input
           type="text"
           id="name"
-          label="Nombre"
+          label={t('form.name')}
           required
           value={formData.name}
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          placeholder="Ej: Zapatos"
+          placeholder={t('form.placeholders.name')}
           error={errors.name}
         />
 
         <Input
           type="text"
           id="slug"
-          label="Slug"
+          label={t('form.slug')}
           required
           value={formData.slug}
           onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-          placeholder="Ej: zapatos"
+          placeholder={t('form.placeholders.slug')}
           error={errors.slug}
         />
 
         <Input
           type="text"
           id="description"
-          label="Descripción"
+          label={t('form.description')}
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-          placeholder="Ej: Productos de calzado"
+          placeholder={t('form.placeholders.description')}
         />
 
         <div>
@@ -174,7 +176,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
             className="block text-sm font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-500))` }}
           >
-            Imagen
+            {t('form.image')}
           </label>
           <ImageUpload
             value={category?.image}
@@ -186,7 +188,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         <Input
           type="number"
           id="position"
-          label="Posición"
+          label={t('form.position')}
           value={formData.position}
           onChange={(e) => setFormData(prev => ({ ...prev, position: parseInt(e.target.value) || 1 }))}
           min="1"
@@ -194,7 +196,7 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
 
         <Checkbox
           id="isActive"
-          label="Activo"
+          label={t('form.active')}
           checked={formData.isActive}
           onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
         />

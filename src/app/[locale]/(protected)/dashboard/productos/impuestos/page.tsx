@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Tax } from '@/types/tax';
 import TaxTable from '@/components/Tax/TaxTable';
 import TaxForm, { TaxFormRef } from '@/components/Tax/TaxForm';
@@ -14,6 +15,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import Loading from '@/components/Loading/Loading';
 
 export default function TaxesPage() {
+  const t = useTranslations('pages.taxes');
   const [taxes, setTaxes] = useState<Tax[]>([]);
   const [selectedTax, setSelectedTax] = useState<Tax | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -43,7 +45,7 @@ export default function TaxesPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error("Error al cargar los impuestos");
+        toastService.error(t('messages.errorLoading'));
       }
     } finally {
       setIsLoading(false);
@@ -97,7 +99,7 @@ export default function TaxesPage() {
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          Impuestos
+          {t('title')}
         </h1>
         <Btn
           onClick={() => {
@@ -106,14 +108,14 @@ export default function TaxesPage() {
           }}
           leftIcon={<PlusIcon className="h-5 w-5" />}
         >
-          Nuevo Impuesto
+          {t('newTax')}
         </Btn>
       </div>
 
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder="Buscar impuestos..."
+          placeholder={t('searchTaxes')}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchTaxes(1, term);
@@ -128,9 +130,9 @@ export default function TaxesPage() {
       ) : taxes && taxes.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title="No hay impuestos"
-          description="Haz clic en 'Nuevo Impuesto' para agregar uno."
-          searchDescription="No se encontraron resultados"
+          title={t('noTaxes')}
+          description={t('noTaxesDesc')}
+          searchDescription={t('noResultsDesc')}
         />
       ) : (
         <>
@@ -157,7 +159,7 @@ export default function TaxesPage() {
         id="tax-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={selectedTax ? "Editar Impuesto" : "Nuevo Impuesto"}
+        title={selectedTax ? t('editTax') : t('newTax')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
