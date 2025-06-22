@@ -858,6 +858,55 @@
           "message": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone."
         }
       },
+      "addProduct": {
+        "title": "Add Product",
+        "editTitle": "Edit Product",
+        "form": {
+          "product": "Product",
+          "quantity": "Quantity",
+          "price": "Price",
+          "selectProduct": "Select product...",
+          "placeholders": {
+            "quantity": "Ex: 10.5",
+            "price": "Ex: 25.99"
+          },
+          "errors": {
+            "productRequired": "Product is required",
+            "quantityRequired": "Quantity is required",
+            "quantityPositive": "Quantity must be greater than 0",
+            "priceRequired": "Price is required",
+            "pricePositive": "Price must be greater than 0"
+          }
+        },
+        "messages": {
+          "productAdded": "Product added successfully",
+          "productUpdated": "Product updated successfully",
+          "errorAdding": "Error adding product",
+          "errorUpdating": "Error updating product"
+        }
+      },
+      "productsTable": {
+        "title": "Reception Products",
+        "headers": {
+          "product": "Product",
+          "sku": "SKU",
+          "brand": "Brand",
+          "category": "Category",
+          "quantity": "Quantity",
+          "price": "Price",
+          "subtotal": "Subtotal",
+          "actions": "Actions"
+        },
+        "noProducts": "No products in this reception",
+        "noProductsDesc": "Add products to start recording the reception",
+        "noProductsClosedDesc": "This reception has no registered products"
+      },
+      "deleteProduct": {
+        "title": "Delete Product",
+        "message": "Are you sure you want to delete the product \"{productName}\" from this reception? This action cannot be undone.",
+        "success": "Product deleted successfully",
+        "error": "Error deleting product"
+      },
       "details": {
         "title": "Reception {code}",
         "subtitle": "Reception details",
@@ -912,6 +961,25 @@
       "enterEmail": "Enter email",
       "enterPassword": "Enter password",
       "selectOption": "Select option..."
+    },
+    "components": {
+      "select": {
+        "placeholder": "Select...",
+        "addNew": "Add new"
+      },
+      "image": {
+        "carousel": {
+          "title": "Product images",
+          "addImage": "Add image",
+          "clickToAdd": "Click \"Add image\" to upload images",
+          "imageAlt": "Image {index}"
+        },
+        "upload": {
+          "clickToSelect": "Click to select an image",
+          "fileTypes": "PNG, JPG, GIF up to 5MB",
+          "previewAlt": "Preview"
+        }
+      }
     }
   },
   "modals": {

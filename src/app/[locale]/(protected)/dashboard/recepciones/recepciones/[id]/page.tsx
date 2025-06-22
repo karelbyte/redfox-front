@@ -1,21 +1,33 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Reception } from '@/types/reception';
+import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
+import { Reception, ReceptionDetail } from '@/types/reception';
 import { Btn } from '@/components/atoms';
-import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline';
+import Drawer from '@/components/Drawer/Drawer';
+import AddProductForm, { AddProductFormRef } from '@/components/Reception/AddProductForm';
+import ReceptionProductsTable from '@/components/Reception/ReceptionProductsTable';
+import Loading from '@/components/Loading/Loading';
 
 export default function ReceptionDetailsPage() {
-  const params = useParams();
   const router = useRouter();
+  const params = useParams();
   const locale = useLocale();
   const t = useTranslations('pages.receptions');
   const [reception, setReception] = useState<Reception | null>(null);
+  const [products, setProducts] = useState<ReceptionDetail[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [isAddProductDrawerOpen, setIsAddProductDrawerOpen] = useState(false);
+  const [isEditProductDrawerOpen, setIsEditProductDrawerOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<ReceptionDetail | null>(null);
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
+  const [isProductFormValid, setIsProductFormValid] = useState(false);
+  const productFormRef = useRef<AddProductFormRef>(null);
 
   const fetchReception = async () => {
     try {
@@ -34,9 +46,24 @@ export default function ReceptionDetailsPage() {
     }
   };
 
+  const fetchProducts = async () => {
+    if (!params.id) return;
+    
+    try {
+      setLoadingProducts(true);
+      const response = await receptionService.getReceptionDetails(params.id as string, 1);
+      setProducts(response.data || []);
+    } catch (error) {
+      console.error('Error cargando productos:', error);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
   useEffect(() => {
     if (params.id) {
       fetchReception();
+      fetchProducts();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
@@ -50,6 +77,98 @@ export default function ReceptionDetailsPage() {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
+  };
+
+  const handleAddProductDrawerClose = () => {
+    setIsAddProductDrawerOpen(false);
+    setIsSavingProduct(false);
+  };
+
+  const handleEditProductDrawerClose = () => {
+    setIsEditProductDrawerOpen(false);
+    setProductToEdit(null);
+    setIsSavingProduct(false);
+  };
+
+  const handleAddProductFormSuccess = () => {
+    handleAddProductDrawerClose();
+    fetchReception(); // Recargar los datos de la recepción
+    fetchProducts(); // Recargar los productos
+  };
+
+  const handleEditProductFormSuccess = () => {
+    handleEditProductDrawerClose();
+    fetchReception(); // Recargar los datos de la recepción
+    fetchProducts(); // Recargar los productos
+  };
+
+  const handleAddProductSave = async () => {
+    if (!productFormRef.current || !reception) return;
+
+    try {
+      setIsSavingProduct(true);
+      const formData = await productFormRef.current.submit();
+      
+      if (formData) {
+        await receptionService.addProductToReception(reception.id, formData);
+        toastService.success(t('addProduct.messages.productAdded'));
+        handleAddProductFormSuccess();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('addProduct.messages.errorAdding'));
+      }
+    } finally {
+      setIsSavingProduct(false);
+    }
+  };
+
+  const handleEditProductSave = async () => {
+    if (!productFormRef.current || !reception || !productToEdit) return;
+
+    try {
+      setIsSavingProduct(true);
+      const formData = await productFormRef.current.submit();
+      
+      if (formData) {
+        await receptionService.updateReceptionDetail(reception.id, productToEdit.id, formData);
+        toastService.success(t('addProduct.messages.productUpdated'));
+        handleEditProductFormSuccess();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('addProduct.messages.errorUpdating'));
+      }
+    } finally {
+      setIsSavingProduct(false);
+    }
+  };
+
+  const handleDeleteProduct = async (detailId: string) => {
+    if (!reception) return;
+
+    try {
+      await receptionService.deleteReceptionDetail(reception.id, detailId);
+      toastService.success(t('deleteProduct.success'));
+      fetchReception(); // Recargar los datos de la recepción
+      fetchProducts(); // Recargar los productos
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('deleteProduct.error'));
+      }
+      throw error; // Re-lanzar para que el modal maneje el error
+    }
+  };
+
+  const handleEditProduct = (product: ReceptionDetail) => {
+    setProductToEdit(product);
+    setIsEditProductDrawerOpen(true);
   };
 
   if (loading) {
@@ -100,6 +219,7 @@ export default function ReceptionDetailsPage() {
         {reception.status && (
           <Btn
             leftIcon={<PlusIcon className="h-5 w-5" />}
+            onClick={() => setIsAddProductDrawerOpen(true)}
           >
             {t('details.addProduct')}
           </Btn>
@@ -168,47 +288,76 @@ export default function ReceptionDetailsPage() {
       </div>
 
       {/* Lista de productos */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold" style={{ color: `rgb(var(--color-primary-700))` }}>
-            {t('details.receptionProducts')}
-          </h3>
-        </div>
-        
-        <div className="p-6">
-          <div className="text-center py-12">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">{t('details.noProducts')}</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {reception.status 
-                ? t('details.noProductsDesc')
-                : t('details.noProductsClosedDesc')
-              }
-            </p>
-            {reception.status && (
-              <div className="mt-6">
-                <Btn
-                  leftIcon={<PlusIcon className="h-5 w-5" />}
-                >
-                  {t('details.addProduct')}
-                </Btn>
-              </div>
-            )}
-          </div>
-        </div>
+      <div className="py-4 border-gray-200">
+        <h3 className="text-lg font-semibold" style={{ color: `rgb(var(--color-primary-700))` }}>
+          {t('productsTable.title')}
+        </h3>
       </div>
+      
+      <div>
+        {loadingProducts ? (
+          <div className="flex justify-center items-center h-32">
+            <Loading className="h-6 w-6" />
+          </div>
+        ) : (
+          <ReceptionProductsTable
+            products={products}
+            onDeleteProduct={handleDeleteProduct}
+            onEditProduct={handleEditProduct}
+            isReceptionOpen={reception.status}
+          />
+        )}
+        
+        {reception.status && products.length === 0 && !loadingProducts && (
+          <div className="mt-6 text-center">
+            <Btn
+              leftIcon={<PlusIcon className="h-5 w-5" />}
+              onClick={() => setIsAddProductDrawerOpen(true)}
+            >
+              {t('details.addProduct')}
+            </Btn>
+          </div>
+        )}
+      </div>
+
+      {/* Drawer para agregar productos */}
+      <Drawer
+        id="add-product-drawer"
+        isOpen={isAddProductDrawerOpen}
+        onClose={handleAddProductDrawerClose}
+        title={t('addProduct.title')}
+        onSave={handleAddProductSave}
+        isSaving={isSavingProduct}
+        isFormValid={isProductFormValid}
+      >
+        <AddProductForm
+          ref={productFormRef}
+          onClose={handleAddProductDrawerClose}
+          onSuccess={handleAddProductFormSuccess}
+          onSavingChange={setIsSavingProduct}
+          onValidChange={setIsProductFormValid}
+        />
+      </Drawer>
+
+      {/* Drawer para editar productos */}
+      <Drawer
+        id="edit-product-drawer"
+        isOpen={isEditProductDrawerOpen}
+        onClose={handleEditProductDrawerClose}
+        title={t('addProduct.editTitle')}
+        onSave={handleEditProductSave}
+        isSaving={isSavingProduct}
+        isFormValid={isProductFormValid}
+      >
+        <AddProductForm
+          ref={productFormRef}
+          receptionDetail={productToEdit}
+          onClose={handleEditProductDrawerClose}
+          onSuccess={handleEditProductFormSuccess}
+          onSavingChange={setIsSavingProduct}
+          onValidChange={setIsProductFormValid}
+        />
+      </Drawer>
     </div>
   );
 } 

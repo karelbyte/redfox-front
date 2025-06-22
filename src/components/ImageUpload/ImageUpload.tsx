@@ -1,7 +1,9 @@
 'use client'
 import { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+
 interface ImageUploadProps {
   value?: string;
   onChange: (file: File | null) => void;
@@ -9,6 +11,8 @@ interface ImageUploadProps {
 }
 
 export default function ImageUpload({ value, onChange, error }: ImageUploadProps) {
+  const t = useTranslations('forms.components.image.upload');
+  
   const getImageUrl = (value: string | undefined) => {
     return value ? `${process.env.NEXT_PUBLIC_URL_API}${value}` : null;
   }
@@ -75,7 +79,7 @@ export default function ImageUpload({ value, onChange, error }: ImageUploadProps
           <div className="relative">
             <Image
               src={preview}
-              alt="Preview"
+              alt={t('previewAlt')}
               width={80}
               height={80}
               className="w-full h-48 object-cover rounded-lg"
@@ -117,13 +121,13 @@ export default function ImageUpload({ value, onChange, error }: ImageUploadProps
               className="text-sm"
               style={{ color: `rgb(var(--color-primary-400))` }}
             >
-              Haz clic para seleccionar una imagen
+              {t('clickToSelect')}
             </p>
             <p 
               className="text-xs mt-1"
               style={{ color: `rgb(var(--color-primary-300))` }}
             >
-              PNG, JPG, GIF hasta 5MB
+              {t('fileTypes')}
             </p>
           </div>
         )}

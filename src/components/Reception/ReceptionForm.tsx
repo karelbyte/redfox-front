@@ -82,7 +82,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     const loadProviders = async () => {
       try {
-        const response = await providersService.getProviders(1);
+        const response = await providersService.getProviders();
         setProviders(response.data || []);
       } catch (error) {
         console.error('Error cargando proveedores:', error);
@@ -91,7 +91,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     const loadWarehouses = async () => {
       try {
-        const response = await warehousesService.getWarehouses(1);
+        const response = await warehousesService.getWarehouses({isClosed:true});
         setWarehouses(response.data || []);
       } catch (error) {
         console.error('Error cargando almacenes:', error);
@@ -129,6 +129,7 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
 
     useEffect(() => {
       validateForm();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async () => {

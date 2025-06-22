@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 
 export interface SelectOption {
   value: string;
@@ -31,17 +32,23 @@ const SelectWithAdd: React.FC<SelectWithAddProps> = ({
   value,
   onChange,
   options,
-  placeholder = "Seleccionar...",
+  placeholder,
   required = false,
   disabled = false,
   error,
   loading = false,
   showAddButton = false,
   onAddClick,
-  addButtonTitle = "Agregar nuevo",
+  addButtonTitle,
   helperText,
   className = "",
 }) => {
+  const t = useTranslations('forms.components.select');
+  
+  // Usar placeholder traducido por defecto si no se proporciona uno
+  const defaultPlaceholder = placeholder || t('placeholder');
+  const defaultAddButtonTitle = addButtonTitle || t('addNew');
+
   const baseSelectStyles: React.CSSProperties = {
     border: `1px solid rgb(var(--color-secondary-300))`,
     ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
@@ -82,7 +89,7 @@ const SelectWithAdd: React.FC<SelectWithAddProps> = ({
             disabled={disabled || false}
             required={required}
           >
-            <option value="">{placeholder}</option>
+            <option value="">{defaultPlaceholder}</option>
             {options.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -107,7 +114,7 @@ const SelectWithAdd: React.FC<SelectWithAddProps> = ({
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
               }}
-              title={addButtonTitle}
+              title={defaultAddButtonTitle}
             >
               +
             </button>

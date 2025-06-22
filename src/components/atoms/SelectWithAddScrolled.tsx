@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 export interface SelectOption {
@@ -32,21 +33,26 @@ const SelectWithAddScrolled: React.FC<SelectWithAddScrolledProps> = ({
   value,
   onChange,
   options,
-  placeholder = "Seleccionar...",
+  placeholder,
   required = false,
   disabled = false,
   error,
   loading = false,
   showAddButton = false,
   onAddClick,
-  addButtonTitle = "Agregar nuevo",
+  addButtonTitle,
   helperText,
   className = "",
 }) => {
+  const t = useTranslations('forms.components.select');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const selectRef = useRef<HTMLSelectElement>(null);
+
+  // Usar placeholder traducido por defecto si no se proporciona uno
+  const defaultPlaceholder = placeholder || t('placeholder');
+  const defaultAddButtonTitle = addButtonTitle || t('addNew');
 
   // Encontrar la etiqueta del valor seleccionado
   useEffect(() => {
@@ -112,7 +118,7 @@ const SelectWithAddScrolled: React.FC<SelectWithAddScrolledProps> = ({
         required={required}
         disabled={disabled || false}
       >
-        <option value="">{placeholder}</option>
+        <option value="">{defaultPlaceholder}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -144,7 +150,7 @@ const SelectWithAddScrolled: React.FC<SelectWithAddScrolledProps> = ({
             disabled={disabled || false}
           >
             <span className={`block ${value ? 'text-gray-900' : 'text-gray-500'}`}>
-              {selectedLabel || placeholder}
+              {selectedLabel || defaultPlaceholder}
             </span>
             <ChevronDownIcon 
               className={`absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 transition-transform ${
@@ -215,7 +221,7 @@ const SelectWithAddScrolled: React.FC<SelectWithAddScrolledProps> = ({
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
               }}
-              title={addButtonTitle}
+              title={defaultAddButtonTitle}
             >
               +
             </button>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { XMarkIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
 
@@ -10,6 +11,7 @@ interface ImageCarouselProps {
 }
 
 export default function ImageCarousel({ images, onChange }: ImageCarouselProps) {
+  const t = useTranslations('forms.components.image.carousel');
   const [currentIndex, setCurrentIndex] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,14 +52,14 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
           className="text-sm font-medium"
           style={{ color: `rgb(var(--color-primary-500))` }}
         >
-          Imágenes del producto
+          {t('title')}
         </h3>
         <Btn
           type="button"
           onClick={() => fileInputRef.current?.click()}
           size="sm"
         >
-          Añadir imagen
+          {t('addImage')}
         </Btn>
       </div>
 
@@ -78,7 +80,7 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
           <div className="relative w-1/2 mx-auto aspect-video overflow-hidden rounded-lg">
             <img
               src={getImageUrl(images[currentIndex])}
-              alt={`Imagen ${currentIndex + 1}`}
+              alt={t('imageAlt', { index: currentIndex + 1 })}
               className="w-full h-full object-contain"
             />
             
@@ -179,7 +181,7 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-300))` }}
           >
-            Haz clic en &quot;Añadir imagen&quot; para subir imágenes
+            {t('clickToAdd')}
           </p>
         </div>
       )}

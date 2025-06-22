@@ -51,8 +51,70 @@ export interface ReceptionCreateData extends ReceptionFormData {
   status: boolean;
 }
 
+export interface ReceptionDetailFormData {
+  product_id: string;
+  quantity: number;
+  price: number;
+}
+
+export interface ReceptionDetail {
+  id: string;
+  product: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    sku: string;
+    weight: number;
+    width: number;
+    height: number;
+    length: number;
+    brand: {
+      id: string;
+      name: string;
+      description: string;
+    };
+    category: {
+      id: string;
+      name: string;
+      description: string;
+    };
+    tax: {
+      id: string;
+      code: string;
+      name: string;
+      value: number;
+      type: string;
+      isActive: boolean;
+      createdAt: string;
+    };
+    measurement_unit: {
+      id: string;
+      code: string;
+      description: string;
+    };
+    is_active: boolean;
+    type: string;
+    images: string[];
+    created_at: string;
+  };
+  quantity: number;
+  price: number;
+  created_at: string;
+}
+
 export interface PaginatedReceptionResponse {
   data: Reception[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface PaginatedReceptionDetailsResponse {
+  data: ReceptionDetail[];
   meta: {
     total: number;
     page: number;

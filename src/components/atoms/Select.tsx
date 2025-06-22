@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 export interface SelectOption {
   value: string;
@@ -18,7 +19,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ 
     label, 
     options, 
-    placeholder = "Seleccionar...",
+    placeholder,
     error, 
     required = false, 
     helperText,
@@ -26,6 +27,11 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     style,
     ...props 
   }, ref) => {
+    const t = useTranslations('forms.components.select');
+    
+    // Usar placeholder traducido por defecto si no se proporciona uno
+    const defaultPlaceholder = placeholder || t('placeholder');
+
     const baseSelectStyles: React.CSSProperties & { [key: string]: string } = {
       border: `1px solid rgb(var(--color-secondary-300))`,
       '--tw-ring-color': `rgb(var(--color-primary-500))`,
@@ -59,7 +65,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           style={{ ...selectStyles, ...style }}
           {...props}
         >
-          <option value="">{placeholder}</option>
+          <option value="">{defaultPlaceholder}</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}

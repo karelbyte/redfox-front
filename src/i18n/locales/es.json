@@ -858,6 +858,55 @@
           "message": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer."
         }
       },
+      "addProduct": {
+        "title": "Agregar Producto",
+        "editTitle": "Editar Producto",
+        "form": {
+          "product": "Producto",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "selectProduct": "Seleccionar producto...",
+          "placeholders": {
+            "quantity": "Ej: 10.5",
+            "price": "Ej: 25.99"
+          },
+          "errors": {
+            "productRequired": "El producto es requerido",
+            "quantityRequired": "La cantidad es requerida",
+            "quantityPositive": "La cantidad debe ser mayor a 0",
+            "priceRequired": "El precio es requerido",
+            "pricePositive": "El precio debe ser mayor a 0"
+          }
+        },
+        "messages": {
+          "productAdded": "Producto agregado correctamente",
+          "productUpdated": "Producto actualizado correctamente",
+          "errorAdding": "Error al agregar el producto",
+          "errorUpdating": "Error al actualizar el producto"
+        }
+      },
+      "productsTable": {
+        "title": "Productos de la Recepción",
+        "headers": {
+          "product": "Producto",
+          "sku": "SKU",
+          "brand": "Marca",
+          "category": "Categoría",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "subtotal": "Subtotal",
+          "actions": "Acciones"
+        },
+        "noProducts": "No hay productos en esta recepción",
+        "noProductsDesc": "Agrega productos para comenzar a registrar la recepción",
+        "noProductsClosedDesc": "Esta recepción no tiene productos registrados"
+      },
+      "deleteProduct": {
+        "title": "Eliminar Producto",
+        "message": "¿Estás seguro de que deseas eliminar el producto \"{productName}\" de esta recepción? Esta acción no se puede deshacer.",
+        "success": "Producto eliminado correctamente",
+        "error": "Error al eliminar el producto"
+      },
       "details": {
         "title": "Recepción {code}",
         "subtitle": "Detalles de la recepción",
@@ -912,6 +961,25 @@
       "enterEmail": "Ingrese correo electrónico",
       "enterPassword": "Ingrese contraseña",
       "selectOption": "Seleccionar opción..."
+    },
+    "components": {
+      "select": {
+        "placeholder": "Seleccionar...",
+        "addNew": "Agregar nuevo"
+      },
+      "image": {
+        "carousel": {
+          "title": "Imágenes del producto",
+          "addImage": "Añadir imagen",
+          "clickToAdd": "Haz clic en \"Añadir imagen\" para subir imágenes",
+          "imageAlt": "Imagen {index}"
+        },
+        "upload": {
+          "clickToSelect": "Haz clic para seleccionar una imagen",
+          "fileTypes": "PNG, JPG, GIF hasta 5MB",
+          "previewAlt": "Vista previa"
+        }
+      }
     }
   },
   "modals": {
