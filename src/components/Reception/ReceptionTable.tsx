@@ -141,15 +141,19 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
                     size="sm"
                     onClick={() => onEdit(reception)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={t('actions.edit')}
+                    title={reception.status ? t('actions.edit') : t('actions.cannotEditClosed')}
+                    disabled={!reception.status}
+                    className={!reception.status ? 'opacity-50 cursor-not-allowed' : ''}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(reception)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={t('actions.delete')}
-                    style={{ color: '#dc2626' }}
+                    title={reception.status ? t('actions.delete') : t('actions.cannotDeleteClosed')}
+                    disabled={!reception.status}
+                    className={!reception.status ? 'opacity-50 cursor-not-allowed' : ''}
+                    style={{ color: reception.status ? '#dc2626' : '#9ca3af' }}
                   /> 
                 </div>
               </td>

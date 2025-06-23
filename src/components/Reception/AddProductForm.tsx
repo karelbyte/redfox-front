@@ -4,9 +4,8 @@ import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useTranslations } from 'next-intl';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
-import { Product } from '@/types/product';
 import { ReceptionDetail, ReceptionDetailFormData } from '@/types/reception';
-import { Select, Input } from '@/components/atoms';
+import { Input, SearchSelect } from '@/components/atoms';
 
 export interface AddProductFormProps {
   receptionDetail?: ReceptionDetail | null;
@@ -36,12 +35,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       price: 0,
     });
 
-    const [products, setProducts] = useState<Product[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
-
-    useEffect(() => {
-      loadProducts();
-    }, []);
 
     // Cargar datos del producto a editar
     useEffect(() => {
@@ -54,12 +48,18 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       }
     }, [receptionDetail]);
 
-    const loadProducts = async () => {
+    // Función para buscar productos
+    const searchProducts = async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
-        const response = await productService.getProducts();
-        setProducts(response.data || []);
+        const response = await productService.getProducts(1, term, true,'tangible');
+        return (response.data || []).map(product => ({
+          id: product.id,
+          label: product.name,
+          subtitle: `SKU: ${product.sku}`
+        }));
       } catch (error) {
-        console.error('Error cargando productos:', error);
+        console.error('Error buscando productos:', error);
+        return [];
       }
     };
 
@@ -126,19 +126,15 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
 
     return (
       <form className="space-y-6">
-        <Select
-          id="product_id"
-          label={t('form.product')}
+        <SearchSelect
           value={formData.product_id}
-          onChange={(e) => setFormData(prev => ({ ...prev, product_id: e.target.value }))}
-          options={products.map((product) => ({
-            value: product.id,
-            label: `${product.name} (${product.sku})`
-          }))}
+          onChange={(productId) => setFormData(prev => ({ ...prev, product_id: productId }))}
+          onSearch={searchProducts}
+          label={t('form.product')}
           placeholder={t('form.selectProduct')}
           required
           error={errors.product_id}
-          disabled={!!receptionDetail} // Deshabilitar en modo edición
+          disabled={!!receptionDetail}
         />
 
         <Input

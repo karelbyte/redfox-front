@@ -121,4 +121,13 @@ export interface PaginatedReceptionDetailsResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+export interface ReceptionCloseResponse {
+  receptionId: string;
+  receptionCode: string;
+  transferredProducts: number;
+  totalQuantity: number;
+  message: string;
+  closedAt: string;
 } 

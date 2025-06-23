@@ -1,3 +1,5 @@
+'use client'
+
 import { useTranslations } from 'next-intl';
 import { Reception } from "@/types/reception";
 import { Btn } from "@/components/atoms";
@@ -6,9 +8,15 @@ interface CloseReceptionModalProps {
   reception: Reception | null;
   onClose: () => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
-export default function CloseReceptionModal({ reception, onClose, onConfirm }: CloseReceptionModalProps) {
+export default function CloseReceptionModal({ 
+  reception, 
+  onClose, 
+  onConfirm, 
+  isLoading = false 
+}: CloseReceptionModalProps) {
   const t = useTranslations('pages.receptions');
   
   if (!reception) return null;
@@ -53,16 +61,18 @@ export default function CloseReceptionModal({ reception, onClose, onConfirm }: C
             <Btn
               variant="danger"
               onClick={onConfirm}
+              disabled={isLoading}
               className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
             >
-              {t('actions.closeReception')}
+              {isLoading ? t('actions.closing') : t('actions.closeReception')}
             </Btn>
             <Btn
               variant="outline"
               onClick={onClose}
+              disabled={isLoading}
               className="mt-3 inline-flex w-full justify-center text-sm sm:mt-0 sm:w-auto"
             >
-              Cancelar
+              {t('actions.cancel')}
             </Btn>
           </div>
         </div>

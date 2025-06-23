@@ -831,8 +831,12 @@
       "actions": {
         "viewDetails": "View Details",
         "closeReception": "Close Reception",
+        "closing": "Closing...",
+        "cancel": "Cancel",
         "edit": "Edit",
         "delete": "Delete",
+        "cannotEditClosed": "Cannot edit a closed reception",
+        "cannotDeleteClosed": "Cannot delete a closed reception",
         "createNewProvider": "Create new provider"
       },
       "messages": {
@@ -856,6 +860,18 @@
         "close": {
           "title": "Close Reception",
           "message": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone."
+        },
+        "closeResult": {
+          "title": "Reception Closed Successfully",
+          "details": {
+            "receptionCode": "Reception Code",
+            "transferredProducts": "Transferred Products",
+            "totalQuantity": "Total Quantity",
+            "closedAt": "Closed at"
+          },
+          "actions": {
+            "continue": "Continue"
+          }
         }
       },
       "addProduct": {
@@ -863,12 +879,16 @@
         "editTitle": "Edit Product",
         "form": {
           "product": "Product",
+          "selectProduct": "Select product",
+          "searchProduct": "Search product...",
+          "searching": "Searching...",
+          "noProducts": "No products available",
+          "noProductsFound": "No products found",
           "quantity": "Quantity",
           "price": "Price",
-          "selectProduct": "Select product...",
           "placeholders": {
-            "quantity": "Ex: 10.5",
-            "price": "Ex: 25.99"
+            "quantity": "Enter quantity",
+            "price": "Enter price"
           },
           "errors": {
             "productRequired": "Product is required",
@@ -964,8 +984,13 @@
     },
     "components": {
       "select": {
-        "placeholder": "Select...",
-        "addNew": "Add new"
+        "placeholder": "Select..."
+      },
+      "searchSelect": {
+        "placeholder": "Search...",
+        "loading": "Searching...",
+        "noResults": "No results found",
+        "noOptions": "No options available"
       },
       "image": {
         "carousel": {

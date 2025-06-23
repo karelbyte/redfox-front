@@ -4,13 +4,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Reception } from '@/types/reception';
+import { Reception, ReceptionCloseResponse } from '@/types/reception';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
 import ReceptionTable from '@/components/Reception/ReceptionTable';
 import ReceptionForm from '@/components/Reception/ReceptionForm';
 import DeleteReceptionModal from '@/components/Reception/DeleteReceptionModal';
 import CloseReceptionModal from '@/components/Reception/CloseReceptionModal';
+import ReceptionCloseResultModal from '@/components/Reception/ReceptionCloseResultModal';
 import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { ReceptionFormRef } from '@/components/Reception/ReceptionForm';
@@ -22,15 +23,17 @@ export default function RecepcionesPage() {
   const locale = useLocale();
   const t = useTranslations('pages.receptions');
   const [receptions, setReceptions] = useState<Reception[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editingReception, setEditingReception] = useState<Reception | null>(null);
-  const [receptionToDelete, setReceptionToDelete] = useState<Reception | null>(null);
-  const [receptionToClose, setReceptionToClose] = useState<Reception | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [receptionToDelete, setReceptionToDelete] = useState<Reception | null>(null);
+  const [receptionToClose, setReceptionToClose] = useState<Reception | null>(null);
+  const [isClosingReception, setIsClosingReception] = useState(false);
+  const [closeResult, setCloseResult] = useState<ReceptionCloseResponse | null>(null);
   const formRef = useRef<ReceptionFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -79,18 +82,19 @@ export default function RecepcionesPage() {
     if (!receptionToClose) return;
 
     try {
-      // Aquí deberías llamar al método del servicio para cerrar la recepción
-      // await receptionService.closeReception(receptionToClose.id);
-      toastService.success(t('messages.receptionClosed'));
+      setIsClosingReception(true);
+      const result = await receptionService.closeReception(receptionToClose.id);
+      setCloseResult(result);
       fetchReceptions(currentPage);
       setReceptionToClose(null);
     } catch (error) {
-      setReceptionToClose(null);
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
         toastService.error(t('messages.errorClosing'));
       }
+    } finally {
+      setIsClosingReception(false);
     }
   };
 
@@ -245,7 +249,16 @@ export default function RecepcionesPage() {
         reception={receptionToClose}
         onClose={() => setReceptionToClose(null)}
         onConfirm={handleClose}
+        isLoading={isClosingReception}
       />
+
+      {/* Modal para mostrar resultado del cierre */}
+      {closeResult && (
+        <ReceptionCloseResultModal
+          closeResult={closeResult}
+          onClose={() => setCloseResult(null)}
+        />
+      )}
     </div>
   );
 } 

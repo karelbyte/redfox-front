@@ -831,8 +831,12 @@
       "actions": {
         "viewDetails": "Ver Detalles",
         "closeReception": "Cerrar Recepción",
+        "closing": "Cerrando...",
+        "cancel": "Cancelar",
         "edit": "Editar",
         "delete": "Eliminar",
+        "cannotEditClosed": "No se puede editar una recepción cerrada",
+        "cannotDeleteClosed": "No se puede eliminar una recepción cerrada",
         "createNewProvider": "Crear nuevo proveedor"
       },
       "messages": {
@@ -856,6 +860,18 @@
         "close": {
           "title": "Cerrar Recepción",
           "message": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer."
+        },
+        "closeResult": {
+          "title": "Recepción Cerrada Exitosamente",
+          "details": {
+            "receptionCode": "Código de Recepción",
+            "transferredProducts": "Productos Transferidos",
+            "totalQuantity": "Cantidad Total",
+            "closedAt": "Cerrada el"
+          },
+          "actions": {
+            "continue": "Continuar"
+          }
         }
       },
       "addProduct": {
@@ -863,12 +879,16 @@
         "editTitle": "Editar Producto",
         "form": {
           "product": "Producto",
+          "selectProduct": "Seleccionar producto",
+          "searchProduct": "Buscar producto...",
+          "searching": "Buscando...",
+          "noProducts": "No hay productos disponibles",
+          "noProductsFound": "No se encontraron productos",
           "quantity": "Cantidad",
           "price": "Precio",
-          "selectProduct": "Seleccionar producto...",
           "placeholders": {
-            "quantity": "Ej: 10.5",
-            "price": "Ej: 25.99"
+            "quantity": "Ingrese la cantidad",
+            "price": "Ingrese el precio"
           },
           "errors": {
             "productRequired": "El producto es requerido",
@@ -964,8 +984,13 @@
     },
     "components": {
       "select": {
-        "placeholder": "Seleccionar...",
-        "addNew": "Agregar nuevo"
+        "placeholder": "Seleccionar..."
+      },
+      "searchSelect": {
+        "placeholder": "Buscar...",
+        "loading": "Buscando...",
+        "noResults": "No se encontraron resultados",
+        "noOptions": "No hay opciones disponibles"
       },
       "image": {
         "carousel": {

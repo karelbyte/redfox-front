@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Reception, ReceptionFormData, ReceptionDetailFormData, ReceptionDetail, PaginatedReceptionResponse, PaginatedReceptionDetailsResponse } from '@/types/reception';
+import { Reception, ReceptionFormData, ReceptionDetailFormData, ReceptionDetail, PaginatedReceptionResponse, PaginatedReceptionDetailsResponse, ReceptionCloseResponse } from '@/types/reception';
 
 class ReceptionService {
   async getReceptions(page?: number): Promise<PaginatedReceptionResponse> {
@@ -27,6 +27,11 @@ class ReceptionService {
 
   async deleteReception(id: string): Promise<void> {
     await api.delete(`/receptions/${id}`);
+  }
+
+  async closeReception(id: string): Promise<ReceptionCloseResponse> {
+    const response = await api.post<ReceptionCloseResponse>(`/receptions/${id}/close`);
+    return response;
   }
 
   async getReceptionById(id: string): Promise<Reception> {

@@ -12,11 +12,12 @@ interface PaginatedResponse {
 }
 
 class ProductService {
-  async getProducts(page?: number, term?: string): Promise<PaginatedResponse> {
+  async getProducts(page?: number, term?: string, is_active?: boolean, type?: string): Promise<PaginatedResponse> {
     const params = new URLSearchParams();
     if (page) params.append('page', page.toString());
     if (term) params.append('term', term);
-    
+    if (is_active) params.append('is_active', is_active.toString());
+    if (type) params.append('type', type);
     const queryString = params.toString();
     const url = `/products${queryString ? `?${queryString}` : ''}`;
     
