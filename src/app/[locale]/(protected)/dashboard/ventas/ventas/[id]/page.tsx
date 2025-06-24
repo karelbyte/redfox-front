@@ -3,13 +3,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { saleService } from '@/services/sales.service';
 import { toastService } from '@/services/toast.service';
-import { Sale, SaleDetail } from '@/types/sale';
+import { Sale, SaleDetail, SaleCloseResponse } from '@/types/sale';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AddProductForm, { AddProductFormRef } from '@/components/Sale/AddProductForm';
+import SaleProductsTable from '@/components/Sale/SaleProductsTable';
+import CloseSaleModal from '@/components/Sale/CloseSaleModal';
+import SaleCloseResultModal from '@/components/Sale/SaleCloseResultModal';
+import Loading from '@/components/Loading/Loading';
 
 export default function SaleDetailsPage() {
   const router = useRouter();
@@ -25,6 +29,9 @@ export default function SaleDetailsPage() {
   const [productToEdit, setProductToEdit] = useState<SaleDetail | null>(null);
   const [isSavingProduct, setIsSavingProduct] = useState(false);
   const [isProductFormValid, setIsProductFormValid] = useState(false);
+  const [isClosingSale, setIsClosingSale] = useState(false);
+  const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
   const productFormRef = useRef<AddProductFormRef>(null);
 
   const fetchSale = async () => {
@@ -166,14 +173,44 @@ export default function SaleDetailsPage() {
     setIsEditProductDrawerOpen(true);
   };
 
+  const handleCloseSale = async () => {
+    if (!sale) return;
+
+    try {
+      setIsClosingSale(true);
+      const result = await saleService.closeSale(sale.id);
+      setCloseResult(result);
+      setIsCloseModalOpen(false);
+      fetchSale(); // Recargar los datos de la venta
+      fetchProducts(); // Recargar los productos
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('closeSale.error'));
+      }
+    } finally {
+      setIsClosingSale(false);
+    }
+  };
+
+  const handleCloseSaleModalClose = () => {
+    setIsCloseModalOpen(false);
+  };
+
+  const handleCloseSaleClick = () => {
+    setIsCloseModalOpen(true);
+  };
+
+  const handleCloseResultModalClose = () => {
+    setCloseResult(null);
+  };
+
   if (loading) {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{ borderColor: `rgb(var(--color-primary-500))` }}
-          ></div>
+          <Loading size="lg" />
         </div>
       </div>
     );
@@ -210,14 +247,27 @@ export default function SaleDetailsPage() {
             </p>
           </div>
         </div>
-        {!sale.status && (
-          <Btn
-            onClick={() => setIsAddProductDrawerOpen(true)}
-            leftIcon={<PlusIcon className="h-5 w-5" />}
-          >
-            {t('details.addProduct')}
-          </Btn>
-        )}
+        
+        <div className="flex items-center space-x-3">
+          {!sale.status && (
+            <>
+              <Btn
+                leftIcon={<PlusIcon className="h-5 w-5" />}
+                onClick={() => setIsAddProductDrawerOpen(true)}
+              >
+                {t('details.addProduct')}
+              </Btn>
+              <Btn
+                variant="danger"
+                leftIcon={<CheckCircleIcon className="h-5 w-5" />}
+                onClick={handleCloseSaleClick}
+                loading={isClosingSale}
+              >
+                {t('actions.closeSale')}
+              </Btn>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Información de la venta */}
@@ -287,104 +337,15 @@ export default function SaleDetailsPage() {
       <div>
         {loadingProducts ? (
           <div className="flex justify-center items-center h-32">
-            <div 
-              className="animate-spin h-6 w-6 border-4 border-t-transparent rounded-full"
-              style={{ borderColor: `rgb(var(--color-primary-500))` }}
-            ></div>
-          </div>
-        ) : products.length === 0 ? (
-          <div className="text-center py-8">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
-              {sale.status ? t('details.noProductsCompletedDesc') : t('details.noProducts')}
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {sale.status ? '' : t('details.noProductsDesc')}
-            </p>
+            <Loading className="h-6 w-6" />
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('productsTable.headers.product')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('productsTable.headers.quantity')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('productsTable.headers.price')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('productsTable.headers.subtotal')}
-                    </th>
-                    {!sale.status && (
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('productsTable.headers.actions')}
-                      </th>
-                    )}
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {products.map((product) => (
-                    <tr key={product.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div>
-                          <div className="font-medium">{product.product.name}</div>
-                          <div className="text-gray-500">SKU: {product.product.sku}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.quantity}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatCurrency(product.price.toString())}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                        {formatCurrency((product.quantity * product.price).toString())}
-                      </td>
-                      {!sale.status && (
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <Btn
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEditProduct(product)}
-                              title={t('actions.edit')}
-                            >
-                              Editar
-                            </Btn>
-                            <Btn
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteProduct(product.id)}
-                              title={t('actions.delete')}
-                            >
-                              Eliminar
-                            </Btn>
-                          </div>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <SaleProductsTable
+            products={products}
+            onDeleteProduct={handleDeleteProduct}
+            onEditProduct={handleEditProduct}
+            isSaleOpen={!sale.status}
+          />
         )}
         
         {!sale.status && products.length === 0 && !loadingProducts && (
@@ -438,6 +399,21 @@ export default function SaleDetailsPage() {
           onValidChange={setIsProductFormValid}
         />
       </Drawer>
+
+      {/* Modal de confirmación para cerrar venta */}
+      <CloseSaleModal
+        isOpen={isCloseModalOpen}
+        sale={sale}
+        onClose={handleCloseSaleModalClose}
+        onConfirm={handleCloseSale}
+        isLoading={isClosingSale}
+      />
+
+      {/* Modal de resultado del cierre de venta */}
+      <SaleCloseResultModal
+        closeResult={closeResult}
+        onClose={handleCloseResultModalClose}
+      />
     </div>
   );
 } 

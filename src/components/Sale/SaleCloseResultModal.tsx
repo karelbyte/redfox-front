@@ -1,17 +1,17 @@
 'use client'
 
 import { useTranslations } from 'next-intl';
-import { ReceptionCloseResponse } from '@/types/reception';
+import { SaleCloseResponse } from '@/types/sale';
 import { Btn } from '@/components/atoms';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 
-interface ReceptionCloseResultModalProps {
-  closeResult: ReceptionCloseResponse | null;
+interface SaleCloseResultModalProps {
+  closeResult: SaleCloseResponse | null;
   onClose: () => void;
 }
 
-export default function ReceptionCloseResultModal({ closeResult, onClose }: ReceptionCloseResultModalProps) {
-  const t = useTranslations('pages.receptions.modals.closeResult');
+export default function SaleCloseResultModal({ closeResult, onClose }: SaleCloseResultModalProps) {
+  const t = useTranslations('pages.sales.modals.closeResult');
   
   if (!closeResult) return null;
 
@@ -55,13 +55,13 @@ export default function ReceptionCloseResultModal({ closeResult, onClose }: Rece
                 {/* Detalles del cierre */}
                 <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">{t('details.receptionCode')}:</span>
-                    <span className="text-sm text-gray-900 font-semibold">{closeResult.receptionCode}</span>
+                    <span className="text-sm font-medium text-gray-700">{t('details.saleCode')}:</span>
+                    <span className="text-sm text-gray-900 font-semibold">{closeResult.saleCode}</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">{t('details.transferredProducts')}:</span>
-                    <span className="text-sm text-gray-900 font-semibold">{closeResult.transferredProducts}</span>
+                    <span className="text-sm font-medium text-gray-700">{t('details.productsWithdrawn')}:</span>
+                    <span className="text-sm text-gray-900 font-semibold">{closeResult.withdrawnProducts}</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
@@ -70,8 +70,8 @@ export default function ReceptionCloseResultModal({ closeResult, onClose }: Rece
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">{t('details.closedAt')}:</span>
-                    <span className="text-sm text-gray-900 font-semibold">{formatDate(closeResult.closedAt)}</span>
+                    <span className="text-sm font-medium text-gray-700">{t('details.completedAt')}:</span>
+                    <span className="text-sm text-gray-900 font-semibold">{formatDate(closeResult.completedAt)}</span>
                   </div>
                 </div>
               </div>

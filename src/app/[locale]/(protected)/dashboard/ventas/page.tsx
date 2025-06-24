@@ -4,17 +4,20 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Sale } from '@/types/sale';
+import { Sale, SaleCloseResponse } from '@/types/sale';
 import { saleService } from '@/services/sales.service';
 import { toastService } from '@/services/toast.service';
 import SaleTable from '@/components/Sale/SaleTable';
 import SaleForm from '@/components/Sale/SaleForm';
 import DeleteSaleModal from '@/components/Sale/DeleteSaleModal';
+import CloseSaleModal from '@/components/Sale/CloseSaleModal';
+import SaleCloseResultModal from '@/components/Sale/SaleCloseResultModal';
 import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { SaleFormRef } from '@/components/Sale/SaleForm';
 import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
+import Loading from '@/components/Loading/Loading';
 
 export default function VentasPage() {
   const router = useRouter();
@@ -29,6 +32,9 @@ export default function VentasPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<Sale | null>(null);
+  const [saleToClose, setSaleToClose] = useState<Sale | null>(null);
+  const [isClosingSale, setIsClosingSale] = useState(false);
+  const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
   const formRef = useRef<SaleFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -73,6 +79,26 @@ export default function VentasPage() {
     }
   };
 
+  const handleClose = async () => {
+    if (!saleToClose) return;
+
+    try {
+      setIsClosingSale(true);
+      const result = await saleService.closeSale(saleToClose.id);
+      setCloseResult(result);
+      fetchSales(currentPage);
+      setSaleToClose(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorClosing'));
+      }
+    } finally {
+      setIsClosingSale(false);
+    }
+  };
+
   const handleDetails = (sale: Sale) => {
     router.push(`/${locale}/dashboard/ventas/ventas/${sale.id}`);
   };
@@ -103,6 +129,10 @@ export default function VentasPage() {
     setSaleToDelete(sale);
   };
 
+  const openCloseModal = (sale: Sale) => {
+    setSaleToClose(sale);
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     fetchSales(page);
@@ -127,10 +157,7 @@ export default function VentasPage() {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{ borderColor: `rgb(var(--color-primary-500))` }}
-          ></div>
+          <Loading size="lg" />
         </div>
       ) : sales && sales.length === 0 ? (
         <div 
@@ -172,6 +199,7 @@ export default function VentasPage() {
               onEdit={handleEdit}
               onDelete={openDeleteModal}
               onDetails={handleDetails}
+              onClose={openCloseModal}
             />
           </div>
 
@@ -213,6 +241,22 @@ export default function VentasPage() {
         onClose={() => setSaleToDelete(null)}
         onConfirm={handleDelete}
       />
+
+      {/* Modal para cerrar venta */}
+      <CloseSaleModal
+        sale={saleToClose}
+        onClose={() => setSaleToClose(null)}
+        onConfirm={handleClose}
+        isLoading={isClosingSale}
+      />
+
+      {/* Modal para mostrar resultado del cierre */}
+      {closeResult && (
+        <SaleCloseResultModal
+          closeResult={closeResult}
+          onClose={() => setCloseResult(null)}
+        />
+      )}
     </div>
   );
 } 

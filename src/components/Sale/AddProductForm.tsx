@@ -33,6 +33,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       product_id: '',
       quantity: 0,
       price: 0,
+      warehouse_id: '',
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -45,7 +46,22 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
           product_id: saleDetail.product.id,
           quantity: saleDetail.quantity,
           price: saleDetail.price,
+          warehouse_id: '', // Se establecerá cuando se cargue la información del inventario
         });
+        
+        // Cargar la información del inventario para obtener el warehouse_id
+        const loadInventoryInfo = async () => {
+          const inventoryProduct = await getInventoryProductById(saleDetail.product.id);
+          if (inventoryProduct) {
+            setSelectedInventoryProduct(inventoryProduct);
+            setFormData(prev => ({
+              ...prev,
+              warehouse_id: inventoryProduct.warehouse.id
+            }));
+          }
+        };
+        
+        loadInventoryInfo();
       }
     }, [saleDetail]);
 
@@ -84,15 +100,17 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
         const inventoryProduct = await getInventoryProductById(productId);
         if (inventoryProduct) {
           setSelectedInventoryProduct(inventoryProduct);
-          // Establecer el precio del inventario como precio por defecto
+          // Establecer el precio del inventario como precio por defecto y el warehouse_id
           setFormData(prev => ({ 
             ...prev, 
             product_id: productId,
-            price: inventoryProduct.price 
+            price: inventoryProduct.price,
+            warehouse_id: inventoryProduct.warehouse.id
           }));
         }
       } else {
         setSelectedInventoryProduct(null);
+        setFormData(prev => ({ ...prev, warehouse_id: '' }));
       }
     };
 

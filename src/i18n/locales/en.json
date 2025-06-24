@@ -1037,6 +1037,8 @@
       },
       "actions": {
         "viewDetails": "View Details",
+        "closeSale": "Complete Sale",
+        "closing": "Completing...",
         "cancel": "Cancel",
         "edit": "Edit",
         "delete": "Delete",
@@ -1048,17 +1050,50 @@
         "saleCreated": "Sale created successfully",
         "saleUpdated": "Sale updated successfully",
         "saleDeleted": "Sale deleted successfully",
+        "saleClosed": "Sale completed successfully",
         "errorLoading": "Error loading sales",
         "errorCreating": "Error creating sale",
         "errorUpdating": "Error updating sale",
         "errorDeleting": "Error deleting sale",
-        "confirmDelete": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone."
+        "errorClosing": "Error completing sale",
+        "confirmDelete": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone.",
+        "confirmClose": "Are you sure you want to complete the sale \"{code}\"? This action cannot be undone."
       },
       "modals": {
         "delete": {
           "title": "Delete Sale",
           "message": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone."
+        },
+        "close": {
+          "title": "Complete Sale",
+          "message": "Are you sure you want to complete the sale \"{code}\"? This action cannot be undone."
+        },
+        "closeResult": {
+          "title": "Sale Completed Successfully",
+          "details": {
+            "saleCode": "Sale Code",
+            "productsWithdrawn": "Products Withdrawn",
+            "totalQuantity": "Total Quantity",
+            "completedAt": "Completed at"
+          },
+          "actions": {
+            "continue": "Continue"
+          }
         }
+      },
+      "closeSale": {
+        "title": "Complete Sale",
+        "message": "Are you sure you want to complete the sale \"{code}\" for client \"{clientName}\"?",
+        "warning": "Warning",
+        "warningDesc": "When completing the sale, inventory will be processed and you won't be able to make further changes."
+      },
+      "closeSaleResult": {
+        "title": "Sale Completed Successfully",
+        "success": "The sale has been completed successfully",
+        "saleCode": "Sale Code",
+        "productsWithdrawn": "Products Withdrawn",
+        "totalQuantity": "Total Quantity",
+        "completedAt": "Completed at"
       },
       "addProduct": {
         "title": "Add Product",

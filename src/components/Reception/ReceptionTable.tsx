@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Reception } from '@/types/reception';
-import { PencilIcon, TrashIcon, EyeIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, EyeIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 
 interface ReceptionTableProps {
@@ -131,7 +131,7 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
                       variant="ghost"
                       size="sm"
                       onClick={() => onClose(reception)}
-                      leftIcon={<XMarkIcon className="h-4 w-4" />}
+                      leftIcon={<CheckCircleIcon className="h-4 w-4" />}
                       title={t('actions.closeReception')}
                       style={{ color: '#dc2626' }}
                     />

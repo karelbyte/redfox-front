@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Sale, SaleFormData, SaleDetailFormData, SaleDetail, PaginatedSaleResponse, PaginatedSaleDetailsResponse } from '@/types/sale';
+import { Sale, SaleFormData, SaleDetailFormData, SaleDetail, PaginatedSaleResponse, PaginatedSaleDetailsResponse, SaleCloseResponse } from '@/types/sale';
 
 class SaleService {
   async getSales(page?: number): Promise<PaginatedSaleResponse> {
@@ -35,6 +35,11 @@ class SaleService {
     await api.delete(`/withdrawals/${id}`);
   }
 
+  async closeSale(id: string): Promise<SaleCloseResponse> {
+    const response = await api.post<SaleCloseResponse>(`/withdrawals/${id}/close`, {});
+    return response;
+  }
+
   async getSaleById(id: string): Promise<Sale> {
     const response = await api.get<Sale>(`/withdrawals/${id}`);
     return response;
@@ -50,7 +55,8 @@ class SaleService {
     const requestData: Record<string, unknown> = {
       product_id: data.product_id,
       quantity: data.quantity,
-      price: data.price
+      price: data.price,
+      warehouse_id: data.warehouse_id
     };
     const response = await api.post<SaleDetail>(`/withdrawals/${saleId}/details`, requestData);
     return response;
@@ -60,7 +66,8 @@ class SaleService {
     const requestData: Record<string, unknown> = {
       product_id: data.product_id,
       quantity: data.quantity,
-      price: data.price
+      price: data.price,
+      warehouse_id: data.warehouse_id
     };
     const response = await api.put<SaleDetail>(`/withdrawals/${saleId}/details/${detailId}`, requestData);
     return response;

@@ -17,6 +17,7 @@ import Drawer from '@/components/Drawer/Drawer';
 import { ReceptionFormRef } from '@/components/Reception/ReceptionForm';
 import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
+import Loading from '@/components/Loading/Loading';
 
 export default function RecepcionesPage() {
   const router = useRouter();
@@ -156,10 +157,7 @@ export default function RecepcionesPage() {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{ borderColor: `rgb(var(--color-primary-500))` }}
-          ></div>
+          <Loading size="lg" />
         </div>
       ) : receptions && receptions.length === 0 ? (
         <div 

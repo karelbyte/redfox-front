@@ -1,27 +1,27 @@
 'use client'
 
 import { useTranslations } from 'next-intl';
-import { Reception } from "@/types/reception";
-import { Btn } from "@/components/atoms";
+import { Sale } from '@/types/sale';
+import { Btn } from '@/components/atoms';
 
-interface CloseReceptionModalProps {
+interface CloseSaleModalProps {
   isOpen: boolean;
-  reception: Reception | null;
+  sale: Sale | null;
   onClose: () => void;
   onConfirm: () => void;
   isLoading?: boolean;
 }
 
-export default function CloseReceptionModal({ 
+export default function CloseSaleModal({ 
   isOpen,
-  reception, 
+  sale, 
   onClose, 
   onConfirm, 
   isLoading = false 
-}: CloseReceptionModalProps) {
-  const t = useTranslations('pages.receptions');
+}: CloseSaleModalProps) {
+  const t = useTranslations('pages.sales');
   
-  if (!isOpen || !reception) return null;
+  if (!isOpen || !sale) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -54,7 +54,7 @@ export default function CloseReceptionModal({
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  {t('modals.close.message', { code: reception.code })}
+                  {t('modals.close.message', { code: sale.code })}
                 </p>
               </div>
             </div>
@@ -66,7 +66,7 @@ export default function CloseReceptionModal({
               disabled={isLoading}
               className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
             >
-              {isLoading ? t('actions.closing') : t('actions.closeReception')}
+              {isLoading ? t('actions.closing') : t('actions.closeSale')}
             </Btn>
             <Btn
               variant="outline"

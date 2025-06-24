@@ -1028,6 +1028,8 @@
       },
       "actions": {
         "viewDetails": "Ver Detalles",
+        "closeSale": "Completar Venta",
+        "closing": "Completando...",
         "cancel": "Cancelar",
         "edit": "Editar",
         "delete": "Eliminar",
@@ -1039,17 +1041,50 @@
         "saleCreated": "Venta creada correctamente",
         "saleUpdated": "Venta actualizada correctamente",
         "saleDeleted": "Venta eliminada correctamente",
+        "saleClosed": "Venta completada correctamente",
         "errorLoading": "Error al cargar las ventas",
         "errorCreating": "Error al crear la venta",
         "errorUpdating": "Error al actualizar la venta",
         "errorDeleting": "Error al eliminar la venta",
-        "confirmDelete": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer."
+        "errorClosing": "Error al completar la venta",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer.",
+        "confirmClose": "¿Estás seguro de que deseas completar la venta \"{code}\"? Esta acción no se puede deshacer."
       },
       "modals": {
         "delete": {
           "title": "Eliminar Venta",
           "message": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer."
+        },
+        "close": {
+          "title": "Completar Venta",
+          "message": "¿Estás seguro de que deseas completar la venta \"{code}\"? Esta acción no se puede deshacer."
+        },
+        "closeResult": {
+          "title": "Venta Completada Exitosamente",
+          "details": {
+            "saleCode": "Código de Venta",
+            "productsWithdrawn": "Productos Retirados",
+            "totalQuantity": "Cantidad Total",
+            "completedAt": "Completada el"
+          },
+          "actions": {
+            "continue": "Continuar"
+          }
         }
+      },
+      "closeSale": {
+        "title": "Completar Venta",
+        "message": "¿Estás seguro de que deseas completar la venta \"{code}\" del cliente \"{clientName}\"?",
+        "warning": "Advertencia",
+        "warningDesc": "Al completar la venta, se procesará la salida de inventario y no podrás realizar más cambios."
+      },
+      "closeSaleResult": {
+        "title": "Venta Completada Exitosamente",
+        "success": "La venta ha sido completada correctamente",
+        "saleCode": "Código de Venta",
+        "productsWithdrawn": "Productos Retirados",
+        "totalQuantity": "Cantidad Total",
+        "completedAt": "Completada el"
       },
       "addProduct": {
         "title": "Agregar Producto",

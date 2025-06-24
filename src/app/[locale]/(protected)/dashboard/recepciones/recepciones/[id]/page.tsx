@@ -3,14 +3,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
-import { Reception, ReceptionDetail } from '@/types/reception';
+import { Reception, ReceptionDetail, ReceptionCloseResponse } from '@/types/reception';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AddProductForm, { AddProductFormRef } from '@/components/Reception/AddProductForm';
 import ReceptionProductsTable from '@/components/Reception/ReceptionProductsTable';
+import CloseReceptionModal from '@/components/Reception/CloseReceptionModal';
+import ReceptionCloseResultModal from '@/components/Reception/ReceptionCloseResultModal';
 import Loading from '@/components/Loading/Loading';
 
 export default function ReceptionDetailsPage() {
@@ -27,6 +29,9 @@ export default function ReceptionDetailsPage() {
   const [productToEdit, setProductToEdit] = useState<ReceptionDetail | null>(null);
   const [isSavingProduct, setIsSavingProduct] = useState(false);
   const [isProductFormValid, setIsProductFormValid] = useState(false);
+  const [isClosingReception, setIsClosingReception] = useState(false);
+  const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  const [closeResult, setCloseResult] = useState<ReceptionCloseResponse | null>(null);
   const productFormRef = useRef<AddProductFormRef>(null);
 
   const fetchReception = async () => {
@@ -171,14 +176,44 @@ export default function ReceptionDetailsPage() {
     setIsEditProductDrawerOpen(true);
   };
 
+  const handleCloseReception = async () => {
+    if (!reception) return;
+
+    try {
+      setIsClosingReception(true);
+      const result = await receptionService.closeReception(reception.id);
+      setCloseResult(result);
+      setIsCloseModalOpen(false);
+      fetchReception(); // Recargar los datos de la recepción
+      fetchProducts(); // Recargar los productos
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('closeReception.error'));
+      }
+    } finally {
+      setIsClosingReception(false);
+    }
+  };
+
+  const handleCloseReceptionModalClose = () => {
+    setIsCloseModalOpen(false);
+  };
+
+  const handleCloseReceptionClick = () => {
+    setIsCloseModalOpen(true);
+  };
+
+  const handleCloseResultModalClose = () => {
+    setCloseResult(null);
+  };
+
   if (loading) {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
-          <div 
-            className="animate-spin h-8 w-8 border-4 border-t-transparent rounded-full"
-            style={{ borderColor: `rgb(var(--color-primary-500))` }}
-          ></div>
+          <Loading size="lg" />
         </div>
       </div>
     );
@@ -216,14 +251,26 @@ export default function ReceptionDetailsPage() {
           </div>
         </div>
         
-        {reception.status && (
-          <Btn
-            leftIcon={<PlusIcon className="h-5 w-5" />}
-            onClick={() => setIsAddProductDrawerOpen(true)}
-          >
-            {t('details.addProduct')}
-          </Btn>
-        )}
+        <div className="flex items-center space-x-3">
+          {reception.status && (
+            <>
+              <Btn
+                leftIcon={<PlusIcon className="h-5 w-5" />}
+                onClick={() => setIsAddProductDrawerOpen(true)}
+              >
+                {t('details.addProduct')}
+              </Btn>
+              <Btn
+                variant="danger"
+                leftIcon={<CheckCircleIcon className="h-5 w-5" />}
+                onClick={handleCloseReceptionClick}
+                loading={isClosingReception}
+              >
+                {t('actions.closeReception')}
+              </Btn>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Información de la recepción */}
@@ -358,6 +405,21 @@ export default function ReceptionDetailsPage() {
           onValidChange={setIsProductFormValid}
         />
       </Drawer>
+
+      {/* Modal de confirmación para cerrar recepción */}
+      <CloseReceptionModal
+        isOpen={isCloseModalOpen}
+        reception={reception}
+        onClose={handleCloseReceptionModalClose}
+        onConfirm={handleCloseReception}
+        isLoading={isClosingReception}
+      />
+
+      {/* Modal de resultado del cierre de recepción */}
+      <ReceptionCloseResultModal
+        closeResult={closeResult}
+        onClose={handleCloseResultModalClose}
+      />
     </div>
   );
 } 

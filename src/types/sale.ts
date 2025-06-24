@@ -35,6 +35,7 @@ export interface SaleDetailFormData {
   product_id: string;
   quantity: number;
   price: number;
+  warehouse_id: string;
 }
 
 export interface SaleDetail {
@@ -101,4 +102,13 @@ export interface PaginatedSaleDetailsResponse {
     limit: number;
     totalPages: number;
   };
+}
+
+export interface SaleCloseResponse {
+  saleId: string;
+  saleCode: string;
+  withdrawnProducts: number;
+  totalQuantity: number;
+  message: string;
+  completedAt: string;
 } 
