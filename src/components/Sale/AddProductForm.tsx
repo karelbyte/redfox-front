@@ -2,7 +2,7 @@
 
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useTranslations } from 'next-intl';
-import { productService } from '@/services/products.service';
+import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { toastService } from '@/services/toast.service';
 import { SaleDetail, SaleDetailFormData } from '@/types/sale';
 import { Input, SearchSelect } from '@/components/atoms';
@@ -36,6 +36,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
+    const [selectedInventoryProduct, setSelectedInventoryProduct] = useState<InventoryProduct | null>(null);
 
     // Cargar datos del producto a editar
     useEffect(() => {
@@ -48,18 +49,50 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       }
     }, [saleDetail]);
 
-    // Función para buscar productos
-    const searchProducts = async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
+    // Función para buscar productos en inventario
+    const searchInventoryProducts = async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
-        const response = await productService.getProducts(1, term, true,'tangible');
-        return (response.data || []).map(product => ({
-          id: product.id,
-          label: product.name,
-          subtitle: `SKU: ${product.sku}`
+        const response = await inventoryService.getInventoryProducts(1, term);
+        return (response.data || []).map(inventoryProduct => ({
+          id: inventoryProduct.product.id,
+          label: inventoryProduct.product.name,
+          subtitle: `SKU: ${inventoryProduct.product.sku} | Stock: ${inventoryProduct.quantity}`
         }));
       } catch (error) {
-        console.error('Error buscando productos:', error);
+        console.error('Error buscando productos en inventario:', error);
         return [];
+      }
+    };
+
+    // Función para obtener el producto de inventario completo cuando se selecciona
+    const getInventoryProductById = async (productId: string): Promise<InventoryProduct | null> => {
+      try {
+        const response = await inventoryService.getInventoryProducts(1, '');
+        const foundProduct = response.data.find(inv => inv.product.id === productId);
+        return foundProduct || null;
+      } catch (error) {
+        console.error('Error obteniendo producto de inventario:', error);
+        return null;
+      }
+    };
+
+    // Manejar selección de producto
+    const handleProductSelection = async (productId: string) => {
+      setFormData(prev => ({ ...prev, product_id: productId }));
+      
+      if (productId) {
+        const inventoryProduct = await getInventoryProductById(productId);
+        if (inventoryProduct) {
+          setSelectedInventoryProduct(inventoryProduct);
+          // Establecer el precio del inventario como precio por defecto
+          setFormData(prev => ({ 
+            ...prev, 
+            product_id: productId,
+            price: inventoryProduct.price 
+          }));
+        }
+      } else {
+        setSelectedInventoryProduct(null);
       }
     };
 
@@ -124,18 +157,60 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       getFormData: () => formData,
     }));
 
+    const formatCurrency = (amount: number) => {
+      return new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(amount);
+    };
+
     return (
       <form className="space-y-6">
         <SearchSelect
           value={formData.product_id}
-          onChange={(productId) => setFormData(prev => ({ ...prev, product_id: productId }))}
-          onSearch={searchProducts}
+          onChange={handleProductSelection}
+          onSearch={searchInventoryProducts}
           label={t('form.product')}
           placeholder={t('form.selectProduct')}
           required
           error={errors.product_id}
           disabled={!!saleDetail}
         />
+
+        {/* Tarjeta de información del producto seleccionado */}
+        {selectedInventoryProduct && (
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <h4 className="text-sm font-medium text-gray-900 mb-3">
+              {t('inventoryInfo.title')}
+            </h4>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-500">{t('inventoryInfo.product')}:</span>
+                <p className="font-medium">{selectedInventoryProduct.product.name}</p>
+              </div>
+              <div>
+                <span className="text-gray-500">{t('inventoryInfo.sku')}:</span>
+                <p className="font-medium">{selectedInventoryProduct.product.sku}</p>
+              </div>
+              <div>
+                <span className="text-gray-500">{t('inventoryInfo.stockAvailable')}:</span>
+                <p className="font-medium">{selectedInventoryProduct.quantity} {selectedInventoryProduct.product.measurement_unit.symbol}</p>
+              </div>
+              <div>
+                <span className="text-gray-500">{t('inventoryInfo.inventoryPrice')}:</span>
+                <p className="font-medium">{formatCurrency(selectedInventoryProduct.price)}</p>
+              </div>
+              <div>
+                <span className="text-gray-500">{t('inventoryInfo.warehouse')}:</span>
+                <p className="font-medium">{selectedInventoryProduct.warehouse.name}</p>
+              </div>
+              <div>
+                <span className="text-gray-500">{t('inventoryInfo.category')}:</span>
+                <p className="font-medium">{selectedInventoryProduct.product.category.name}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Input
           type="number"

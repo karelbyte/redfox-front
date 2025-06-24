@@ -682,7 +682,6 @@
       "modal": {
         "title": "Detalles del Producto",
         "basicInfo": "Información Básica",
-        "inventoryInfo": "Información del Inventario",
         "name": "Nombre",
         "sku": "SKU",
         "description": "Descripción",
@@ -690,6 +689,12 @@
         "price": "Precio",
         "date": "Fecha",
         "close": "Cerrar"
+      },
+      "productMessages": {
+        "productAdded": "Producto agregado correctamente",
+        "productUpdated": "Producto actualizado correctamente",
+        "errorAdding": "Error al agregar el producto",
+        "errorUpdating": "Error al actualizar el producto"
       }
     },
     "warehouseOpenings": {
@@ -790,7 +795,7 @@
       "noProducts": "No hay productos",
       "noProductsDesc": "Añade productos a esta recepción para comenzar.",
       "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
-      "addProduct": "Añadir Producto",
+      "addProductTitle": "Añadir Producto",
       "noReceptions": "No hay recepciones",
       "noReceptionsDesc": "Haz clic en \"Nueva Recepción\" para agregar una.",
       "searchReceptions": "Buscar recepciones...",
@@ -903,6 +908,15 @@
           "productUpdated": "Producto actualizado correctamente",
           "errorAdding": "Error al agregar el producto",
           "errorUpdating": "Error al actualizar el producto"
+        },
+        "inventoryInfo": {
+          "title": "Información del Producto en Inventario",
+          "product": "Producto",
+          "sku": "SKU",
+          "stockAvailable": "Stock Disponible",
+          "inventoryPrice": "Precio en Inventario",
+          "warehouse": "Almacén",
+          "category": "Categoría"
         }
       },
       "productsTable": {
@@ -928,6 +942,8 @@
         "error": "Error al eliminar el producto"
       },
       "details": {
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
         "title": "Recepción {code}",
         "subtitle": "Detalles de la recepción",
         "back": "Volver",
@@ -941,6 +957,7 @@
         "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
         "addProduct": "Añadir Producto",
         "labels": {
+          "date": "Fecha",
           "code": "Código",
           "destination": "Destino",
           "status": "Estado",
@@ -976,7 +993,7 @@
       "noProducts": "No hay productos",
       "noProductsDesc": "Añade productos a esta venta para comenzar.",
       "noProductsCompletedDesc": "Esta venta no tiene productos registrados.",
-      "addProduct": "Añadir Producto",
+      "addProductTitle": "Añadir Producto",
       "noSales": "No hay ventas",
       "noSalesDesc": "Haz clic en \"Nueva Venta\" para agregar una.",
       "searchSales": "Buscar ventas...",
@@ -1063,6 +1080,15 @@
           "productUpdated": "Producto actualizado correctamente",
           "errorAdding": "Error al agregar el producto",
           "errorUpdating": "Error al actualizar el producto"
+        },
+        "inventoryInfo": {
+          "title": "Información del Producto en Inventario",
+          "product": "Producto",
+          "sku": "SKU",
+          "stockAvailable": "Stock Disponible",
+          "inventoryPrice": "Precio en Inventario",
+          "warehouse": "Almacén",
+          "category": "Categoría"
         }
       },
       "productsTable": {

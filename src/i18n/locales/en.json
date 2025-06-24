@@ -690,6 +690,21 @@
         "price": "Price",
         "date": "Date",
         "close": "Close"
+      },
+      "productMessages": {
+        "productAdded": "Product added successfully",
+        "productUpdated": "Product updated successfully",
+        "errorAdding": "Error adding product",
+        "errorUpdating": "Error updating product"
+      },
+      "inventoryInfo": {
+        "title": "Product Inventory Information",
+        "product": "Product",
+        "sku": "SKU",
+        "stockAvailable": "Available Stock",
+        "inventoryPrice": "Inventory Price",
+        "warehouse": "Warehouse",
+        "category": "Category"
       }
     },
     "warehouseOpenings": {
@@ -790,7 +805,7 @@
       "noProducts": "No products",
       "noProductsDesc": "Add products to this reception to get started.",
       "noProductsClosedDesc": "This reception has no registered products.",
-      "addProduct": "Add Product",
+      "addProductTitle": "Add Product",
       "noReceptions": "No receptions",
       "noReceptionsDesc": "Click on \"New Reception\" to add one.",
       "searchReceptions": "Search receptions...",
@@ -903,6 +918,15 @@
           "productUpdated": "Product updated successfully",
           "errorAdding": "Error adding product",
           "errorUpdating": "Error updating product"
+        },
+        "inventoryInfo": {
+          "title": "Product Inventory Information",
+          "product": "Product",
+          "sku": "SKU",
+          "stockAvailable": "Available Stock",
+          "inventoryPrice": "Inventory Price",
+          "warehouse": "Warehouse",
+          "category": "Category"
         }
       },
       "productsTable": {
@@ -942,6 +966,7 @@
         "noProductsClosedDesc": "This reception has no registered products.",
         "addProduct": "Add Product",
         "labels": {
+          "date": "Date",
           "code": "Code",
           "destination": "Destination",
           "status": "Status",
@@ -977,7 +1002,7 @@
       "noProducts": "No products",
       "noProductsDesc": "Add products to this sale to get started.",
       "noProductsCompletedDesc": "This sale has no registered products.",
-      "addProduct": "Add Product",
+      "addProductTitle": "Add Product",
       "noSales": "No sales",
       "noSalesDesc": "Click on \"New Sale\" to add one.",
       "searchSales": "Search sales...",
@@ -1064,6 +1089,15 @@
           "productUpdated": "Product updated successfully",
           "errorAdding": "Error adding product",
           "errorUpdating": "Error updating product"
+        },
+        "inventoryInfo": {
+          "title": "Product Inventory Information",
+          "product": "Product",
+          "sku": "SKU",
+          "stockAvailable": "Available Stock",
+          "inventoryPrice": "Inventory Price",
+          "warehouse": "Warehouse",
+          "category": "Category"
         }
       },
       "productsTable": {
