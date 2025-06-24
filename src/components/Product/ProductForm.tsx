@@ -19,7 +19,7 @@ import { brandService } from "@/services/brand.service";
 import { categoriesService } from "@/services/categories.service";
 import { measurementUnitsService } from "@/services/measurement-units.service";
 import { taxesService } from "@/services/taxes.service";
-import { Tax, TaxType } from "@/types/tax";
+import { Tax } from "@/types/tax";
 import ImageCarousel from "@/components/ImageCarousel/ImageCarousel";
 import Drawer from "@/components/Drawer/Drawer";
 import BrandForm from "@/components/Brand/BrandForm";
@@ -557,7 +557,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                 value: brand.id.toString(),
                 label: brand.description,
               }))}
-              onAddNew={() => setShowBrandDrawer(true)}
+              showAddButton={true}
+              onAddClick={() => setShowBrandDrawer(true)}
               error={errors.brand_id}
             />
 
@@ -572,7 +573,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                 value: category.id.toString(),
                 label: category.name,
               }))}
-              onAddNew={() => setShowCategoryDrawer(true)}
+              showAddButton={true}
+              onAddClick={() => setShowCategoryDrawer(true)}
               error={errors.category_id}
             />
 
@@ -590,7 +592,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                 value: unit.id.toString(),
                 label: unit.description,
               }))}
-              onAddNew={() => setShowMeasurementUnitDrawer(true)}
+              showAddButton={true}
+              onAddClick={() => setShowMeasurementUnitDrawer(true)}
               error={errors.measurement_unit_id}
             />
 
@@ -605,7 +608,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                 value: tax.id.toString(),
                 label: `${tax.name} (${tax.value}%)`,
               }))}
-              onAddNew={() => setShowTaxDrawer(true)}
+              showAddButton={true}
+              onAddClick={() => setShowTaxDrawer(true)}
               error={errors.tax_id}
             />
 

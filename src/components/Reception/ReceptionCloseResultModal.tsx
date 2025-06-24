@@ -11,7 +11,7 @@ interface ReceptionCloseResultModalProps {
 }
 
 export default function ReceptionCloseResultModal({ closeResult, onClose }: ReceptionCloseResultModalProps) {
-  const t = useTranslations('pages.receptions.closeResult');
+  const t = useTranslations('pages.receptions.modals.closeResult');
   
   if (!closeResult) return null;
 

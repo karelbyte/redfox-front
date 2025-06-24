@@ -943,7 +943,7 @@
         "addProduct": "Add Product",
         "labels": {
           "code": "Code",
-          "date": "Date",
+          "destination": "Destination",
           "status": "Status",
           "name": "Name",
           "document": "Document",
@@ -963,6 +963,153 @@
       "title": "Under Construction",
       "description": "This functionality will be available soon.",
       "backToList": "Back to List"
+    },
+    "sales": {
+      "title": "Sales",
+      "newSale": "New Sale",
+      "editSale": "Edit Sale",
+      "deleteSale": "Delete Sale",
+      "saleDetails": "Sale Details",
+      "saleInfo": "Sale Information",
+      "client": "Client",
+      "generalInfo": "General Information",
+      "saleProducts": "Sale Products",
+      "noProducts": "No products",
+      "noProductsDesc": "Add products to this sale to get started.",
+      "noProductsCompletedDesc": "This sale has no registered products.",
+      "addProduct": "Add Product",
+      "noSales": "No sales",
+      "noSalesDesc": "Click on \"New Sale\" to add one.",
+      "searchSales": "Search sales...",
+      "form": {
+        "code": "Code",
+        "destination": "Destination",
+        "client": "Client",
+        "amount": "Amount",
+        "status": "Status",
+        "placeholders": {
+          "code": "Ex: SAL-2024-001",
+          "destination": "Ex: Central Store - Main St 123"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "destinationRequired": "Destination is required",
+          "clientRequired": "Client is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "date": "Date",
+        "destination": "Destination",
+        "client": "Client",
+        "amount": "Amount",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "completed": "Completed"
+      },
+      "actions": {
+        "viewDetails": "View Details",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "cannotEditCompleted": "Cannot edit a completed sale",
+        "cannotDeleteCompleted": "Cannot delete a completed sale",
+        "createNewClient": "Create new client"
+      },
+      "messages": {
+        "saleCreated": "Sale created successfully",
+        "saleUpdated": "Sale updated successfully",
+        "saleDeleted": "Sale deleted successfully",
+        "errorLoading": "Error loading sales",
+        "errorCreating": "Error creating sale",
+        "errorUpdating": "Error updating sale",
+        "errorDeleting": "Error deleting sale",
+        "confirmDelete": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone."
+      },
+      "modals": {
+        "delete": {
+          "title": "Delete Sale",
+          "message": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone."
+        }
+      },
+      "addProduct": {
+        "title": "Add Product",
+        "editTitle": "Edit Product",
+        "form": {
+          "product": "Product",
+          "selectProduct": "Select product",
+          "searchProduct": "Search product...",
+          "searching": "Searching...",
+          "noProducts": "No products available",
+          "noProductsFound": "No products found",
+          "quantity": "Quantity",
+          "price": "Price",
+          "placeholders": {
+            "quantity": "Enter quantity",
+            "price": "Enter price"
+          },
+          "errors": {
+            "productRequired": "Product is required",
+            "quantityRequired": "Quantity is required",
+            "quantityPositive": "Quantity must be greater than 0",
+            "priceRequired": "Price is required",
+            "pricePositive": "Price must be greater than 0"
+          }
+        },
+        "messages": {
+          "productAdded": "Product added successfully",
+          "productUpdated": "Product updated successfully",
+          "errorAdding": "Error adding product",
+          "errorUpdating": "Error updating product"
+        }
+      },
+      "productsTable": {
+        "title": "Sale Products",
+        "headers": {
+          "product": "Product",
+          "sku": "SKU",
+          "brand": "Brand",
+          "category": "Category",
+          "quantity": "Quantity",
+          "price": "Price",
+          "subtotal": "Subtotal",
+          "actions": "Actions"
+        },
+        "noProducts": "No products in this sale",
+        "noProductsDesc": "Add products to start recording the sale",
+        "noProductsCompletedDesc": "This sale has no registered products"
+      },
+      "deleteProduct": {
+        "title": "Delete Product",
+        "message": "Are you sure you want to delete the product \"{productName}\" from this sale? This action cannot be undone.",
+        "success": "Product deleted successfully",
+        "error": "Error deleting product"
+      },
+      "details": {
+        "title": "Sale {code}",
+        "subtitle": "Sale details",
+        "back": "Back",
+        "notFound": "Sale not found",
+        "errorLoading": "Error loading sale",
+        "generalInfo": "General Information",
+        "client": "Client",
+        "warehouse": "Warehouse",
+        "saleProducts": "Sale Products",
+        "noProducts": "No products",
+        "noProductsDesc": "Add products to this sale to get started.",
+        "noProductsCompletedDesc": "This sale has no registered products.",
+        "addProduct": "Add Product",
+        "labels": {
+          "code": "Code",
+          "destination": "Destination",
+          "status": "Status",
+          "name": "Name",
+          "totalAmount": "Total Amount"
+        }
+      }
     }
   },
   "forms": {
@@ -984,7 +1131,8 @@
     },
     "components": {
       "select": {
-        "placeholder": "Select..."
+        "placeholder": "Select...",
+        "addNew": "Add New"
       },
       "searchSelect": {
         "placeholder": "Search...",

@@ -8,7 +8,7 @@ import { LanguageInitializer } from "@/components/LanguageInitializer";
 import { Toaster } from 'react-hot-toast';
 
 interface LocaleProviderProps {
-  messages: any;
+  messages: Record<string, unknown>;
   locale: string;
   children: React.ReactNode;
 }

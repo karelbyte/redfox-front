@@ -65,6 +65,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
 
     useEffect(() => {
       fetchCurrencies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchCurrencies = async () => {

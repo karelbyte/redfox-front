@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { locales, defaultLocale } from '@/i18n/config';
+import { locales, defaultLocale, type Locale } from '@/i18n/config';
 
 const LANGUAGE_STORAGE_KEY = 'nitro-language';
 
@@ -23,7 +23,7 @@ export function useLanguage() {
     
     try {
       const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      return stored && locales.includes(stored as any) ? stored : defaultLocale;
+      return stored && locales.includes(stored as Locale) ? stored : defaultLocale;
     } catch (error) {
       console.warn('Error reading language from localStorage:', error);
       return defaultLocale;

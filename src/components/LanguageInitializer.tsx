@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { locales } from '@/i18n/config';
+import { locales, type Locale } from '@/i18n/config';
 
 const LANGUAGE_STORAGE_KEY = 'nitro-language';
 
@@ -18,7 +18,7 @@ export function LanguageInitializer() {
       // Get stored language
       const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
       
-      if (storedLanguage && locales.includes(storedLanguage as any)) {
+      if (storedLanguage && locales.includes(storedLanguage as Locale)) {
         // Extract current locale from pathname
         const pathSegments = pathname.split('/');
         const currentLocale = pathSegments[1];

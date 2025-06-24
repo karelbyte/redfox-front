@@ -30,7 +30,7 @@ class ReceptionService {
   }
 
   async closeReception(id: string): Promise<ReceptionCloseResponse> {
-    const response = await api.post<ReceptionCloseResponse>(`/receptions/${id}/close`);
+    const response = await api.post<ReceptionCloseResponse>(`/receptions/${id}/close`, {});
     return response;
   }
 
@@ -46,12 +46,22 @@ class ReceptionService {
   }
 
   async addProductToReception(receptionId: string, data: ReceptionDetailFormData): Promise<ReceptionDetail> {
-    const response = await api.post<ReceptionDetail>(`/receptions/${receptionId}/details`, data);
+    const requestData: Record<string, unknown> = {
+      product_id: data.product_id,
+      quantity: data.quantity,
+      price: data.price
+    };
+    const response = await api.post<ReceptionDetail>(`/receptions/${receptionId}/details`, requestData);
     return response;
   }
 
   async updateReceptionDetail(receptionId: string, detailId: string, data: ReceptionDetailFormData): Promise<ReceptionDetail> {
-    const response = await api.put<ReceptionDetail>(`/receptions/${receptionId}/details/${detailId}`, data);
+    const requestData: Record<string, unknown> = {
+      product_id: data.product_id,
+      quantity: data.quantity,
+      price: data.price
+    };
+    const response = await api.put<ReceptionDetail>(`/receptions/${receptionId}/details/${detailId}`, requestData);
     return response;
   }
 

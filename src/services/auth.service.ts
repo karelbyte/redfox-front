@@ -2,6 +2,9 @@
 
 import { toastService } from './toast.service';
 
+// Configuración de la API con valor por defecto
+const API_BASE_URL = process.env.NEXT_PUBLIC_URL_API || 'http://localhost:3000';
+
 interface LoginResponse {
   access_token: string;
   expires_at: string;
@@ -24,7 +27,7 @@ interface LoginResponse {
 export const authService = {
   async login(email: string, password: string): Promise<void> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +119,7 @@ export const authService = {
     if (!token) return null;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/api/auth/me`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

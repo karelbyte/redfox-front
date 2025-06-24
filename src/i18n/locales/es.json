@@ -934,16 +934,15 @@
         "notFound": "Recepción no encontrada",
         "errorLoading": "Error al cargar la recepción",
         "generalInfo": "Información General",
-        "provider": "Proveedor",
-        "warehouse": "Almacén",
-        "receptionProducts": "Productos de la Recepción",
+        "client": "Cliente",
+        "saleProducts": "Productos de la Recepción",
         "noProducts": "No hay productos",
         "noProductsDesc": "Añade productos a esta recepción para comenzar.",
         "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
         "addProduct": "Añadir Producto",
         "labels": {
           "code": "Código",
-          "date": "Fecha",
+          "destination": "Destino",
           "status": "Estado",
           "name": "Nombre",
           "document": "Documento",
@@ -963,6 +962,152 @@
       "title": "En Construcción",
       "description": "La funcionalidad estará disponible pronto.",
       "backToList": "Volver a la Lista"
+    },
+    "sales": {
+      "title": "Ventas",
+      "newSale": "Nueva Venta",
+      "editSale": "Editar Venta",
+      "deleteSale": "Eliminar Venta",
+      "saleDetails": "Detalles de la Venta",
+      "saleInfo": "Información de la Venta",
+      "client": "Cliente",
+      "generalInfo": "Información General",
+      "saleProducts": "Productos de la Venta",
+      "noProducts": "No hay productos",
+      "noProductsDesc": "Añade productos a esta venta para comenzar.",
+      "noProductsCompletedDesc": "Esta venta no tiene productos registrados.",
+      "addProduct": "Añadir Producto",
+      "noSales": "No hay ventas",
+      "noSalesDesc": "Haz clic en \"Nueva Venta\" para agregar una.",
+      "searchSales": "Buscar ventas...",
+      "form": {
+        "code": "Código",
+        "destination": "Destino",
+        "client": "Cliente",
+        "amount": "Monto",
+        "status": "Estado",
+        "placeholders": {
+          "code": "Ej: SAL-2024-001",
+          "destination": "Ej: Tienda Central - Av. Principal 123"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "destinationRequired": "El destino es requerido",
+          "clientRequired": "El cliente es requerido"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "date": "Fecha",
+        "destination": "Destino",
+        "client": "Cliente",
+        "amount": "Monto",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "completed": "Completada"
+      },
+      "actions": {
+        "viewDetails": "Ver Detalles",
+        "cancel": "Cancelar",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cannotEditCompleted": "No se puede editar una venta completada",
+        "cannotDeleteCompleted": "No se puede eliminar una venta completada",
+        "createNewClient": "Crear nuevo cliente"
+      },
+      "messages": {
+        "saleCreated": "Venta creada correctamente",
+        "saleUpdated": "Venta actualizada correctamente",
+        "saleDeleted": "Venta eliminada correctamente",
+        "errorLoading": "Error al cargar las ventas",
+        "errorCreating": "Error al crear la venta",
+        "errorUpdating": "Error al actualizar la venta",
+        "errorDeleting": "Error al eliminar la venta",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer."
+      },
+      "modals": {
+        "delete": {
+          "title": "Eliminar Venta",
+          "message": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer."
+        }
+      },
+      "addProduct": {
+        "title": "Agregar Producto",
+        "editTitle": "Editar Producto",
+        "form": {
+          "product": "Producto",
+          "selectProduct": "Seleccionar producto",
+          "searchProduct": "Buscar producto...",
+          "searching": "Buscando...",
+          "noProducts": "No hay productos disponibles",
+          "noProductsFound": "No se encontraron productos",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "placeholders": {
+            "quantity": "Ingrese la cantidad",
+            "price": "Ingrese el precio"
+          },
+          "errors": {
+            "productRequired": "El producto es requerido",
+            "quantityRequired": "La cantidad es requerida",
+            "quantityPositive": "La cantidad debe ser mayor a 0",
+            "priceRequired": "El precio es requerido",
+            "pricePositive": "El precio debe ser mayor a 0"
+          }
+        },
+        "messages": {
+          "productAdded": "Producto agregado correctamente",
+          "productUpdated": "Producto actualizado correctamente",
+          "errorAdding": "Error al agregar el producto",
+          "errorUpdating": "Error al actualizar el producto"
+        }
+      },
+      "productsTable": {
+        "title": "Productos de la Venta",
+        "headers": {
+          "product": "Producto",
+          "sku": "SKU",
+          "brand": "Marca",
+          "category": "Categoría",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "subtotal": "Subtotal",
+          "actions": "Acciones"
+        },
+        "noProducts": "No hay productos en esta venta",
+        "noProductsDesc": "Agrega productos para comenzar a registrar la venta",
+        "noProductsCompletedDesc": "Esta venta no tiene productos registrados"
+      },
+      "deleteProduct": {
+        "title": "Eliminar Producto",
+        "message": "¿Estás seguro de que deseas eliminar el producto \"{productName}\" de esta venta? Esta acción no se puede deshacer.",
+        "success": "Producto eliminado correctamente",
+        "error": "Error al eliminar el producto"
+      },
+      "details": {
+        "title": "Venta {code}",
+        "subtitle": "Detalles de la venta",
+        "back": "Volver",
+        "notFound": "Venta no encontrada",
+        "errorLoading": "Error al cargar la venta",
+        "generalInfo": "Información General",
+        "client": "Cliente",
+        "saleProducts": "Productos de la Venta",
+        "noProducts": "No hay productos",
+        "noProductsDesc": "Añade productos a esta venta para comenzar.",
+        "noProductsCompletedDesc": "Esta venta no tiene productos registrados.",
+        "addProduct": "Añadir Producto",
+        "labels": {
+          "code": "Código",
+          "destination": "Destino",
+          "status": "Estado",
+          "name": "Nombre",
+          "totalAmount": "Monto Total"
+        }
+      }
     }
   },
   "forms": {
@@ -984,7 +1129,8 @@
     },
     "components": {
       "select": {
-        "placeholder": "Seleccionar..."
+        "placeholder": "Seleccionar...",
+        "addNew": "Añadir Nuevo"
       },
       "searchSelect": {
         "placeholder": "Buscar...",
