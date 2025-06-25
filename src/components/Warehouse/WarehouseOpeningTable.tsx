@@ -5,7 +5,6 @@ import { WarehouseOpening } from "@/types/warehouse-opening";
 import { Warehouse } from "@/types/warehouse";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Btn } from "@/components/atoms";
-import Image from "next/image";
 
 interface WarehouseOpeningTableProps {
   openings: WarehouseOpening[];
@@ -89,7 +88,7 @@ export default function WarehouseOpeningTable({
                 <div className="flex items-center">
                   {opening.product.images && opening.product.images.length > 0 && (
                     <div className="flex-shrink-0 h-10 w-10 mr-4">
-                      <Image
+                      <img
                         src={`${process.env.NEXT_PUBLIC_URL_API}${opening.product.images[0]}`}
                         alt={opening.product.name}
                         width={40}

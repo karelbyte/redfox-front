@@ -4,8 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ThemeSelectorCompact } from "@/components/ThemeSelector";
 import { LanguageSelectorCompact } from "@/components/LanguageSelectorCompact";
-
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 
 const USER_MENU_STORAGE_KEY = 'nitro-user-menu-open';
 
@@ -15,6 +16,8 @@ export function UserMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
   const t = useTranslations('common');
+  const locale = useLocale();
+  const router = useRouter();
 
   // Load menu state from localStorage on mount
   useEffect(() => {
@@ -68,8 +71,30 @@ export function UserMenu() {
     // El logout ya maneja la redirección con locale, así que no necesitamos hacer nada aquí
   };
 
+  const handlePOSClick = () => {
+    router.push(`/${locale}/pos`);
+  };
+
   return (
-    <div className="flex items-center">
+    <div className="flex items-center space-x-3">
+      {/* Botón de POS */}
+      <button
+        onClick={handlePOSClick}
+        className="p-2 rounded-lg transition-colors hover:bg-gray-100 focus:outline-none"
+        title="Point of Sale (POS)"
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+          e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "transparent";
+          e.currentTarget.style.color = "#6b7280";
+        }}
+      >
+        <ShoppingCartIcon className="h-6 w-6" />
+      </button>
+
+      {/* Menú de usuario */}
       <div className="relative" ref={menuRef}>
         <button
           onClick={handleMenuToggle}

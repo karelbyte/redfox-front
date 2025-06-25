@@ -745,9 +745,11 @@
         "actions": "Acciones"
       },
       "actions": {
+        "back": "Volver",
         "edit": "Editar",
         "viewDetails": "Ver detalles",
-        "delete": "Eliminar"
+        "delete": "Eliminar",
+        "close": "Cerrar Apertura"
       },
       "messages": {
         "openingDeleted": "Apertura eliminada correctamente",
@@ -756,7 +758,9 @@
         "errorLoadingProducts": "Error al cargar productos",
         "errorCreating": "Error al crear la apertura",
         "errorUpdating": "Error al actualizar la apertura",
-        "confirmDelete": "¿Estás seguro de que deseas eliminar la apertura del producto \"{name}\"? Esta acción no se puede deshacer."
+        "errorClosing": "Error al cerrar la apertura del almacén",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la apertura del producto \"{name}\"? Esta acción no se puede deshacer.",
+        "confirmClose": "¿Estás seguro que deseas cerrar la apertura del almacén {name}? Esta acción transferirá todos los productos al inventario y no se puede deshacer."
       },
       "productDetails": {
         "noData": "No hay datos para mostrar",
@@ -1175,6 +1179,55 @@
           "name": "Nombre",
           "totalAmount": "Monto Total"
         }
+      }
+    },
+    "pos": {
+      "title": "Point of Sale (POS)",
+      "subtitle": "Sistema de ventas en punto de venta",
+      "backToDashboard": "Dashboard",
+      "total": "Total",
+      "products": {
+        "title": "Productos",
+        "searchPlaceholder": "Buscar productos...",
+        "loading": "Cargando productos...",
+        "noProducts": "No se encontraron productos",
+        "stock": "Stock"
+      },
+      "cart": {
+        "title": "Carrito",
+        "clear": "Limpiar",
+        "empty": "El carrito está vacío",
+        "client": "Cliente",
+        "selectClient": "Seleccionar cliente",
+        "createNewClient": "Crear nuevo cliente",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "checkout": "Completar Venta",
+        "processing": "Procesando...",
+        "selectedProducts": "Productos seleccionados"
+      },
+      "payment": {
+        "title": "Método de Pago",
+        "selectMethod": "Seleccionar método de pago",
+        "cash": "Efectivo",
+        "card": "Tarjeta",
+        "cashReceived": "Efectivo Recibido",
+        "change": "Cambio",
+        "insufficientCash": "El monto en efectivo es insuficiente",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar Pago",
+        "processing": "Procesando..."
+      },
+      "messages": {
+        "saleCompleted": "Venta completada exitosamente",
+        "emptyCart": "El carrito está vacío",
+        "selectClient": "Debe seleccionar un cliente",
+        "errorProcessing": "Error al procesar la venta",
+        "errorLoadingProducts": "Error al cargar productos",
+        "errorSearchingProducts": "Error al buscar productos",
+        "errorLoadingClients": "Error al cargar clientes"
       }
     }
   },

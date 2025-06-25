@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Warehouse, WarehouseCloseResponse } from "@/types/warehouse";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, EyeIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
 import ConfirmModal from '../Modal/ConfirmModal';
@@ -147,20 +147,24 @@ export default function WarehouseTable({
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
                     {warehouse.is_open && (
-                      <button
+                      <Btn
                         onClick={() => handleOpenAperturas(warehouse)}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-                      >
-                        {t('actions.open')}
-                      </button>
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={<EyeIcon className="h-4 w-4" />}
+                        title={t('actions.open')}
+                        style={{ color: '#059669' }}
+                      />
                     )}
                     {warehouse.is_open && (
-                      <button
+                      <Btn
                         onClick={() => handleCloseWarehouse(warehouse)}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
-                      >
-                        {t('actions.close')}
-                      </button>
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
+                        title={t('actions.close')}
+                        style={{ color: '#dc2626' }}
+                      />
                     )}
                     <Btn
                       onClick={() => onEdit(warehouse)}

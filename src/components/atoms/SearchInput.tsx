@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Input from './Input';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
@@ -10,6 +10,7 @@ interface SearchInputProps {
   onClear?: () => void;
   className?: string;
   initialValue?: string;
+  value?: string;
 }
 
 const SearchInput = ({ 
@@ -17,9 +18,16 @@ const SearchInput = ({
   onSearch, 
   onClear,
   className = "",
-  initialValue = ""
+  initialValue = "",
+  value: externalValue
 }: SearchInputProps) => {
   const [searchTerm, setSearchTerm] = useState(initialValue);
+
+  useEffect(() => {
+    if (externalValue !== undefined) {
+      setSearchTerm(externalValue);
+    }
+  }, [externalValue]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +42,10 @@ const SearchInput = ({
     setSearchTerm('');
     onSearch('');
     onClear?.();
+  };
+
+  const handleSearch = () => {
+    onSearch(searchTerm);
   };
 
   const hasText = searchTerm.trim() !== '';
@@ -51,8 +63,8 @@ const SearchInput = ({
         
         {/* Botón de búsqueda o limpiar */}
         <button
-          type={hasText ? 'button' : 'submit'}
-          onClick={hasText ? handleClear : undefined}
+          type={hasText ? 'button' : 'button'}
+          onClick={hasText ? handleClear : handleSearch}
           className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-md hover:bg-gray-100 transition-colors"
           style={{ color: `rgb(var(--color-primary-500))` }}
           title={hasText ? 'Limpiar búsqueda' : 'Buscar'}

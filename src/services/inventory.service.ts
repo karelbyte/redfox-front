@@ -14,6 +14,7 @@ export interface InventoryProduct {
     stock_max: number;
     is_active: boolean;
     type: string;
+    images: string[];
     brand: {
       id: string;
       name: string;

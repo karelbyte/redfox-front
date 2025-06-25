@@ -4,7 +4,6 @@ import { forwardRef, useImperativeHandle } from "react";
 import { useTranslations } from 'next-intl';
 import { WarehouseOpening } from "@/types/warehouse-opening";
 import { Warehouse } from "@/types/warehouse";
-import Image from "next/image";
 
 export interface ProductDetailsFormProps {
   opening: WarehouseOpening | null;
@@ -335,7 +334,7 @@ const ProductDetailsForm = forwardRef<
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {product.images.map((image, index) => (
               <div key={index} className="relative aspect-square group">
-                <Image
+                <img
                   src={`${process.env.NEXT_PUBLIC_URL_API}${image}`}
                   alt={`${product.name} - Imagen ${index + 1}`}
                   fill

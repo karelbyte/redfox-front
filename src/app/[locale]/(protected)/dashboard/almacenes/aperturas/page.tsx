@@ -1,28 +1,32 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
-import { useTranslations } from 'next-intl';
+import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslations, useLocale } from 'next-intl';
 import { warehouseOpeningsService } from "@/services/warehouse-openings.service";
 import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
 import { WarehouseOpening } from "@/types/warehouse-opening";
-import { Warehouse } from "@/types/warehouse";
+import { Warehouse, WarehouseCloseResponse } from "@/types/warehouse";
 import WarehouseOpeningTable from "@/components/Warehouse/WarehouseOpeningTable";
 import WarehouseOpeningForm from "@/components/Warehouse/WarehouseOpeningForm";
 import { WarehouseOpeningFormRef } from "@/components/Warehouse/WarehouseOpeningForm";
 import ProductDetailsForm from "@/components/Warehouse/ProductDetailsForm";
 import { ProductDetailsFormRef } from "@/components/Warehouse/ProductDetailsForm";
 import DeleteWarehouseOpeningModal from "@/components/Warehouse/DeleteWarehouseOpeningModal";
+import ConfirmModal from "@/components/Modal/ConfirmModal";
+import WarehouseCloseResultModal from "@/components/Warehouse/WarehouseCloseResultModal";
 import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
 import Drawer from "@/components/Drawer/Drawer";
 import { Btn, EmptyState } from "@/components/atoms";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, CheckCircleIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 export default function OpeningsPage() {
   const t = useTranslations('pages.warehouseOpenings');
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const locale = useLocale();
   const warehouseId = searchParams.get('warehouse_id');
   const warehouseName = searchParams.get('warehouse_name');
   
@@ -38,6 +42,9 @@ export default function OpeningsPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [selectedOpening, setSelectedOpening] = useState<WarehouseOpening | null>(null);
   const [openingToDelete, setOpeningToDelete] = useState<WarehouseOpening | undefined>(undefined);
+  const [isClosingWarehouse, setIsClosingWarehouse] = useState(false);
+  const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  const [closeResult, setCloseResult] = useState<WarehouseCloseResponse | null>(null);
   const createFormRef = useRef<WarehouseOpeningFormRef>(null);
   const detailsFormRef = useRef<ProductDetailsFormRef>(null);
   const initialFetchDone = useRef(false);
@@ -154,6 +161,36 @@ export default function OpeningsPage() {
     setOpeningToDelete(undefined);
   };
 
+  const handleCloseWarehouseClick = () => {
+    setIsCloseModalOpen(true);
+  };
+
+  const handleCloseWarehouse = async () => {
+    if (!warehouseId) return;
+
+    try {
+      setIsClosingWarehouse(true);
+      const result = await warehousesService.closeWarehouse(warehouseId);
+      setCloseResult(result);
+      setIsCloseModalOpen(false);
+      // Redirigir a la lista de almacenes después del cierre
+      router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`);
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('error.errorClosing'));
+      }
+    } finally {
+      setIsClosingWarehouse(false);
+    }
+  };
+
+  const handleCloseResultModal = () => {
+    setCloseResult(null);
+    router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`);
+  };
+
   if (!warehouseId) {
     return (
       <div className="p-6">
@@ -178,47 +215,68 @@ export default function OpeningsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 
-            className="text-xl font-semibold"
-            style={{ color: `rgb(var(--color-primary-800))` }}
+        <div className="flex items-center space-x-4">
+          <Btn
+            variant="ghost"
+            onClick={() => router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`)}
+            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
           >
-            {t('title')}
-          </h1>
-          {(warehouseName || warehouse) && (
-            <p 
-              className="text-sm mt-1"
-              style={{ color: `rgb(var(--color-primary-600))` }}
+            {t('actions.back')}
+          </Btn>
+          <div>
+            <h1 
+              className="text-xl font-semibold"
+              style={{ color: `rgb(var(--color-primary-800))` }}
             >
-              {t('warehouse')} <span className="font-medium">{warehouseName || warehouse?.name}</span>
-              {warehouse?.currency && (
-                <span 
-                  className="ml-2"
-                  style={{ color: `rgb(var(--color-primary-500))` }}
-                >
-                  • {t('currency')} {warehouse.currency.code} - {warehouse.currency.name}
-                </span>
-              )}
-            </p>
-          )}
-          {total > 0 && (
-            <p 
-              className="text-sm mt-1"
-              style={{ color: `rgb(var(--color-primary-500))` }}
+              {t('title')}
+            </h1>
+            {(warehouseName || warehouse) && (
+              <p 
+                className="text-sm mt-1"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('warehouse')} <span className="font-medium">{warehouseName || warehouse?.name}</span>
+                {warehouse?.currency && (
+                  <span 
+                    className="ml-2"
+                    style={{ color: `rgb(var(--color-primary-500))` }}
+                  >
+                    • {t('currency')} {warehouse.currency.code} - {warehouse.currency.name}
+                  </span>
+                )}
+              </p>
+            )}
+            {total > 0 && (
+              <p 
+                className="text-sm mt-1"
+                style={{ color: `rgb(var(--color-primary-500))` }}
+              >
+                {t('totalProducts', { count: total })}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Btn
+            onClick={() => {
+              setDrawerMode('create');
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newOpening')}
+          </Btn>
+          {warehouse?.is_open && (
+            <Btn
+              variant="danger"
+              leftIcon={<CheckCircleIcon className="h-5 w-5" />}
+              onClick={handleCloseWarehouseClick}
+              loading={isClosingWarehouse}
             >
-              {t('totalProducts', { count: total })}
-            </p>
+              {t('actions.close')}
+            </Btn>
           )}
         </div>
-        <Btn
-          onClick={() => {
-            setDrawerMode('create');
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newOpening')}
-        </Btn>
       </div>
 
       {loading ? (
@@ -300,6 +358,29 @@ export default function OpeningsPage() {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
+
+      {/* Modal de confirmación para cerrar almacén */}
+      <ConfirmModal
+        isOpen={isCloseModalOpen}
+        onClose={() => setIsCloseModalOpen(false)}
+        onConfirm={handleCloseWarehouse}
+        title={t('actions.close')}
+        message={
+          <>
+            {t('messages.confirmClose', { name: warehouse?.name || '' })}
+          </>
+        }
+        confirmText={t('actions.close')}
+      />
+
+      {/* Modal de resultado del cierre */}
+      {closeResult && (
+        <WarehouseCloseResultModal
+          isOpen={true}
+          onClose={handleCloseResultModal}
+          result={closeResult}
+        />
+      )}
     </div>
   );
 } 

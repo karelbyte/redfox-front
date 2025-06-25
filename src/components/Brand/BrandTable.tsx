@@ -1,7 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Brand } from '@/types/brand';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
 import { Btn } from "@/components/atoms";
 
 interface BrandTableProps {
@@ -67,7 +66,7 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{brand.description}</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {brand.img && (
-                  <Image 
+                  <img
                     src={`${process.env.NEXT_PUBLIC_URL_API}${brand.img}`}
                     alt={brand.code}
                     width={80}

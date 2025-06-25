@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 interface MenuItem {
@@ -88,7 +88,7 @@ export function SideMenu() {
   };
 
   // Función para construir rutas con locale
-  const getLocalizedPath = (path: string) => `/${locale}${path}`;
+  const getLocalizedPath = useCallback((path: string) => `/${locale}${path}`, [locale]);
 
   const menuItems: MenuItem[] = useMemo(
     () => [

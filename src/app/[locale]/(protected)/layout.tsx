@@ -1,5 +1,6 @@
 'use client';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { CartProvider } from '@/context/CartContext';
 
 export default function ProtectedLayout({
   children,
@@ -8,7 +9,9 @@ export default function ProtectedLayout({
 }) {
   return (
     <ProtectedRoute>
-       {children}
+      <CartProvider>
+        {children}
+      </CartProvider>
     </ProtectedRoute>
   );
 } 

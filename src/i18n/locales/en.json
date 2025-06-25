@@ -755,9 +755,11 @@
         "actions": "Actions"
       },
       "actions": {
+        "back": "Back",
         "edit": "Edit",
         "viewDetails": "View details",
-        "delete": "Delete"
+        "delete": "Delete",
+        "close": "Close Opening"
       },
       "messages": {
         "openingDeleted": "Opening deleted successfully",
@@ -766,7 +768,9 @@
         "errorLoadingProducts": "Error loading products",
         "errorCreating": "Error creating opening",
         "errorUpdating": "Error updating opening",
-        "confirmDelete": "Are you sure you want to delete the opening for product \"{name}\"? This action cannot be undone."
+        "errorClosing": "Error closing warehouse opening",
+        "confirmDelete": "Are you sure you want to delete the opening for product \"{name}\"? This action cannot be undone.",
+        "confirmClose": "Are you sure you want to close the warehouse opening {name}? This action will transfer all products to inventory and cannot be undone."
       },
       "productDetails": {
         "noData": "No data to display",
@@ -932,7 +936,8 @@
           "inventoryPrice": "Inventory Price",
           "warehouse": "Warehouse",
           "category": "Category"
-        }
+        },
+        "selectedProducts": "Selected Products"
       },
       "productsTable": {
         "title": "Reception Products",
@@ -1140,7 +1145,8 @@
           "inventoryPrice": "Inventory Price",
           "warehouse": "Warehouse",
           "category": "Category"
-        }
+        },
+        "selectedProducts": "Selected Products"
       },
       "productsTable": {
         "title": "Sale Products",
@@ -1185,6 +1191,55 @@
           "name": "Name",
           "totalAmount": "Total Amount"
         }
+      }
+    },
+    "pos": {
+      "title": "Point of Sale (POS)",
+      "subtitle": "Point of sale system",
+      "backToDashboard": "Dashboard",
+      "total": "Total",
+      "products": {
+        "title": "Products",
+        "searchPlaceholder": "Search products...",
+        "loading": "Loading products...",
+        "noProducts": "No products found",
+        "stock": "Stock"
+      },
+      "cart": {
+        "title": "Cart",
+        "clear": "Clear",
+        "empty": "Cart is empty",
+        "client": "Client",
+        "selectClient": "Select client",
+        "createNewClient": "Create new client",
+        "quantity": "Quantity",
+        "price": "Price",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "checkout": "Complete Sale",
+        "processing": "Processing...",
+        "selectedProducts": "Selected Products"
+      },
+      "payment": {
+        "title": "Payment Method",
+        "selectMethod": "Select payment method",
+        "cash": "Cash",
+        "card": "Card",
+        "cashReceived": "Cash Received",
+        "change": "Change",
+        "insufficientCash": "Cash amount is insufficient",
+        "cancel": "Cancel",
+        "confirm": "Confirm Payment",
+        "processing": "Processing..."
+      },
+      "messages": {
+        "saleCompleted": "Sale completed successfully",
+        "emptyCart": "Cart is empty",
+        "selectClient": "You must select a client",
+        "errorProcessing": "Error processing sale",
+        "errorLoadingProducts": "Error loading products",
+        "errorSearchingProducts": "Error searching products",
+        "errorLoadingClients": "Error loading clients"
       }
     }
   },
