@@ -119,6 +119,8 @@
       "noWarehousesDesc": "Haz clic en 'Nuevo Almacén' para agregar uno.",
       "noResultsDesc": "No se encontraron resultados",
       "form": {
+        "title": "Información del Almacén",
+        "subtitle": "Completa la información para crear un nuevo almacén",
         "code": "Código",
         "name": "Nombre",
         "address": "Dirección",
@@ -157,6 +159,7 @@
         "closed": "Cerrado"
       },
       "actions": {
+        "back": "Volver",
         "open": "Aperturar",
         "close": "Cerrar Apertura",
         "edit": "Editar",
@@ -800,6 +803,8 @@
       "noReceptionsDesc": "Haz clic en \"Nueva Recepción\" para agregar una.",
       "searchReceptions": "Buscar recepciones...",
       "form": {
+        "title": "Información de la Recepción",
+        "subtitle": "Completa la información para crear una nueva recepción",
         "code": "Código",
         "date": "Fecha",
         "provider": "Proveedor",
@@ -998,6 +1003,8 @@
       "noSalesDesc": "Haz clic en \"Nueva Venta\" para agregar una.",
       "searchSales": "Buscar ventas...",
       "form": {
+        "title": "Información de la Venta",
+        "subtitle": "Completa la información para crear una nueva venta",
         "code": "Código",
         "destination": "Destino",
         "client": "Cliente",

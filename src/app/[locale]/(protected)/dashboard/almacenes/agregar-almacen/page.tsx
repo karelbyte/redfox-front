@@ -1,47 +1,293 @@
-import { Btn } from "@/components/atoms";
-import Link from "next/link";
+'use client'
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { warehousesService } from '@/services/warehouses.service';
+import { currenciesService } from '@/services/currencies.service';
+import { toastService } from '@/services/toast.service';
+import { Currency } from '@/types/currency';
+import { Btn, Input, Select, Checkbox } from '@/components/atoms';
+import Loading from '@/components/Loading/Loading';
+
+interface WarehouseFormData {
+  code: string;
+  name: string;
+  address: string;
+  phone: string;
+  currencyId: string;
+  status: boolean;
+}
 
 export default function AgregarAlmacenPage() {
+  const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('pages.warehouses');
+  const [loading, setLoading] = useState(false);
+  const [loadingCurrencies, setLoadingCurrencies] = useState(true);
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
+  const [formData, setFormData] = useState<WarehouseFormData>({
+    code: '',
+    name: '',
+    address: '',
+    phone: '',
+    currencyId: '',
+    status: true
+  });
+  const [errors, setErrors] = useState<Partial<WarehouseFormData>>({});
+
+  useEffect(() => {
+    fetchCurrencies();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    validateForm();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData]);
+
+  const fetchCurrencies = async () => {
+    try {
+      setLoadingCurrencies(true);
+      const response = await currenciesService.getCurrencies(1);
+      setCurrencies(response.data);
+    } catch {
+      toastService.error(t('currency.errorLoading'));
+    } finally {
+      setLoadingCurrencies(false);
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<WarehouseFormData> = {};
+
+    if (!formData.code.trim()) {
+      newErrors.code = t('form.errors.codeRequired');
+    }
+
+    if (!formData.name.trim()) {
+      newErrors.name = t('form.errors.nameRequired');
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = t('form.errors.addressRequired');
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = t('form.errors.phoneRequired');
+    }
+
+    if (!formData.currencyId) {
+      newErrors.currencyId = t('form.errors.currencyRequired');
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field: keyof WarehouseFormData, value: string | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validación que muestra errores
+    const newErrors: Partial<WarehouseFormData> = {};
+
+    if (!formData.code.trim()) {
+      newErrors.code = t('form.errors.codeRequired');
+    }
+
+    if (!formData.name.trim()) {
+      newErrors.name = t('form.errors.nameRequired');
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = t('form.errors.addressRequired');
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = t('form.errors.phoneRequired');
+    }
+
+    if (!formData.currencyId) {
+      newErrors.currencyId = t('form.errors.currencyRequired');
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const selectedCurrency = currencies.find(c => c.id === formData.currencyId);
+      if (!selectedCurrency) {
+        throw new Error('Moneda no encontrada');
+      }
+
+      const warehouse = await warehousesService.createWarehouse({
+        code: formData.code.trim(),
+        name: formData.name.trim(),
+        address: formData.address.trim(),
+        phone: formData.phone.trim(),
+        currencyId: selectedCurrency.id,
+        status: formData.status,
+        is_open: false
+      });
+
+      toastService.success(t('messages.warehouseCreated'));
+      
+      // Redirigir a la página de aperturas del almacén creado
+      router.push(`/${locale}/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id}&warehouse_name=${encodeURIComponent(warehouse.name)}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorCreating'));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`);
+  };
+
+  if (loadingCurrencies) {
+    return (
+      <div className="p-6">
+        <div className="flex justify-center items-center h-64">
+          <Loading size="lg" />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <div className="mb-8">
-          <div className="mx-auto h-24 w-24 rounded-full bg-gray-200 flex items-center justify-center mb-4">
-            <svg
-              className="h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"
-              />
-            </svg>
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            En Construcción
+    <div className="p-6">
+      {/* Header */}
+      <div className="flex items-center space-x-4 mb-6">
+        <Btn
+          variant="ghost"
+          onClick={handleCancel}
+          leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+        >
+          {t('actions.back')}
+        </Btn>
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('newWarehouse')}
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            La funcionalidad para agregar almacenes estará disponible pronto.
+          <p className="text-sm text-gray-500">
+            {t('form.subtitle')}
           </p>
         </div>
-        
-        <div className="space-y-4">
-          <Link href="/dashboard/almacenes/lista-de-almacenes">
-            <Btn variant="primary" className="w-full sm:w-auto">
-              Volver a la Lista de Almacenes
+      </div>
+
+      {/* Formulario */}
+      <div className="w-full">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4" style={{ color: `rgb(var(--color-primary-700))` }}>
+              {t('form.title')}
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Código */}
+              <div>
+                <Input
+                  label={t('form.code')}
+                  placeholder={t('form.placeholders.code')}
+                  value={formData.code}
+                  onChange={(e) => handleInputChange('code', e.target.value)}
+                  error={errors.code}
+                  required
+                />
+              </div>
+
+              {/* Nombre */}
+              <div>
+                <Input
+                  label={t('form.name')}
+                  placeholder={t('form.placeholders.name')}
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  error={errors.name}
+                  required
+                />
+              </div>
+
+              {/* Teléfono */}
+              <div>
+                <Input
+                  label={t('form.phone')}
+                  placeholder={t('form.placeholders.phone')}
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  error={errors.phone}
+                  required
+                />
+              </div>
+
+              {/* Moneda */}
+              <div>
+                <Select
+                  label={t('form.currency')}
+                  placeholder={t('currency.selectCurrency')}
+                  value={formData.currencyId}
+                  onChange={(e) => handleInputChange('currencyId', e.target.value)}
+                  error={errors.currencyId}
+                  required
+                  options={currencies.map(currency => ({
+                    value: currency.id,
+                    label: `${currency.code} - ${currency.name}`
+                  }))}
+                />
+              </div>
+
+              {/* Dirección */}
+              <div className="md:col-span-2">
+                <Input
+                  label={t('form.address')}
+                  placeholder={t('form.placeholders.address')}
+                  value={formData.address}
+                  onChange={(e) => handleInputChange('address', e.target.value)}
+                  error={errors.address}
+                  required
+                />
+              </div>
+
+              {/* Estado */}
+              <div className="md:col-span-2">
+                <Checkbox
+                  id="status"
+                  checked={formData.status}
+                  onChange={(e) => handleInputChange('status', e.target.checked)}
+                  label={t('form.active')}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Botones */}
+          <div className="flex justify-end">
+            <Btn
+              type="submit"
+              loading={loading}
+              disabled={loading}
+            >
+              {loading ? 'Creando...' : 'Crear Almacén'}
             </Btn>
-          </Link>
-          
-          <Link href="/dashboard">
-            <Btn variant="outline" className="w-full sm:w-auto">
-              Ir al Dashboard
-            </Btn>
-          </Link>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

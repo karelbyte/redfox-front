@@ -155,7 +155,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
           address: formData.address.trim(),
           phone: formData.phone.trim(),
           status: formData.isActive,
-          ...(warehouse ? {} : { currency_id: formData.currency_id }),
+          ...(warehouse ? {} : { currencyId: formData.currency_id }),
         };
 
         if (warehouse) {

@@ -1,7 +1,4 @@
 'use client';
-
-import { MainMenu } from '@/components/MainMenu';
-import { SideMenu } from '@/components/SideMenu';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export default function ProtectedLayout({
@@ -11,17 +8,7 @@ export default function ProtectedLayout({
 }) {
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
-        <MainMenu />
-        <div className="flex h-[calc(100vh-4.2rem)]">
-          <SideMenu />
-          <div className="flex-1 overflow-hidden">
-            <main className="h-full overflow-auto">
-              {children}
-            </main>
-          </div>
-        </div>
-      </div>
+       {children}
     </ProtectedRoute>
   );
 } 

@@ -503,7 +503,7 @@ export function SideMenu() {
           },
           {
             name: t("pos"),
-            path: getLocalizedPath("/dashboard/ventas/pos"),
+            path: getLocalizedPath("/pos"),
             icon: (
               <svg
                 className="w-5 h-5"

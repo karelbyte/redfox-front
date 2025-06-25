@@ -1,4 +1,4 @@
-import { Currency } from './currency';
+import { Currency } from "./currency";
 
 export interface Warehouse {
   id: string;
@@ -8,6 +8,7 @@ export interface Warehouse {
   phone: string;
   status: boolean;
   is_open: boolean;
+  currencyId: string;
   currency: Currency;
   created_at: string;
 }

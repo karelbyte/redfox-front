@@ -110,7 +110,7 @@
       "userRole": "Role"
     },
     "warehouses": {
-      "title": "Warehouse List",
+      "title": "Warehouses List",
       "newWarehouse": "New Warehouse",
       "editWarehouse": "Edit Warehouse",
       "deleteWarehouse": "Delete Warehouse",
@@ -119,6 +119,8 @@
       "noWarehousesDesc": "Click on 'New Warehouse' to add one.",
       "noResultsDesc": "No results found",
       "form": {
+        "title": "Warehouse Information",
+        "subtitle": "Complete the information to create a new warehouse",
         "code": "Code",
         "name": "Name",
         "address": "Address",
@@ -157,6 +159,7 @@
         "closed": "Closed"
       },
       "actions": {
+        "back": "Back",
         "open": "Open",
         "close": "Close Opening",
         "edit": "Edit",
@@ -810,6 +813,8 @@
       "noReceptionsDesc": "Click on \"New Reception\" to add one.",
       "searchReceptions": "Search receptions...",
       "form": {
+        "title": "Reception Information",
+        "subtitle": "Complete the information to create a new reception",
         "code": "Code",
         "date": "Date",
         "provider": "Provider",
@@ -1007,6 +1012,8 @@
       "noSalesDesc": "Click on \"New Sale\" to add one.",
       "searchSales": "Search sales...",
       "form": {
+        "title": "Sale Information",
+        "subtitle": "Complete the information to create a new sale",
         "code": "Code",
         "destination": "Destination",
         "client": "Client",
