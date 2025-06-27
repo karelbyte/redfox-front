@@ -1241,6 +1241,76 @@
         "errorSearchingProducts": "Error searching products",
         "errorLoadingClients": "Error loading clients"
       }
+    },
+    "roles": {
+      "title": "Roles",
+      "subtitle": "User role management",
+      "createTitle": "Create Role",
+      "editTitle": "Edit Role",
+      "searchPlaceholder": "Search roles...",
+      "noData": "No roles",
+      "noDataDesc": "No roles found. Create the first role to get started.",
+      "form": {
+        "code": "Code",
+        "description": "Description",
+        "status": "Active status",
+        "placeholders": {
+          "code": "Enter role code",
+          "description": "Enter role description"
+        },
+        "validation": {
+          "codeRequired": "Code is required",
+          "descriptionRequired": "Description is required"
+        }
+      },
+      "table": {
+        "code": "Code",
+        "description": "Description",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "statusActive": "Active",
+        "statusInactive": "Inactive"
+      },
+      "actions": {
+        "create": "Create Role",
+        "edit": "Edit",
+        "viewDetails": "View Details",
+        "delete": "Delete"
+      },
+      "messages": {
+        "successCreated": "{item} created successfully",
+        "successUpdated": "{item} updated successfully",
+        "successDeleted": "{item} deleted successfully",
+        "errorLoading": "Error loading roles",
+        "errorCreating": "Error creating role",
+        "errorUpdating": "Error updating role",
+        "errorDeleting": "Error deleting role",
+        "roleCreated": "Role created successfully",
+        "roleUpdated": "Role updated successfully",
+        "errorLoadingPermissions": "Error loading permissions",
+        "errorUpdatingPermissions": "Error updating permissions",
+        "permissionsUpdated": "Permissions updated successfully",
+        "roleNotFound": "Role not found",
+        "errorLoadingAllPermissions": "Error loading all available permissions",
+        "errorLoadingRolePermissions": "Error loading role permissions"
+      },
+      "deleteModal": {
+        "title": "Delete {item}",
+        "message": "Are you sure you want to delete {item} \"{name}\"? This action cannot be undone."
+      },
+      "permissions": {
+        "title": "Role Permissions",
+        "save": "Save Permissions",
+        "noPermissions": "No permissions available",
+        "loadingAllPermissions": "Loading all available permissions...",
+        "loadingRolePermissions": "Loading role permissions..."
+      },
+      "details": {
+        "title": "Role: {name}",
+        "subtitle": "Role details and permission management",
+        "generalInfo": "General Information"
+      }
     }
   },
   "forms": {

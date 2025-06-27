@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
+import { userLanguageService } from '@/services/user-language.service';
 
 const LANGUAGE_STORAGE_KEY = 'nitro-language';
 
@@ -41,8 +42,8 @@ export function useLanguage() {
     }
   };
 
-  // Change language and save to localStorage
-  const changeLanguage = (newLocale: string) => {
+  // Change language and save to localStorage and API
+  const changeLanguage = async (newLocale: string) => {
     const currentPathLocale = getLocaleFromPath();
     
     // Don't navigate if clicking on the current locale
@@ -52,6 +53,9 @@ export function useLanguage() {
 
     // Save to localStorage
     saveLanguage(newLocale);
+
+    // Send to API (async, don't wait for it to complete)
+    userLanguageService.updateUserLanguage(newLocale);
 
     // Remove the current locale from the pathname
     const pathWithoutLocale = pathname.replace(`/${currentPathLocale}`, '') || '/';

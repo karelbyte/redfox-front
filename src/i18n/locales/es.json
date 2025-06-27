@@ -1229,6 +1229,76 @@
         "errorSearchingProducts": "Error al buscar productos",
         "errorLoadingClients": "Error al cargar clientes"
       }
+    },
+    "roles": {
+      "title": "Roles",
+      "subtitle": "Gestión de roles de usuario",
+      "createTitle": "Crear Rol",
+      "editTitle": "Editar Rol",
+      "searchPlaceholder": "Buscar roles...",
+      "noData": "No hay roles",
+      "noDataDesc": "No se encontraron roles. Crea el primer rol para comenzar.",
+      "form": {
+        "code": "Código",
+        "description": "Descripción",
+        "status": "Estado activo",
+        "placeholders": {
+          "code": "Ingrese el código del rol",
+          "description": "Ingrese la descripción del rol"
+        },
+        "validation": {
+          "codeRequired": "El código es requerido",
+          "descriptionRequired": "La descripción es requerida"
+        }
+      },
+      "table": {
+        "code": "Código",
+        "description": "Descripción",
+        "status": "Estado",
+        "createdAt": "Fecha de Creación",
+        "actions": "Acciones",
+        "statusActive": "Activo",
+        "statusInactive": "Inactivo"
+      },
+      "actions": {
+        "create": "Crear Rol",
+        "edit": "Editar",
+        "viewDetails": "Ver Detalles",
+        "delete": "Eliminar"
+      },
+      "messages": {
+        "successCreated": "{item} creado exitosamente",
+        "successUpdated": "{item} actualizado exitosamente",
+        "successDeleted": "{item} eliminado exitosamente",
+        "errorLoading": "Error al cargar los roles",
+        "errorCreating": "Error al crear el rol",
+        "errorUpdating": "Error al actualizar el rol",
+        "errorDeleting": "Error al eliminar el rol",
+        "roleCreated": "Rol creado exitosamente",
+        "roleUpdated": "Rol actualizado exitosamente",
+        "errorLoadingPermissions": "Error al cargar los permisos",
+        "errorUpdatingPermissions": "Error al actualizar los permisos",
+        "permissionsUpdated": "Permisos actualizados exitosamente",
+        "roleNotFound": "Rol no encontrado",
+        "errorLoadingAllPermissions": "Error al cargar todos los permisos disponibles",
+        "errorLoadingRolePermissions": "Error al cargar los permisos del rol"
+      },
+      "deleteModal": {
+        "title": "Eliminar {item}",
+        "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "permissions": {
+        "title": "Permisos del Rol",
+        "save": "Guardar Permisos",
+        "noPermissions": "No hay permisos disponibles",
+        "loadingAllPermissions": "Cargando todos los permisos disponibles...",
+        "loadingRolePermissions": "Cargando permisos del rol..."
+      },
+      "details": {
+        "title": "Rol: {name}",
+        "subtitle": "Detalles del rol y gestión de permisos",
+        "generalInfo": "Información General"
+      }
     }
   },
   "forms": {
