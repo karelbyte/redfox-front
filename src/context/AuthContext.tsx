@@ -16,6 +16,7 @@ interface User {
     status: boolean;
     created_at: string;
   }>;
+  permissions: string[];
   status: boolean;
   created_at: string;
 }

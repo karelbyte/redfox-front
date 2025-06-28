@@ -1370,6 +1370,14 @@
         "title": "Usuario: {name}",
         "subtitle": "Detalles del usuario y gestión de permisos",
         "generalInfo": "Información General"
+      },
+      "permissions": {
+        "title": "Permisos del Usuario",
+        "noPermissions": "No hay permisos asignados"
+      },
+      "error": {
+        "title": "Error",
+        "userNotFound": "Usuario no encontrado"
       }
     }
   },

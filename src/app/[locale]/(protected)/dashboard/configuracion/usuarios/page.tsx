@@ -36,7 +36,7 @@ export default function UsersPage() {
   const fetchUsers = async (page: number = 1, term?: string) => {
     try {
       setIsLoading(true);
-      const response = await usersService.getUsers(page);
+      const response = await usersService.getUsers(page, 10, term);
       setUsers(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
@@ -60,6 +60,10 @@ export default function UsersPage() {
     fetchUsers(1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleViewDetails = (user: User) => {
+    router.push(`/${locale}/dashboard/configuracion/usuarios/${user.id}`);
+  };
 
   const handleEdit = (user: User) => {
     setSelectedUser(user);
@@ -146,6 +150,7 @@ export default function UsersPage() {
               users={users}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onViewDetails={handleViewDetails}
             />
           </div>
           {totalPages > 1 && (
@@ -181,9 +186,10 @@ export default function UsersPage() {
       {isDeleteModalOpen && selectedUser && (
         <DeleteUserModal
           user={selectedUser}
+          isOpen={isDeleteModalOpen}
           onClose={handleDeleteModalClose}
-          onSuccess={handleDeleteSuccess}
-          onDeletingChange={setIsSaving}
+          onConfirm={handleDeleteSuccess}
+          loading={isSaving}
         />
       )}
     </div>

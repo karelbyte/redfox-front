@@ -39,4 +39,14 @@ export interface UpdateUserRequest {
   password?: string;
   roleIds?: string[];
   status?: boolean;
+}
+
+export interface UserWithPermissionDescriptions {
+  id: string;
+  name: string;
+  email: string;
+  roles: UserRole[];
+  permission_descriptions: string[];
+  status: boolean;
+  created_at: string;
 } 

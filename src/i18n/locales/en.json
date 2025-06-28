@@ -1382,6 +1382,14 @@
         "title": "User: {name}",
         "subtitle": "User details and permission management",
         "generalInfo": "General Information"
+      },
+      "permissions": {
+        "title": "User Permissions",
+        "noPermissions": "No permissions assigned"
+      },
+      "error": {
+        "title": "Error",
+        "userNotFound": "User not found"
       }
     }
   },

@@ -4,15 +4,18 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { usePermissions } from "@/hooks/usePermissions";
 
 interface MenuItem {
   name: string;
   path: string;
   icon: React.ReactNode;
+  howCan?: string[];
   subItems?: {
     name: string;
     path: string;
     icon: React.ReactNode;
+    howCan?: string[];
   }[];
 }
 
@@ -23,6 +26,7 @@ export function SideMenu() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("navigation");
+  const { can } = usePermissions();
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
   // Load expanded menu state from localStorage on mount
@@ -114,6 +118,7 @@ export function SideMenu() {
       {
         name: t("entities"),
         path: getLocalizedPath("/dashboard/entidades"),
+        howCan: ["client_module_view", "provider_module_view"],
         icon: (
           <svg
             className="w-5 h-5"
@@ -133,6 +138,7 @@ export function SideMenu() {
           {
             name: t("clients"),
             path: getLocalizedPath("/dashboard/clientes"),
+            howCan: ["client_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -152,6 +158,7 @@ export function SideMenu() {
           {
             name: t("providers"),
             path: getLocalizedPath("/dashboard/proveedores"),
+            howCan: ["provider_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -173,6 +180,7 @@ export function SideMenu() {
       {
         name: t("products"),
         path: getLocalizedPath("/dashboard/productos"),
+        howCan: ["product_module_view", "category_module_view", "brand_module_view", "tax_module_view", "currency_module_view", "measurement_unit_module_view"],
         icon: (
           <svg
             className="w-5 h-5"
@@ -192,6 +200,7 @@ export function SideMenu() {
           {
             name: t("addProduct"),
             path: getLocalizedPath("/dashboard/productos/agregar-producto"),
+            howCan: ["product_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -211,6 +220,7 @@ export function SideMenu() {
           {
             name: t("productList"),
             path: getLocalizedPath("/dashboard/productos/lista-de-productos"),
+            howCan: ["product_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -230,6 +240,7 @@ export function SideMenu() {
           {
             name: t("measurementUnits"),
             path: getLocalizedPath("/dashboard/productos/unidades-medida"),
+            howCan: ["measurement_unit_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -249,6 +260,7 @@ export function SideMenu() {
           {
             name: t("categories"),
             path: getLocalizedPath("/dashboard/productos/categorias"),
+            howCan: ["category_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -268,6 +280,7 @@ export function SideMenu() {
           {
             name: t("brands"),
             path: getLocalizedPath("/dashboard/productos/marcas"),
+            howCan: ["brand_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -287,6 +300,7 @@ export function SideMenu() {
           {
             name: t("taxes"),
             path: getLocalizedPath("/dashboard/productos/impuestos"),
+            howCan: ["tax_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -306,6 +320,7 @@ export function SideMenu() {
           {
             name: t("currencies"),
             path: getLocalizedPath("/dashboard/productos/monedas"),
+            howCan: ["currency_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -327,6 +342,7 @@ export function SideMenu() {
       {
         name: t("warehouses"),
         path: getLocalizedPath("/dashboard/almacenes"),
+        howCan: ["warehouse_module_view"],
         icon: (
           <svg
             className="w-5 h-5"
@@ -346,6 +362,7 @@ export function SideMenu() {
           {
             name: t("addWarehouse"),
             path: getLocalizedPath("/dashboard/almacenes/agregar-almacen"),
+            howCan: ["warehouse_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -365,6 +382,7 @@ export function SideMenu() {
           {
             name: t("warehouseList"),
             path: getLocalizedPath("/dashboard/almacenes/lista-de-almacenes"),
+            howCan: ["warehouse_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -386,6 +404,7 @@ export function SideMenu() {
       {
         name: t("inventory"),
         path: getLocalizedPath("/dashboard/inventarios"),
+        howCan: ["inventory_module_view"],
         icon: (
           <svg
             className="w-5 h-5"
@@ -405,6 +424,7 @@ export function SideMenu() {
       {
         name: t("receptions"),
         path: getLocalizedPath("/dashboard/recepciones"),
+        howCan: ["reception_module_view"],
         icon: (
           <svg
             className="w-5 h-5"
@@ -424,6 +444,7 @@ export function SideMenu() {
           {
             name: t("createReception"),
             path: getLocalizedPath("/dashboard/recepciones/crear-recepcion"),
+            howCan: ["reception_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -445,6 +466,7 @@ export function SideMenu() {
             path: getLocalizedPath(
               "/dashboard/recepciones/lista-de-recepciones"
             ),
+            howCan: ["reception_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -466,6 +488,7 @@ export function SideMenu() {
       {
         name: t("sales"),
         path: getLocalizedPath("/dashboard/ventas"),
+        howCan: ["withdrawal_module_view"],
         icon: (
           <svg
             className="w-5 h-5"
@@ -485,6 +508,7 @@ export function SideMenu() {
           {
             name: t("addSale"),
             path: getLocalizedPath("/dashboard/ventas/agregar-venta"),
+            howCan: ["withdrawal_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -504,6 +528,7 @@ export function SideMenu() {
           {
             name: t("pos"),
             path: getLocalizedPath("/pos"),
+            howCan: ["withdrawal_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -523,6 +548,7 @@ export function SideMenu() {
           {
             name: t("salesList"),
             path: getLocalizedPath("/dashboard/ventas"),
+            howCan: ["withdrawal_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -544,6 +570,7 @@ export function SideMenu() {
       {
         name: t("settings"),
         path: getLocalizedPath("/dashboard/configuracion"),
+        howCan: ["role_module_view", "user_module_view", "system_module_view"],
         icon: (
           <svg
             className="w-5 h-5"
@@ -569,6 +596,7 @@ export function SideMenu() {
           {
             name: t("roles"),
             path: getLocalizedPath("/dashboard/configuracion/roles"),
+            howCan: ["role_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -588,6 +616,7 @@ export function SideMenu() {
           {
             name: t("users"),
             path: getLocalizedPath("/dashboard/configuracion/usuarios"),
+            howCan: ["user_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -607,6 +636,7 @@ export function SideMenu() {
           {
             name: t("emailConfig"),
             path: getLocalizedPath("/dashboard/configuracion/correo"),
+            howCan: ["all"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -626,6 +656,7 @@ export function SideMenu() {
           {
             name: t("paymentGateway"),
             path: getLocalizedPath("/dashboard/configuracion/pasarela-pago"),
+            howCan: ["all"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -645,6 +676,7 @@ export function SideMenu() {
           {
             name: t("backup"),
             path: getLocalizedPath("/dashboard/configuracion/respaldo"),
+            howCan: ["all"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -686,6 +718,31 @@ export function SideMenu() {
     }
   }, [pathname, expandedMenu, menuItems]);
 
+  // Función para verificar si un elemento del menú debe mostrarse
+  const shouldShowMenuItem = (item: MenuItem): boolean => {
+    // Si no tiene permisos definidos, siempre se muestra
+    if (!item.howCan || item.howCan.length === 0) {
+      return true;
+    }
+    
+    // Verificar si el usuario tiene al menos uno de los permisos requeridos
+    return can(item.howCan);
+  };
+
+  // Función para verificar si un subelemento debe mostrarse
+  const shouldShowSubItem = (subItem: { name: string; path: string; icon: React.ReactNode; howCan?: string[] }): boolean => {
+    // Si no tiene permisos definidos, siempre se muestra
+    if (!subItem.howCan || subItem.howCan.length === 0) {
+      return true;
+    }
+    
+    // Verificar si el usuario tiene al menos uno de los permisos requeridos
+    return can(subItem.howCan);
+  };
+
+  // Filtrar elementos del menú basándose en permisos
+  const filteredMenuItems = menuItems.filter(shouldShowMenuItem);
+
   return (
     <aside
       className="w-64 flex-shrink-0 bg-white border-r h-full"
@@ -693,11 +750,14 @@ export function SideMenu() {
     >
       <nav className="h-full p-4">
         <div className="space-y-1">
-          {menuItems.map((item) => {
+          {filteredMenuItems.map((item) => {
             const isActive =
               pathname === item.path ||
               item.subItems?.some((subItem) => pathname === subItem.path);
             const isExpanded = expandedMenu === item.path;
+
+            // Filtrar subelementos basándose en permisos
+            const filteredSubItems = item.subItems?.filter(shouldShowSubItem) || [];
 
             return (
               <div key={item.path}>
@@ -791,9 +851,9 @@ export function SideMenu() {
                     {item.name}
                   </Link>
                 )}
-                {item.subItems && isExpanded && (
+                {item.subItems && isExpanded && filteredSubItems.length > 0 && (
                   <div className="ml-4 mt-1 space-y-1">
-                    {item.subItems.map((subItem) => (
+                    {filteredSubItems.map((subItem) => (
                       <Link
                         key={subItem.path}
                         href={subItem.path}
