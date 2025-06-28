@@ -16,6 +16,7 @@ export { salesService } from './sales.service';
 export { taxesService } from './taxes.service';
 export { toastService } from './toast.service';
 export { userLanguageService } from './user-language.service';
+export { usersService } from './users.service';
 export { warehouseOpeningsService } from './warehouse-openings.service';
 export { warehousesService } from './warehouses.service';
 export { permissionsService } from './permissions.service'; 

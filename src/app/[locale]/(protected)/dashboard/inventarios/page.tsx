@@ -151,129 +151,136 @@ export default function InventariosPage() {
       </div>
 
       <div className="mt-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Card de Selección */}
+        {closedWarehouses.length === 0 ? (
           <div 
             className="rounded-lg shadow p-6"
             style={{ backgroundColor: `rgb(var(--color-surface))` }}
           >
-            <label
-              htmlFor="warehouse-select"
-              className="block text-sm font-medium mb-2"
-              style={{ color: `rgb(var(--color-primary-500))` }}
-            >
-              {t('selectWarehouse')} <span style={{ color: `rgb(var(--color-error-500))` }}>*</span>
-            </label>
-            {closedWarehouses.length === 0 ? (
-              <EmptyState
-                title={t('noClosedWarehouses')}
-                description={t('noClosedWarehousesDesc')}
-              />
-            ) : (
-              <select
-                id="warehouse-select"
-                value={selectedWarehouseId}
-                onChange={(e) => handleWarehouseChange(e.target.value)}
-                className="appearance-none block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 transition-colors"
-                style={{
-                  backgroundColor: `rgb(var(--color-surface))`,
-                  borderColor: `rgb(var(--color-border))`,
-                  color: `rgb(var(--color-text-primary))`,
-                  '--tw-ring-color': `rgb(var(--color-primary-500))`,
-                } as React.CSSProperties}
-              >
-                <option value="">{t('form.selectWarehouse')}</option>
-                {closedWarehouses.map((warehouse) => (
-                  <option key={warehouse.id} value={warehouse.id}>
-                    {warehouse.code} - {warehouse.name}{" "}
-                    {warehouse.currency ? `(${warehouse.currency.code})` : ""}
-                  </option>
-                ))}
-              </select>
-            )}
+            <EmptyState
+              title={t('noClosedWarehouses')}
+              description={t('noClosedWarehousesDesc')}
+            />
           </div>
-
-          {/* Card de Información */}
-          {selectedWarehouseId && (
-            <div 
-              className="rounded-lg shadow p-6"
-              style={{ backgroundColor: `rgb(var(--color-surface))` }}
-            >
-              <h2 
-                className="text-lg font-medium"
-                style={{ color: `rgb(var(--color-text-primary))` }}
+        ) : (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              {/* Card de Selección */}
+              <div 
+                className="rounded-lg shadow p-6"
+                style={{ backgroundColor: `rgb(var(--color-surface))` }}
               >
-                {t('warehouseInventory')}
-              </h2>
-              {total > 0 && (
-                <p 
-                  className="text-sm mt-1"
-                  style={{ color: `rgb(var(--color-text-secondary))` }}
+                <label
+                  htmlFor="warehouse-select"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
                 >
-                  {t('productsInInventory', { count: total })}
-                </p>
-              )}
-              {total === 0 && !loadingInventory && (
-                <p 
-                  className="text-sm mt-1"
-                  style={{ color: `rgb(var(--color-text-secondary))` }}
+                  {t('selectWarehouse')} <span style={{ color: `rgb(var(--color-error-500))` }}>*</span>
+                </label>
+                <select
+                  id="warehouse-select"
+                  value={selectedWarehouseId}
+                  onChange={(e) => handleWarehouseChange(e.target.value)}
+                  className="appearance-none block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 transition-colors"
+                  style={{
+                    backgroundColor: `rgb(var(--color-surface))`,
+                    borderColor: `rgb(var(--color-border))`,
+                    color: `rgb(var(--color-text-primary))`,
+                    '--tw-ring-color': `rgb(var(--color-primary-500))`,
+                  } as React.CSSProperties}
                 >
-                  {t('noProductsInInventory')}
-                </p>
+                  <option value="">{t('form.selectWarehouse')}</option>
+                  {closedWarehouses.map((warehouse) => (
+                    <option key={warehouse.id} value={warehouse.id}>
+                      {warehouse.code} - {warehouse.name}{" "}
+                      {warehouse.currency ? `(${warehouse.currency.code})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Card de Información */}
+              {selectedWarehouseId && (
+                <div 
+                  className="rounded-lg shadow p-6"
+                  style={{ backgroundColor: `rgb(var(--color-surface))` }}
+                >
+                  <h2 
+                    className="text-lg font-medium"
+                    style={{ color: `rgb(var(--color-text-primary))` }}
+                  >
+                    {t('warehouseInventory')}
+                  </h2>
+                  {total > 0 && (
+                    <p 
+                      className="text-sm mt-1"
+                      style={{ color: `rgb(var(--color-text-secondary))` }}
+                    >
+                      {t('productsInInventory', { count: total })}
+                    </p>
+                  )}
+                  {total === 0 && !loadingInventory && (
+                    <p 
+                      className="text-sm mt-1"
+                      style={{ color: `rgb(var(--color-text-secondary))` }}
+                    >
+                      {t('noProductsInInventory')}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
 
-        {selectedWarehouseId && (
-          <>
-            {loadingInventory ? (
-              <div 
-                className="rounded-lg shadow mb-6 p-8"
-                style={{ backgroundColor: `rgb(var(--color-surface))` }}
-              >
-                <div className="animate-pulse space-y-4">
+            {selectedWarehouseId && (
+              <>
+                {loadingInventory ? (
                   <div 
-                    className="h-4 rounded w-3/4"
-                    style={{ backgroundColor: `rgb(var(--color-border))` }}
-                  ></div>
-                  <div 
-                    className="h-4 rounded w-1/2"
-                    style={{ backgroundColor: `rgb(var(--color-border))` }}
-                  ></div>
-                  <div 
-                    className="h-4 rounded w-5/6"
-                    style={{ backgroundColor: `rgb(var(--color-border))` }}
-                  ></div>
-                </div>
-              </div>
-            ) : inventoryItems.length === 0 ? (
-              <EmptyState
-                title={t('noProductsInInventory')}
-                description="No hay productos en el inventario de este almacén"
-              />
-            ) : (
-              <div className="mb-6">
-                <InventoryTable
-                  inventoryItems={inventoryItems}
-                  currencyCode={selectedWarehouse?.currency?.code || "N/A"}
-                  onViewProduct={handleViewProduct}
-                  onViewHistory={handleViewHistory}
-                />
-              </div>
-            )}
+                    className="rounded-lg shadow mb-6 p-8"
+                    style={{ backgroundColor: `rgb(var(--color-surface))` }}
+                  >
+                    <div className="animate-pulse space-y-4">
+                      <div 
+                        className="h-4 rounded w-3/4"
+                        style={{ backgroundColor: `rgb(var(--color-border))` }}
+                      ></div>
+                      <div 
+                        className="h-4 rounded w-1/2"
+                        style={{ backgroundColor: `rgb(var(--color-border))` }}
+                      ></div>
+                      <div 
+                        className="h-4 rounded w-5/6"
+                        style={{ backgroundColor: `rgb(var(--color-border))` }}
+                      ></div>
+                    </div>
+                  </div>
+                ) : inventoryItems.length === 0 ? (
+                  <EmptyState
+                    title={t('noProductsInInventory')}
+                    description="No hay productos en el inventario de este almacén"
+                  />
+                ) : (
+                  <div className="mb-6">
+                    <InventoryTable
+                      inventoryItems={inventoryItems}
+                      currencyCode={selectedWarehouse?.currency?.code || "N/A"}
+                      onViewProduct={handleViewProduct}
+                      onViewHistory={handleViewHistory}
+                    />
+                  </div>
+                )}
 
-            {!loadingInventory && totalPages > 1 && (
-              <div 
-                className="rounded-lg shadow p-4"
-                style={{ backgroundColor: `rgb(var(--color-surface))` }}
-              >
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+                {!loadingInventory && totalPages > 1 && (
+                  <div 
+                    className="rounded-lg shadow p-4"
+                    style={{ backgroundColor: `rgb(var(--color-surface))` }}
+                  >
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                )}
+              </>
             )}
           </>
         )}

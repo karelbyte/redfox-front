@@ -33,8 +33,8 @@ export default function CurrenciesPage() {
     try {
       setIsLoading(true);
       const response = await currenciesService.getCurrencies(page, term);
-      setCurrencies(response.data);
-      setTotalPages(response.meta.totalPages);
+      setCurrencies(response.data || []);
+      setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
       
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales

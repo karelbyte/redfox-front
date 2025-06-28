@@ -37,7 +37,7 @@ export default function CategoriesPage() {
       setLoading(true);
       const response = await categoriesService.getCategories(page, term);
       setCategories(response.data);
-      setTotalPages(response.meta.totalPages);
+      setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
       
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales

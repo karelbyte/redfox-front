@@ -36,7 +36,7 @@ export default function ListProductsPage() {
       setLoading(true);
       const response = await productService.getProducts(page, term);
       setProducts(response.data);
-      setTotalPages(response.meta.totalPages);
+      setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
       
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales

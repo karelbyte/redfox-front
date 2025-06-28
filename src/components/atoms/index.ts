@@ -12,6 +12,9 @@ export { default as TextArea } from './TextArea'
 // Componente Select
 export { default as Select } from './Select'
 
+// Componente SelectWithMultiple
+export { default as SelectWithMultiple } from './SelectWithMultiple'
+
 // Componente Checkbox
 export { default as Checkbox } from './Checkbox'
 

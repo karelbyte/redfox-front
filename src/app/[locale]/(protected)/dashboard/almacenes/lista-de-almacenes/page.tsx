@@ -34,7 +34,7 @@ export default function WarehousesPage() {
       setLoading(true);
       const response = await warehousesService.getWarehouses({page});
       setWarehouses(response.data);
-      setTotalPages(response.meta.totalPages);
+      setTotalPages(response.meta?.totalPages || 1);
     } catch {
       toastService.error(t('messages.errorLoading'));
     } finally {

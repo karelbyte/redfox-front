@@ -42,8 +42,8 @@ export default function RecepcionesPage() {
     try {
       setLoading(true);
       const response = await receptionService.getReceptions(page);
-      setReceptions(response.data);
-      setTotalPages(response.meta.totalPages);
+      setReceptions(response.data || []);
+      setTotalPages(response.meta?.totalPages || 1);
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);

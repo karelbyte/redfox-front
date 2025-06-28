@@ -34,8 +34,8 @@ export default function ProvidersPage() {
     try {
       setIsLoading(true);
       const response = await providersService.getProviders(page, term);
-      setProviders(response.data);
-      setTotalPages(response.meta.totalPages);
+      setProviders(response.data || []);
+      setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
       
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales

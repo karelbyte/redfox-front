@@ -38,8 +38,8 @@ export default function RolesPage() {
     try {
       setLoading(true);
       const response = await rolesService.getRoles(page);
-      setRoles(response.data);
-      setTotalPages(response.meta.totalPages);
+      setRoles(response.data || []);
+      setTotalPages(response.meta?.totalPages || 1);
     } catch (error) {
       console.error('Error fetching roles:', error);
       toastService.error(t('messages.errorLoading'));

@@ -36,7 +36,7 @@ export default function ClientsPage() {
       setIsLoading(true);
       const response = await clientsService.getClients(page, term);
       setClients(response.data);
-      setTotalPages(response.meta.totalPages);
+      setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
 
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales

@@ -34,7 +34,7 @@ export default function TaxesPage() {
       setIsLoading(true);
       const response = await taxesService.getTaxes(page, term);
       setTaxes(response.data);
-      setTotalPages(response.meta.totalPages);
+      setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
       
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales

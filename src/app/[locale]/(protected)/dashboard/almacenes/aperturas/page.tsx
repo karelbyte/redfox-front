@@ -79,8 +79,8 @@ export default function OpeningsPage() {
         10
       );
       setOpenings(response.data);
-      setTotalPages(response.meta.totalPages);
-      setTotal(response.meta.total);
+      setTotalPages(response.meta?.totalPages || 1);
+      setTotal(response.meta?.total || 0);
     } catch {
       toastService.error(t('error.errorLoadingOpenings'));
     } finally {

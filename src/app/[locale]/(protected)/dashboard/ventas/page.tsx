@@ -42,8 +42,8 @@ export default function VentasPage() {
     try {
       setLoading(true);
       const response = await saleService.getSales(page);
-      setSales(response.data);
-      setTotalPages(response.meta.totalPages);
+      setSales(response.data || []);
+      setTotalPages(response.meta?.totalPages || 1);
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);

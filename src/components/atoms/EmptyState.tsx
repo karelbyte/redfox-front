@@ -11,7 +11,7 @@ interface EmptyStateProps {
   actionButton?: React.ReactNode;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({
+const   EmptyState: React.FC<EmptyStateProps> = ({
   searchTerm,
   title,
   description,

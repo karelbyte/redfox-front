@@ -1311,6 +1311,78 @@
         "subtitle": "Role details and permission management",
         "generalInfo": "General Information"
       }
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "System user management",
+      "createTitle": "Create User",
+      "editTitle": "Edit User",
+      "newUser": "New User",
+      "editUser": "Edit User",
+      "searchUsers": "Search users...",
+      "searchPlaceholder": "Search users...",
+      "noUsers": "No users",
+      "noUsersDesc": "No users found. Create the first user to get started.",
+      "noResultsDesc": "No results found for your search",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "roles": "Roles",
+        "status": "Active status",
+        "placeholders": {
+          "name": "Enter full name",
+          "email": "Enter email address",
+          "password": "Enter password",
+          "passwordOptional": "Leave empty to keep current password",
+          "roles": "Select roles"
+        },
+        "validation": {
+          "nameRequired": "Name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Please enter a valid email",
+          "passwordRequired": "Password is required",
+          "passwordMinLength": "Password must be at least 6 characters",
+          "rolesRequired": "You must select at least one role"
+        }
+      },
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "roles": "Roles",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "statusActive": "Active",
+        "statusInactive": "Inactive"
+      },
+      "actions": {
+        "create": "Create User",
+        "edit": "Edit",
+        "viewDetails": "View Details",
+        "delete": "Delete"
+      },
+      "messages": {
+        "successCreated": "{item} created successfully",
+        "successUpdated": "{item} updated successfully",
+        "successDeleted": "{item} deleted successfully",
+        "errorLoading": "Error loading users",
+        "errorCreating": "Error creating user",
+        "errorUpdating": "Error updating user",
+        "errorDeleting": "Error deleting user",
+        "userCreated": "User created successfully",
+        "userUpdated": "User updated successfully",
+        "errorLoadingRoles": "Error loading roles"
+      },
+      "deleteModal": {
+        "title": "Delete {item}",
+        "message": "Are you sure you want to delete {item} \"{name}\"? This action cannot be undone."
+      },
+      "details": {
+        "title": "User: {name}",
+        "subtitle": "User details and permission management",
+        "generalInfo": "General Information"
+      }
     }
   },
   "forms": {

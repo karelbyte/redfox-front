@@ -1299,6 +1299,78 @@
         "subtitle": "Detalles del rol y gestión de permisos",
         "generalInfo": "Información General"
       }
+    },
+    "users": {
+      "title": "Usuarios",
+      "subtitle": "Gestión de usuarios del sistema",
+      "createTitle": "Crear Usuario",
+      "editTitle": "Editar Usuario",
+      "newUser": "Nuevo Usuario",
+      "editUser": "Editar Usuario",
+      "searchUsers": "Buscar usuarios...",
+      "searchPlaceholder": "Buscar usuarios...",
+      "noUsers": "No hay usuarios",
+      "noUsersDesc": "No se encontraron usuarios. Crea el primer usuario para comenzar.",
+      "noResultsDesc": "No se encontraron resultados para tu búsqueda",
+      "form": {
+        "name": "Nombre",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "roles": "Roles",
+        "status": "Estado activo",
+        "placeholders": {
+          "name": "Ingrese el nombre completo",
+          "email": "Ingrese el correo electrónico",
+          "password": "Ingrese la contraseña",
+          "passwordOptional": "Dejar vacío para mantener la contraseña actual",
+          "roles": "Seleccionar roles"
+        },
+        "validation": {
+          "nameRequired": "El nombre es requerido",
+          "emailRequired": "El correo electrónico es requerido",
+          "emailInvalid": "Ingrese un correo electrónico válido",
+          "passwordRequired": "La contraseña es requerida",
+          "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+          "rolesRequired": "Debe seleccionar al menos un rol"
+        }
+      },
+      "table": {
+        "name": "Nombre",
+        "email": "Correo electrónico",
+        "roles": "Roles",
+        "status": "Estado",
+        "createdAt": "Fecha de Creación",
+        "actions": "Acciones",
+        "statusActive": "Activo",
+        "statusInactive": "Inactivo"
+      },
+      "actions": {
+        "create": "Crear Usuario",
+        "edit": "Editar",
+        "viewDetails": "Ver Detalles",
+        "delete": "Eliminar"
+      },
+      "messages": {
+        "successCreated": "{item} creado exitosamente",
+        "successUpdated": "{item} actualizado exitosamente",
+        "successDeleted": "{item} eliminado exitosamente",
+        "errorLoading": "Error al cargar los usuarios",
+        "errorCreating": "Error al crear el usuario",
+        "errorUpdating": "Error al actualizar el usuario",
+        "errorDeleting": "Error al eliminar el usuario",
+        "userCreated": "Usuario creado exitosamente",
+        "userUpdated": "Usuario actualizado exitosamente",
+        "errorLoadingRoles": "Error al cargar los roles"
+      },
+      "deleteModal": {
+        "title": "Eliminar {item}",
+        "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "details": {
+        "title": "Usuario: {name}",
+        "subtitle": "Detalles del usuario y gestión de permisos",
+        "generalInfo": "Información General"
+      }
     }
   },
   "forms": {

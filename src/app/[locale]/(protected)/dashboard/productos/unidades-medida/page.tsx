@@ -34,8 +34,8 @@ export default function MeasurementUnitsPage() {
     try {
       setLoading(true);
       const response = await measurementUnitsService.getMeasurementUnits(page, term);
-      setUnits(response.data);
-      setTotalPages(response.meta.totalPages);
+      setUnits(response.data || []);
+      setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
       
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
