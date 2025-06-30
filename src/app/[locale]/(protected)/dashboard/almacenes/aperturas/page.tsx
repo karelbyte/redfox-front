@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations, useLocale } from "next-intl";
 import { warehouseOpeningsService } from "@/services/warehouse-openings.service";
 import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
@@ -20,16 +20,22 @@ import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
 import Drawer from "@/components/Drawer/Drawer";
 import { Btn, EmptyState } from "@/components/atoms";
-import { PlusIcon, CheckCircleIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  PlusIcon,
+  CheckCircleIcon,
+  ArrowLeftIcon,
+} from "@heroicons/react/24/outline";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function OpeningsPage() {
-  const t = useTranslations('pages.warehouseOpenings');
+  const t = useTranslations("pages.warehouseOpenings");
+  const { can } = usePermissions();
   const searchParams = useSearchParams();
   const router = useRouter();
   const locale = useLocale();
-  const warehouseId = searchParams.get('warehouse_id');
-  const warehouseName = searchParams.get('warehouse_name');
-  
+  const warehouseId = searchParams.get("warehouse_id");
+  const warehouseName = searchParams.get("warehouse_name");
+
   const [openings, setOpenings] = useState<WarehouseOpening[]>([]);
   const [loading, setLoading] = useState(true);
   const [warehouse, setWarehouse] = useState<Warehouse | null>(null);
@@ -37,36 +43,45 @@ export default function OpeningsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [drawerMode, setDrawerMode] = useState<'create' | 'edit' | 'details'>('create');
+  const [drawerMode, setDrawerMode] = useState<"create" | "edit" | "details">(
+    "create"
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [selectedOpening, setSelectedOpening] = useState<WarehouseOpening | null>(null);
-  const [openingToDelete, setOpeningToDelete] = useState<WarehouseOpening | undefined>(undefined);
+  const [selectedOpening, setSelectedOpening] =
+    useState<WarehouseOpening | null>(null);
+  const [openingToDelete, setOpeningToDelete] = useState<
+    WarehouseOpening | undefined
+  >(undefined);
   const [isClosingWarehouse, setIsClosingWarehouse] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
-  const [closeResult, setCloseResult] = useState<WarehouseCloseResponse | null>(null);
+  const [closeResult, setCloseResult] = useState<WarehouseCloseResponse | null>(
+    null
+  );
   const createFormRef = useRef<WarehouseOpeningFormRef>(null);
   const detailsFormRef = useRef<ProductDetailsFormRef>(null);
   const initialFetchDone = useRef(false);
 
   const fetchWarehouse = async () => {
     if (!warehouseId) {
-      toastService.error(t('error.warehouseIdRequired'));
+      toastService.error(t("error.warehouseIdRequired"));
       setLoading(false);
       return;
     }
 
     try {
-      const warehouseResponse = await warehousesService.getWarehouse(warehouseId);
+      const warehouseResponse = await warehousesService.getWarehouse(
+        warehouseId
+      );
       setWarehouse(warehouseResponse);
     } catch {
-      toastService.error(t('error.errorLoadingWarehouse'));
+      toastService.error(t("error.errorLoadingWarehouse"));
     }
   };
 
   const fetchOpenings = async (page: number) => {
     if (!warehouseId) {
-      toastService.error(t('error.warehouseIdRequired'));
+      toastService.error(t("error.warehouseIdRequired"));
       setLoading(false);
       return;
     }
@@ -82,7 +97,7 @@ export default function OpeningsPage() {
       setTotalPages(response.meta?.totalPages || 1);
       setTotal(response.meta?.total || 0);
     } catch {
-      toastService.error(t('error.errorLoadingOpenings'));
+      toastService.error(t("error.errorLoadingOpenings"));
     } finally {
       setLoading(false);
     }
@@ -94,7 +109,7 @@ export default function OpeningsPage() {
       fetchWarehouse();
       fetchOpenings(currentPage);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [warehouseId, currentPage]);
 
   const handlePageChange = (page: number) => {
@@ -106,33 +121,36 @@ export default function OpeningsPage() {
     setShowDrawer(false);
     setIsSaving(false);
     setSelectedOpening(null);
-    setDrawerMode('create');
+    setDrawerMode("create");
   };
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    if (drawerMode === 'create' || drawerMode === 'edit') {
+    if (drawerMode === "create" || drawerMode === "edit") {
       fetchOpenings(currentPage);
     }
   };
 
   const handleSave = () => {
-    if ((drawerMode === 'create' || drawerMode === 'edit') && createFormRef.current) {
+    if (
+      (drawerMode === "create" || drawerMode === "edit") &&
+      createFormRef.current
+    ) {
       createFormRef.current.submit();
-    } else if (drawerMode === 'details' && detailsFormRef.current) {
+    } else if (drawerMode === "details" && detailsFormRef.current) {
       detailsFormRef.current.submit();
     }
   };
 
   const handleViewDetails = (opening: WarehouseOpening) => {
     setSelectedOpening(opening);
-    setDrawerMode('details');
+    setDrawerMode("details");
     setShowDrawer(true);
   };
 
   const handleEdit = (opening: WarehouseOpening) => {
     setSelectedOpening(opening);
-    setDrawerMode('edit');
+    setDrawerMode("edit");
     setShowDrawer(true);
   };
 
@@ -145,14 +163,14 @@ export default function OpeningsPage() {
 
     try {
       await warehouseOpeningsService.deleteWarehouseOpening(openingToDelete.id);
-      toastService.success(t('messages.openingDeleted'));
+      toastService.success(t("messages.openingDeleted"));
       fetchOpenings(currentPage);
       setOpeningToDelete(undefined);
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error(t('error.errorDeleting'));
+        toastService.error(t("error.errorDeleting"));
       }
     }
   };
@@ -179,7 +197,7 @@ export default function OpeningsPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error(t('error.errorClosing'));
+        toastService.error(t("error.errorClosing"));
       }
     } finally {
       setIsClosingWarehouse(false);
@@ -195,21 +213,25 @@ export default function OpeningsPage() {
     return (
       <div className="p-6">
         <div className="text-center">
-          <h1 
+          <h1
             className="text-xl font-semibold mb-4"
             style={{ color: `rgb(var(--color-primary-800))` }}
           >
-            {t('error.title')}
+            {t("error.title")}
           </h1>
-          <p 
+          <p
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-600))` }}
           >
-            {t('error.noWarehouseId')}
+            {t("error.noWarehouseId")}
           </p>
         </div>
       </div>
     );
+  }
+
+  if (!can(["warehouse_module_view", "warehouse_opening_module_view"])) {
+    return <div>{t("noPermission")}</div>;
   }
 
   return (
@@ -218,62 +240,68 @@ export default function OpeningsPage() {
         <div className="flex items-center space-x-4">
           <Btn
             variant="ghost"
-            onClick={() => router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`)}
+            onClick={() =>
+              router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`)
+            }
             leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
           >
-            {t('actions.back')}
+            {t("actions.back")}
           </Btn>
           <div>
-            <h1 
+            <h1
               className="text-xl font-semibold"
               style={{ color: `rgb(var(--color-primary-800))` }}
             >
-              {t('title')}
+              {t("title")}
             </h1>
             {(warehouseName || warehouse) && (
-              <p 
+              <p
                 className="text-sm mt-1"
                 style={{ color: `rgb(var(--color-primary-600))` }}
               >
-                {t('warehouse')} <span className="font-medium">{warehouseName || warehouse?.name}</span>
+                {t("warehouse")}{" "}
+                <span className="font-medium">
+                  {warehouseName || warehouse?.name}
+                </span>
                 {warehouse?.currency && (
-                  <span 
+                  <span
                     className="ml-2"
                     style={{ color: `rgb(var(--color-primary-500))` }}
                   >
-                    • {t('currency')} {warehouse.currency.code} - {warehouse.currency.name}
+                    • {t("currency")} {warehouse.currency.code} -{" "}
+                    {warehouse.currency.name}
                   </span>
                 )}
               </p>
             )}
             {total > 0 && (
-              <p 
+              <p
                 className="text-sm mt-1"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
-                {t('totalProducts', { count: total })}
+                {t("totalProducts", { count: total })}
               </p>
             )}
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <Btn
+          {can(["warehouse_opening_create"]) && <Btn
             onClick={() => {
-              setDrawerMode('create');
+              setDrawerMode("create");
               setShowDrawer(true);
             }}
             leftIcon={<PlusIcon className="h-5 w-5" />}
           >
-            {t('newOpening')}
-          </Btn>
-          {warehouse?.is_open && (
+            {t("newOpening")}
+          </Btn> }
+          {warehouse?.is_open && can(["warehouse_close"]) && (
             <Btn
               variant="danger"
               leftIcon={<CheckCircleIcon className="h-5 w-5" />}
               onClick={handleCloseWarehouseClick}
               loading={isClosingWarehouse}
             >
-              {t('actions.close')}
+              {t("actions.close")}
             </Btn>
           )}
         </div>
@@ -284,15 +312,12 @@ export default function OpeningsPage() {
           <Loading size="lg" />
         </div>
       ) : openings && openings.length === 0 ? (
-        <EmptyState
-          title={t('noOpenings')}
-          description={t('noOpeningsDesc')}
-        />
+        <EmptyState title={t("noOpenings")} description={t("noOpeningsDesc")} />
       ) : (
         <>
           <div className="mt-6">
-            <WarehouseOpeningTable 
-              openings={openings} 
+            <WarehouseOpeningTable
+              openings={openings}
               warehouse={warehouse}
               onViewDetails={handleViewDetails}
               onEdit={handleEdit}
@@ -317,23 +342,23 @@ export default function OpeningsPage() {
         isOpen={showDrawer}
         onClose={handleDrawerClose}
         title={
-          drawerMode === 'create' 
-            ? t('newOpening')
-            : drawerMode === 'edit' 
-            ? t('editOpening')
-            : t('productDetailsName')
+          drawerMode === "create"
+            ? t("newOpening")
+            : drawerMode === "edit"
+            ? t("editOpening")
+            : t("productDetailsName")
         }
-        onSave={drawerMode === 'details' ? undefined : handleSave}
+        onSave={drawerMode === "details" ? undefined : handleSave}
         isSaving={isSaving}
-        isFormValid={drawerMode === 'details' ? true : isFormValid}
-        width={drawerMode === 'details' ? 'max-w-4xl' : 'max-w-md'}
+        isFormValid={drawerMode === "details" ? true : isFormValid}
+        width={drawerMode === "details" ? "max-w-4xl" : "max-w-md"}
       >
-        {drawerMode === 'create' || drawerMode === 'edit' ? (
+        {drawerMode === "create" || drawerMode === "edit" ? (
           <WarehouseOpeningForm
             ref={createFormRef}
             warehouseId={warehouseId}
             warehouse={warehouse}
-            opening={drawerMode === 'edit' ? selectedOpening : null}
+            opening={drawerMode === "edit" ? selectedOpening : null}
             onClose={handleDrawerClose}
             onSuccess={handleFormSuccess}
             onSavingChange={setIsSaving}
@@ -364,13 +389,11 @@ export default function OpeningsPage() {
         isOpen={isCloseModalOpen}
         onClose={() => setIsCloseModalOpen(false)}
         onConfirm={handleCloseWarehouse}
-        title={t('actions.close')}
+        title={t("actions.close")}
         message={
-          <>
-            {t('messages.confirmClose', { name: warehouse?.name || '' })}
-          </>
+          <>{t("messages.confirmClose", { name: warehouse?.name || "" })}</>
         }
-        confirmText={t('actions.close')}
+        confirmText={t("actions.close")}
       />
 
       {/* Modal de resultado del cierre */}
@@ -383,4 +406,4 @@ export default function OpeningsPage() {
       )}
     </div>
   );
-} 
+}

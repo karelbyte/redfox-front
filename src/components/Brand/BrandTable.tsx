@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Brand } from '@/types/brand';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface BrandTableProps {
   brands: Brand[];
@@ -12,6 +13,7 @@ interface BrandTableProps {
 export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps) {
   const t = useTranslations('pages.brands');
   const commonT = useTranslations('common');
+  const { can } = usePermissions();
 
   if (!Array.isArray(brands)) {
     return null;
@@ -86,21 +88,25 @@ export default function BrandTable({ brands, onEdit, onDelete }: BrandTableProps
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(brand)}
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={commonT('actions.edit')}
-                  />
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(brand)}
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={commonT('actions.delete')}
-                    style={{ color: '#dc2626' }}
-                  /> 
+                  {can(['brand_update']) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(brand)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={commonT('actions.edit')}
+                    />
+                  )}
+                  {can(['brand_delete']) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(brand)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={commonT('actions.delete')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
                 </div>
               </td>
             </tr>

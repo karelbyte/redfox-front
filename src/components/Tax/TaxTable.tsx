@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Tax } from '@/types/tax';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface TaxTableProps {
   taxes: Tax[];
@@ -14,6 +15,7 @@ interface TaxTableProps {
 export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
   const t = useTranslations('pages.taxes');
   const commonT = useTranslations('common');
+  const { can } = usePermissions();
 
   if (!Array.isArray(taxes)) {
     return null;
@@ -66,21 +68,25 @@ export default function TaxTable({ taxes, onEdit, onDelete }: TaxTableProps) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
-                    onClick={() => onEdit(tax)}
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={commonT('actions.edit')}
-                  />
-                  <Btn
-                    onClick={() => onDelete(tax)}
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={commonT('actions.delete')}
-                    style={{ color: '#dc2626' }}
-                  />
+                  {can(["tax_update"]) && (
+                    <Btn
+                      onClick={() => onEdit(tax)}
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={commonT('actions.edit')}
+                    />
+                  )}
+                  {can(["tax_delete"]) && (
+                    <Btn
+                      onClick={() => onDelete(tax)}
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={commonT('actions.delete')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
                 </div>
               </td>
             </tr>

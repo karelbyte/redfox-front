@@ -14,9 +14,11 @@ import { MeasurementUnitFormRef } from "@/components/Measurement/MeasurementUnit
 import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function MeasurementUnitsPage() {
   const t = useTranslations('pages.measurementUnits');
+  const { can } = usePermissions();
   const [units, setUnits] = useState<MeasurementUnit[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,21 +103,27 @@ export default function MeasurementUnitsPage() {
     fetchUnits(page, searchTerm);
   };
 
+  if (!can(["measurement_unit_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={() => {
-            setEditingUnit(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newUnit')}
-        </Btn>
+        {can(["measurement_unit_create"]) && (
+          <Btn
+            onClick={() => {
+              setEditingUnit(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newUnit')}
+          </Btn>
+        )}
       </div>
 
       {/* Filtro de búsqueda */}

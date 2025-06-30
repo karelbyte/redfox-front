@@ -14,10 +14,12 @@ import { BrandFormRef } from '@/components/Brand/BrandForm';
 import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
+import { usePermissions } from '@/hooks/usePermissions';
 
 
 export default function BrandsPage() {
   const t = useTranslations('pages.brands');
+  const { can } = usePermissions();
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -105,21 +107,27 @@ export default function BrandsPage() {
     fetchBrands(page, searchTerm);
   };
 
+  if (!can(["brand_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={() => {
-            setEditingBrand(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newBrand')}
-        </Btn>
+        {can(["brand_create"]) && (
+          <Btn
+            onClick={() => {
+              setEditingBrand(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newBrand')}
+          </Btn>
+        )}
       </div>
 
       <div className="mt-6">

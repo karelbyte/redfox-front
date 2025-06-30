@@ -10,6 +10,7 @@ import { toastService } from '@/services/toast.service';
 import { Currency } from '@/types/currency';
 import { Btn, Input, Select, Checkbox } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface WarehouseFormData {
   code: string;
@@ -21,6 +22,7 @@ interface WarehouseFormData {
 }
 
 export default function AgregarAlmacenPage() {
+  const { can } = usePermissions();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('pages.warehouses');
@@ -138,6 +140,7 @@ export default function AgregarAlmacenPage() {
         address: formData.address.trim(),
         phone: formData.phone.trim(),
         currencyId: selectedCurrency.id,
+        currency: selectedCurrency,
         status: formData.status,
         is_open: false
       });
@@ -169,6 +172,10 @@ export default function AgregarAlmacenPage() {
         </div>
       </div>
     );
+  }
+
+  if (!can(["warehouse_create"])) {
+    return <div>{t("noPermission")}</div>;
   }
 
   return (

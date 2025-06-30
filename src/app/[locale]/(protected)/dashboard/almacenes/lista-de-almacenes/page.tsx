@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 import { warehousesService } from "@/services/warehouses.service";
 import { toastService } from "@/services/toast.service";
 import { Warehouse } from "@/types/warehouse";
@@ -14,16 +14,22 @@ import { WarehouseFormRef } from "@/components/Warehouse/WarehouseForm";
 import Loading from "@/components/Loading/Loading";
 import { Btn, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function WarehousesPage() {
-  const t = useTranslations('pages.warehouses');
+  const t = useTranslations("pages.warehouses");
+  const { can } = usePermissions();
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(null);
-  const [warehouseToDelete, setWarehouseToDelete] = useState<Warehouse | null>(null);
+  const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(
+    null
+  );
+  const [warehouseToDelete, setWarehouseToDelete] = useState<Warehouse | null>(
+    null
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<WarehouseFormRef>(null);
@@ -32,11 +38,11 @@ export default function WarehousesPage() {
   const fetchWarehouses = async (page: number) => {
     try {
       setLoading(true);
-      const response = await warehousesService.getWarehouses({page});
+      const response = await warehousesService.getWarehouses({ page });
       setWarehouses(response.data);
       setTotalPages(response.meta?.totalPages || 1);
     } catch {
-      toastService.error(t('messages.errorLoading'));
+      toastService.error(t("messages.errorLoading"));
     } finally {
       setLoading(false);
     }
@@ -47,7 +53,7 @@ export default function WarehousesPage() {
       initialFetchDone.current = true;
       fetchWarehouses(currentPage);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async () => {
@@ -55,11 +61,11 @@ export default function WarehousesPage() {
 
     try {
       await warehousesService.deleteWarehouse(warehouseToDelete.id);
-      toastService.success(t('messages.warehouseDeleted'));
+      toastService.success(t("messages.warehouseDeleted"));
       fetchWarehouses(currentPage);
       setWarehouseToDelete(null);
     } catch {
-      toastService.error(t('messages.errorDeleting'));
+      toastService.error(t("messages.errorDeleting"));
     }
   };
 
@@ -98,21 +104,30 @@ export default function WarehousesPage() {
     fetchWarehouses(currentPage);
   };
 
+  if (!can(["warehouse_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: 'rgb(var(--color-primary-800))' }}>
-          {t('title')}
-        </h1>
-        <Btn
-          onClick={() => {
-            setEditingWarehouse(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
+        <h1
+          className="text-xl font-semibold"
+          style={{ color: "rgb(var(--color-primary-800))" }}
         >
-          {t('newWarehouse')}
-        </Btn>
+          {t("title")}
+        </h1>
+        {can(["warehouse_create"]) && (
+          <Btn
+            onClick={() => {
+              setEditingWarehouse(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t("newWarehouse")}
+          </Btn>
+        )}
       </div>
 
       {loading ? (
@@ -121,8 +136,8 @@ export default function WarehousesPage() {
         </div>
       ) : warehouses && warehouses.length === 0 ? (
         <EmptyState
-          title={t('noWarehouses')}
-          description={t('noWarehousesDesc')}
+          title={t("noWarehouses")}
+          description={t("noWarehousesDesc")}
         />
       ) : (
         <>
@@ -147,7 +162,7 @@ export default function WarehousesPage() {
         id="warehouse-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={editingWarehouse ? t('editWarehouse') : t('newWarehouse')}
+        title={editingWarehouse ? t("editWarehouse") : t("newWarehouse")}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
@@ -170,4 +185,4 @@ export default function WarehousesPage() {
       />
     </div>
   );
-} 
+}

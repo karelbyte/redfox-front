@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
@@ -14,10 +14,11 @@ import { ClientFormRef } from "@/components/Client/ClientForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function ClientsPage() {
-  const t = useTranslations('pages.clients');
-  
+  const t = useTranslations("pages.clients");
+  const { can } = usePermissions();
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -47,7 +48,7 @@ export default function ClientsPage() {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error(t('messages.errorLoading'));
+        toastService.error(t("messages.errorLoading"));
       }
     } finally {
       setIsLoading(false);
@@ -56,7 +57,7 @@ export default function ClientsPage() {
 
   useEffect(() => {
     fetchClients(1);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEdit = (client: Client) => {
@@ -97,6 +98,10 @@ export default function ClientsPage() {
     fetchClients(page, searchTerm);
   };
 
+  if (!can(["client_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
@@ -104,22 +109,24 @@ export default function ClientsPage() {
           className="text-xl font-semibold"
           style={{ color: `rgb(var(--color-primary-800))` }}
         >
-          {t('title')}
+          {t("title")}
         </h1>
-        <Btn
-          onClick={() => {
-            setSelectedClient(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newClient')}
-        </Btn>
+        {can(["client_create"]) && (
+          <Btn
+            onClick={() => {
+              setSelectedClient(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t("newClient")}
+          </Btn>
+        )}
       </div>
       {/* Filtro de búsqueda */}
       <div className="mt-6">
         <SearchInput
-          placeholder={t('searchClients')}
+          placeholder={t("searchClients")}
           onSearch={(term: string) => {
             setSearchTerm(term);
             fetchClients(1, term);
@@ -133,9 +140,9 @@ export default function ClientsPage() {
       ) : clients && clients.length === 0 ? (
         <EmptyState
           searchTerm={searchTerm}
-          title={t('noClients')}
-          description={t('noClientsDesc')}
-          searchDescription={t('noResultsDesc')}
+          title={t("noClients")}
+          description={t("noClientsDesc")}
+          searchDescription={t("noResultsDesc")}
         />
       ) : (
         <>
@@ -161,7 +168,7 @@ export default function ClientsPage() {
         id="client-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={selectedClient ? t('editClient') : t('newClient')}
+        title={selectedClient ? t("editClient") : t("newClient")}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}

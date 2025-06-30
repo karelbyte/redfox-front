@@ -107,7 +107,27 @@
       "logout": "Cerrar sesión",
       "userName": "Nombre",
       "userEmail": "Email",
-      "userRole": "Rol"
+      "userRole": "Rol",
+      "welcome": "Bienvenido",
+      "stats": {
+        "totalSales": "Ventas Totales",
+        "salesToday": "hoy",
+        "totalRevenue": "Ingresos Totales",
+        "revenueToday": "hoy",
+        "activeWarehouses": "Almacenes Activos",
+        "operationalWarehouses": "almacenes operativos",
+        "products": "Productos",
+        "lowStock": "con bajo stock",
+        "pendingReceptions": "Recepciones Pendientes",
+        "toProcess": "por procesar"
+      },
+      "warehouses": {
+        "status": "Estado de Almacenes",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "products": "Productos",
+        "lowStock": "Bajo stock"
+      }
     },
     "warehouses": {
       "title": "Lista de Almacenes",
@@ -118,6 +138,7 @@
       "noWarehouses": "No hay almacenes",
       "noWarehousesDesc": "Haz clic en 'Nuevo Almacén' para agregar uno.",
       "noResultsDesc": "No se encontraron resultados",
+      "noPermission": "No tienes permisos para ver esta página",
       "form": {
         "title": "Información del Almacén",
         "subtitle": "Completa la información para crear un nuevo almacén",
@@ -377,6 +398,7 @@
       "noTaxes": "No hay impuestos",
       "noTaxesDesc": "Haz clic en 'Nuevo Impuesto' para agregar uno.",
       "noResultsDesc": "No se encontraron resultados",
+      "noPermission": "No tienes permisos para ver esta página",
       "form": {
         "code": "Código",
         "name": "Nombre",
@@ -415,6 +437,22 @@
         "errorUpdating": "Error al actualizar el impuesto",
         "errorDeleting": "Error al eliminar el impuesto",
         "confirmDelete": "¿Estás seguro de que deseas eliminar el impuesto \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "deleteModal": {
+        "title": "Eliminar {item}",
+        "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "permissions": {
+        "title": "Permisos del Rol",
+        "save": "Guardar Permisos",
+        "noPermissions": "No hay permisos disponibles",
+        "loadingAllPermissions": "Cargando todos los permisos disponibles...",
+        "loadingRolePermissions": "Cargando permisos del rol..."
+      },
+      "details": {
+        "title": "Rol: {name}",
+        "subtitle": "Detalles del rol y gestión de permisos",
+        "generalInfo": "Información General"
       }
     },
     "currencies": {
@@ -478,6 +516,7 @@
       "noUnits": "No hay unidades de medida",
       "noUnitsDesc": "Haz clic en 'Nueva Unidad' para agregar una.",
       "noResultsDesc": "No se encontraron resultados",
+      "noPermission": "No tienes permisos para ver esta página",
       "form": {
         "code": "Código",
         "description": "Descripción",
@@ -519,6 +558,7 @@
       "noProviders": "No hay proveedores",
       "noProvidersDesc": "Haz clic en 'Nuevo Proveedor' para agregar uno.",
       "noResultsDesc": "No se encontraron resultados",
+      "noPermission": "No tienes permisos para ver esta página",
       "form": {
         "code": "Código",
         "name": "Nombre",
@@ -574,6 +614,7 @@
       "noClients": "No hay clientes",
       "noClientsDesc": "Haz clic en 'Nuevo Cliente' para agregar uno.",
       "noResultsDesc": "No se encontraron resultados",
+      "noPermission": "No tienes permisos para ver esta página",
       "form": {
         "code": "Código",
         "name": "Nombre",

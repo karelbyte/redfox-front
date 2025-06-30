@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Provider } from "@/types/provider";
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface ProviderTableProps {
   providers: Provider[];
@@ -12,6 +13,7 @@ interface ProviderTableProps {
 export default function ProviderTable({ providers, onEdit, onDelete }: ProviderTableProps) {
   const t = useTranslations('pages.providers');
   const tCommon = useTranslations('common');
+  const { can } = usePermissions();
 
   if (!Array.isArray(providers)) {
     return null;
@@ -93,21 +95,25 @@ export default function ProviderTable({ providers, onEdit, onDelete }: ProviderT
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(provider)}
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={tCommon('actions.edit')}
-                  />
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(provider)}
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={tCommon('actions.delete')}
-                    style={{ color: '#dc2626' }}
-                  /> 
+                  {can(['provider_update']) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(provider)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={tCommon('actions.edit')}
+                    />
+                  )}
+                  {can(['provider_delete']) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(provider)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={tCommon('actions.delete')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
                 </div>
               </td>
             </tr>

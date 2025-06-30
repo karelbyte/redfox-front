@@ -13,9 +13,11 @@ import DeleteTaxModal from '@/components/Tax/DeleteTaxModal';
 import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Loading from '@/components/Loading/Loading';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function TaxesPage() {
   const t = useTranslations('pages.taxes');
+  const { can } = usePermissions();
   const [taxes, setTaxes] = useState<Tax[]>([]);
   const [selectedTax, setSelectedTax] = useState<Tax | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -95,21 +97,27 @@ export default function TaxesPage() {
     fetchTaxes(page, searchTerm);
   };
 
+  if (!can(["tax_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={() => {
-            setSelectedTax(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newTax')}
-        </Btn>
+        {can(["tax_create"]) && (
+          <Btn
+            onClick={() => {
+              setSelectedTax(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newTax')}
+          </Btn>
+        )}
       </div>
 
       {/* Filtro de búsqueda */}

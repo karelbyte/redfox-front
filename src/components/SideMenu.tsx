@@ -362,7 +362,7 @@ export function SideMenu() {
           {
             name: t("addWarehouse"),
             path: getLocalizedPath("/dashboard/almacenes/agregar-almacen"),
-            howCan: ["warehouse_module_view"],
+            howCan: ["warehouse_create"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -382,7 +382,7 @@ export function SideMenu() {
           {
             name: t("warehouseList"),
             path: getLocalizedPath("/dashboard/almacenes/lista-de-almacenes"),
-            howCan: ["warehouse_module_view"],
+            howCan: ["warehouse_read"],
             icon: (
               <svg
                 className="w-5 h-5"

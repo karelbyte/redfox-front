@@ -5,6 +5,7 @@ import { useState, ReactElement } from 'react';
 import React from 'react';
 import Image from 'next/image';
 import { Btn } from '@/components/atoms';
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface CategoryTableProps {
   categories: Category[];
@@ -15,6 +16,7 @@ interface CategoryTableProps {
 export default function CategoryTable({ categories, onEdit, onDelete }: CategoryTableProps) {
   const t = useTranslations('pages.categories');
   const commonT = useTranslations('common');
+  const { can } = usePermissions();
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   if (!Array.isArray(categories)) {
@@ -91,21 +93,25 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
           </td>
           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
             <div className="flex justify-end space-x-2">
-              <Btn
-                onClick={() => onEdit(category)}
-                variant="ghost"
-                size="sm"
-                leftIcon={<PencilIcon className="h-4 w-4" />}
-                title={commonT('actions.edit')}
-              />
-              <Btn
-                onClick={() => onDelete(category)}
-                variant="ghost"
-                size="sm"
-                leftIcon={<TrashIcon className="h-4 w-4" />}
-                title={commonT('actions.delete')}
-                style={{ color: '#dc2626' }}
-              />
+              {can(['category_update']) && (
+                <Btn
+                  onClick={() => onEdit(category)}
+                  variant="ghost"
+                  size="sm"
+                  leftIcon={<PencilIcon className="h-4 w-4" />}
+                  title={commonT('actions.edit')}
+                />
+              )}
+              {can(['category_delete']) && (
+                <Btn
+                  onClick={() => onDelete(category)}
+                  variant="ghost"
+                  size="sm"
+                  leftIcon={<TrashIcon className="h-4 w-4" />}
+                  title={commonT('actions.delete')}
+                  style={{ color: '#dc2626' }}
+                />
+              )}
             </div>
           </td>
         </tr>

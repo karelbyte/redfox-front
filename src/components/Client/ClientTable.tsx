@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface ClientTableProps {
   clients: Client[];
@@ -12,7 +13,7 @@ interface ClientTableProps {
 export default function ClientTable({ clients, onEdit, onDelete }: ClientTableProps) {
   const t = useTranslations('pages.clients');
   const tCommon = useTranslations('common');
-
+  const { can } = usePermissions();
   if (!Array.isArray(clients)) {
     return null;
   }
@@ -102,21 +103,21 @@ export default function ClientTable({ clients, onEdit, onDelete }: ClientTablePr
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
+                {can(['client_update']) &&  <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onEdit(client)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
                     title={tCommon('actions.edit')}
-                  />
-                  <Btn
+                  />}
+                  {can(['client_delete']) && <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(client)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
                     title={tCommon('actions.delete')}
                     style={{ color: '#dc2626' }}
-                  /> 
+                  />}
                 </div>
               </td>
             </tr>

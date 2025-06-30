@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Currency } from '@/types/currency';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface CurrencyTableProps {
   currencies: Currency[];
@@ -14,6 +15,7 @@ interface CurrencyTableProps {
 export default function CurrencyTable({ currencies, onEdit, onDelete }: CurrencyTableProps) {
   const t = useTranslations('pages.currencies');
   const commonT = useTranslations('common');
+  const { can } = usePermissions();
 
   if (!Array.isArray(currencies)) {
     return null;
@@ -56,21 +58,25 @@ export default function CurrencyTable({ currencies, onEdit, onDelete }: Currency
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{currency.name}</td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(currency)}
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={commonT('actions.edit')}
-                  />
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(currency)}
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={commonT('actions.delete')}
-                    style={{ color: '#dc2626' }}
-                  /> 
+                  {can(['currency_update']) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(currency)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={commonT('actions.edit')}
+                    />
+                  )}
+                  {can(['currency_delete']) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(currency)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={commonT('actions.delete')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
                 </div>
               </td>
             </tr>

@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Product } from '@/types/product';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface ProductTableProps {
   products: Product[];
@@ -12,6 +13,7 @@ interface ProductTableProps {
 export default function ProductTable({ products, onEdit, onDelete }: ProductTableProps) {
   const t = useTranslations('pages.products');
   const tCommon = useTranslations('common');
+  const { can } = usePermissions();
 
   if (!Array.isArray(products)) {
     return null;
@@ -90,21 +92,25 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(product)}
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={tCommon('actions.edit')}
-                  />
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(product)}
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={tCommon('actions.delete')}
-                    style={{ color: '#dc2626' }}
-                  /> 
+                  {can(["product_update"]) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(product)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={tCommon('actions.edit')}
+                    />
+                  )}
+                  {can(["product_delete"]) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(product)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={tCommon('actions.delete')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
                 </div>
               </td>
             </tr>

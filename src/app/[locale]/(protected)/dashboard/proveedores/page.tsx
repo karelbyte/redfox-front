@@ -14,9 +14,11 @@ import { ProviderFormRef } from "@/components/Provider/ProviderForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import Loading from '@/components/Loading/Loading';
 import Pagination from "@/components/Pagination/Pagination";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function ProvidersPage() {
   const t = useTranslations('pages.providers');
+  const { can } = usePermissions();
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -96,21 +98,27 @@ export default function ProvidersPage() {
     fetchProviders(page, searchTerm);
   };
 
+  if (!can(["provider_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={() => {
-            setSelectedProvider(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newProvider')}
-        </Btn>
+        {can(["provider_create"]) && (
+          <Btn
+            onClick={() => {
+              setSelectedProvider(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newProvider')}
+          </Btn>
+        )}
       </div>
 
       {/* Filtro de búsqueda */}

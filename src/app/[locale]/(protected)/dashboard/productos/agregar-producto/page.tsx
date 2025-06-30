@@ -6,10 +6,12 @@ import { Product } from '@/types/product';
 import { ProductFormRef } from '@/components/Product/ProductForm';
 import { toastService } from '@/services/toast.service';
 import { Btn } from '@/components/atoms';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function AgregarProductoPage() {
   const t = useTranslations('pages.products');
   const tCommon = useTranslations('common');
+  const { can } = usePermissions();
   const [product] = useState<Product | null>(null);
   const formRef = useRef<ProductFormRef>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,6 +29,10 @@ export default function AgregarProductoPage() {
       formRef.current.reset();
     }
   };
+
+  if (!can(["product_create"])) {
+    return <div>{t("noPermission")}</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

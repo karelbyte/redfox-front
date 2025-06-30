@@ -13,9 +13,11 @@ import DeleteCurrencyModal from '@/components/Currency/DeleteCurrencyModal';
 import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function CurrenciesPage() {
   const t = useTranslations('pages.currencies');
+  const { can } = usePermissions();
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [selectedCurrency, setSelectedCurrency] = useState<Currency | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -95,21 +97,27 @@ export default function CurrenciesPage() {
     fetchCurrencies(page, searchTerm);
   };
 
+  if (!can(["currency_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={() => {
-            setSelectedCurrency(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newCurrency')}
-        </Btn>
+        {can(["currency_create"]) && (
+          <Btn
+            onClick={() => {
+              setSelectedCurrency(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newCurrency')}
+          </Btn>
+        )}
       </div>
 
       {/* Filtro de búsqueda */}

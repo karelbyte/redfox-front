@@ -5,6 +5,7 @@ import { WarehouseOpening } from "@/types/warehouse-opening";
 import { Warehouse } from "@/types/warehouse";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Btn } from "@/components/atoms";
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface WarehouseOpeningTableProps {
   openings: WarehouseOpening[];
@@ -22,7 +23,7 @@ export default function WarehouseOpeningTable({
   onDelete,
 }: WarehouseOpeningTableProps) {
   const t = useTranslations('pages.warehouseOpenings');
-  
+  const { can } = usePermissions();
   if (!Array.isArray(openings)) {
     return null;
   }
@@ -132,28 +133,28 @@ export default function WarehouseOpeningTable({
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
+                  {can(["warehouse_opening_update"]) && <Btn
                     onClick={() => onEdit(opening)}
                     variant="ghost"
                     size="sm"
                     leftIcon={<PencilIcon className="h-4 w-4" />}
                     title={t('actions.edit')}
-                  />
-                  <Btn
+                  />}
+                  {can(["warehouse_opening_read"]) && <Btn
                     onClick={() => onViewDetails(opening)}
                     variant="ghost"
                     size="sm"
                     leftIcon={<EyeIcon className="h-4 w-4" />}
                     title={t('actions.viewDetails')}
-                  />
-                  <Btn
+                  />}
+                  {can(["warehouse_opening_delete"]) && <Btn
                     onClick={() => onDelete(opening)}
                     variant="ghost"
                     size="sm"
                     leftIcon={<TrashIcon className="h-4 w-4" />}
                     title={t('actions.delete')}
                     style={{ color: '#dc2626' }}
-                  />
+                  />}
                 </div>
               </td>
             </tr>

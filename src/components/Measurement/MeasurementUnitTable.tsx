@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { MeasurementUnit } from '@/types/measurement-unit';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface MeasurementUnitTableProps {
   units: MeasurementUnit[];
@@ -12,6 +13,7 @@ interface MeasurementUnitTableProps {
 export default function MeasurementUnitTable({ units, onEdit, onDelete }: MeasurementUnitTableProps) {
   const t = useTranslations('pages.measurementUnits');
   const commonT = useTranslations('common');
+  const { can } = usePermissions();
 
   if (!Array.isArray(units)) {
     return null;
@@ -69,21 +71,25 @@ export default function MeasurementUnitTable({ units, onEdit, onDelete }: Measur
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(unit)}
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={commonT('actions.edit')}
-                  />
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(unit)}
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={commonT('actions.delete')}
-                    style={{ color: '#dc2626' }}
-                  /> 
+                  {can(["measurement_unit_update"]) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(unit)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={commonT('actions.edit')}
+                    />
+                  )}
+                  {can(["measurement_unit_delete"]) && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(unit)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={commonT('actions.delete')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
                 </div>
               </td>
             </tr>

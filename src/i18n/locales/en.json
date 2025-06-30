@@ -107,7 +107,27 @@
       "logout": "Logout",
       "userName": "Name",
       "userEmail": "Email",
-      "userRole": "Role"
+      "userRole": "Role",
+      "welcome": "Welcome",
+      "stats": {
+        "totalSales": "Total Sales",
+        "salesToday": "today",
+        "totalRevenue": "Total Revenue",
+        "revenueToday": "today",
+        "activeWarehouses": "Active Warehouses",
+        "operationalWarehouses": "operational warehouses",
+        "products": "Products",
+        "lowStock": "with low stock",
+        "pendingReceptions": "Pending Receptions",
+        "toProcess": "to process"
+      },
+      "warehouses": {
+        "status": "Warehouse Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "products": "Products",
+        "lowStock": "Low stock"
+      }
     },
     "warehouses": {
       "title": "Warehouses List",
@@ -118,6 +138,7 @@
       "noWarehouses": "No warehouses",
       "noWarehousesDesc": "Click on 'New Warehouse' to add one.",
       "noResultsDesc": "No results found",
+      "noPermission": "You don't have permission to view this page",
       "form": {
         "title": "Warehouse Information",
         "subtitle": "Complete the information to create a new warehouse",
@@ -377,6 +398,7 @@
       "noTaxes": "No taxes",
       "noTaxesDesc": "Click on 'New Tax' to add one.",
       "noResultsDesc": "No results found",
+      "noPermission": "You don't have permission to view this page",
       "form": {
         "code": "Code",
         "name": "Name",
@@ -478,6 +500,7 @@
       "noUnits": "No measurement units",
       "noUnitsDesc": "Click on 'New Unit' to add one.",
       "noResultsDesc": "No results found",
+      "noPermission": "You don't have permission to view this page",
       "form": {
         "code": "Code",
         "description": "Description",
@@ -519,6 +542,7 @@
       "noProviders": "No providers",
       "noProvidersDesc": "Click on 'New Provider' to add one.",
       "noResultsDesc": "No results found",
+      "noPermission": "You don't have permission to view this page",
       "form": {
         "code": "Code",
         "name": "Name",
@@ -574,6 +598,7 @@
       "noClients": "No clients",
       "noClientsDesc": "Click on 'New Client' to add one.",
       "noResultsDesc": "No results found",
+      "noPermission": "You don't have permission to view this page",
       "form": {
         "code": "Code",
         "name": "Name",

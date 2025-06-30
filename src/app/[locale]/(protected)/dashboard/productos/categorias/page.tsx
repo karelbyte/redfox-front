@@ -15,9 +15,11 @@ import { CategoryFormRef } from "@/components/Category/CategoryForm";
 import Loading from "@/components/Loading/Loading";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { usePermissions } from "@/hooks/usePermissions";
 
 export default function CategoriesPage() {
   const t = useTranslations('pages.categories');
+  const { can } = usePermissions();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -102,21 +104,27 @@ export default function CategoriesPage() {
     fetchCategories(page, searchTerm);
   };
 
+  if (!can(["category_module_view"])) {
+    return <div>{t("noPermission")}</div>;
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold" style={{ color: 'rgb(var(--color-primary-800))' }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={() => {
-            setEditingCategory(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newCategory')}
-        </Btn>
+        {can(["category_create"]) && (
+          <Btn
+            onClick={() => {
+              setEditingCategory(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newCategory')}
+          </Btn>
+        )}
       </div>
 
       {/* Filtro de búsqueda */}
