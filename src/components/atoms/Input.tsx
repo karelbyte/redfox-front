@@ -17,16 +17,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     style,
     ...props 
   }, ref) => {
-    const baseInputStyles: React.CSSProperties & { [key: string]: string } = {
+    const baseInputStyles: React.CSSProperties = {
       border: `1px solid rgb(var(--color-secondary-300))`,
-      '--tw-ring-color': `rgb(var(--color-primary-500))`,
-      '--tw-ring-offset-color': 'white',
+      ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+      ['--tw-ring-offset-color' as string]: 'white',
     };
 
-    const errorInputStyles: React.CSSProperties & { [key: string]: string } = {
+    const errorInputStyles: React.CSSProperties = {
       border: `1px solid rgb(var(--color-primary-500))`,
-      '--tw-ring-color': `rgb(var(--color-primary-500))`,
-      '--tw-ring-offset-color': 'white',
+      ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+      ['--tw-ring-offset-color' as string]: 'white',
     };
 
     const inputStyles = error ? { ...baseInputStyles, ...errorInputStyles } : baseInputStyles;

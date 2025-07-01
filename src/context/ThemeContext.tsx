@@ -195,42 +195,60 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Cargar tema desde localStorage al montar el componente
   useEffect(() => {
-    const savedTheme = localStorage.getItem('nitro-theme') as ThemeType
-    if (savedTheme && themeConfig[savedTheme]) {
-      setCurrentTheme(savedTheme)
+    if (typeof window !== 'undefined') {
+      try {
+        const savedTheme = localStorage.getItem('nitro-theme') as ThemeType
+        if (savedTheme && themeConfig[savedTheme]) {
+          setCurrentTheme(savedTheme)
+        }
+      } catch (error) {
+        console.warn('Error loading theme from localStorage:', error)
+      }
     }
   }, [])
 
   // Aplicar las variables CSS cuando cambie el tema
   useEffect(() => {
-    const theme = themeConfig[currentTheme]
-    const root = document.documentElement
+    if (typeof window !== 'undefined') {
+      try {
+        const theme = themeConfig[currentTheme]
+        const root = document.documentElement
 
-    // Aplicar variables CSS para primary
-    Object.entries(theme.colors.primary).forEach(([shade, rgb]) => {
-      root.style.setProperty(`--color-primary-${shade}`, rgb)
-    })
+        // Aplicar variables CSS para primary
+        Object.entries(theme.colors.primary).forEach(([shade, rgb]) => {
+          root.style.setProperty(`--color-primary-${shade}`, rgb)
+        })
 
-    // Aplicar variables CSS para secondary
-    Object.entries(theme.colors.secondary).forEach(([shade, rgb]) => {
-      root.style.setProperty(`--color-secondary-${shade}`, rgb)
-    })
+        // Aplicar variables CSS para secondary
+        Object.entries(theme.colors.secondary).forEach(([shade, rgb]) => {
+          root.style.setProperty(`--color-secondary-${shade}`, rgb)
+        })
 
-    // Aplicar colores para el scrollbar
-    const scrollbarColor = currentTheme === 'red' ? '#ef4444' : 
-                          currentTheme === 'blue' ? '#3b82f6' : 
-                          currentTheme === 'gray' ? '#6b7280' : 
-                          currentTheme === 'brown' ? '#593413' : '#6b7c6b'
-    
-    root.style.setProperty('--scrollbar-thumb', scrollbarColor)
-    
-    // Actualizar clases del body para el tema
-    document.body.setAttribute('data-theme', currentTheme)
+        // Aplicar colores para el scrollbar
+        const scrollbarColor = currentTheme === 'red' ? '#ef4444' : 
+                              currentTheme === 'blue' ? '#3b82f6' : 
+                              currentTheme === 'gray' ? '#6b7280' : 
+                              currentTheme === 'brown' ? '#593413' : '#6b7c6b'
+        
+        root.style.setProperty('--scrollbar-thumb', scrollbarColor)
+        
+        // Actualizar clases del body para el tema
+        document.body.setAttribute('data-theme', currentTheme)
+      } catch (error) {
+        console.warn('Error applying theme CSS variables:', error)
+      }
+    }
   }, [currentTheme])
 
   const setTheme = (theme: ThemeType) => {
     setCurrentTheme(theme)
-    localStorage.setItem('nitro-theme', theme)
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('nitro-theme', theme)
+      } catch (error) {
+        console.warn('Error saving theme to localStorage:', error)
+      }
+    }
   }
 
   const contextValue: ThemeContextType = {

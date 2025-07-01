@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLocale } from 'next-intl';
@@ -10,14 +10,19 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const locale = useLocale();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && !isLoading && !isAuthenticated) {
       router.push(`/${locale}/login`);
     }
-  }, [isAuthenticated, isLoading, router, locale]);
+  }, [isAuthenticated, isLoading, router, locale, isClient]);
 
-  if (isLoading) {
+  if (!isClient || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loading size="lg" />

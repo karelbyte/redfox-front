@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { locales, type Locale } from '@/i18n/config';
 
@@ -9,10 +9,15 @@ const LANGUAGE_STORAGE_KEY = 'nitro-language';
 export function LanguageInitializer() {
   const router = useRouter();
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     // Only run on client side
-    if (typeof window === 'undefined') return;
+    if (!isClient || typeof window === 'undefined') return;
 
     try {
       // Get stored language
@@ -35,7 +40,7 @@ export function LanguageInitializer() {
     } catch (error) {
       console.warn('Error initializing language from localStorage:', error);
     }
-  }, [pathname, router]);
+  }, [pathname, router, isClient]);
 
   // This component doesn't render anything
   return null;

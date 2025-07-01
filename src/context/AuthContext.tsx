@@ -40,8 +40,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
+        if (typeof window !== 'undefined') {
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser);
+        }
       } catch (error) {
         console.error('Error initializing auth:', error);
       } finally {
@@ -49,7 +51,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    initAuth();
+    // Solo ejecutar en el cliente
+    if (typeof window !== 'undefined') {
+      initAuth();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const login = async (email: string, password: string) => {

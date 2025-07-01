@@ -29,6 +29,14 @@ interface UserFormData {
   status: boolean;
 }
 
+interface UserFormErrors {
+  name?: string;
+  email?: string;
+  password?: string;
+  roleIds?: string;
+  status?: string;
+}
+
 const UserForm = forwardRef<UserFormRef, UserFormProps>(
   ({ user, onSuccess, onSavingChange, onValidChange }, ref) => {
     const t = useTranslations('pages.users');
@@ -39,13 +47,14 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
       roleIds: [],
       status: true
     });
-    const [errors, setErrors] = useState<Partial<UserFormData>>({});
+    const [errors, setErrors] = useState<UserFormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [roles, setRoles] = useState<Role[]>([]);
     const [loadingRoles, setLoadingRoles] = useState(false);
 
     useEffect(() => {
       fetchRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -78,7 +87,7 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
     };
 
     const validateForm = (): boolean => {
-      const newErrors: Partial<UserFormData> = {};
+      const newErrors: UserFormErrors = {};
 
       if (!formData.name.trim()) {
         newErrors.name = t('form.validation.nameRequired');

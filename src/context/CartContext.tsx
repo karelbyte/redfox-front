@@ -35,10 +35,18 @@ class CartStateManager {
   private listeners: Set<(cart: CartItem[], selectedClient: string) => void> = new Set();
 
   private constructor() {
-    this.loadFromStorage();
+    // Solo cargar desde localStorage en el cliente
+    if (typeof window !== 'undefined') {
+      this.loadFromStorage();
+    }
   }
 
   static getInstance(): CartStateManager {
+    if (typeof window === 'undefined') {
+      // En SSR, crear una instancia temporal sin localStorage
+      return new CartStateManager();
+    }
+    
     if (!CartStateManager.instance) {
       CartStateManager.instance = new CartStateManager();
     }
@@ -46,6 +54,9 @@ class CartStateManager {
   }
 
   private loadFromStorage() {
+    // Solo ejecutar en el cliente
+    if (typeof window === 'undefined') return;
+
     try {
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       if (savedCart) {
@@ -58,24 +69,42 @@ class CartStateManager {
       }
     } catch (error) {
       console.error('Error loading cart from localStorage:', error);
-      localStorage.removeItem(CART_STORAGE_KEY);
-      localStorage.removeItem('pos_selected_client');
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.removeItem(CART_STORAGE_KEY);
+          localStorage.removeItem('pos_selected_client');
+        } catch (cleanupError) {
+          console.warn('Error cleaning up localStorage:', cleanupError);
+        }
+      }
     }
   }
 
   private saveToStorage() {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(this.cart));
-    localStorage.setItem('pos_selected_client', this.selectedClient);
+    // Solo ejecutar en el cliente
+    if (typeof window === 'undefined') return;
+
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(this.cart));
+      localStorage.setItem('pos_selected_client', this.selectedClient);
+    } catch (error) {
+      console.error('Error saving cart to localStorage:', error);
+    }
   }
 
   private notifyListeners() {
-    this.listeners.forEach(listener => listener([...this.cart], this.selectedClient));
+    // Solo notificar en el cliente
+    if (typeof window !== 'undefined') {
+      this.listeners.forEach(listener => listener([...this.cart], this.selectedClient));
+    }
   }
 
   subscribe(listener: (cart: CartItem[], selectedClient: string) => void) {
     this.listeners.add(listener);
-    // Notificar inmediatamente con el estado actual
-    listener([...this.cart], this.selectedClient);
+    // Notificar inmediatamente con el estado actual solo en el cliente
+    if (typeof window !== 'undefined') {
+      listener([...this.cart], this.selectedClient);
+    }
     
     return () => {
       this.listeners.delete(listener);
@@ -83,89 +112,120 @@ class CartStateManager {
   }
 
   setSelectedClient(clientId: string) {
-    this.selectedClient = clientId;
-    this.saveToStorage();
-    this.notifyListeners();
+    try {
+      this.selectedClient = clientId;
+      this.saveToStorage();
+      this.notifyListeners();
+    } catch (error) {
+      console.error('Error setting selected client:', error);
+    }
   }
 
   getSelectedClient(): string {
-    return this.selectedClient;
+    try {
+      return this.selectedClient;
+    } catch (error) {
+      console.error('Error getting selected client:', error);
+      return '';
+    }
   }
 
   addToCart(product: InventoryProduct) {
-    const existingItem = this.cart.find(item => item.product.id === product.id);
-    const productPrice = typeof product.price === 'string' ? parseFloat(product.price) : (typeof product.price === 'number' ? product.price : 0);
-    
-    if (existingItem) {
-      this.cart = this.cart.map(item =>
-        item.product.id === product.id
-          ? { 
-              ...item, 
-              quantity: item.quantity + 1, 
-              subtotal: (item.quantity + 1) * productPrice 
-            }
-          : item
-      );
-    } else {
-      const newItem: CartItem = {
-        product,
-        quantity: 1,
-        price: productPrice,
-        subtotal: productPrice
-      };
-      this.cart = [...this.cart, newItem];
+    try {
+      const existingItem = this.cart.find(item => item.product.id === product.id);
+      const productPrice = typeof product.price === 'string' ? parseFloat(product.price) : (typeof product.price === 'number' ? product.price : 0);
+      
+      if (existingItem) {
+        this.cart = this.cart.map(item =>
+          item.product.id === product.id
+            ? { 
+                ...item, 
+                quantity: item.quantity + 1, 
+                subtotal: (item.quantity + 1) * productPrice 
+              }
+            : item
+        );
+      } else {
+        const newItem: CartItem = {
+          product,
+          quantity: 1,
+          price: productPrice,
+          subtotal: productPrice
+        };
+        this.cart = [...this.cart, newItem];
+      }
+      
+      this.saveToStorage();
+      this.notifyListeners();
+    } catch (error) {
+      console.error('Error adding to cart:', error);
     }
-    
-    this.saveToStorage();
-    this.notifyListeners();
   }
 
   updateQuantity(productId: string, quantity: number) {
-    if (quantity <= 0) {
-      this.removeFromCart(productId);
-      return;
-    }
+    try {
+      if (quantity <= 0) {
+        this.removeFromCart(productId);
+        return;
+      }
 
-    this.cart = this.cart.map(item =>
-      item.product.id === productId
-        ? { 
-            ...item, 
-            quantity, 
-            subtotal: quantity * (typeof item.price === 'string' ? parseFloat(item.price) : (typeof item.price === 'number' ? item.price : 0)) 
-          }
-        : item
-    );
-    
-    this.saveToStorage();
-    this.notifyListeners();
+      this.cart = this.cart.map(item =>
+        item.product.id === productId
+          ? { 
+              ...item, 
+              quantity, 
+              subtotal: quantity * (typeof item.price === 'string' ? parseFloat(item.price) : (typeof item.price === 'number' ? item.price : 0)) 
+            }
+          : item
+      );
+      
+      this.saveToStorage();
+      this.notifyListeners();
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+    }
   }
 
   updatePrice(productId: string, price: number) {
-    const validPrice = typeof price === 'number' ? price : 0;
-    this.cart = this.cart.map(item =>
-      item.product.id === productId
-        ? { 
-            ...item, 
-            price: validPrice, 
-            subtotal: item.quantity * validPrice 
-          }
-        : item
-    );
-    
-    this.saveToStorage();
-    this.notifyListeners();
+    try {
+      const validPrice = typeof price === 'number' ? price : 0;
+      this.cart = this.cart.map(item =>
+        item.product.id === productId
+          ? { 
+              ...item, 
+              price: validPrice, 
+              subtotal: item.quantity * validPrice 
+            }
+          : item
+      );
+      
+      this.saveToStorage();
+      this.notifyListeners();
+    } catch (error) {
+      console.error('Error updating price:', error);
+    }
   }
 
   removeFromCart(productId: string) {
-    this.cart = this.cart.filter(item => item.product.id !== productId);
-    this.saveToStorage();
-    this.notifyListeners();
+    try {
+      this.cart = this.cart.filter(item => item.product.id !== productId);
+      this.saveToStorage();
+      this.notifyListeners();
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+    }
   }
 
   clearCart() {
     this.cart = [];
-    localStorage.removeItem(CART_STORAGE_KEY);
-    localStorage.removeItem('pos_selected_client');
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+        localStorage.removeItem('pos_selected_client');
+      } catch (error) {
+        console.warn('Error clearing localStorage:', error);
+      }
+    }
     this.notifyListeners();
   }
 
@@ -183,38 +243,74 @@ class CartStateManager {
   }
 
   getTotalQuantity(): number {
-    return this.cart.reduce((total, item) => total + item.quantity, 0);
+    try {
+      return this.cart.reduce((total, item) => total + item.quantity, 0);
+    } catch (error) {
+      console.error('Error calculating total quantity:', error);
+      return 0;
+    }
   }
 }
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>('');
+  const [isClient, setIsClient] = useState(false);
   const cartManager = CartStateManager.getInstance();
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+    
     const unsubscribe = cartManager.subscribe((newCart, newSelectedClient) => {
       setCart(newCart);
       setSelectedClient(newSelectedClient);
     });
     return unsubscribe;
-  }, []);
+  }, [cartManager, isClient]);
 
-  const value: CartContextType = {
+  const contextValue: CartContextType = {
     cart,
     selectedClient,
-    addToCart: (product) => cartManager.addToCart(product),
-    updateQuantity: (productId, quantity) => cartManager.updateQuantity(productId, quantity),
-    updatePrice: (productId, price) => cartManager.updatePrice(productId, price),
-    removeFromCart: (productId) => cartManager.removeFromCart(productId),
-    clearCart: () => cartManager.clearCart(),
-    setSelectedClient: (clientId) => cartManager.setSelectedClient(clientId),
-    getTotal: () => cartManager.getTotal(),
-    getTotalQuantity: () => cartManager.getTotalQuantity()
+    addToCart: (product: InventoryProduct) => {
+      if (!isClient) return;
+      cartManager.addToCart(product);
+    },
+    updateQuantity: (productId: string, quantity: number) => {
+      if (!isClient) return;
+      cartManager.updateQuantity(productId, quantity);
+    },
+    updatePrice: (productId: string, price: number) => {
+      if (!isClient) return;
+      cartManager.updatePrice(productId, price);
+    },
+    removeFromCart: (productId: string) => {
+      if (!isClient) return;
+      cartManager.removeFromCart(productId);
+    },
+    clearCart: () => {
+      if (!isClient) return;
+      cartManager.clearCart();
+    },
+    setSelectedClient: (clientId: string) => {
+      if (!isClient) return;
+      cartManager.setSelectedClient(clientId);
+    },
+    getTotal: () => {
+      if (!isClient) return 0;
+      return cartManager.getTotal();
+    },
+    getTotalQuantity: () => {
+      if (!isClient) return 0;
+      return cartManager.getTotalQuantity();
+    },
   };
 
   return (
-    <CartContext.Provider value={value}>
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );

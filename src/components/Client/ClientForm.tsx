@@ -137,6 +137,8 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
           address: formData.address.trim(),
           tax_document: formData.tax_document.trim(),
           status: formData.status,
+          updated_at: new Date().toISOString(),
+          deleted_at: null,
         };
 
         if (client) {

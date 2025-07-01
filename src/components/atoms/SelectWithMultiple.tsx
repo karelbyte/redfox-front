@@ -39,6 +39,9 @@ const SelectWithMultiple: React.FC<SelectWithMultipleProps> = ({
   const defaultPlaceholder = placeholder || t('placeholder');
 
   useEffect(() => {
+    // Solo ejecutar en el cliente
+    if (typeof window === 'undefined') return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -46,9 +49,7 @@ const SelectWithMultiple: React.FC<SelectWithMultipleProps> = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleToggle = () => {
@@ -74,14 +75,14 @@ const SelectWithMultiple: React.FC<SelectWithMultipleProps> = ({
 
   const baseStyles: React.CSSProperties = {
     border: `1px solid rgb(var(--color-secondary-300))`,
-    '--tw-ring-color': `rgb(var(--color-primary-500))`,
-    '--tw-ring-offset-color': 'white',
+    ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+    ['--tw-ring-offset-color' as string]: 'white',
   };
 
   const errorStyles: React.CSSProperties = {
     border: `1px solid rgb(var(--color-primary-500))`,
-    '--tw-ring-color': `rgb(var(--color-primary-500))`,
-    '--tw-ring-offset-color': 'white',
+    ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+    ['--tw-ring-offset-color' as string]: 'white',
   };
 
   const selectStyles = error ? { ...baseStyles, ...errorStyles } : baseStyles;

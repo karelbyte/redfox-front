@@ -109,6 +109,9 @@ const SearchSelect = ({
 
   // Cerrar dropdown cuando se hace clic fuera
   useEffect(() => {
+    // Solo ejecutar en el cliente
+    if (typeof window === 'undefined') return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);

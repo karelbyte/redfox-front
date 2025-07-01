@@ -31,7 +31,6 @@ export default function RolesPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
   const formRef = useRef<RoleFormRef>(null);
 
   const fetchRoles = useCallback(async (page: number = 1) => {
@@ -84,7 +83,6 @@ export default function RolesPage() {
     if (!roleToDelete) return;
 
     try {
-      setIsDeleting(true);
       await rolesService.deleteRole(roleToDelete.id);
       toastService.success(t('messages.successDeleted', { item: t('title') }));
       fetchRoles(currentPage);
@@ -92,8 +90,6 @@ export default function RolesPage() {
     } catch (error) {
       console.error('Error deleting role:', error);
       toastService.error(t('messages.errorDeleting'));
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -216,7 +212,6 @@ export default function RolesPage() {
         isOpen={!!roleToDelete}
         onClose={() => setRoleToDelete(null)}
         onConfirm={handleConfirmDelete}
-        loading={isDeleting}
       />
     </div>
   );

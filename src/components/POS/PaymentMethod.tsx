@@ -7,7 +7,7 @@ import { Input } from '@/components/atoms';
 interface PaymentMethodProps {
   paymentMethod: 'cash' | 'card';
   cashAmount: number;
-  total: number;
+  total?: number;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
   onCashAmountChange: (amount: number) => void;
   getChange: () => number;
@@ -16,7 +16,6 @@ interface PaymentMethodProps {
 export default function PaymentMethod({
   paymentMethod,
   cashAmount,
-  total,
   onPaymentMethodChange,
   onCashAmountChange,
   getChange

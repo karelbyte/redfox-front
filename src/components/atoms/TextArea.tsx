@@ -17,16 +17,16 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     style,
     ...props 
   }, ref) => {
-    const baseTextAreaStyles: React.CSSProperties & { [key: string]: string } = {
+    const baseTextAreaStyles: React.CSSProperties = {
       border: `1px solid rgb(var(--color-secondary-300))`,
-      '--tw-ring-color': `rgb(var(--color-primary-500))`,
-      '--tw-ring-offset-color': 'white',
+      ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+      ['--tw-ring-offset-color' as string]: 'white',
     };
 
-    const errorTextAreaStyles: React.CSSProperties & { [key: string]: string } = {
+    const errorTextAreaStyles: React.CSSProperties = {
       border: `1px solid rgb(var(--color-primary-500))`,
-      '--tw-ring-color': `rgb(var(--color-primary-500))`,
-      '--tw-ring-offset-color': 'white',
+      ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+      ['--tw-ring-offset-color' as string]: 'white',
     };
 
     const textAreaStyles = error ? { ...baseTextAreaStyles, ...errorTextAreaStyles } : baseTextAreaStyles;

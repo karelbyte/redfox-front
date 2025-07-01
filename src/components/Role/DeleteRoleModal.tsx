@@ -9,15 +9,13 @@ interface DeleteRoleModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  loading: boolean;
 }
 
 export default function DeleteRoleModal({
   role,
   isOpen,
   onClose,
-  onConfirm,
-  loading
+  onConfirm
 }: DeleteRoleModalProps) {
   const t = useTranslations('pages.roles');
 
@@ -28,7 +26,6 @@ export default function DeleteRoleModal({
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
-      loading={loading}
       title={t('deleteModal.title', { item: t('title') })}
       message={t('deleteModal.message', { 
         item: t('title'), 

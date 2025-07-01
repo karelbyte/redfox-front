@@ -8,7 +8,6 @@ import { inventoryService, InventoryProduct } from '@/services/inventory.service
 import { toastService } from '@/services/toast.service';
 import { SaleFormData } from '@/types/sale';
 import { Client } from '@/types/client';
-import Loading from '@/components/Loading/Loading';
 import Drawer from '@/components/Drawer/Drawer';
 import ClientForm from '@/components/Client/ClientForm';
 import { ClientFormRef } from '@/components/Client/ClientForm';
@@ -21,7 +20,6 @@ export default function POSPage() {
   const t = useTranslations('pages.pos');
   const [loading, setLoading] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const [loadingClients, setLoadingClients] = useState(true);
   const [clients, setClients] = useState<Client[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<InventoryProduct[]>([]);
@@ -77,7 +75,7 @@ export default function POSPage() {
       setLoadingProducts(true);
       const response = await inventoryService.getInventoryProducts(1);
       setFilteredProducts(response.data || []);
-    } catch (error) {
+    } catch {
       toastService.error(t('messages.errorLoadingProducts'));
     } finally {
       setLoadingProducts(false);
@@ -89,7 +87,7 @@ export default function POSPage() {
       setLoadingProducts(true);
       const response = await inventoryService.getInventoryProducts(1, term);
       setFilteredProducts(response.data || []);
-    } catch (error) {
+    } catch {
       toastService.error(t('messages.errorSearchingProducts'));
     } finally {
       setLoadingProducts(false);
@@ -98,14 +96,13 @@ export default function POSPage() {
 
   const fetchClients = useCallback(async () => {
     try {
-      setLoadingClients(true);
       const response = await clientsService.getClients();
       setClients(response.data || []);
     } catch {
       toastService.error(t('messages.errorLoadingClients'));
     } finally {
-      setLoadingClients(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getChange = () => {

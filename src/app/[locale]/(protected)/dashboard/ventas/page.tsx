@@ -244,6 +244,7 @@ export default function VentasPage() {
 
       {/* Modal para cerrar venta */}
       <CloseSaleModal
+        isOpen={!!saleToClose}
         sale={saleToClose}
         onClose={() => setSaleToClose(null)}
         onConfirm={handleClose}

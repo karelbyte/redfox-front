@@ -244,6 +244,7 @@ export default function RecepcionesPage() {
 
       {/* Modal para cerrar recepción */}
       <CloseReceptionModal
+        isOpen={!!receptionToClose}
         reception={receptionToClose}
         onClose={() => setReceptionToClose(null)}
         onConfirm={handleClose}

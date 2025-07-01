@@ -32,16 +32,16 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     // Usar placeholder traducido por defecto si no se proporciona uno
     const defaultPlaceholder = placeholder || t('placeholder');
 
-    const baseSelectStyles: React.CSSProperties & { [key: string]: string } = {
+    const baseSelectStyles: React.CSSProperties = {
       border: `1px solid rgb(var(--color-secondary-300))`,
-      '--tw-ring-color': `rgb(var(--color-primary-500))`,
-      '--tw-ring-offset-color': 'white',
+      ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+      ['--tw-ring-offset-color' as string]: 'white',
     };
 
-    const errorSelectStyles: React.CSSProperties & { [key: string]: string } = {
+    const errorSelectStyles: React.CSSProperties = {
       border: `1px solid rgb(var(--color-primary-500))`,
-      '--tw-ring-color': `rgb(var(--color-primary-500))`,
-      '--tw-ring-offset-color': 'white',
+      ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+      ['--tw-ring-offset-color' as string]: 'white',
     };
 
     const selectStyles = error ? { ...baseSelectStyles, ...errorSelectStyles } : baseSelectStyles;

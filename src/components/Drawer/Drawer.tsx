@@ -30,22 +30,29 @@ interface DrawerProviderProps {
 export const DrawerProvider = ({ children }: DrawerProviderProps) => {
   const [drawerStack, setDrawerStack] = useState<string[]>([]);
   const [drawerParents, setDrawerParents] = useState<Map<string, string>>(new Map());
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const openDrawer = useCallback((id: string, parentId?: string) => {
+    if (!isClient) return;
     setDrawerStack(prev => [...prev, id]);
     if (parentId) {
       setDrawerParents(prev => new Map(prev).set(id, parentId));
     }
-  }, []);
+  }, [isClient]);
 
   const closeDrawer = useCallback((id: string) => {
+    if (!isClient) return;
     setDrawerStack(prev => prev.filter(drawerId => drawerId !== id));
     setDrawerParents(prev => {
       const newMap = new Map(prev);
       newMap.delete(id);
       return newMap;
     });
-  }, []);
+  }, [isClient]);
 
   const isDrawerOpen = useCallback((id: string) => drawerStack.includes(id), [drawerStack]);
 

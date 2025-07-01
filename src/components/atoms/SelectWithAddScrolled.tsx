@@ -62,6 +62,9 @@ const SelectWithAddScrolled: React.FC<SelectWithAddScrolledProps> = ({
 
   // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
+    // Solo ejecutar en el cliente
+    if (typeof window === 'undefined') return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -69,9 +72,7 @@ const SelectWithAddScrolled: React.FC<SelectWithAddScrolledProps> = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Simular el evento onChange del select original

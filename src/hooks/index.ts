@@ -1,3 +1,3 @@
 export { useLanguage } from './useLanguage';
-export { useLocale } from './useLocale';
+export { useLocaleUtils } from './useLocale';
 export { usePermissions } from './usePermissions'; 

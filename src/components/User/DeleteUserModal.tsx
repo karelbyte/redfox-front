@@ -9,15 +9,13 @@ interface DeleteUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  loading: boolean;
 }
 
 export default function DeleteUserModal({
   user,
   isOpen,
   onClose,
-  onConfirm,
-  loading
+  onConfirm
 }: DeleteUserModalProps) {
   const t = useTranslations('pages.users');
 
@@ -28,7 +26,6 @@ export default function DeleteUserModal({
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
-      loading={loading}
       title={t('deleteModal.title', { item: t('title') })}
       message={t('deleteModal.message', { 
         item: t('title'), 

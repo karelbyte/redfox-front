@@ -337,8 +337,7 @@ const ProductDetailsForm = forwardRef<
                 <img
                   src={`${process.env.NEXT_PUBLIC_URL_API}${image}`}
                   alt={`${product.name} - Imagen ${index + 1}`}
-                  fill
-                  className="object-cover rounded-lg border group-hover:opacity-90 transition-opacity"
+                  className="w-full h-full object-cover rounded-lg border group-hover:opacity-90 transition-opacity"
                   style={{ borderColor: `rgb(var(--color-primary-200))` }}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-200 rounded-lg flex items-center justify-center">

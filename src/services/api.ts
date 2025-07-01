@@ -1,14 +1,18 @@
 const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'http://localhost:3000') + '/api';
 
 const handleUnauthorized = () => {
-  localStorage.removeItem('token');
-  window.location.href = '/login';
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }
 };
 
 const getHeaders = (isFormData = false) => {
-  const headers: Record<string, string> = {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  };
+  const headers: Record<string, string> = {};
+  
+  if (typeof window !== 'undefined') {
+    headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+  }
 
   if (!isFormData) {
     headers['Content-Type'] = 'application/json';

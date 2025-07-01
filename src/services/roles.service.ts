@@ -13,12 +13,22 @@ export const rolesService = {
   },
 
   async createRole(roleData: RoleFormData): Promise<Role> {
-    const response = await api.post<Role>('/roles', roleData);
+    const data = {
+      code: roleData.code,
+      description: roleData.description,
+      status: roleData.status
+    };
+    const response = await api.post<Role>('/roles', data);
     return response;
   },
 
   async updateRole(id: string, roleData: RoleFormData): Promise<Role> {
-    const response = await api.put<Role>(`/roles/${id}`, roleData);
+    const data = {
+      code: roleData.code,
+      description: roleData.description,
+      status: roleData.status
+    };
+    const response = await api.put<Role>(`/roles/${id}`, data);
     return response;
   },
 

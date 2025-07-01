@@ -44,7 +44,6 @@ export default function CreateReceptionPage() {
   useEffect(() => {
     fetchProviders();
     fetchWarehouses();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -57,7 +56,7 @@ export default function CreateReceptionPage() {
       setLoadingProviders(true);
       const response = await providersService.getProviders();
       setProviders(response.data || []);
-    } catch (error) {
+    } catch  {
       toastService.error('Error al cargar proveedores');
     } finally {
       setLoadingProviders(false);
@@ -69,7 +68,7 @@ export default function CreateReceptionPage() {
       setLoadingWarehouses(true);
       const response = await warehousesService.getWarehouses({ isClosed: true });
       setWarehouses(response.data || []);
-    } catch (error) {
+    } catch  {
       toastService.error('Error al cargar almacenes');
     } finally {
       setLoadingWarehouses(false);
@@ -255,6 +254,7 @@ export default function CreateReceptionPage() {
               {/* Proveedor */}
               <div>
                 <SelectWithAdd
+                  id="provider-select"
                   label={t('form.provider')}
                   placeholder="Seleccione un proveedor"
                   value={formData.provider_id}

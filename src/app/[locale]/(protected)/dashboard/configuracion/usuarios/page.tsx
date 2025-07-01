@@ -189,7 +189,6 @@ export default function UsersPage() {
           isOpen={isDeleteModalOpen}
           onClose={handleDeleteModalClose}
           onConfirm={handleDeleteSuccess}
-          loading={isSaving}
         />
       )}
     </div>

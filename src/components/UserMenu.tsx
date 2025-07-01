@@ -35,6 +35,9 @@ export function UserMenu() {
 
   // Cerrar el menú cuando se hace clic fuera
   useEffect(() => {
+    // Solo ejecutar en el cliente
+    if (typeof window === 'undefined') return;
+
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);

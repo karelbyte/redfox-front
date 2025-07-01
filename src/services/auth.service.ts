@@ -45,12 +45,14 @@ export const authService = {
       const data: LoginResponse = await response.json();
 
       // Guardar el token y los datos del usuario en localStorage
-      localStorage.setItem('token', data.access_token);
-      localStorage.setItem('tokenExpires', data.expires_at);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('tokenExpires', data.expires_at);
+        localStorage.setItem('user', JSON.stringify(data.user));
 
-      // También guardar el token en una cookie para compatibilidad
-      document.cookie = `token=${data.access_token}; path=/; expires=${new Date(data.expires_at).toUTCString()}; secure; samesite=strict`;
+        // También guardar el token en una cookie para compatibilidad
+        document.cookie = `token=${data.access_token}; path=/; expires=${new Date(data.expires_at).toUTCString()}; secure; samesite=strict`;
+      }
 
       toastService.success('¡Bienvenido!');
     } catch (error) {
@@ -64,19 +66,23 @@ export const authService = {
   logout(): void {
     this.clearAuth();
 
-    // Limpiar todas las cookies relacionadas con la autenticación
-    const cookies = document.cookie.split(';');
-    cookies.forEach(cookie => {
-      const [name] = cookie.trim().split('=');
-      if (name === 'token' || name.startsWith('auth_')) {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=strict`;
-      }
-    });
+    if (typeof window !== 'undefined') {
+      // Limpiar todas las cookies relacionadas con la autenticación
+      const cookies = document.cookie.split(';');
+      cookies.forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        if (name === 'token' || name.startsWith('auth_')) {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=strict`;
+        }
+      });
+    }
 
     toastService.info('Sesión cerrada correctamente');
   },
 
   getToken(): string | null {
+    if (typeof window === 'undefined') return null;
+    
     // Primero intentar obtener el token de localStorage
     const token = localStorage.getItem('token');
     if (token) {
@@ -98,6 +104,8 @@ export const authService = {
   },
 
   isAuthenticated(): boolean {
+    if (typeof window === 'undefined') return false;
+    
     const token = this.getToken();
     if (!token) return false;
 
@@ -109,6 +117,8 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<LoginResponse['user'] | null> {
+    if (typeof window === 'undefined') return null;
+    
     // Primero intentar obtener el usuario de localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -141,17 +151,23 @@ export const authService = {
   },
 
   setToken(token: string): void {
-    localStorage.setItem('token', token);
-    localStorage.setItem('tokenExpires', new Date(Date.now() + 3600000).toUTCString());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', token);
+      localStorage.setItem('tokenExpires', new Date(Date.now() + 3600000).toUTCString());
+    }
   },
 
   setUser(user: LoginResponse['user']): void {
-    localStorage.setItem('user', JSON.stringify(user));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user', JSON.stringify(user));
+    }
   },
 
   clearAuth(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('tokenExpires');
-    localStorage.removeItem('user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('tokenExpires');
+      localStorage.removeItem('user');
+    }
   },
 }; 
