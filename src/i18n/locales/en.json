@@ -86,6 +86,7 @@
     "productList": "Product List",
     "addWarehouse": "Create Warehouse",
     "warehouseList": "Warehouse List",
+    "warehouseAdjustments": "Warehouse Adjustments",
     "createPurchase": "Create Purchase",
     "purchaseList": "Purchase List",
     "createReception": "Create Reception",
@@ -1415,6 +1416,126 @@
       "error": {
         "title": "Error",
         "userNotFound": "User not found"
+      }
+    },
+    "warehouseAdjustments": {
+      "title": "Warehouse Adjustments",
+      "subtitle": "Management of transfers between warehouses",
+      "createTitle": "Create Warehouse Adjustment",
+      "createSubtitle": "Create a new transfer between warehouses",
+      "noAdjustments": "No warehouse adjustments",
+      "noAdjustmentsDesc": "Click on \"Create Adjustment\" to add one.",
+      "noPermissionDesc": "You don't have permission to view this page",
+      "table": {
+        "code": "Code",
+        "sourceWarehouse": "Source Warehouse",
+        "targetWarehouse": "Target Warehouse",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "open": "Open",
+        "closed": "Closed"
+      },
+      "actions": {
+        "create": "Create Adjustment",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "close": "Close",
+        "viewDetails": "View Details",
+        "back": "Back",
+        "edit": "Edit",
+        "add": "Add"
+      },
+      "form": {
+        "sourceWarehouse": "Source Warehouse",
+        "sourceWarehouseId": "Source Warehouse",
+        "targetWarehouse": "Target Warehouse",
+        "targetWarehouseId": "Target Warehouse",
+        "date": "Date",
+        "description": "Description",
+        "placeholders": {
+          "sourceWarehouse": "Select source warehouse",
+          "targetWarehouse": "Select target warehouse",
+          "description": "Adjustment description"
+        },
+        "validation": {
+          "sourceWarehouseRequired": "Source warehouse is required",
+          "targetWarehouseRequired": "Target warehouse is required",
+          "differentWarehousesRequired": "Warehouses must be different",
+          "dateRequired": "Date is required",
+          "descriptionRequired": "Description is required"
+        }
+      },
+      "messages": {
+        "adjustmentCreated": "Warehouse adjustment created successfully",
+        "adjustmentUpdated": "Warehouse adjustment updated successfully",
+        "adjustmentDeleted": "Warehouse adjustment deleted successfully",
+        "adjustmentClosed": "Warehouse adjustment closed successfully",
+        "errorLoading": "Error loading adjustments",
+        "errorCreating": "Error creating adjustment",
+        "errorUpdating": "Error updating adjustment",
+        "errorDeleting": "Error deleting adjustment",
+        "errorClosing": "Error closing adjustment",
+        "errorLoadingWarehouses": "Error loading warehouses"
+      },
+      "deleteModal": {
+        "title": "Delete {item}",
+        "message": "Are you sure you want to delete {item} \"{name}\"? This action cannot be undone."
+      },
+      "closeModal": {
+        "title": "Close {item}",
+        "message": "Are you sure you want to close {item} \"{name}\"? This action will transfer all products and cannot be undone."
+      },
+      "details": {
+        "title": "Warehouse Adjustment {name}",
+        "subtitle": "Warehouse adjustment details",
+        "generalInfo": "General Information"
+      },
+      "products": {
+        "title": "Adjustment Products",
+        "table": {
+          "product": "Product",
+          "sku": "SKU",
+          "quantity": "Quantity",
+          "price": "Price",
+          "total": "Total",
+          "actions": "Actions"
+        }
+      },
+      "addProduct": {
+        "title": "Add Product",
+        "form": {
+          "product": "Product",
+          "quantity": "Quantity",
+          "price": "Price",
+          "placeholders": {
+            "product": "Select product"
+          }
+        },
+        "validation": {
+          "productRequired": "Product is required",
+          "quantityRequired": "Quantity must be greater than 0",
+          "priceRequired": "Price must be greater than 0"
+        },
+        "messages": {
+          "productAdded": "Product added successfully",
+          "productUpdated": "Product updated successfully",
+          "errorAdding": "Error adding product",
+          "errorUpdating": "Error updating product"
+        }
+      },
+      "deleteProduct": {
+        "success": "Product deleted successfully",
+        "error": "Error deleting product"
+      },
+      "error": {
+        "title": "Error",
+        "adjustmentNotFound": "Warehouse adjustment not found"
       }
     }
   },

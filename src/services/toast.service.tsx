@@ -9,7 +9,7 @@ interface ErrorResponse {
 }
 
 const toastOptions = {
-  duration: 4000,
+  duration: 3000,
   position: 'top-right' as const,
 };
 

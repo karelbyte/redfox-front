@@ -86,6 +86,7 @@
     "productList": "Lista de Productos",
     "addWarehouse": "Crear Almacén",
     "warehouseList": "Lista de almacenes",
+    "warehouseAdjustments": "Ajustes de Almacén",
     "createPurchase": "Crear Compra",
     "purchaseList": "Lista de Compras",
     "createReception": "Crear Recepción",
@@ -1419,6 +1420,126 @@
       "error": {
         "title": "Error",
         "userNotFound": "Usuario no encontrado"
+      }
+    },
+    "warehouseAdjustments": {
+      "title": "Ajustes de Almacén",
+      "subtitle": "Gestión de transferencias entre almacenes",
+      "createTitle": "Crear Ajuste de Almacén",
+      "createSubtitle": "Crear una nueva transferencia entre almacenes",
+      "noAdjustments": "No hay ajustes de almacén",
+      "noAdjustmentsDesc": "Haz clic en \"Crear Ajuste\" para agregar uno.",
+      "noPermissionDesc": "No tienes permisos para ver esta página",
+      "table": {
+        "code": "Código",
+        "sourceWarehouse": "Almacén Fuente",
+        "targetWarehouse": "Almacén Destino",
+        "date": "Fecha",
+        "description": "Descripción",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "open": "Abierto",
+        "closed": "Cerrado"
+      },
+      "actions": {
+        "create": "Crear Ajuste",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "close": "Cerrar",
+        "viewDetails": "Ver Detalles",
+        "back": "Volver",
+        "edit": "Editar",
+        "add": "Agregar"
+      },
+      "form": {
+        "sourceWarehouse": "Almacén Fuente",
+        "sourceWarehouseId": "Almacén Fuente",
+        "targetWarehouse": "Almacén Destino",
+        "targetWarehouseId": "Almacén Destino",
+        "date": "Fecha",
+        "description": "Descripción",
+        "placeholders": {
+          "sourceWarehouse": "Seleccionar almacén fuente",
+          "targetWarehouse": "Seleccionar almacén destino",
+          "description": "Descripción del ajuste"
+        },
+        "validation": {
+          "sourceWarehouseRequired": "El almacén fuente es requerido",
+          "targetWarehouseRequired": "El almacén destino es requerido",
+          "differentWarehousesRequired": "Los almacenes deben ser diferentes",
+          "dateRequired": "La fecha es requerida",
+          "descriptionRequired": "La descripción es requerida"
+        }
+      },
+      "messages": {
+        "adjustmentCreated": "Ajuste de almacén creado correctamente",
+        "adjustmentUpdated": "Ajuste de almacén actualizado correctamente",
+        "adjustmentDeleted": "Ajuste de almacén eliminado correctamente",
+        "adjustmentClosed": "Ajuste de almacén cerrado correctamente",
+        "errorLoading": "Error al cargar los ajustes",
+        "errorCreating": "Error al crear el ajuste",
+        "errorUpdating": "Error al actualizar el ajuste",
+        "errorDeleting": "Error al eliminar el ajuste",
+        "errorClosing": "Error al cerrar el ajuste",
+        "errorLoadingWarehouses": "Error al cargar los almacenes"
+      },
+      "deleteModal": {
+        "title": "Eliminar {item}",
+        "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "closeModal": {
+        "title": "Cerrar {item}",
+        "message": "¿Estás seguro de que deseas cerrar {item} \"{name}\"? Esta acción transferirá todos los productos y no se puede deshacer."
+      },
+      "details": {
+        "title": "Ajuste de Almacén {name}",
+        "subtitle": "Detalles del ajuste de almacén",
+        "generalInfo": "Información General"
+      },
+      "products": {
+        "title": "Productos del Ajuste",
+        "table": {
+          "product": "Producto",
+          "sku": "SKU",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "total": "Total",
+          "actions": "Acciones"
+        }
+      },
+      "addProduct": {
+        "title": "Agregar Producto",
+        "form": {
+          "product": "Producto",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "placeholders": {
+            "product": "Seleccionar producto"
+          }
+        },
+        "validation": {
+          "productRequired": "El producto es requerido",
+          "quantityRequired": "La cantidad debe ser mayor a 0",
+          "priceRequired": "El precio debe ser mayor a 0"
+        },
+        "messages": {
+          "productAdded": "Producto agregado correctamente",
+          "productUpdated": "Producto actualizado correctamente",
+          "errorAdding": "Error al agregar el producto",
+          "errorUpdating": "Error al actualizar el producto"
+        }
+      },
+      "deleteProduct": {
+        "success": "Producto eliminado correctamente",
+        "error": "Error al eliminar el producto"
+      },
+      "error": {
+        "title": "Error",
+        "adjustmentNotFound": "Ajuste de almacén no encontrado"
       }
     }
   },
