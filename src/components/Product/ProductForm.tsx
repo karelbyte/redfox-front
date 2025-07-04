@@ -102,33 +102,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     );
     const [taxes, setTaxes] = useState<Tax[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
-
-    // Estados para el drawer de marcas
-    const [showBrandDrawer, setShowBrandDrawer] = useState(false);
-    const [isSavingBrand, setIsSavingBrand] = useState(false);
-    const [isBrandFormValid, setIsBrandFormValid] = useState(false);
-    const brandFormRef = useRef<BrandFormRef>(null);
-
-    // Estados para el drawer de categorías
-    const [showCategoryDrawer, setShowCategoryDrawer] = useState(false);
-    const [isSavingCategory, setIsSavingCategory] = useState(false);
-    const [isCategoryFormValid, setIsCategoryFormValid] = useState(false);
-    const categoryFormRef = useRef<CategoryFormRef>(null);
-
-    // Estados para el drawer de unidades de medida
-    const [showMeasurementUnitDrawer, setShowMeasurementUnitDrawer] =
-      useState(false);
-    const [isSavingMeasurementUnit, setIsSavingMeasurementUnit] =
-      useState(false);
-    const [isMeasurementUnitFormValid, setIsMeasurementUnitFormValid] =
-      useState(false);
-    const measurementUnitFormRef = useRef<MeasurementUnitFormRef>(null);
-
-    // Estados para el drawer de impuestos
-    const [showTaxDrawer, setShowTaxDrawer] = useState(false);
-    const [isSavingTax, setIsSavingTax] = useState(false);
-    const [isTaxFormValid, setIsTaxFormValid] = useState(false);
-    const taxFormRef = useRef<TaxFormRef>(null);
+    const initialFetchDone = useRef(false);
 
     const fetchBrands = async () => {
       try {
@@ -167,7 +141,38 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       }
     };
 
+    // Estados para el drawer de marcas
+    const [showBrandDrawer, setShowBrandDrawer] = useState(false);
+    const [isSavingBrand, setIsSavingBrand] = useState(false);
+    const [isBrandFormValid, setIsBrandFormValid] = useState(false);
+    const brandFormRef = useRef<BrandFormRef>(null);
+
+    // Estados para el drawer de categorías
+    const [showCategoryDrawer, setShowCategoryDrawer] = useState(false);
+    const [isSavingCategory, setIsSavingCategory] = useState(false);
+    const [isCategoryFormValid, setIsCategoryFormValid] = useState(false);
+    const categoryFormRef = useRef<CategoryFormRef>(null);
+
+    // Estados para el drawer de unidades de medida
+    const [showMeasurementUnitDrawer, setShowMeasurementUnitDrawer] =
+      useState(false);
+    const [isSavingMeasurementUnit, setIsSavingMeasurementUnit] =
+      useState(false);
+    const [isMeasurementUnitFormValid, setIsMeasurementUnitFormValid] =
+      useState(false);
+    const measurementUnitFormRef = useRef<MeasurementUnitFormRef>(null);
+
+    // Estados para el drawer de impuestos
+    const [showTaxDrawer, setShowTaxDrawer] = useState(false);
+    const [isSavingTax, setIsSavingTax] = useState(false);
+    const [isTaxFormValid, setIsTaxFormValid] = useState(false);
+    const taxFormRef = useRef<TaxFormRef>(null);
+
+
+
     useEffect(() => {
+      if (!initialFetchDone.current) {
+        initialFetchDone.current = true;
       const fetchData = async () => {
         try {
           const [brandsData, categoriesData, measurementUnitsData, taxesData] =
@@ -188,6 +193,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       };
 
       fetchData();
+      }
     }, []);
 
     useEffect(() => {

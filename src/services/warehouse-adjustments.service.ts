@@ -1,12 +1,12 @@
 import { api } from './api';
-import { 
-  WarehouseAdjustment, 
-  WarehouseAdjustmentFormData, 
-  WarehouseAdjustmentDetailFormData, 
-  WarehouseAdjustmentDetail, 
-  PaginatedWarehouseAdjustmentResponse, 
-  PaginatedWarehouseAdjustmentDetailsResponse, 
-  WarehouseAdjustmentCloseResponse 
+import {
+  WarehouseAdjustment,
+  WarehouseAdjustmentFormData,
+  WarehouseAdjustmentDetailFormData,
+  WarehouseAdjustmentDetail,
+  PaginatedWarehouseAdjustmentResponse,
+  PaginatedWarehouseAdjustmentDetailsResponse,
+  WarehouseAdjustmentCloseResponse
 } from '@/types/warehouse-adjustment';
 
 class WarehouseAdjustmentService {

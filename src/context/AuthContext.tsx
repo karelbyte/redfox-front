@@ -43,8 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (typeof window !== 'undefined') {
           // Verificar si hay un token válido antes de intentar obtener el usuario
           if (authService.isAuthenticated()) {
-            const currentUser = await authService.getCurrentUser();
-            setUser(currentUser);
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser);
           } else {
             // Si no hay token válido, limpiar el estado
             authService.clearAuth();

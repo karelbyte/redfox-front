@@ -1432,6 +1432,7 @@
       "noPermissionDesc": "No tienes permisos para ver esta página",
       "table": {
         "code": "Código",
+        "name": "Nombre",
         "sourceWarehouse": "Almacén Fuente",
         "targetWarehouse": "Almacén Destino",
         "date": "Fecha",
@@ -1443,19 +1444,23 @@
         "open": "Abierto",
         "closed": "Cerrado"
       },
-      "actions": {
-        "create": "Crear Ajuste",
-        "save": "Guardar",
-        "saving": "Guardando...",
-        "cancel": "Cancelar",
-        "delete": "Eliminar",
-        "close": "Cerrar",
-        "viewDetails": "Ver Detalles",
-        "back": "Volver",
-        "edit": "Editar",
-        "add": "Agregar"
-      },
+              "actions": {
+          "create": "Crear Ajuste",
+          "save": "Guardar",
+          "saving": "Guardando...",
+          "cancel": "Cancelar",
+          "delete": "Eliminar",
+          "close": "Cerrar",
+          "viewDetails": "Ver Detalles",
+          "back": "Volver",
+          "edit": "Editar",
+          "add": "Agregar",
+          "cannotEditClosed": "No se puede editar un ajuste cerrado",
+          "cannotDeleteClosed": "No se puede eliminar un ajuste cerrado",
+          "continue": "Continuar"
+        },
       "form": {
+        "code": "Código",
         "sourceWarehouse": "Almacén Fuente",
         "sourceWarehouseId": "Almacén Fuente",
         "targetWarehouse": "Almacén Destino",
@@ -1463,17 +1468,23 @@
         "date": "Fecha",
         "description": "Descripción",
         "placeholders": {
+          "code": "Ingrese código del ajuste",
           "sourceWarehouse": "Seleccionar almacén fuente",
           "targetWarehouse": "Seleccionar almacén destino",
           "description": "Descripción del ajuste"
         },
         "validation": {
+          "codeRequired": "El código es requerido",
           "sourceWarehouseRequired": "El almacén fuente es requerido",
           "targetWarehouseRequired": "El almacén destino es requerido",
           "differentWarehousesRequired": "Los almacenes deben ser diferentes",
+          "sameCurrencyRequired": "Los almacenes deben tener la misma moneda",
           "dateRequired": "La fecha es requerida",
-          "descriptionRequired": "La descripción es requerida"
-        }
+          "descriptionRequired": "La descripción es requerida",
+          "currenciesMatch": "Las monedas coinciden correctamente",
+          "currenciesMismatch": "Las monedas no coinciden"
+        },
+        "warehouseInfo": "Información de Almacenes"
       },
       "messages": {
         "adjustmentCreated": "Ajuste de almacén creado correctamente",
@@ -1502,29 +1513,40 @@
       },
       "products": {
         "title": "Productos del Ajuste",
-        "table": {
+        "noProducts": "No hay productos",
+        "noProductsDesc": "Agrega productos a este ajuste para comenzar.",
+        "noProductsClosedDesc": "Este ajuste no tiene productos registrados.",
+        "headers": {
           "product": "Producto",
           "sku": "SKU",
+          "brand": "Marca",
+          "category": "Categoría",
           "quantity": "Cantidad",
           "price": "Precio",
-          "total": "Total",
+          "subtotal": "Subtotal",
           "actions": "Acciones"
         }
       },
       "addProduct": {
         "title": "Agregar Producto",
+        "editTitle": "Editar Producto",
         "form": {
           "product": "Producto",
           "quantity": "Cantidad",
           "price": "Precio",
+          "selectProduct": "Seleccionar producto",
           "placeholders": {
-            "product": "Seleccionar producto"
+            "quantity": "Ingrese cantidad",
+            "price": "Ingrese precio"
           }
         },
         "validation": {
           "productRequired": "El producto es requerido",
-          "quantityRequired": "La cantidad debe ser mayor a 0",
-          "priceRequired": "El precio debe ser mayor a 0"
+          "quantityRequired": "La cantidad es requerida",
+          "quantityPositive": "La cantidad debe ser mayor a 0",
+          "quantityExceedsStock": "La cantidad no puede exceder el stock disponible ({stock} unidades)",
+          "priceRequired": "El precio es requerido",
+          "pricePositive": "El precio debe ser mayor a 0"
         },
         "messages": {
           "productAdded": "Producto agregado correctamente",
@@ -1534,8 +1556,17 @@
         }
       },
       "deleteProduct": {
+        "title": "Eliminar Producto",
+        "message": "¿Estás seguro de que deseas eliminar el producto \"{productName}\"? Esta acción no se puede deshacer.",
         "success": "Producto eliminado correctamente",
         "error": "Error al eliminar el producto"
+      },
+      "closeResult": {
+        "title": "Ajuste Cerrado Exitosamente",
+        "adjustmentCode": "Código del Ajuste",
+        "transferredProducts": "Productos Transferidos",
+        "totalQuantity": "Cantidad Total",
+        "closedAt": "Cerrado el"
       },
       "error": {
         "title": "Error",

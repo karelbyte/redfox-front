@@ -1,68 +1,26 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
 import { WarehouseAdjustment } from '@/types/warehouse-adjustment';
-import Pagination from '@/components/Pagination/Pagination';
-import { DeleteWarehouseAdjustmentModal } from './DeleteWarehouseAdjustmentModal';
-import { CloseWarehouseAdjustmentModal } from './CloseWarehouseAdjustmentModal';
 import { Btn } from '@/components/atoms';
-import { EyeIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, TrashIcon, CheckCircleIcon, PencilIcon } from '@heroicons/react/24/outline';
 
 interface WarehouseAdjustmentTableProps {
   adjustments: WarehouseAdjustment[];
-  onDelete: (adjustmentId: string) => void;
-  onClose: (adjustmentId: string) => void;
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  onPageChange: (page: number) => void;
+  onEdit: (adjustment: WarehouseAdjustment) => void;
+  onDelete: (adjustment: WarehouseAdjustment) => void;
+  onDetails: (adjustment: WarehouseAdjustment) => void;
+  onClose: (adjustment: WarehouseAdjustment) => void;
 }
 
 export function WarehouseAdjustmentTable({
   adjustments,
+  onEdit,
   onDelete,
+  onDetails,
   onClose,
-  currentPage,
-  totalPages,
-  totalItems,
-  onPageChange,
 }: WarehouseAdjustmentTableProps) {
   const t = useTranslations('pages.warehouseAdjustments');
-  const router = useRouter();
-  const locale = useLocale();
-  
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [closeModalOpen, setCloseModalOpen] = useState(false);
-  const [selectedAdjustment, setSelectedAdjustment] = useState<WarehouseAdjustment | null>(null);
-
-  const handleDeleteClick = (adjustment: WarehouseAdjustment) => {
-    setSelectedAdjustment(adjustment);
-    setDeleteModalOpen(true);
-  };
-
-  const handleCloseClick = (adjustment: WarehouseAdjustment) => {
-    setSelectedAdjustment(adjustment);
-    setCloseModalOpen(true);
-  };
-
-  const handleDeleteConfirm = () => {
-    if (selectedAdjustment) {
-      onDelete(selectedAdjustment.id);
-      setDeleteModalOpen(false);
-      setSelectedAdjustment(null);
-    }
-  };
-
-  const handleCloseConfirm = () => {
-    if (selectedAdjustment) {
-      onClose(selectedAdjustment.id);
-      setCloseModalOpen(false);
-      setSelectedAdjustment(null);
-    }
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
@@ -88,140 +46,138 @@ export function WarehouseAdjustmentTable({
   };
 
   return (
-    <>
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('table.code')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('table.sourceWarehouse')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('table.targetWarehouse')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('table.date')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('table.description')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('table.status')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {t('table.actions')}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {adjustments.map((adjustment) => (
-              <tr key={adjustment.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {adjustment.code}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <div>
-                    <div className="font-medium">{adjustment.sourceWarehouse.name}</div>
-                    <div className="text-gray-500">{adjustment.sourceWarehouse.code}</div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <div>
-                    <div className="font-medium">{adjustment.targetWarehouse.name}</div>
-                    <div className="text-gray-500">{adjustment.targetWarehouse.code}</div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(adjustment.date)}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  <div className="max-w-xs truncate" title={adjustment.description}>
-                    {adjustment.description}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {getStatusBadge(adjustment.status)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="flex space-x-2">
+    <div 
+      className="bg-white rounded-lg overflow-hidden"
+      style={{ 
+        boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+      }}
+    >
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.code')}
+            </th>
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.sourceWarehouse')}
+            </th>
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.targetWarehouse')}
+            </th>
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.date')}
+            </th>
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.description')}
+            </th>
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.status')}
+            </th>
+            <th 
+              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.actions')}
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {adjustments.map((adjustment) => (
+            <tr key={adjustment.id} className="hover:bg-primary-50 transition-colors">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {adjustment.code}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div>
+                  <div className="font-medium">{adjustment.sourceWarehouse.name}</div>
+                  <div className="text-gray-500">{adjustment.sourceWarehouse.code}</div>
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div>
+                  <div className="font-medium">{adjustment.targetWarehouse.name}</div>
+                  <div className="text-gray-500">{adjustment.targetWarehouse.code}</div>
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {formatDate(adjustment.date)}
+              </td>
+              <td className="px-6 py-4 text-sm text-gray-900">
+                <div className="max-w-xs truncate" title={adjustment.description}>
+                  {adjustment.description}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    adjustment.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}
+                >
+                  {adjustment.status ? t('status.closed') : t('status.open')}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div className="flex justify-end space-x-2">
+                  <Btn
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDetails(adjustment)}
+                    leftIcon={<EyeIcon className="h-4 w-4" />}
+                    title={t('actions.viewDetails')}
+                  />
+                  {!adjustment.status && (
                     <Btn
-                      onClick={() => router.push(`/${locale}/dashboard/almacenes/ajustes-de-almacen/ajustes/${adjustment.id}`)}
-                      variant="primary"
+                      variant="ghost"
                       size="sm"
-                      leftIcon={<EyeIcon className="w-4 h-4" />}
-                    >
-                      {t('actions.viewDetails')}
-                    </Btn>
-                    
-                    {!adjustment.status && (
-                      <>
-                        <Btn
-                          onClick={() => handleCloseClick(adjustment)}
-                          variant="success"
-                          size="sm"
-                          leftIcon={<CheckCircleIcon className="w-4 h-4" />}
-                        >
-                          {t('actions.close')}
-                        </Btn>
-                        
-                        <Btn
-                          onClick={() => handleDeleteClick(adjustment)}
-                          variant="danger"
-                          size="sm"
-                          leftIcon={<TrashIcon className="w-4 h-4" />}
-                        >
-                          {t('actions.delete')}
-                        </Btn>
-                      </>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-gray-200">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={totalItems}
-            onPageChange={onPageChange}
-          />
-        </div>
-      )}
-
-      {/* Delete Modal */}
-      {selectedAdjustment && (
-        <DeleteWarehouseAdjustmentModal
-          isOpen={deleteModalOpen}
-          onClose={() => {
-            setDeleteModalOpen(false);
-            setSelectedAdjustment(null);
-          }}
-          onConfirm={handleDeleteConfirm}
-          adjustment={selectedAdjustment}
-        />
-      )}
-
-      {/* Close Modal */}
-      {selectedAdjustment && (
-        <CloseWarehouseAdjustmentModal
-          isOpen={closeModalOpen}
-          onClose={() => {
-            setCloseModalOpen(false);
-            setSelectedAdjustment(null);
-          }}
-          onConfirm={handleCloseConfirm}
-          adjustment={selectedAdjustment}
-        />
-      )}
-    </>
+                      onClick={() => onClose(adjustment)}
+                      leftIcon={<CheckCircleIcon className="h-4 w-4" />}
+                      title={t('actions.close')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  )}
+                  <Btn
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onEdit(adjustment)}
+                    leftIcon={<PencilIcon className="h-4 w-4" />}
+                    title={adjustment.status ? t('actions.cannotEditClosed') : t('actions.edit')}
+                    disabled={adjustment.status}
+                    className={adjustment.status ? 'opacity-50 cursor-not-allowed' : ''}
+                  />
+                  <Btn
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDelete(adjustment)}
+                    leftIcon={<TrashIcon className="h-4 w-4" />}
+                    title={adjustment.status ? t('actions.cannotDeleteClosed') : t('actions.delete')}
+                    disabled={adjustment.status}
+                    className={adjustment.status ? 'opacity-50 cursor-not-allowed' : ''}
+                    style={{ color: adjustment.status ? '#9ca3af' : '#dc2626' }}
+                  />
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 } 

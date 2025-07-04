@@ -22,7 +22,7 @@ export default function CurrenciesPage() {
   const [selectedCurrency, setSelectedCurrency] = useState<Currency | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -30,6 +30,7 @@ export default function CurrenciesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<CurrencyFormRef>(null);
+  const initialFetchDone = useRef(false);
 
   const fetchCurrencies = async (page: number = 1, term?: string) => {
     try {
@@ -55,8 +56,10 @@ export default function CurrenciesPage() {
   };
 
   useEffect(() => {
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
     fetchCurrencies(1);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, []);
 
   const handleEdit = (currency: Currency) => {
@@ -94,6 +97,7 @@ export default function CurrenciesPage() {
   };
 
   const handlePageChange = (page: number) => {
+    setCurrentPage(page);
     fetchCurrencies(page, searchTerm);
   };
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
@@ -27,7 +27,7 @@ export default function AgregarAlmacenPage() {
   const locale = useLocale();
   const t = useTranslations('pages.warehouses');
   const [loading, setLoading] = useState(false);
-  const [loadingCurrencies, setLoadingCurrencies] = useState(true);
+  const [loadingCurrencies, setLoadingCurrencies] = useState(false);
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [formData, setFormData] = useState<WarehouseFormData>({
     code: '',
@@ -38,9 +38,13 @@ export default function AgregarAlmacenPage() {
     status: true
   });
   const [errors, setErrors] = useState<Partial<WarehouseFormData>>({});
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
     fetchCurrencies();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

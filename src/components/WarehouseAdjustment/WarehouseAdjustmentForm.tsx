@@ -22,6 +22,7 @@ export interface WarehouseAdjustmentFormRef {
 }
 
 interface FormErrors {
+  code?: string;
   sourceWarehouseId?: string;
   targetWarehouseId?: string;
   date?: string;
@@ -33,6 +34,7 @@ const WarehouseAdjustmentForm = forwardRef<WarehouseAdjustmentFormRef, Warehouse
     const t = useTranslations('pages.warehouseAdjustments');
     
     const [formData, setFormData] = useState<WarehouseAdjustmentFormData>({
+      code: initialData?.code || '',
       sourceWarehouseId: initialData?.sourceWarehouseId || '',
       targetWarehouseId: initialData?.targetWarehouseId || '',
       date: initialData?.date || new Date().toISOString().split('T')[0],
@@ -40,6 +42,10 @@ const WarehouseAdjustmentForm = forwardRef<WarehouseAdjustmentFormRef, Warehouse
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
+
+    // Obtener información de los almacenes seleccionados
+    const selectedSourceWarehouse = warehouses.find(w => w.id === formData.sourceWarehouseId);
+    const selectedTargetWarehouse = warehouses.find(w => w.id === formData.targetWarehouseId);
 
     const handleInputChange = (field: keyof WarehouseAdjustmentFormData, value: string) => {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -52,6 +58,10 @@ const WarehouseAdjustmentForm = forwardRef<WarehouseAdjustmentFormRef, Warehouse
     const validateForm = (): boolean => {
       const newErrors: FormErrors = {};
 
+      if (!formData.code.trim()) {
+        newErrors.code = t('form.validation.codeRequired');
+      }
+
       if (!formData.sourceWarehouseId) {
         newErrors.sourceWarehouseId = t('form.validation.sourceWarehouseRequired');
       }
@@ -60,8 +70,16 @@ const WarehouseAdjustmentForm = forwardRef<WarehouseAdjustmentFormRef, Warehouse
         newErrors.targetWarehouseId = t('form.validation.targetWarehouseRequired');
       }
 
-      if (formData.sourceWarehouseId === formData.targetWarehouseId) {
+      // Validar que los almacenes sean diferentes
+      if (formData.sourceWarehouseId && formData.targetWarehouseId && 
+          formData.sourceWarehouseId === formData.targetWarehouseId) {
         newErrors.targetWarehouseId = t('form.validation.differentWarehousesRequired');
+      }
+
+      // Validar que las monedas coincidan
+      if (selectedSourceWarehouse && selectedTargetWarehouse && 
+          selectedSourceWarehouse.currencyId !== selectedTargetWarehouse.currencyId) {
+        newErrors.targetWarehouseId = t('form.validation.sameCurrencyRequired');
       }
 
       if (!formData.date) {
@@ -112,6 +130,20 @@ const WarehouseAdjustmentForm = forwardRef<WarehouseAdjustmentFormRef, Warehouse
 
         return (
       <form className="flex flex-col space-y-6">
+        {/* Código */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t('form.code')} *
+          </label>
+          <Input
+            type="text"
+            value={formData.code}
+            onChange={(e) => handleInputChange('code', e.target.value)}
+            placeholder={t('form.placeholders.code')}
+            error={errors.code}
+          />
+        </div>
+
         {/* Almacén Fuente */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -119,7 +151,7 @@ const WarehouseAdjustmentForm = forwardRef<WarehouseAdjustmentFormRef, Warehouse
           </label>
           <Select
             value={formData.sourceWarehouseId}
-            onChange={(value) => handleInputChange('sourceWarehouseId', value)}
+            onChange={(e) => handleInputChange('sourceWarehouseId', e.target.value)}
             options={warehouseOptions}
             placeholder={t('form.placeholders.sourceWarehouse')}
             error={errors.sourceWarehouseId}
@@ -133,12 +165,87 @@ const WarehouseAdjustmentForm = forwardRef<WarehouseAdjustmentFormRef, Warehouse
           </label>
           <Select
             value={formData.targetWarehouseId}
-            onChange={(value) => handleInputChange('targetWarehouseId', value)}
+            onChange={(e) => handleInputChange('targetWarehouseId', e.target.value)}
             options={warehouseOptions}
             placeholder={t('form.placeholders.targetWarehouse')}
             error={errors.targetWarehouseId}
           />
         </div>
+
+        {/* Información de los almacenes seleccionados */}
+        {(selectedSourceWarehouse || selectedTargetWarehouse) && (
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-sm font-medium text-gray-700 mb-3">
+              {t('form.warehouseInfo')}
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Información del almacén fuente */}
+              {selectedSourceWarehouse && (
+                <div className="bg-white p-3 rounded border">
+                  <h5 className="text-sm font-medium text-gray-600 mb-2">
+                    {t('form.sourceWarehouse')}
+                  </h5>
+                  <div className="space-y-1 text-sm">
+                    <p><span className="font-medium">Código:</span> {selectedSourceWarehouse.code}</p>
+                    <p><span className="font-medium">Nombre:</span> {selectedSourceWarehouse.name}</p>
+                    <p><span className="font-medium">Moneda:</span> {selectedSourceWarehouse.currency.code} - {selectedSourceWarehouse.currency.name}</p>
+                    <p><span className="font-medium">Estado:</span> 
+                      <span className={`ml-1 px-2 py-1 text-xs rounded ${
+                        selectedSourceWarehouse.status 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {selectedSourceWarehouse.status ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Información del almacén destino */}
+              {selectedTargetWarehouse && (
+                <div className="bg-white p-3 rounded border">
+                  <h5 className="text-sm font-medium text-gray-600 mb-2">
+                    {t('form.targetWarehouse')}
+                  </h5>
+                  <div className="space-y-1 text-sm">
+                    <p><span className="font-medium">Código:</span> {selectedTargetWarehouse.code}</p>
+                    <p><span className="font-medium">Nombre:</span> {selectedTargetWarehouse.name}</p>
+                    <p><span className="font-medium">Moneda:</span> {selectedTargetWarehouse.currency.code} - {selectedTargetWarehouse.currency.name}</p>
+                    <p><span className="font-medium">Estado:</span> 
+                      <span className={`ml-1 px-2 py-1 text-xs rounded ${
+                        selectedTargetWarehouse.status 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {selectedTargetWarehouse.status ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Validación de monedas */}
+            {selectedSourceWarehouse && selectedTargetWarehouse && (
+              <div className="mt-3 p-3 rounded border-l-4 bg-blue-50 border-blue-400">
+                <div className="flex items-center">
+                  <div className={`w-4 h-4 rounded-full mr-2 ${
+                    selectedSourceWarehouse.currencyId === selectedTargetWarehouse.currencyId
+                      ? 'bg-green-500'
+                      : 'bg-red-500'
+                  }`}></div>
+                  <span className="text-sm text-gray-700">
+                    {selectedSourceWarehouse.currencyId === selectedTargetWarehouse.currencyId
+                      ? t('form.validation.currenciesMatch')
+                      : t('form.validation.currenciesMismatch')
+                    }
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Fecha */}
         <div>

@@ -68,10 +68,11 @@ export interface PaginatedInventoryResponse {
 }
 
 class InventoryService {
-  async getInventory(warehouseId: string, page?: number): Promise<InventoryResponse> {
+  async getInventory(warehouseId: string, page?: number, term?: string): Promise<InventoryResponse> {
     const params = new URLSearchParams();
     params.append('warehouse_id', warehouseId);
     if (page) params.append('page', page.toString());
+    if (term) params.append('term', term);
     
     const queryString = params.toString();
     const url = `/inventory${queryString ? `?${queryString}` : ''}`;

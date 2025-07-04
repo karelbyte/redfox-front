@@ -23,7 +23,7 @@ export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,6 +31,7 @@ export default function ClientsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<ClientFormRef>(null);
+  const initialFetchDone = useRef(false);
 
   const fetchClients = async (page: number = 1, term?: string) => {
     try {
@@ -56,8 +57,10 @@ export default function ClientsPage() {
   };
 
   useEffect(() => {
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
     fetchClients(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, []);
 
   const handleEdit = (client: Client) => {
@@ -95,6 +98,7 @@ export default function ClientsPage() {
   };
 
   const handlePageChange = (page: number) => {
+    setCurrentPage(page);
     fetchClients(page, searchTerm);
   };
 

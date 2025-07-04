@@ -29,6 +29,7 @@ export interface WarehouseAdjustment {
 }
 
 export interface WarehouseAdjustmentFormData {
+  code: string;
   sourceWarehouseId: string;
   targetWarehouseId: string;
   date: string;

@@ -1428,6 +1428,7 @@
       "noPermissionDesc": "You don't have permission to view this page",
       "table": {
         "code": "Code",
+        "name": "Name",
         "sourceWarehouse": "Source Warehouse",
         "targetWarehouse": "Target Warehouse",
         "date": "Date",
@@ -1439,19 +1440,23 @@
         "open": "Open",
         "closed": "Closed"
       },
-      "actions": {
-        "create": "Create Adjustment",
-        "save": "Save",
-        "saving": "Saving...",
-        "cancel": "Cancel",
-        "delete": "Delete",
-        "close": "Close",
-        "viewDetails": "View Details",
-        "back": "Back",
-        "edit": "Edit",
-        "add": "Add"
-      },
+              "actions": {
+          "create": "Create Adjustment",
+          "save": "Save",
+          "saving": "Saving...",
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "close": "Close",
+          "viewDetails": "View Details",
+          "back": "Back",
+          "edit": "Edit",
+          "add": "Add",
+          "cannotEditClosed": "Cannot edit a closed adjustment",
+          "cannotDeleteClosed": "Cannot delete a closed adjustment",
+          "continue": "Continue"
+        },
       "form": {
+        "code": "Code",
         "sourceWarehouse": "Source Warehouse",
         "sourceWarehouseId": "Source Warehouse",
         "targetWarehouse": "Target Warehouse",
@@ -1459,17 +1464,23 @@
         "date": "Date",
         "description": "Description",
         "placeholders": {
+          "code": "Enter adjustment code",
           "sourceWarehouse": "Select source warehouse",
           "targetWarehouse": "Select target warehouse",
           "description": "Adjustment description"
         },
         "validation": {
+          "codeRequired": "Code is required",
           "sourceWarehouseRequired": "Source warehouse is required",
           "targetWarehouseRequired": "Target warehouse is required",
           "differentWarehousesRequired": "Warehouses must be different",
+          "sameCurrencyRequired": "Warehouses must have the same currency",
           "dateRequired": "Date is required",
-          "descriptionRequired": "Description is required"
-        }
+          "descriptionRequired": "Description is required",
+          "currenciesMatch": "Currencies match correctly",
+          "currenciesMismatch": "Currencies do not match"
+        },
+        "warehouseInfo": "Warehouse Information"
       },
       "messages": {
         "adjustmentCreated": "Warehouse adjustment created successfully",
@@ -1498,29 +1509,40 @@
       },
       "products": {
         "title": "Adjustment Products",
-        "table": {
+        "noProducts": "No products",
+        "noProductsDesc": "Add products to this adjustment to get started.",
+        "noProductsClosedDesc": "This adjustment has no registered products.",
+        "headers": {
           "product": "Product",
           "sku": "SKU",
+          "brand": "Brand",
+          "category": "Category",
           "quantity": "Quantity",
           "price": "Price",
-          "total": "Total",
+          "subtotal": "Subtotal",
           "actions": "Actions"
         }
       },
       "addProduct": {
         "title": "Add Product",
+        "editTitle": "Edit Product",
         "form": {
           "product": "Product",
           "quantity": "Quantity",
           "price": "Price",
+          "selectProduct": "Select product",
           "placeholders": {
-            "product": "Select product"
+            "quantity": "Enter quantity",
+            "price": "Enter price"
           }
         },
         "validation": {
           "productRequired": "Product is required",
-          "quantityRequired": "Quantity must be greater than 0",
-          "priceRequired": "Price must be greater than 0"
+          "quantityRequired": "Quantity is required",
+          "quantityPositive": "Quantity must be greater than 0",
+          "quantityExceedsStock": "Quantity cannot exceed available stock ({stock} units)",
+          "priceRequired": "Price is required",
+          "pricePositive": "Price must be greater than 0"
         },
         "messages": {
           "productAdded": "Product added successfully",
@@ -1530,8 +1552,17 @@
         }
       },
       "deleteProduct": {
+        "title": "Delete Product",
+        "message": "Are you sure you want to delete the product \"{productName}\"? This action cannot be undone.",
         "success": "Product deleted successfully",
         "error": "Error deleting product"
+      },
+      "closeResult": {
+        "title": "Adjustment Closed Successfully",
+        "adjustmentCode": "Adjustment Code",
+        "transferredProducts": "Transferred Products",
+        "totalQuantity": "Total Quantity",
+        "closedAt": "Closed at"
       },
       "error": {
         "title": "Error",

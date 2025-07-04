@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
@@ -9,6 +9,8 @@ import { warehouseAdjustmentService } from '@/services/warehouse-adjustments.ser
 import { WarehouseAdjustment } from '@/types/warehouse-adjustment';
 import { WarehouseAdjustmentTable } from '@/components/WarehouseAdjustment/WarehouseAdjustmentTable';
 import WarehouseAdjustmentForm, { WarehouseAdjustmentFormRef } from '@/components/WarehouseAdjustment/WarehouseAdjustmentForm';
+import { DeleteWarehouseAdjustmentModal } from '@/components/WarehouseAdjustment/DeleteWarehouseAdjustmentModal';
+import { CloseWarehouseAdjustmentModal } from '@/components/WarehouseAdjustment/CloseWarehouseAdjustmentModal';
 import { Btn } from '@/components/atoms';
 import { toastService } from '@/services/toast.service';
 import Loading from '@/components/Loading/Loading';
@@ -16,7 +18,6 @@ import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { warehousesService } from '@/services/warehouses.service';
 import { Warehouse } from '@/types/warehouse';
-import { useRef } from 'react';
 
 export default function WarehouseAdjustmentsPage() {
   const t = useTranslations('pages.warehouseAdjustments');
@@ -29,26 +30,31 @@ export default function WarehouseAdjustmentsPage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
   const [showDrawer, setShowDrawer] = useState(false);
+  const [editingAdjustment, setEditingAdjustment] = useState<WarehouseAdjustment | null>(null);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [adjustmentToDelete, setAdjustmentToDelete] = useState<WarehouseAdjustment | null>(null);
+  const [adjustmentToClose, setAdjustmentToClose] = useState<WarehouseAdjustment | null>(null);
   const formRef = useRef<WarehouseAdjustmentFormRef>(null);
+  const initialFetchDone = useRef(false);
 
   useEffect(() => {
-    if (can(['warehouse_adjustment_module_view'])) {
+    if (!initialFetchDone.current && can(['warehouse_adjustment_module_view'])) {
+      initialFetchDone.current = true;
       loadAdjustments();
     }
-  }, [currentPage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const loadAdjustments = async () => {
+  const loadAdjustments = async (page?: number) => {
+    const pageToLoad = page || currentPage;
     try {
       setLoading(true);
-      const response = await warehouseAdjustmentService.getWarehouseAdjustments(currentPage);
+      const response = await warehouseAdjustmentService.getWarehouseAdjustments(pageToLoad);
       setAdjustments(response.data);
       setTotalPages(response.meta.totalPages);
-      setTotalItems(response.meta.total);
     } catch (error) {
       console.error('Error loading adjustments:', error);
       toastService.error(error instanceof Error ? error.message : t('messages.errorLoading'));
@@ -57,23 +63,31 @@ export default function WarehouseAdjustmentsPage() {
     }
   };
 
-  const handleDelete = async (adjustmentId: string) => {
+  const handleDelete = async () => {
+    if (!adjustmentToDelete) return;
+
     try {
-      await warehouseAdjustmentService.deleteWarehouseAdjustment(adjustmentId);
+      await warehouseAdjustmentService.deleteWarehouseAdjustment(adjustmentToDelete.id);
       toastService.success(t('messages.adjustmentDeleted'));
       loadAdjustments();
+      setAdjustmentToDelete(null);
     } catch (error) {
+      setAdjustmentToDelete(null);
       console.error('Error deleting adjustment:', error);
       toastService.error(error instanceof Error ? error.message : t('messages.errorDeleting'));
     }
   };
 
-  const handleClose = async (adjustmentId: string) => {
+  const handleClose = async () => {
+    if (!adjustmentToClose) return;
+
     try {
-      await warehouseAdjustmentService.closeWarehouseAdjustment(adjustmentId);
+      await warehouseAdjustmentService.closeWarehouseAdjustment(adjustmentToClose.id);
       toastService.success(t('messages.adjustmentClosed'));
       loadAdjustments();
+      setAdjustmentToClose(null);
     } catch (error) {
+      setAdjustmentToClose(null);
       console.error('Error closing adjustment:', error);
       toastService.error(error instanceof Error ? error.message : t('messages.errorClosing'));
     }
@@ -81,11 +95,12 @@ export default function WarehouseAdjustmentsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    loadAdjustments(page);
   };
 
   const loadWarehouses = async () => {
     try {
-      const response = await warehousesService.getWarehouses({});
+      const response = await warehousesService.getWarehouses({ isClosed: true });
       setWarehouses(response.data);
     } catch (error) {
       console.error('Error loading warehouses:', error);
@@ -93,8 +108,18 @@ export default function WarehouseAdjustmentsPage() {
     }
   };
 
+  const handleDetails = (adjustment: WarehouseAdjustment) => {
+    router.push(`/${locale}/dashboard/almacenes/ajustes-de-almacen/ajustes/${adjustment.id}`);
+  };
+
+  const handleEdit = (adjustment: WarehouseAdjustment) => {
+    setEditingAdjustment(adjustment);
+    setShowDrawer(true);
+  };
+
   const handleDrawerClose = () => {
     setShowDrawer(false);
+    setEditingAdjustment(null);
     setIsSaving(false);
   };
 
@@ -107,6 +132,14 @@ export default function WarehouseAdjustmentsPage() {
     if (formRef.current) {
       formRef.current.submit();
     }
+  };
+
+  const openDeleteModal = (adjustment: WarehouseAdjustment) => {
+    setAdjustmentToDelete(adjustment);
+  };
+
+  const openCloseModal = (adjustment: WarehouseAdjustment) => {
+    setAdjustmentToClose(adjustment);
   };
 
   if (!can(['warehouse_adjustment_module_view'])) {
@@ -136,6 +169,7 @@ export default function WarehouseAdjustmentsPage() {
         </h1>
         <Btn
           onClick={() => {
+            setEditingAdjustment(null);
             loadWarehouses();
             setShowDrawer(true);
           }}
@@ -190,12 +224,10 @@ export default function WarehouseAdjustmentsPage() {
           <div className="mt-6">
             <WarehouseAdjustmentTable
               adjustments={adjustments}
-              onDelete={handleDelete}
-              onClose={handleClose}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              onPageChange={handlePageChange}
+              onEdit={handleEdit}
+              onDelete={openDeleteModal}
+              onDetails={handleDetails}
+              onClose={openCloseModal}
             />
           </div>
 
@@ -211,12 +243,12 @@ export default function WarehouseAdjustmentsPage() {
         </>
       )}
 
-      {/* Drawer para crear ajustes de almacén */}
+      {/* Drawer para crear/editar ajustes de almacén */}
       <Drawer
         id="warehouse-adjustment-drawer"
         isOpen={showDrawer}
         onClose={handleDrawerClose}
-        title={t('actions.create')}
+        title={editingAdjustment ? t('actions.edit') : t('actions.create')}
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
@@ -224,12 +256,39 @@ export default function WarehouseAdjustmentsPage() {
         <WarehouseAdjustmentForm
           ref={formRef}
           warehouses={warehouses}
+          initialData={editingAdjustment ? {
+            code: editingAdjustment.code,
+            sourceWarehouseId: editingAdjustment.sourceWarehouse.id,
+            targetWarehouseId: editingAdjustment.targetWarehouse.id,
+            date: editingAdjustment.date,
+            description: editingAdjustment.description
+          } : undefined}
           onClose={handleDrawerClose}
           onSuccess={handleFormSuccess}
           onSavingChange={setIsSaving}
           onValidChange={setIsFormValid}
         />
       </Drawer>
+
+      {/* Modal para eliminar ajuste */}
+      {adjustmentToDelete && (
+        <DeleteWarehouseAdjustmentModal
+          isOpen={!!adjustmentToDelete}
+          adjustment={adjustmentToDelete}
+          onClose={() => setAdjustmentToDelete(null)}
+          onConfirm={handleDelete}
+        />
+      )}
+
+      {/* Modal para cerrar ajuste */}
+      {adjustmentToClose && (
+        <CloseWarehouseAdjustmentModal
+          isOpen={!!adjustmentToClose}
+          adjustment={adjustmentToClose}
+          onClose={() => setAdjustmentToClose(null)}
+          onConfirm={handleClose}
+        />
+      )}
     </div>
   );
 } 
