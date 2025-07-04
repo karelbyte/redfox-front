@@ -92,7 +92,7 @@ export const authService = {
         return token;
       } else {
         // Si el token ha expirado, limpiar todo
-        this.logout();
+        this.clearAuth();
         return null;
       }
     }
@@ -100,7 +100,14 @@ export const authService = {
     // Si no hay token en localStorage, intentar con cookies
     const cookies = document.cookie.split(';');
     const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
-    return tokenCookie ? tokenCookie.split('=')[1] : null;
+    if (tokenCookie) {
+      const cookieToken = tokenCookie.split('=')[1];
+      // Si encontramos un token en cookies pero no en localStorage, limpiar todo
+      this.clearAuth();
+      return null;
+    }
+    
+    return null;
   },
 
   isAuthenticated(): boolean {
@@ -111,23 +118,49 @@ export const authService = {
 
     // Verificar si el token ha expirado
     const expiresAt = localStorage.getItem('tokenExpires');
-    if (!expiresAt) return false;
+    if (!expiresAt) {
+      this.clearAuth();
+      return false;
+    }
 
-    return new Date(expiresAt) > new Date();
+    const isExpired = new Date(expiresAt) <= new Date();
+    if (isExpired) {
+      this.clearAuth();
+      return false;
+    }
+
+    return true;
   },
 
   async getCurrentUser(): Promise<LoginResponse['user'] | null> {
     if (typeof window === 'undefined') return null;
     
+    // Verificar si hay un token válido
+    if (!this.isAuthenticated()) {
+      this.clearAuth();
+      return null;
+    }
+    
     // Primero intentar obtener el usuario de localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      return JSON.parse(storedUser);
+      try {
+        const user = JSON.parse(storedUser);
+        // Verificar que el usuario tenga los campos mínimos requeridos
+        if (user && user.id && user.email) {
+          return user;
+        }
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+      }
     }
 
-    // Si no hay usuario en localStorage, intentar obtenerlo de la API
+    // Si no hay usuario válido en localStorage, intentar obtenerlo de la API
     const token = this.getToken();
-    if (!token) return null;
+    if (!token) {
+      this.clearAuth();
+      return null;
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
@@ -137,6 +170,10 @@ export const authService = {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Token inválido, limpiar autenticación
+          this.clearAuth();
+        }
         throw new Error('Error al obtener el usuario');
       }
 
@@ -146,6 +183,8 @@ export const authService = {
       return user;
     } catch (error) {
       console.error('Error al obtener usuario:', error);
+      // En caso de error, limpiar la autenticación
+      this.clearAuth();
       return null;
     }
   },
@@ -168,6 +207,15 @@ export const authService = {
       localStorage.removeItem('token');
       localStorage.removeItem('tokenExpires');
       localStorage.removeItem('user');
+      
+      // Limpiar cookies relacionadas con la autenticación
+      const cookies = document.cookie.split(';');
+      cookies.forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        if (name === 'token' || name.startsWith('auth_')) {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=strict`;
+        }
+      });
     }
   },
 }; 

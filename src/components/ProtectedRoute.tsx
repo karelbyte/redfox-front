@@ -18,7 +18,8 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isClient && !isLoading && !isAuthenticated) {
-      router.push(`/${locale}/login`);
+      // Usar replace en lugar de push para evitar que se pueda volver atrás
+      router.replace(`/${locale}/login`);
     }
   }, [isAuthenticated, isLoading, router, locale, isClient]);
 

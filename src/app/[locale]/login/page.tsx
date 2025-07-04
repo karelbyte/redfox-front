@@ -1,20 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, ThemeType } from "@/context/ThemeContext";
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@redfox.com");
   const [password, setPassword] = useState("admin123");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const { login } = useAuth();
   const { currentTheme, setTheme, themes } = useTheme();
   const t = useTranslations('pages.login');
-  const locale = useLocale();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +19,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.push(`/${locale}/dashboard`);
+      // No necesitamos hacer router.push aquí porque el login ya lo hace
     } catch {
       // El error ya se maneja en el servicio de autenticación
     } finally {

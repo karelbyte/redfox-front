@@ -41,11 +41,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initAuth = async () => {
       try {
         if (typeof window !== 'undefined') {
-          const currentUser = await authService.getCurrentUser();
-          setUser(currentUser);
+          // Verificar si hay un token válido antes de intentar obtener el usuario
+          if (authService.isAuthenticated()) {
+            const currentUser = await authService.getCurrentUser();
+            setUser(currentUser);
+          } else {
+            // Si no hay token válido, limpiar el estado
+            authService.clearAuth();
+            setUser(null);
+          }
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
+        // En caso de error, limpiar el estado de autenticación
+        if (typeof window !== 'undefined') {
+          authService.clearAuth();
+        }
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.login(email, password);
       const currentUser = await authService.getCurrentUser();
       setUser(currentUser);
-      router.push(`/${locale}/dashboard`);
+      router.replace(`/${locale}/dashboard`);
     } catch (error) {
       throw error;
     } finally {
@@ -78,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       authService.logout();
       setUser(null);
-      router.push(`/${locale}/login`);
+      router.replace(`/${locale}/login`);
     } catch (error) {
       console.error('Error during logout:', error);
     } finally {
@@ -88,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = {
     user,
-    isAuthenticated: !!user,
+    isAuthenticated: !!user && !isLoading,
     isLoading,
     login,
     logout,

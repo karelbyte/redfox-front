@@ -3,7 +3,16 @@ const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'http://localhost:3000') + '
 const handleUnauthorized = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    localStorage.removeItem('tokenExpires');
+    localStorage.removeItem('user');
+    
+    // Obtener el locale actual de la URL
+    const pathname = window.location.pathname;
+    const localeMatch = pathname.match(/^\/([a-z]{2})(\/|$)/);
+    const locale = localeMatch ? localeMatch[1] : 'es';
+    
+    // Usar window.location.href con el locale correcto
+    window.location.href = `/${locale}/login`;
   }
 };
 

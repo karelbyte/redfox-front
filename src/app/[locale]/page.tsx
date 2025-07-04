@@ -13,9 +13,9 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push(`/${locale}/dashboard`);
+      router.replace(`/${locale}/dashboard`);
     } else if (!isLoading && !isAuthenticated) {
-      router.push(`/${locale}/login`);
+      router.replace(`/${locale}/login`);
     }
   }, [isAuthenticated, isLoading, router, locale]);
 
