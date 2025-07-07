@@ -7,14 +7,14 @@ import { useLocale } from 'next-intl';
 import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { usePermissions } from '@/hooks/usePermissions';
 import { warehouseAdjustmentService } from '@/services';
-import { WarehouseAdjustment, WarehouseAdjustmentDetail } from '@/types/warehouse-adjustment';
+import { WarehouseAdjustment, WarehouseAdjustmentDetail, WarehouseAdjustmentCloseResponse } from '@/types/warehouse-adjustment';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import Loading from '@/components/Loading/Loading';
 import WarehouseAdjustmentProductsTable from '@/components/WarehouseAdjustment/WarehouseAdjustmentProductsTable';
 import AddProductForm, { AddProductFormRef } from '@/components/WarehouseAdjustment/AddProductForm';
 import { CloseWarehouseAdjustmentModal } from '@/components/WarehouseAdjustment/CloseWarehouseAdjustmentModal';
-// import WarehouseAdjustmentCloseResultModal from '@/components/WarehouseAdjustment/WarehouseAdjustmentCloseResultModal';
+import WarehouseAdjustmentCloseResultModal from '@/components/WarehouseAdjustment/WarehouseAdjustmentCloseResultModal';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
 import { toastService } from '@/services/toast.service';
 
@@ -37,7 +37,7 @@ export default function WarehouseAdjustmentDetailsPage() {
   const [isProductFormValid, setIsProductFormValid] = useState(false);
   const [isClosingAdjustment, setIsClosingAdjustment] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
-  // const [closeResult, setCloseResult] = useState<WarehouseAdjustmentCloseResponse | null>(null);
+  const [closeResult, setCloseResult] = useState<WarehouseAdjustmentCloseResponse | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<WarehouseAdjustmentDetail | null>(null);
   const productFormRef = useRef<AddProductFormRef>(null);
@@ -186,8 +186,8 @@ export default function WarehouseAdjustmentDetailsPage() {
 
     try {
       setIsClosingAdjustment(true);
-      // const result = await warehouseAdjustmentService.closeWarehouseAdjustment(adjustment.id);
-      // setCloseResult(result);
+      const result = await warehouseAdjustmentService.closeWarehouseAdjustment(adjustment.id);
+      setCloseResult(result);
       setIsCloseModalOpen(false);
       fetchAdjustment(); // Recargar los datos del ajuste
       fetchProducts(); // Recargar los productos
@@ -210,9 +210,9 @@ export default function WarehouseAdjustmentDetailsPage() {
     setIsCloseModalOpen(true);
   };
 
-  // const handleCloseResultModalClose = () => {
-  //   setCloseResult(null);
-  // };
+  const handleCloseResultModalClose = () => {
+    setCloseResult(null);
+  };
 
 
 
@@ -452,10 +452,10 @@ export default function WarehouseAdjustmentDetailsPage() {
       />
 
       {/* Modal de resultado del cierre de ajuste */}
-      {/* <WarehouseAdjustmentCloseResultModal
+      <WarehouseAdjustmentCloseResultModal
         closeResult={closeResult}
         onClose={handleCloseResultModalClose}
-      /> */}
+      />
 
       {/* Modal de confirmación para eliminar producto */}
       <ConfirmModal

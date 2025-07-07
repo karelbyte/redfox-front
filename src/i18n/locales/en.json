@@ -1559,10 +1559,14 @@
       },
       "closeResult": {
         "title": "Adjustment Closed Successfully",
+        "message": "The warehouse adjustment has been closed successfully. Products have been transferred between warehouses.",
         "adjustmentCode": "Adjustment Code",
         "transferredProducts": "Transferred Products",
         "totalQuantity": "Total Quantity",
-        "closedAt": "Closed at"
+        "closedAt": "Closed at",
+        "actions": {
+          "continue": "Continue"
+        }
       },
       "error": {
         "title": "Error",

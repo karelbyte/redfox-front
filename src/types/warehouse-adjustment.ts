@@ -113,10 +113,13 @@ export interface PaginatedWarehouseAdjustmentDetailsResponse {
 }
 
 export interface WarehouseAdjustmentCloseResponse {
-  adjustmentId: string;
-  adjustmentCode: string;
-  transferredProducts: number;
-  totalQuantity: number;
-  message: string;
-  closedAt: string;
+  id: string;
+  code: string;
+  sourceWarehouse: Warehouse;
+  targetWarehouse: Warehouse;
+  date: string;
+  description: string;
+  status: boolean;
+  details: WarehouseAdjustmentDetail[];
+  created_at: string;
 } 

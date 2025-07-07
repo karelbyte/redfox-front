@@ -727,6 +727,7 @@
       "modal": {
         "title": "Detalles del Producto",
         "basicInfo": "Información Básica",
+        "inventoryInfo": "Información del Inventario",
         "name": "Nombre",
         "sku": "SKU",
         "description": "Descripción",
@@ -1563,10 +1564,14 @@
       },
       "closeResult": {
         "title": "Ajuste Cerrado Exitosamente",
+        "message": "El ajuste de almacén ha sido cerrado exitosamente. Los productos han sido transferidos entre los almacenes.",
         "adjustmentCode": "Código del Ajuste",
         "transferredProducts": "Productos Transferidos",
         "totalQuantity": "Cantidad Total",
-        "closedAt": "Cerrado el"
+        "closedAt": "Cerrado el",
+        "actions": {
+          "continue": "Continuar"
+        }
       },
       "error": {
         "title": "Error",

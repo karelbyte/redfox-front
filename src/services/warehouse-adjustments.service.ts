@@ -37,7 +37,7 @@ class WarehouseAdjustmentService {
   }
 
   async closeWarehouseAdjustment(id: string): Promise<WarehouseAdjustmentCloseResponse> {
-    const response = await api.post<WarehouseAdjustmentCloseResponse>(`/warehouse-adjustments/${id}/close`, {});
+    const response = await api.post<WarehouseAdjustmentCloseResponse>(`/warehouse-adjustments/${id}/process`, {});
     return response;
   }
 
