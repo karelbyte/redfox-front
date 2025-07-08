@@ -98,7 +98,8 @@
     "roles": "Roles",
     "emailConfig": "Configuración de Correo",
     "paymentGateway": "Pasarela de Pago",
-    "backup": "Respaldo"
+    "backup": "Respaldo",
+    "returns": "Devoluciones"
   },
   "pages": {
     "dashboard": {
@@ -280,8 +281,27 @@
         "sku": "SKU",
         "brand": "Marca",
         "category": "Categoría",
+        "measurementUnit": "Unidad de Medida",
+        "type": "Tipo",
+        "tax": "Impuesto",
         "status": "Estado",
         "actions": "Acciones"
+      },
+      "actions": {
+        "generateBarcode": "Generar Código de Barras"
+      },
+      "barcodeGenerator": {
+        "title": "Generar Códigos de Barras",
+        "productInfo": "Información del Producto",
+        "productCode": "Código del Producto",
+        "quantityLabel": "Cantidad de códigos",
+        "quantityHelp": "Máximo 100 códigos por generación",
+        "generate": "Generar",
+        "cancel": "Cancelar",
+        "generatedTitle": "Códigos de Barras Generados",
+        "barcodes": "códigos",
+        "print": "Imprimir",
+        "back": "Volver"
       },
       "messages": {
         "productCreated": "Producto creado correctamente",
@@ -291,7 +311,16 @@
         "errorCreating": "Error al crear el producto",
         "errorUpdating": "Error al actualizar el producto",
         "errorDeleting": "Error al eliminar el producto",
-        "confirmDelete": "¿Estás seguro de que deseas eliminar el producto \"{name}\"? Esta acción no se puede deshacer."
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el producto \"{name}\"? Esta acción no se puede deshacer.",
+        "noProductsToExport": "No hay productos para exportar",
+        "pdfGenerated": "PDF generado correctamente",
+        "errorGeneratingPDF": "Error al generar el PDF"
+      },
+      "pdf": {
+        "title": "Lista de Productos",
+        "subtitle": "Reporte de Productos",
+        "export": "Exportar PDF",
+        "generating": "Generando..."
       }
     },
     "categories": {
@@ -1423,6 +1452,169 @@
         "userNotFound": "Usuario no encontrado"
       }
     },
+    "returns": {
+      "title": "Devoluciones",
+      "subtitle": "Gestión de devoluciones a proveedores",
+      "createTitle": "Crear Devolución",
+      "createSubtitle": "Crear una nueva devolución a proveedor",
+      "noReturns": "No hay devoluciones",
+      "noReturnsDesc": "Haz clic en \"Crear Devolución\" para agregar una.",
+      "noPermissionDesc": "No tienes permisos para ver esta página",
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "sourceWarehouse": "Almacén Fuente",
+        "targetProvider": "Proveedor Destino",
+        "date": "Fecha",
+        "description": "Descripción",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "open": "Abierto",
+        "closed": "Cerrado"
+      },
+      "actions": {
+        "create": "Crear Devolución",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "close": "Cerrar",
+        "viewDetails": "Ver Detalles",
+        "back": "Volver",
+        "edit": "Editar",
+        "add": "Agregar",
+        "cannotEditClosed": "No se puede editar una devolución cerrada",
+        "cannotDeleteClosed": "No se puede eliminar una devolución cerrada",
+        "continue": "Continuar"
+      },
+      "form": {
+        "code": "Código",
+        "sourceWarehouse": "Almacén Fuente",
+        "sourceWarehouseId": "Almacén Fuente",
+        "targetProvider": "Proveedor Destino",
+        "targetProviderId": "Proveedor Destino",
+        "date": "Fecha",
+        "description": "Descripción",
+        "placeholders": {
+          "code": "Ingrese código de la devolución",
+          "sourceWarehouse": "Seleccionar almacén fuente",
+          "targetProvider": "Seleccionar proveedor destino",
+          "description": "Descripción de la devolución"
+        },
+        "validation": {
+          "codeRequired": "El código es requerido",
+          "sourceWarehouseRequired": "El almacén fuente es requerido",
+          "targetProviderRequired": "El proveedor destino es requerido",
+          "dateRequired": "La fecha es requerida",
+          "descriptionRequired": "La descripción es requerida"
+        }
+      },
+      "messages": {
+        "returnCreated": "Devolución creada correctamente",
+        "returnUpdated": "Devolución actualizada correctamente",
+        "returnDeleted": "Devolución eliminada correctamente",
+        "returnClosed": "Devolución cerrada correctamente",
+        "errorLoading": "Error al cargar las devoluciones",
+        "errorCreating": "Error al crear la devolución",
+        "errorUpdating": "Error al actualizar la devolución",
+        "errorDeleting": "Error al eliminar la devolución",
+        "errorClosing": "Error al cerrar la devolución",
+        "errorLoadingWarehouses": "Error al cargar los almacenes"
+      },
+      "deleteModal": {
+        "title": "Eliminar {item}",
+        "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "closeModal": {
+        "title": "Cerrar {item}",
+        "message": "¿Estás seguro de que deseas cerrar {item} \"{name}\"? Esta acción procesará la devolución y no se puede deshacer."
+      },
+      "details": {
+        "title": "Devolución {name}",
+        "subtitle": "Detalles de la devolución",
+        "generalInfo": "Información General"
+      },
+      "products": {
+        "title": "Productos de la Devolución",
+        "noProducts": "No hay productos",
+        "noProductsDesc": "Agrega productos a esta devolución para comenzar.",
+        "noProductsClosedDesc": "Esta devolución no tiene productos registrados.",
+        "headers": {
+          "product": "Producto",
+          "sku": "SKU",
+          "brand": "Marca",
+          "category": "Categoría",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "subtotal": "Subtotal",
+          "actions": "Acciones"
+        },
+        "actions": {
+          "edit": "Editar",
+          "delete": "Eliminar"
+        }
+      },
+      "addProduct": {
+        "title": "Agregar Producto",
+        "editTitle": "Editar Producto",
+        "form": {
+          "product": "Producto",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "selectProduct": "Seleccionar producto",
+          "placeholders": {
+            "quantity": "Ingrese cantidad",
+            "price": "Ingrese precio"
+          }
+        },
+        "validation": {
+          "productRequired": "El producto es requerido",
+          "quantityRequired": "La cantidad es requerida",
+          "quantityPositive": "La cantidad debe ser mayor a 0",
+          "quantityExceedsStock": "La cantidad no puede exceder el stock disponible ({stock} unidades)",
+          "priceRequired": "El precio es requerido",
+          "pricePositive": "El precio debe ser mayor a 0"
+        },
+        "messages": {
+          "productAdded": "Producto agregado correctamente",
+          "productUpdated": "Producto actualizado correctamente",
+          "errorAdding": "Error al agregar el producto",
+          "errorUpdating": "Error al actualizar el producto"
+        },
+        "inventoryInfo": {
+          "title": "Información del Inventario",
+          "product": "Producto",
+          "sku": "SKU",
+          "stockAvailable": "Stock Disponible",
+          "inventoryPrice": "Precio de Inventario",
+          "warehouse": "Almacén",
+          "category": "Categoría"
+        }
+      },
+      "deleteProduct": {
+        "title": "Eliminar Producto",
+        "message": "¿Estás seguro de que deseas eliminar el producto \"{productName}\"? Esta acción no se puede deshacer.",
+        "success": "Producto eliminado correctamente",
+        "error": "Error al eliminar el producto"
+      },
+      "closeResult": {
+        "title": "Devolución Cerrada Exitosamente",
+        "message": "La devolución ha sido cerrada exitosamente. Los productos han sido procesados para la devolución al proveedor.",
+        "returnCode": "Código de la Devolución",
+        "returnedProducts": "Productos Devueltos",
+        "totalQuantity": "Cantidad Total",
+        "closedAt": "Cerrada el",
+        "actions": {
+          "continue": "Continuar"
+        }
+      },
+      "error": {
+        "title": "Error",
+        "returnNotFound": "Devolución no encontrada"
+      }
+    },
     "warehouseAdjustments": {
       "title": "Ajustes de Almacén",
       "subtitle": "Gestión de transferencias entre almacenes",
@@ -1554,6 +1746,15 @@
           "productUpdated": "Producto actualizado correctamente",
           "errorAdding": "Error al agregar el producto",
           "errorUpdating": "Error al actualizar el producto"
+        },
+        "inventoryInfo": {
+          "title": "Información del Inventario",
+          "product": "Producto",
+          "sku": "SKU",
+          "stockAvailable": "Stock Disponible",
+          "inventoryPrice": "Precio de Inventario",
+          "warehouse": "Almacén",
+          "category": "Categoría"
         }
       },
       "deleteProduct": {

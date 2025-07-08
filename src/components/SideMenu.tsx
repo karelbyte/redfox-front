@@ -419,6 +419,26 @@ export function SideMenu() {
               </svg>
             ),
           },
+          {
+            name: t("returns"),
+            path: getLocalizedPath("/dashboard/almacenes/devoluciones"),
+            howCan: ["return_module_view"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7v4a2 2 0 01-2 2H7a2 2 0 01-2-2V7m0 0V5a2 2 0 012-2h10a2 2 0 012 2v2m-2 4v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
+                />
+              </svg>
+            ),
+          },
         ],
       },
       {

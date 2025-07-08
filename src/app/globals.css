@@ -176,3 +176,11 @@ body[data-theme="green-gray"] {
 .theme-animate-in {
   animation: theme-fade-in 0.3s ease-out;
 }
+
+/* Estilos para impresión de códigos de barras */
+@media print {
+  /* Ocultar elementos que no queremos en la impresión */
+  .barcode-print-container {
+    display: none !important;
+  }
+}

@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Product } from '@/types/product';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, QrCodeIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -8,9 +8,10 @@ interface ProductTableProps {
   products: Product[];
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
+  onGenerateBarcode: (product: Product) => void;
 }
 
-export default function ProductTable({ products, onEdit, onDelete }: ProductTableProps) {
+export default function ProductTable({ products, onEdit, onDelete, onGenerateBarcode }: ProductTableProps) {
   const t = useTranslations('pages.products');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
@@ -92,6 +93,14 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
+                <Btn
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onGenerateBarcode(product)}
+                    leftIcon={<QrCodeIcon className="h-4 w-4" />}
+                    title={t('actions.generateBarcode')}
+                    style={{ color: '#059669' }}
+                  />
                   {can(["product_update"]) && (
                     <Btn
                       variant="ghost"
@@ -111,6 +120,7 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
                       style={{ color: '#dc2626' }}
                     />
                   )}
+                  
                 </div>
               </td>
             </tr>

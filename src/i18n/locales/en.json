@@ -98,7 +98,8 @@
     "roles": "Roles",
     "emailConfig": "Email Configuration",
     "paymentGateway": "Payment Gateway",
-    "backup": "Backup"
+    "backup": "Backup",
+    "returns": "Returns"
   },
   "pages": {
     "dashboard": {
@@ -280,8 +281,27 @@
         "sku": "SKU",
         "brand": "Brand",
         "category": "Category",
+        "measurementUnit": "Measurement Unit",
+        "type": "Type",
+        "tax": "Tax",
         "status": "Status",
         "actions": "Actions"
+      },
+      "actions": {
+        "generateBarcode": "Generate Barcode"
+      },
+      "barcodeGenerator": {
+        "title": "Generate Barcodes",
+        "productInfo": "Product Information",
+        "productCode": "Product Code",
+        "quantityLabel": "Number of codes",
+        "quantityHelp": "Maximum 100 codes per generation",
+        "generate": "Generate",
+        "cancel": "Cancel",
+        "generatedTitle": "Generated Barcodes",
+        "barcodes": "barcodes",
+        "print": "Print",
+        "back": "Back"
       },
       "messages": {
         "productCreated": "Product created successfully",
@@ -291,7 +311,16 @@
         "errorCreating": "Error creating product",
         "errorUpdating": "Error updating product",
         "errorDeleting": "Error deleting product",
-        "confirmDelete": "Are you sure you want to delete the product \"{name}\"? This action cannot be undone."
+        "confirmDelete": "Are you sure you want to delete the product \"{name}\"? This action cannot be undone.",
+        "noProductsToExport": "No products to export",
+        "pdfGenerated": "PDF generated successfully",
+        "errorGeneratingPDF": "Error generating PDF"
+      },
+      "pdf": {
+        "title": "Products List",
+        "subtitle": "Products Report",
+        "export": "Export PDF",
+        "generating": "Generating..."
       }
     },
     "categories": {
@@ -1418,6 +1447,160 @@
         "userNotFound": "User not found"
       }
     },
+    "returns": {
+      "title": "Returns",
+      "subtitle": "Management of returns to providers",
+      "createTitle": "Create Return",
+      "createSubtitle": "Create a new return to provider",
+      "noReturns": "No returns",
+      "noReturnsDesc": "Click on \"Create Return\" to add one.",
+      "noPermissionDesc": "You don't have permission to view this page",
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "sourceWarehouse": "Source Warehouse",
+        "targetProvider": "Target Provider",
+        "date": "Date",
+        "description": "Description",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "open": "Open",
+        "closed": "Closed"
+      },
+      "actions": {
+        "create": "Create Return",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "close": "Close",
+        "viewDetails": "View Details",
+        "back": "Back",
+        "edit": "Edit",
+        "add": "Add",
+        "cannotEditClosed": "Cannot edit a closed return",
+        "cannotDeleteClosed": "Cannot delete a closed return",
+        "continue": "Continue"
+      },
+      "form": {
+        "code": "Code",
+        "sourceWarehouse": "Source Warehouse",
+        "sourceWarehouseId": "Source Warehouse",
+        "targetProvider": "Target Provider",
+        "targetProviderId": "Target Provider",
+        "date": "Date",
+        "description": "Description",
+        "placeholders": {
+          "code": "Enter return code",
+          "sourceWarehouse": "Select source warehouse",
+          "targetProvider": "Select target provider",
+          "description": "Return description"
+        },
+        "validation": {
+          "codeRequired": "Code is required",
+          "sourceWarehouseRequired": "Source warehouse is required",
+          "targetProviderRequired": "Target provider is required",
+          "dateRequired": "Date is required",
+          "descriptionRequired": "Description is required"
+        }
+      },
+      "messages": {
+        "returnCreated": "Return created successfully",
+        "returnUpdated": "Return updated successfully",
+        "returnDeleted": "Return deleted successfully",
+        "returnClosed": "Return closed successfully",
+        "errorLoading": "Error loading returns",
+        "errorCreating": "Error creating return",
+        "errorUpdating": "Error updating return",
+        "errorDeleting": "Error deleting return",
+        "errorClosing": "Error closing return",
+        "errorLoadingWarehouses": "Error loading warehouses"
+      },
+      "deleteModal": {
+        "title": "Delete {item}",
+        "message": "Are you sure you want to delete {item} \"{name}\"? This action cannot be undone."
+      },
+      "closeModal": {
+        "title": "Close {item}",
+        "message": "Are you sure you want to close {item} \"{name}\"? This action will process the return and cannot be undone."
+      },
+      "details": {
+        "title": "Return {name}",
+        "subtitle": "Return details",
+        "generalInfo": "General Information"
+      },
+      "products": {
+        "title": "Return Products",
+        "noProducts": "No products",
+        "noProductsDesc": "Add products to this return to get started.",
+        "noProductsClosedDesc": "This return has no registered products.",
+        "headers": {
+          "product": "Product",
+          "sku": "SKU",
+          "brand": "Brand",
+          "category": "Category",
+          "quantity": "Quantity",
+          "price": "Price",
+          "subtotal": "Subtotal",
+          "actions": "Actions"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete"
+        }
+      },
+      "addProduct": {
+        "title": "Add Product",
+        "editTitle": "Edit Product",
+        "form": {
+          "product": "Product",
+          "quantity": "Quantity",
+          "price": "Price",
+          "selectProduct": "Select product",
+          "placeholders": {
+            "quantity": "Enter quantity",
+            "price": "Enter price"
+          }
+        },
+        "validation": {
+          "productRequired": "Product is required",
+          "quantityRequired": "Quantity is required",
+          "quantityPositive": "Quantity must be greater than 0",
+          "quantityExceedsStock": "Quantity cannot exceed available stock ({stock} units)",
+          "priceRequired": "Price is required",
+          "pricePositive": "Price must be greater than 0"
+        },
+        "messages": {
+          "productAdded": "Product added successfully",
+          "productUpdated": "Product updated successfully",
+          "errorAdding": "Error adding product",
+          "errorUpdating": "Error updating product"
+        }
+      },
+      "deleteProduct": {
+        "title": "Delete Product",
+        "message": "Are you sure you want to delete the product \"{productName}\"? This action cannot be undone.",
+        "success": "Product deleted successfully",
+        "error": "Error deleting product"
+      },
+      "closeResult": {
+        "title": "Return Closed Successfully",
+        "message": "The return has been closed successfully. Products have been processed for return to the provider.",
+        "returnCode": "Return Code",
+        "returnedProducts": "Returned Products",
+        "totalQuantity": "Total Quantity",
+        "closedAt": "Closed at",
+        "actions": {
+          "continue": "Continue"
+        }
+      },
+      "error": {
+        "title": "Error",
+        "returnNotFound": "Return not found"
+      }
+    },
     "warehouseAdjustments": {
       "title": "Warehouse Adjustments",
       "subtitle": "Management of transfers between warehouses",
@@ -1440,21 +1623,21 @@
         "open": "Open",
         "closed": "Closed"
       },
-              "actions": {
-          "create": "Create Adjustment",
-          "save": "Save",
-          "saving": "Saving...",
-          "cancel": "Cancel",
-          "delete": "Delete",
-          "close": "Close",
-          "viewDetails": "View Details",
-          "back": "Back",
-          "edit": "Edit",
-          "add": "Add",
-          "cannotEditClosed": "Cannot edit a closed adjustment",
-          "cannotDeleteClosed": "Cannot delete a closed adjustment",
-          "continue": "Continue"
-        },
+      "actions": {
+        "create": "Create Adjustment",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "close": "Close",
+        "viewDetails": "View Details",
+        "back": "Back",
+        "edit": "Edit",
+        "add": "Add",
+        "cannotEditClosed": "Cannot edit a closed adjustment",
+        "cannotDeleteClosed": "Cannot delete a closed adjustment",
+        "continue": "Continue"
+      },
       "form": {
         "code": "Code",
         "sourceWarehouse": "Source Warehouse",
