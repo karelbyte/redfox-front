@@ -5,15 +5,20 @@ import { useTranslations } from 'next-intl';
 import { saleService } from '@/services/sales.service';
 import { clientsService } from '@/services/clients.service';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
+import { cashRegisterService } from '@/services/cash-register.service';
 import { toastService } from '@/services/toast.service';
 import { SaleFormData } from '@/types/sale';
 import { Client } from '@/types/client';
+import { CashRegister } from '@/types/cash-register';
 import Drawer from '@/components/Drawer/Drawer';
 import ClientForm from '@/components/Client/ClientForm';
 import { ClientFormRef } from '@/components/Client/ClientForm';
 import POSCart from '@/components/POS/POSCart';
 import ProductsGrid from '@/components/POS/ProductsGrid';
 import PaymentModal from '@/components/POS/PaymentModal';
+import CashRegisterModal from '@/components/POS/CashRegisterModal';
+import CashDrawerModal from '@/components/POS/CashDrawerModal';
+import CashBalance from '@/components/POS/CashBalance'; // Added import for CashBalance
 import { useCart } from '@/context/CartContext';
 
 export default function POSPage() {
@@ -29,8 +34,14 @@ export default function POSPage() {
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
   const [cashAmount, setCashAmount] = useState<number>(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [currentCashRegister, setCurrentCashRegister] = useState<CashRegister | null>(null);
+  const [showCashRegisterModal, setShowCashRegisterModal] = useState(false);
+  const [showCashDrawerModal, setShowCashDrawerModal] = useState(false);
+  const [showCashBalanceDrawer, setShowCashBalanceDrawer] = useState(false);
+  const [cashLoading, setCashLoading] = useState(false);
   const clientFormRef = useRef<ClientFormRef>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const initialFetchDone = useRef(false);
 
   // Hook para manejar el carrito con persistencia
   const { cart, addToCart, clearCart, getTotal, selectedClient } = useCart();
@@ -40,9 +51,12 @@ export default function POSPage() {
   };
 
   useEffect(() => {
-    fetchProducts();
-    fetchClients();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchProducts();
+      fetchClients();
+      fetchCurrentCashRegister();
+    }
   }, []);
 
   // Debounced search effect
@@ -105,6 +119,105 @@ export default function POSPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const fetchCurrentCashRegister = useCallback(async () => {
+    try {
+      const cashRegister = await cashRegisterService.getCurrentCashRegister();
+      setCurrentCashRegister(cashRegister);
+      
+      // Si no hay caja abierta, mostrar toast informativo
+      if (!cashRegister) {
+        toastService.info(t('messages.noCashRegisterInfo'));
+      }
+    } catch {
+      // No mostrar error si no hay caja activa
+    }
+  }, [t]);
+
+  const handleInitializeCash = () => {
+    setShowCashRegisterModal(true);
+  };
+
+  const handleCashDrawer = () => {
+    setShowCashDrawerModal(true);
+  };
+
+  const handleOpenCashBalance = () => {
+    setShowCashBalanceDrawer(true);
+  };
+
+  const handleCashRegisterConfirm = async (initialAmount: number, selectedCashRegister?: CashRegister) => {
+    try {
+      setCashLoading(true);
+      
+      if (currentCashRegister) {
+        // Actualizar balance existente
+        await cashRegisterService.updateCashRegister(currentCashRegister.id, {
+          current_amount: initialAmount
+        });
+        toastService.success(t('messages.cashRegisterUpdated'));
+      } else if (selectedCashRegister) {
+        // Abrir caja existente seleccionada
+        await cashRegisterService.openCashRegister(initialAmount, selectedCashRegister.name, selectedCashRegister.description);
+        toastService.success(t('messages.cashRegisterOpened'));
+      } else {
+        // Crear y abrir nueva caja
+        await cashRegisterService.openCashRegister(initialAmount, 'Caja Principal', 'Caja principal del POS');
+        toastService.success(t('messages.cashRegisterInitialized'));
+      }
+      
+      await fetchCurrentCashRegister();
+      setShowCashRegisterModal(false);
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorProcessing'));
+      }
+    } finally {
+      setCashLoading(false);
+    }
+  };
+
+  const handleCashDrawerConfirm = async (data: { type: 'closing' | 'adjustment'; amount: number; description: string }) => {
+    try {
+      setCashLoading(true);
+      
+      if (!currentCashRegister) {
+        toastService.error(t('messages.noCashRegister'));
+        return;
+      }
+
+      // Crear transacción de caja
+      await cashRegisterService.createCashTransaction({
+        cash_register_id: currentCashRegister.id,
+        type: data.type === 'closing' ? 'adjustment' : 'adjustment',
+        amount: data.amount,
+        description: data.description,
+        reference: `${data.type.toUpperCase()}-${Date.now()}`,
+        payment_method: 'cash'
+      });
+
+      // Si es cierre, cerrar la caja
+      if (data.type === 'closing') {
+        await cashRegisterService.closeCashRegister(currentCashRegister.id, data.amount, data.description);
+        toastService.success(t('messages.cashRegisterClosed'));
+      } else {
+        toastService.success(t('messages.cashDrawerCompleted'));
+      }
+      
+      await fetchCurrentCashRegister();
+      setShowCashDrawerModal(false);
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorProcessing'));
+      }
+    } finally {
+      setCashLoading(false);
+    }
+  };
+
   const getChange = () => {
     try {
       const total = getTotal();
@@ -146,11 +259,44 @@ export default function POSPage() {
 
       for (const item of cart) {
         await saleService.addProductToSale(sale.id, {
-          product_id: item.product.id,
+          product_id: item.product.product.id,
           quantity: item.quantity,
           price: item.price,
-          warehouse_id: '1'
+          warehouse_id: item.product.warehouse.id
         });
+      }
+
+      // Registrar transacción de caja según el método de pago
+      if (currentCashRegister && currentCashRegister.status === 'open') {
+        try {
+          const transactionType: 'sale' | 'adjustment' = 'sale';
+          let transactionDescription = '';
+          let transactionPaymentMethod: 'cash' | 'card' | 'mixed' = 'cash';
+
+          if (paymentMethod === 'cash') {
+            transactionDescription = `Venta POS en Efectivo - ${sale.code}`;
+            transactionPaymentMethod = 'cash';
+          } else if (paymentMethod === 'card') {
+            transactionDescription = `Venta POS con Tarjeta - ${sale.code}`;
+            transactionPaymentMethod = 'card';
+          }
+
+          await cashRegisterService.createCashTransaction({
+            cash_register_id: currentCashRegister.id,
+            type: transactionType,
+            amount: getTotal(),
+            description: transactionDescription,
+            reference: sale.code,
+            payment_method: transactionPaymentMethod,
+            sale_id: sale.id
+          });
+
+          // Actualizar el balance de la caja
+          await fetchCurrentCashRegister();
+        } catch (error) {
+          console.error('Error registering cash transaction:', error);
+          // No fallar la venta si hay error en la transacción de caja
+        }
       }
 
       toastService.success(t('messages.saleCompleted'));
@@ -211,6 +357,11 @@ export default function POSPage() {
               clients={clients}
               onAddClient={() => setShowClientDrawer(true)}
               onCheckout={handleOpenPaymentModal}
+              currentCashRegister={currentCashRegister}
+              onInitializeCash={handleInitializeCash}
+              onCashDrawer={handleCashDrawer}
+              onOpenCashBalance={handleOpenCashBalance}
+              loading={cashLoading}
             />
           </div>
 
@@ -247,6 +398,22 @@ export default function POSPage() {
         />
       </Drawer>
 
+      {/* Drawer del balance de caja */}
+      <Drawer
+        id="cash-balance-drawer"
+        isOpen={showCashBalanceDrawer}
+        onClose={() => setShowCashBalanceDrawer(false)}
+        title={t('cashBalance.title')}
+      >
+        <CashBalance
+          currentCashRegister={currentCashRegister}
+          onInitializeCash={handleInitializeCash}
+          onCashDrawer={handleCashDrawer}
+          loading={cashLoading}
+          isOpen={showCashBalanceDrawer}
+        />
+      </Drawer>
+
       {/* Modal de pago */}
       <PaymentModal
         isOpen={showPaymentModal}
@@ -259,6 +426,24 @@ export default function POSPage() {
         onPaymentMethodChange={setPaymentMethod}
         onCashAmountChange={setCashAmount}
         getChange={getChange}
+      />
+
+      {/* Modal de inicialización de caja */}
+      <CashRegisterModal
+        isOpen={showCashRegisterModal}
+        onClose={() => setShowCashRegisterModal(false)}
+        onConfirm={handleCashRegisterConfirm}
+        loading={cashLoading}
+        currentCashRegister={currentCashRegister}
+      />
+
+      {/* Modal de corte de caja */}
+      <CashDrawerModal
+        isOpen={showCashDrawerModal}
+        onClose={() => setShowCashDrawerModal(false)}
+        onConfirm={handleCashDrawerConfirm}
+        loading={cashLoading}
+        currentCashRegister={currentCashRegister}
       />
     </div>
   );

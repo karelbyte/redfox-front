@@ -47,7 +47,7 @@ const handleResponse = async (response: Response) => {
 
   try {
     return await response.json();
-  } catch {
+  } catch  {
     return Promise.reject(new Error('Error al procesar la respuesta'));
   }
 };

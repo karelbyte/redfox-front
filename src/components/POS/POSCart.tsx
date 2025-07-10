@@ -6,10 +6,12 @@ import {
   TrashIcon,
   ShoppingCartIcon,
   ArrowLeftIcon,
+  BanknotesIcon,
 } from "@heroicons/react/24/outline";
 import { Btn, SelectWithAdd } from "@/components/atoms";
 import { Client } from "@/types/client";
 import CartItem from "./CartItem";
+import CashBalance from "./CashBalance";
 import { useRouter } from "next/navigation";
 import { useCart } from '@/context/CartContext';
 
@@ -17,6 +19,16 @@ interface POSCartProps {
   clients: Client[];
   onAddClient: () => void;
   onCheckout: () => void;
+  currentCashRegister?: {
+    id: string;
+    name: string;
+    current_amount: number;
+    status: 'open' | 'closed';
+  } | null;
+  onInitializeCash: () => void;
+  onCashDrawer: () => void;
+  onOpenCashBalance: () => void;
+  loading?: boolean;
 }
 
 const POSCart = (
@@ -24,6 +36,11 @@ const POSCart = (
     clients,
     onAddClient,
     onCheckout,
+    currentCashRegister,
+    onInitializeCash,
+    onCashDrawer,
+    onOpenCashBalance,
+    loading = false,
   }: POSCartProps) => {
     const t = useTranslations("pages.pos");
     const locale = useLocale();
@@ -54,14 +71,24 @@ const POSCart = (
               {t("backToDashboard")}
             </Btn>
             <h2 className="text-lg font-semibold">{t("cart.title")}</h2>
-            <Btn
-              variant="ghost"
-              size="sm"
-              onClick={handleClearCart}
-              leftIcon={<TrashIcon className="h-4 w-4" />}
-            >
-              {t("cart.clear")}
-            </Btn>
+            <div className="flex items-center space-x-2">
+              <Btn
+                variant="ghost"
+                size="sm"
+                onClick={onOpenCashBalance}
+                leftIcon={<BanknotesIcon className="h-4 w-4" />}
+              >
+                {t("cart.cashBalance")}
+              </Btn>
+              <Btn
+                variant="ghost"
+                size="sm"
+                onClick={handleClearCart}
+                leftIcon={<TrashIcon className="h-4 w-4" />}
+              >
+                {t("cart.clear")}
+              </Btn>
+            </div>
           </div>
         </div>
 
