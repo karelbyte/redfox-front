@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { usePermissions } from '@/hooks/usePermissions';
 import { returnService } from '@/services';
-import { Return, Warehouse } from '@/types/return';
+import { Return } from '@/types/return';
+import { Warehouse } from '@/types/warehouse';
 import { Btn } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
 import EmptyState from '@/components/atoms/EmptyState';
@@ -28,7 +29,7 @@ export default function ReturnsPage() {
   const [returns, setReturns] = useState<Return[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+
   const [totalPages, setTotalPages] = useState(1);
   const [showDrawer, setShowDrawer] = useState(false);
   const [editingReturn, setEditingReturn] = useState<Return | null>(null);
@@ -36,7 +37,7 @@ export default function ReturnsPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [returnToDelete, setReturnToDelete] = useState<Return | null>(null);
   const [returnToClose, setReturnToClose] = useState<Return | null>(null);
-  const formRef = useRef<any>(null);
+  const formRef = useRef<{ submit: () => void } | null>(null);
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
@@ -104,10 +105,7 @@ export default function ReturnsPage() {
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    loadReturns(page);
-  };
+
 
   const handleDetails = (returnItem: Return) => {
     router.push(`/${locale}/dashboard/almacenes/devoluciones/devoluciones/${returnItem.id}`);

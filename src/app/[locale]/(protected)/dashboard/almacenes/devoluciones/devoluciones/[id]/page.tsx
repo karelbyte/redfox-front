@@ -7,7 +7,7 @@ import { useLocale } from 'next-intl';
 import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { usePermissions } from '@/hooks/usePermissions';
 import { returnService } from '@/services';
-import { Return, ReturnDetail } from '@/types/return';
+import { Return, ReturnDetail, ReturnCloseResult } from '@/types/return';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import Loading from '@/components/Loading/Loading';
@@ -37,7 +37,7 @@ export default function ReturnDetailsPage() {
   const [isProductFormValid, setIsProductFormValid] = useState(false);
   const [isClosingReturn, setIsClosingReturn] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
-  const [closeResult, setCloseResult] = useState<any>(null);
+  const [closeResult, setCloseResult] = useState<ReturnCloseResult | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<ReturnDetail | null>(null);
   const productFormRef = useRef<AddProductFormRef>(null);
@@ -432,7 +432,7 @@ export default function ReturnDetailsPage() {
       >
         <AddProductForm
           ref={productFormRef}
-          returnDetail={productToEdit}
+          returnDetail={productToEdit || undefined}
           sourceWarehouseId={returnItem.sourceWarehouse.id}
           onClose={handleEditProductDrawerClose}
           onSuccess={handleEditProductFormSuccess}

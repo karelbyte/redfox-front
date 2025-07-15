@@ -1,0 +1,26 @@
+# Dockerfile para desarrollo de Next.js 15
+FROM node:20-alpine
+
+# Instalar dependencias del sistema
+RUN apk add --no-cache libc6-compat
+
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY package.json package-lock.json* ./
+
+# Instalar todas las dependencias (incluyendo devDependencies)
+RUN npm ci
+
+# Copiar el código fuente
+COPY . .
+
+# Configurar variables de entorno para desarrollo
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Exponer el puerto de desarrollo
+EXPOSE 5501
+
+# Comando para ejecutar en modo desarrollo
+CMD ["npm", "run", "dev"] 

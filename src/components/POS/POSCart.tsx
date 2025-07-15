@@ -11,7 +11,7 @@ import {
 import { Btn, SelectWithAdd } from "@/components/atoms";
 import { Client } from "@/types/client";
 import CartItem from "./CartItem";
-import CashBalance from "./CashBalance";
+
 import { useRouter } from "next/navigation";
 import { useCart } from '@/context/CartContext';
 
@@ -36,11 +36,7 @@ const POSCart = (
     clients,
     onAddClient,
     onCheckout,
-    currentCashRegister,
-    onInitializeCash,
-    onCashDrawer,
     onOpenCashBalance,
-    loading = false,
   }: POSCartProps) => {
     const t = useTranslations("pages.pos");
     const locale = useLocale();

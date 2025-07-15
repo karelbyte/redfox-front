@@ -21,7 +21,7 @@ interface ReturnFormProps {
 }
 
 const ReturnForm = forwardRef<ReturnFormRef, ReturnFormProps>(
-  ({ warehouses, initialData, onClose, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ warehouses, initialData, onSuccess, onSavingChange, onValidChange }, ref) => {
     const t = useTranslations('pages.returns.form');
     const [formData, setFormData] = useState<ReturnFormData>({
       code: '',
@@ -32,7 +32,7 @@ const ReturnForm = forwardRef<ReturnFormRef, ReturnFormProps>(
     });
     const [providers, setProviders] = useState<Provider[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isLoadingProviders, setIsLoadingProviders] = useState(false);
+    const [, setIsLoadingProviders] = useState(false);
 
     // Cargar proveedores
     useEffect(() => {
@@ -112,7 +112,7 @@ const ReturnForm = forwardRef<ReturnFormRef, ReturnFormProps>(
 
         if (initialData && 'id' in initialData) {
           // Actualizar devolución existente
-          await returnService.updateReturn((initialData as any).id, data);
+          await returnService.updateReturn((initialData as ReturnFormData & { id: string }).id, data);
         } else {
           // Crear nueva devolución
           await returnService.createReturn(data);

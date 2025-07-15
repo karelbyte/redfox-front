@@ -82,7 +82,7 @@ export default function LoginPage() {
             <img src={getImageUrl()} alt="Nitro" className="h-12 w-auto" />
           </div>
           <h2
-            className="text-center text-4xl font-bold"
+            className="text-center text-2xl font-bold"
             style={{ color: `rgb(var(--color-primary-600))` }}
           >
             {t('title')}
@@ -91,7 +91,7 @@ export default function LoginPage() {
             className="text-center"
             style={{ color: `rgb(var(--color-secondary-600))` }}
           >
-            Ingresa tus credenciales para continuar
+            {t('subtitle')}
           </p>
         </div>
 

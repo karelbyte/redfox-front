@@ -134,4 +134,16 @@ export interface ReturnCloseResponse {
   status: boolean;
   details: ReturnDetail[];
   created_at: string;
+}
+
+export interface ReturnCloseResult {
+  id: string;
+  code: string;
+  sourceWarehouse: Warehouse;
+  targetProvider: Provider;
+  date: string;
+  description: string;
+  status: boolean;
+  details: ReturnDetail[];
+  created_at: string;
 } 

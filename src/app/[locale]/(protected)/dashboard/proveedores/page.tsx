@@ -61,7 +61,7 @@ export default function ProvidersPage() {
       initialFetchDone.current = true;
     fetchProviders(1);
     }
-  }, []);
+  }, [fetchProviders]);
 
   const handleEdit = (provider: Provider) => {
     setSelectedProvider(provider);

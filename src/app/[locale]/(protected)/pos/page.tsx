@@ -57,6 +57,7 @@ export default function POSPage() {
       fetchClients();
       fetchCurrentCashRegister();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Debounced search effect

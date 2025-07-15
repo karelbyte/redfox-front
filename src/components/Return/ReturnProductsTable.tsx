@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { ReturnDetail } from '@/types/return';
 import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 interface ReturnProductsTableProps {
   products: ReturnDetail[];
@@ -25,10 +25,6 @@ export default function ReturnProductsTable({
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(price);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES');
   };
 
   if (products.length === 0) {

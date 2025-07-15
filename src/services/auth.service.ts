@@ -54,7 +54,6 @@ export const authService = {
         document.cookie = `token=${data.access_token}; path=/; expires=${new Date(data.expires_at).toUTCString()}; secure; samesite=strict`;
       }
 
-      toastService.success('¡Bienvenido!');
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
@@ -76,8 +75,6 @@ export const authService = {
         }
       });
     }
-
-    toastService.info('Sesión cerrada correctamente');
   },
 
   getToken(): string | null {
@@ -101,8 +98,6 @@ export const authService = {
     const cookies = document.cookie.split(';');
     const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('token='));
     if (tokenCookie) {
-      const cookieToken = tokenCookie.split('=')[1];
-      // Si encontramos un token en cookies pero no en localStorage, limpiar todo
       this.clearAuth();
       return null;
     }

@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { ReturnDetailFormData, ReturnDetail } from '@/types/return';
 import { Input, SearchSelect } from '@/components/atoms';
 import { inventoryService } from '@/services';
+import { InventoryItem } from '@/types/inventory';
 
 export interface AddProductFormRef {
   submit: () => Promise<ReturnDetailFormData | null>;
@@ -20,7 +21,7 @@ interface AddProductFormProps {
 }
 
 const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
-  ({ sourceWarehouseId, returnDetail, onClose, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ sourceWarehouseId, returnDetail, onValidChange }, ref) => {
     const t = useTranslations('pages.returns.addProduct');
     const [formData, setFormData] = useState<ReturnDetailFormData>({
       productId: '',
@@ -28,7 +29,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       price: 0
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [selectedInventoryProduct, setSelectedInventoryProduct] = useState<any>(null);
+    const [selectedInventoryProduct, setSelectedInventoryProduct] = useState<InventoryItem | null>(null);
 
     // Cargar datos del producto a editar SOLO cuando cambia el producto
     useEffect(() => {
@@ -50,7 +51,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
     }, [returnDetail?.product.id]);
 
     // Función para obtener el producto de inventario completo cuando se selecciona
-    const getInventoryProductById = useCallback(async (productId: string): Promise<any | null> => {
+    const getInventoryProductById = useCallback(async (productId: string): Promise<InventoryItem | null> => {
       try {
         const response = await inventoryService.getInventory(sourceWarehouseId, 1, '');
         const foundProduct = response.data.find(inv => inv.product.id === productId);
@@ -146,7 +147,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
     // Exponer método submit usando useImperativeHandle
     useEffect(() => {
       if (ref) {
-        (ref as any).current = {
+        (ref as React.RefObject<AddProductFormRef>).current = {
           submit: handleSubmit
         };
       }
@@ -182,7 +183,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
               </div>
               <div>
                 <span className="text-gray-500">{t('inventoryInfo.stockAvailable')}:</span>
-                <p className="font-medium">{selectedInventoryProduct.quantity} {selectedInventoryProduct.product.measurement_unit?.symbol || 'pz'}</p>
+                <p className="font-medium">{selectedInventoryProduct.quantity} {typeof selectedInventoryProduct.product.measurement_unit === 'object' ? selectedInventoryProduct.product.measurement_unit.code : 'pz'}</p>
               </div>
               <div>
                 <span className="text-gray-500">{t('inventoryInfo.inventoryPrice')}:</span>
@@ -195,7 +196,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
               {selectedInventoryProduct.product.category && (
                 <div>
                   <span className="text-gray-500">{t('inventoryInfo.category')}:</span>
-                  <p className="font-medium">{selectedInventoryProduct.product.category.name}</p>
+                  <p className="font-medium">{typeof selectedInventoryProduct.product.category === 'object' ? selectedInventoryProduct.product.category.name : selectedInventoryProduct.product.category}</p>
                 </div>
               )}
             </div>

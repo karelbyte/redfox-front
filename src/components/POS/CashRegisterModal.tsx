@@ -35,8 +35,12 @@ const CashRegisterModal = React.memo(({
   const [showExistingRegisters, setShowExistingRegisters] = useState(false);
 
   useEffect(() => {
-    if (isOpen && !currentCashRegister) {
-      fetchCashRegisters();
+    if (isOpen) {
+      setInitialAmount(currentCashRegister?.current_amount || 0);
+      setSelectedCashRegister(null);
+      setSearchTerm('');
+      setShowExistingRegisters(false);
+      setCashRegisters([]);
     }
   }, [isOpen, currentCashRegister]);
 
@@ -47,6 +51,8 @@ const CashRegisterModal = React.memo(({
       setCashRegisters(response.data || []);
     } catch (error) {
       console.error('Error fetching cash registers:', error);
+      // Si el endpoint no existe, mostrar mensaje informativo
+      setCashRegisters([]);
     } finally {
       setLoadingCashRegisters(false);
     }
@@ -161,9 +167,8 @@ const CashRegisterModal = React.memo(({
                   <SearchInput
                     placeholder={t('cashRegister.searchPlaceholder')}
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={setSearchTerm}
                     onSearch={handleSearch}
-                    loading={loadingCashRegisters}
                   />
 
                   {loadingCashRegisters ? (

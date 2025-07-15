@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { BanknotesIcon, CalculatorIcon, PlusIcon, DocumentTextIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { BanknotesIcon, PlusIcon, DocumentTextIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
 import { cashRegisterService } from '@/services/cash-register.service';
 import { CashTransaction } from '@/types/cash-register';
@@ -30,20 +30,102 @@ const CashBalance = React.memo(({
   const t = useTranslations('pages.pos');
   const [recentTransactions, setRecentTransactions] = useState<CashTransaction[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
+  const [realBalance, setRealBalance] = useState<number>(0);
+  const [loadingBalance, setLoadingBalance] = useState(false);
 
   useEffect(() => {
     if (currentCashRegister && currentCashRegister.status === 'open' && isOpen) {
+      console.log('🔄 CashBalance useEffect triggered:', {
+        cashRegisterId: currentCashRegister.id,
+        initialAmount: currentCashRegister.current_amount,
+        isOpen
+      });
       fetchRecentTransactions();
+      fetchRealBalance();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCashRegister, isOpen]);
+
+  // Debug effect para monitorear cambios en realBalance
+  useEffect(() => {
+    console.log('💰 realBalance changed:', realBalance);
+  }, [realBalance]);
+
+  const fetchRealBalance = async () => {
+    if (!currentCashRegister) return;
+    
+    try {
+      setLoadingBalance(true);
+      console.log('💰 Starting fetchRealBalance for cash register:', currentCashRegister.id);
+      
+      // Siempre calcular localmente para obtener el balance real
+      const response = await cashRegisterService.getCashTransactions(currentCashRegister.id, 1, 100);
+      const transactions = response.data || [];
+      
+      console.log('📊 Transactions received:', transactions.length);
+      
+      // Calcular balance real: monto inicial + todas las transacciones
+      let calculatedBalance = currentCashRegister.current_amount; // monto inicial
+      
+      transactions.forEach((transaction, index) => {
+        const previousBalance = calculatedBalance;
+        if (transaction.type === 'sale') {
+          calculatedBalance += transaction.amount; // Las ventas aumentan el balance
+        } else if (transaction.type === 'refund') {
+          calculatedBalance -= transaction.amount; // Los reembolsos disminuyen el balance
+        } else if (transaction.type === 'adjustment') {
+          calculatedBalance += transaction.amount; // Los ajustes pueden ser positivos o negativos
+        }
+        console.log(`Transaction ${index + 1}: ${transaction.type} $${transaction.amount} -> Balance: $${previousBalance} -> $${calculatedBalance}`);
+      });
+      
+      console.log('💰 Final calculated balance:', {
+        initial: currentCashRegister.current_amount,
+        transactions: transactions.length,
+        calculated: calculatedBalance,
+        transactionsDetails: transactions.map(t => ({ type: t.type, amount: t.amount }))
+      });
+      
+      setRealBalance(calculatedBalance);
+    } catch (error) {
+      console.error('❌ Error calculating balance locally:', error);
+      // Si falla todo, usar el balance básico
+      setRealBalance(currentCashRegister.current_amount);
+    } finally {
+      setLoadingBalance(false);
+    }
+  };
 
   const fetchRecentTransactions = async () => {
     if (!currentCashRegister) return;
     
     try {
       setLoadingTransactions(true);
-      const response = await cashRegisterService.getCashTransactions(currentCashRegister.id, 1, 10);
-      setRecentTransactions(response.data || []);
+      const response = await cashRegisterService.getCashTransactions(currentCashRegister.id, 1, 100);
+      const transactions = response.data || [];
+      setRecentTransactions(transactions.slice(0, 10)); // Mostrar solo las primeras 10 en la UI
+      
+      // Si no hay balance real calculado, calcularlo ahora
+      if (realBalance === 0 || realBalance === currentCashRegister.current_amount) {
+        let calculatedBalance = currentCashRegister.current_amount; // monto inicial
+        
+        transactions.forEach(transaction => {
+          if (transaction.type === 'sale') {
+            calculatedBalance += transaction.amount; // Las ventas aumentan el balance
+          } else if (transaction.type === 'refund') {
+            calculatedBalance -= transaction.amount; // Los reembolsos disminuyen el balance
+          } else if (transaction.type === 'adjustment') {
+            calculatedBalance += transaction.amount; // Los ajustes pueden ser positivos o negativos
+          }
+        });
+        
+        setRealBalance(calculatedBalance);
+        console.log('💰 Updated balance from transactions:', {
+          initial: currentCashRegister.current_amount,
+          transactions: transactions.length,
+          calculated: calculatedBalance
+        });
+      }
     } catch (error) {
       console.error('❌ Error fetching transactions:', error);
     } finally {
@@ -114,7 +196,11 @@ const CashBalance = React.memo(({
           <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
             <span className="text-sm text-blue-700">{t('cashBalance.currentBalance')}:</span>
             <span className="text-xl font-bold text-blue-700">
-              ${currentCashRegister.current_amount.toFixed(2)}
+              {loadingBalance ? (
+                <span className="text-sm text-blue-600">{t('cashBalance.loadingBalance')}</span>
+              ) : (
+                `$${realBalance.toFixed(2)}`
+              )}
             </span>
           </div>
 
@@ -129,8 +215,11 @@ const CashBalance = React.memo(({
                 <Btn
                   size="sm"
                   variant="outline"
-                  onClick={fetchRecentTransactions}
-                  disabled={loadingTransactions}
+                  onClick={() => {
+                    fetchRecentTransactions();
+                    fetchRealBalance();
+                  }}
+                  disabled={loadingTransactions || loadingBalance}
                 >
                   {t('cashBalance.refresh')}
                 </Btn>
@@ -176,7 +265,7 @@ const CashBalance = React.memo(({
               <Btn
                 onClick={onInitializeCash}
                 disabled={loading}
-                className="w-full"
+                className="w-full mr-2"
                 variant="outline"
               >
                 {t('cashBalance.updateBalance')}

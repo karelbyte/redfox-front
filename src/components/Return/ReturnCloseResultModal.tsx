@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import { ReturnCloseResponse } from '@/types/return';
-import { Btn } from '@/components/atoms';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 
 interface ReturnCloseResultModalProps {

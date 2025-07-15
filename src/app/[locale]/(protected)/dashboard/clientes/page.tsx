@@ -61,7 +61,7 @@ export default function ClientsPage() {
       initialFetchDone.current = true;
     fetchClients(1);
     }
-  }, []);
+  }, [fetchClients]);
 
   const handleEdit = (client: Client) => {
     setSelectedClient(client);

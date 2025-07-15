@@ -1050,6 +1050,7 @@
     },
     "login": {
       "title": "Iniciar Sesión",
+      "subtitle": "Ingresa tus credenciales para continuar",
       "email": "Correo electrónico",
       "password": "Contraseña",
       "loginButton": "Iniciar sesión",
@@ -1304,6 +1305,8 @@
         "cashRegisterInitialized": "Caja inicializada exitosamente",
         "cashRegisterUpdated": "Balance de caja actualizado exitosamente",
         "cashRegisterOpened": "Caja abierta exitosamente",
+        "cashRegisterCreated": "Caja registradora creada exitosamente",
+        "cashRegisterDeleted": "Caja registradora eliminada exitosamente",
         "cashRegisterClosed": "Caja cerrada exitosamente",
         "cashDrawerCompleted": "Corte de caja completado exitosamente",
         "noCashRegister": "No hay caja activa",
@@ -1325,6 +1328,7 @@
         "recentTransactions": "Transacciones Recientes",
         "refresh": "Actualizar",
         "loadingTransactions": "Cargando transacciones...",
+        "loadingBalance": "Cargando...",
         "noTransactions": "No hay transacciones recientes"
       },
       "cashRegister": {

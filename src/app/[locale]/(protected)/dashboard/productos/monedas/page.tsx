@@ -60,7 +60,7 @@ export default function CurrenciesPage() {
       initialFetchDone.current = true;
     fetchCurrencies(1);
     }
-  }, []);
+  }, [fetchCurrencies]);
 
   const handleEdit = (currency: Currency) => {
     setSelectedCurrency(currency);

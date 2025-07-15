@@ -109,6 +109,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       } else {
         setCurrentProduct(null);
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData.productId, sourceWarehouseId]);
 
     const validateForm = (): boolean => {

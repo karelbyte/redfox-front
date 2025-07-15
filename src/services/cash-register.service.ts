@@ -1,6 +1,5 @@
 import { api } from './api';
 import { CashRegister, CashTransaction } from '@/types/cash-register';
-import { toastService } from './toast.service';
 
 interface PaginatedCashRegisterResponse {
   data: CashRegister[];
@@ -50,19 +49,18 @@ class CashRegisterService {
 
   async createCashRegister(data: { name: string; description?: string; initial_amount: number }): Promise<CashRegister> {
     const response = await api.post<CashRegister>('/cash-registers', data);
-    toastService.success('Caja registradora creada exitosamente');
+  
     return response;
   }
 
   async updateCashRegister(id: string, data: Partial<CashRegister>): Promise<CashRegister> {
     const response = await api.put<CashRegister>(`/cash-registers/${id}`, data);
-    toastService.success('Caja registradora actualizada exitosamente');
     return response;
   }
 
   async deleteCashRegister(id: string): Promise<void> {
     await api.delete(`/cash-registers/${id}`);
-    toastService.success('Caja registradora eliminada exitosamente');
+ 
   }
 
   async openCashRegister(initialAmount: number, name?: string, description?: string): Promise<CashRegister> {
@@ -73,7 +71,6 @@ class CashRegisterService {
     };
     
     const response = await api.post<CashRegister>('/cash-registers/open', data);
-    toastService.success('Caja abierta exitosamente');
     return response;
   }
 
@@ -84,7 +81,6 @@ class CashRegisterService {
     };
     
     const response = await api.post<CashRegister>(`/cash-registers/${id}/close`, data);
-    toastService.success('Caja cerrada exitosamente');
     return response;
   }
 

@@ -60,7 +60,7 @@ export default function TaxesPage() {
       initialFetchDone.current = true;
     fetchTaxes(1);
     }
-  }, []);
+  }, [fetchTaxes]);
 
   const handleEdit = (tax: Tax) => {
     setSelectedTax(tax);

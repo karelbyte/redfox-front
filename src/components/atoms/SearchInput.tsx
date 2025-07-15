@@ -8,6 +8,7 @@ interface SearchInputProps {
   placeholder?: string;
   onSearch: (term: string) => void;
   onClear?: () => void;
+  onChange?: (value: string) => void;
   className?: string;
   initialValue?: string;
   value?: string;
@@ -17,6 +18,7 @@ const SearchInput = ({
   placeholder = "Buscar...", 
   onSearch, 
   onClear,
+  onChange,
   className = "",
   initialValue = "",
   value: externalValue
@@ -35,7 +37,9 @@ const SearchInput = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
+    onChange?.(newValue);
   };
 
   const handleClear = () => {

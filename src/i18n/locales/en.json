@@ -1043,6 +1043,7 @@
     },
     "login": {
       "title": "Login",
+      "subtitle": "Enter your credentials to continue",
       "email": "Email",
       "password": "Password",
       "loginButton": "Login",
@@ -1299,6 +1300,8 @@
         "cashRegisterInitialized": "Cash register initialized successfully",
         "cashRegisterUpdated": "Cash register balance updated successfully",
         "cashRegisterOpened": "Cash register opened successfully",
+        "cashRegisterCreated": "Cash register created successfully",
+        "cashRegisterDeleted": "Cash register deleted successfully",
         "cashRegisterClosed": "Cash register closed successfully",
         "cashDrawerCompleted": "Cash drawer completed successfully",
         "noCashRegister": "No active cash register",
@@ -1320,6 +1323,7 @@
         "recentTransactions": "Recent Transactions",
         "refresh": "Refresh",
         "loadingTransactions": "Loading transactions...",
+        "loadingBalance": "Loading...",
         "noTransactions": "No recent transactions"
       },
       "cashRegister": {
