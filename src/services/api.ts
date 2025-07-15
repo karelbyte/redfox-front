@@ -1,4 +1,4 @@
-const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'http://localhost:3000') + '/api';
+const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitro-api-app-production-4b41.up.railway.app') + '/api';
 
 const handleUnauthorized = () => {
   if (typeof window !== 'undefined') {
