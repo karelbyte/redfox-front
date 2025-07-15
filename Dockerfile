@@ -36,14 +36,11 @@ RUN adduser --system --uid 1001 nextjs
 
 # Copiar los archivos construidos
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./package.json
 
-# Configurar automáticamente el usuario correcto para los archivos generados por Next.js
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Copiar los archivos de la aplicación construida
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Configurar permisos
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
@@ -52,6 +49,5 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD ["node", "server.js"] 
+# Usar npm start en lugar del servidor standalone
+CMD ["npm", "start"] 

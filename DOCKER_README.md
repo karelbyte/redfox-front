@@ -59,7 +59,7 @@ docker run -p 5501:5501 -v $(pwd):/app redfox-front-dev
 
 ### Dockerfile de Producción
 - Multi-stage build para optimizar el tamaño
-- Modo standalone de Next.js
+- Usa `npm start` para ejecutar la aplicación
 - Usuario no-root para seguridad
 - Optimización de capas de Docker
 
@@ -76,7 +76,7 @@ docker run -p 5501:5501 -v $(pwd):/app redfox-front-dev
 ## Optimizaciones
 
 1. **Multi-stage build**: Reduce el tamaño final de la imagen
-2. **Standalone output**: Next.js genera un servidor independiente
+2. **npm start**: Usa el comando estándar de Next.js
 3. **Alpine Linux**: Imagen base ligera
 4. **Dockerignore**: Excluye archivos innecesarios
 5. **Usuario no-root**: Mejora la seguridad
