@@ -60,6 +60,7 @@ docker run -p 5501:5501 -v $(pwd):/app redfox-front-dev
 ### Dockerfile de Producción
 - Multi-stage build para optimizar el tamaño
 - Usa `npm start` para ejecutar la aplicación
+- Copia `node_modules` para incluir todas las dependencias
 - Usuario no-root para seguridad
 - Optimización de capas de Docker
 
