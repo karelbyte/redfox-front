@@ -86,7 +86,17 @@ docker run -p 5501:5501 -v $(pwd):/app redfox-front-dev
 
 ### Problemas comunes
 
-1. **Puerto ya en uso**:
+1. **Caché en Railway**:
+   ```bash
+   # En Railway, ve a Settings > Variables de entorno y agrega:
+   NEXT_CACHE_DISABLED=1
+   NODE_ENV=production
+   
+   # O ejecuta el script de limpieza:
+   ./scripts/clear-cache.sh
+   ```
+
+2. **Puerto ya en uso**:
    ```bash
    # Cambiar el puerto en docker-compose.yml
    ports:

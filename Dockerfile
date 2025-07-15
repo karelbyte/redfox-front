@@ -24,6 +24,9 @@ ENV NEXT_TELEMETRY_DISABLED 1
 # Construir la aplicación
 RUN npm run build
 
+# Limpiar caché después del build
+RUN rm -rf .next/cache
+
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
