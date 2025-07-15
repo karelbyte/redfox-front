@@ -9,7 +9,7 @@ WORKDIR /app
 # Copiar archivos de dependencias
 COPY package.json package-lock.json* ./
 
-# Instalar todas las dependencias (incluyendo devDependencies)
+# Instalar todas las dependencias
 RUN npm ci
 
 # Copiar el código fuente
