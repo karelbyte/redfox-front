@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Reception } from '@/types/reception';
-import { PencilIcon, TrashIcon, EyeIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, EyeIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 
 interface ReceptionTableProps {
@@ -9,9 +9,10 @@ interface ReceptionTableProps {
   onDelete: (reception: Reception) => void;
   onDetails: (reception: Reception) => void;
   onClose: (reception: Reception) => void;
+  onGeneratePDF: (reception: Reception) => void;
 }
 
-export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails, onClose }: ReceptionTableProps) {
+export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails, onClose, onGeneratePDF }: ReceptionTableProps) {
   const t = useTranslations('pages.receptions');
   
   if (!Array.isArray(receptions)) {
@@ -125,6 +126,13 @@ export default function ReceptionTable({ receptions, onEdit, onDelete, onDetails
                     onClick={() => onDetails(reception)}
                     leftIcon={<EyeIcon className="h-4 w-4" />}
                     title={t('actions.viewDetails')}
+                  />
+                  <Btn
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onGeneratePDF(reception)}
+                    leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
+                    title={t('actions.generatePDF')}
                   />
                   {reception.status && (
                     <Btn

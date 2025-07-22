@@ -14,6 +14,7 @@ class SaleService {
       code: data.code,
       destination: data.destination,
       client_id: data.client_id,
+      type: data.type,
       status: true // Por defecto true según la especificación
     };
     const response = await api.post<Sale>('/withdrawals', createData);

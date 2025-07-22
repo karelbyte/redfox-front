@@ -923,18 +923,22 @@
         "delete": "Eliminar",
         "cannotEditClosed": "No se puede editar una recepción cerrada",
         "cannotDeleteClosed": "No se puede eliminar una recepción cerrada",
-        "createNewProvider": "Crear nuevo proveedor"
+        "createNewProvider": "Crear nuevo proveedor",
+        "generatePDF": "Generar PDF",
+        "generatingPDF": "Generando PDF..."
       },
       "messages": {
         "receptionCreated": "Recepción creada correctamente",
         "receptionUpdated": "Recepción actualizada correctamente",
         "receptionDeleted": "Recepción eliminada correctamente",
         "receptionClosed": "Recepción cerrada correctamente",
+        "pdfGenerated": "PDF generado correctamente",
         "errorLoading": "Error al cargar las recepciones",
         "errorCreating": "Error al crear la recepción",
         "errorUpdating": "Error al actualizar la recepción",
         "errorDeleting": "Error al eliminar la recepción",
         "errorClosing": "Error al cerrar la recepción",
+        "errorGeneratingPDF": "Error al generar el PDF",
         "confirmDelete": "¿Estás seguro de que deseas eliminar la recepción \"{code}\"? Esta acción no se puede deshacer.",
         "confirmClose": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer."
       },
@@ -1319,6 +1323,7 @@
         "closed": "Cerrada",
         "cashRegister": "Caja",
         "currentBalance": "Balance Actual",
+        "cashAmount": "Dinero en Efectivo",
         "initialize": "Inicializar",
         "drawer": "Corte",
         "updateBalance": "Actualizar Balance",

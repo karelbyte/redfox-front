@@ -26,11 +26,12 @@ export default function ReceptionProductsTable({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<ReceptionDetail | null>(null);
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: string | number) => {
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'USD'
-    }).format(amount);
+    }).format(numAmount);
   };
 
   const handleDeleteClick = (product: ReceptionDetail) => {
@@ -175,10 +176,10 @@ export default function ReceptionProductsTable({
                   {detail.quantity}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatCurrency(detail.price)}
+                  {formatCurrency(parseFloat(detail.price.toString()))}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(detail.quantity * detail.price)}
+                  {formatCurrency(parseFloat(detail.quantity.toString()) * parseFloat(detail.price.toString()))}
                 </td>
                 {isReceptionOpen && (
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

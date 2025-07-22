@@ -31,6 +31,7 @@ const CashBalance = React.memo(({
   const [recentTransactions, setRecentTransactions] = useState<CashTransaction[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const [realBalance, setRealBalance] = useState<number>(0);
+  const [cashAmount, setCashAmount] = useState<number>(0);
   const [loadingBalance, setLoadingBalance] = useState(false);
 
   useEffect(() => {
@@ -51,6 +52,17 @@ const CashBalance = React.memo(({
     console.log('💰 realBalance changed:', realBalance);
   }, [realBalance]);
 
+  // Debug effect para monitorear cambios en currentCashRegister
+  useEffect(() => {
+    if (currentCashRegister) {
+      console.log('🏦 currentCashRegister updated:', {
+        id: currentCashRegister.id,
+        current_amount: currentCashRegister.current_amount,
+        status: currentCashRegister.status
+      });
+    }
+  }, [currentCashRegister]);
+
   const fetchRealBalance = async () => {
     if (!currentCashRegister) return;
     
@@ -58,39 +70,39 @@ const CashBalance = React.memo(({
       setLoadingBalance(true);
       console.log('💰 Starting fetchRealBalance for cash register:', currentCashRegister.id);
       
-      // Siempre calcular localmente para obtener el balance real
+      // Obtener transacciones para calcular el dinero en efectivo
       const response = await cashRegisterService.getCashTransactions(currentCashRegister.id, 1, 100);
       const transactions = response.data || [];
       
-      console.log('📊 Transactions received:', transactions.length);
+      // Calcular dinero en efectivo: solo transacciones en efectivo
+      let calculatedCashAmount = 0;
       
-      // Calcular balance real: monto inicial + todas las transacciones
-      let calculatedBalance = currentCashRegister.current_amount; // monto inicial
-      
-      transactions.forEach((transaction, index) => {
-        const previousBalance = calculatedBalance;
-        if (transaction.type === 'sale') {
-          calculatedBalance += transaction.amount; // Las ventas aumentan el balance
-        } else if (transaction.type === 'refund') {
-          calculatedBalance -= transaction.amount; // Los reembolsos disminuyen el balance
-        } else if (transaction.type === 'adjustment') {
-          calculatedBalance += transaction.amount; // Los ajustes pueden ser positivos o negativos
+      transactions.forEach((transaction) => {
+        if (transaction.payment_method === 'cash') {
+          if (transaction.type === 'sale') {
+            calculatedCashAmount += transaction.amount; // Las ventas en efectivo aumentan el dinero en efectivo
+          } else if (transaction.type === 'refund') {
+            calculatedCashAmount -= transaction.amount; // Los reembolsos en efectivo disminuyen el dinero en efectivo
+          } else if (transaction.type === 'adjustment') {
+            calculatedCashAmount += transaction.amount; // Los ajustes pueden ser positivos o negativos
+          }
         }
-        console.log(`Transaction ${index + 1}: ${transaction.type} $${transaction.amount} -> Balance: $${previousBalance} -> $${calculatedBalance}`);
+        // Las transacciones con tarjeta NO afectan el dinero en efectivo
       });
       
-      console.log('💰 Final calculated balance:', {
-        initial: currentCashRegister.current_amount,
+      console.log('💵 Calculated cash amount:', {
         transactions: transactions.length,
-        calculated: calculatedBalance,
-        transactionsDetails: transactions.map(t => ({ type: t.type, amount: t.amount }))
+        calculatedCash: calculatedCashAmount,
+        totalBalance: currentCashRegister.current_amount
       });
       
-      setRealBalance(calculatedBalance);
-    } catch (error) {
-      console.error('❌ Error calculating balance locally:', error);
-      // Si falla todo, usar el balance básico
       setRealBalance(currentCashRegister.current_amount);
+      setCashAmount(calculatedCashAmount);
+    } catch (error) {
+      console.error('❌ Error getting balance from server:', error);
+      // Si falla, usar el balance básico
+      setRealBalance(currentCashRegister.current_amount);
+      setCashAmount(0);
     } finally {
       setLoadingBalance(false);
     }
@@ -105,27 +117,30 @@ const CashBalance = React.memo(({
       const transactions = response.data || [];
       setRecentTransactions(transactions.slice(0, 10)); // Mostrar solo las primeras 10 en la UI
       
-      // Si no hay balance real calculado, calcularlo ahora
-      if (realBalance === 0 || realBalance === currentCashRegister.current_amount) {
-        let calculatedBalance = currentCashRegister.current_amount; // monto inicial
-        
-        transactions.forEach(transaction => {
+      // Calcular dinero en efectivo
+      let calculatedCashAmount = 0;
+      
+      transactions.forEach(transaction => {
+        if (transaction.payment_method === 'cash') {
           if (transaction.type === 'sale') {
-            calculatedBalance += transaction.amount; // Las ventas aumentan el balance
+            calculatedCashAmount += transaction.amount; // Las ventas en efectivo aumentan el dinero en efectivo
           } else if (transaction.type === 'refund') {
-            calculatedBalance -= transaction.amount; // Los reembolsos disminuyen el balance
+            calculatedCashAmount -= transaction.amount; // Los reembolsos en efectivo disminuyen el dinero en efectivo
           } else if (transaction.type === 'adjustment') {
-            calculatedBalance += transaction.amount; // Los ajustes pueden ser positivos o negativos
+            calculatedCashAmount += transaction.amount; // Los ajustes pueden ser positivos o negativos
           }
-        });
-        
-        setRealBalance(calculatedBalance);
-        console.log('💰 Updated balance from transactions:', {
-          initial: currentCashRegister.current_amount,
-          transactions: transactions.length,
-          calculated: calculatedBalance
-        });
-      }
+        }
+        // Las transacciones con tarjeta NO afectan el dinero en efectivo
+      });
+      
+      // Actualizar el balance real con el valor del servidor
+      setRealBalance(currentCashRegister.current_amount);
+      setCashAmount(calculatedCashAmount);
+      console.log('💰 Updated balances from server:', {
+        current_amount: currentCashRegister.current_amount,
+        cash_amount: calculatedCashAmount,
+        transactions: transactions.length
+      });
     } catch (error) {
       console.error('❌ Error fetching transactions:', error);
     } finally {
@@ -200,6 +215,18 @@ const CashBalance = React.memo(({
                 <span className="text-sm text-blue-600">{t('cashBalance.loadingBalance')}</span>
               ) : (
                 `$${realBalance.toFixed(2)}`
+              )}
+            </span>
+          </div>
+
+          {/* Cash Amount */}
+          <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+            <span className="text-sm text-green-700">{t('cashBalance.cashAmount')}:</span>
+            <span className="text-xl font-bold text-green-700">
+              {loadingBalance ? (
+                <span className="text-sm text-green-600">{t('cashBalance.loadingBalance')}</span>
+              ) : (
+                `$${cashAmount.toFixed(2)}`
               )}
             </span>
           </div>

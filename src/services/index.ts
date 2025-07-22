@@ -21,4 +21,5 @@ export { warehouseOpeningsService } from './warehouse-openings.service';
 export { warehouseAdjustmentService } from './warehouse-adjustments.service';
 export { warehousesService } from './warehouses.service';
 export { permissionsService } from './permissions.service';
-export { returnService } from './returns.service'; 
+export { returnService } from './returns.service';
+export { PDFService } from './pdf.service'; 

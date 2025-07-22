@@ -4,9 +4,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Reception, ReceptionCloseResponse } from '@/types/reception';
+import { Reception, ReceptionCloseResponse, ReceptionDetail } from '@/types/reception';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
+import { PDFService } from '@/services/pdf.service';
 import ReceptionTable from '@/components/Reception/ReceptionTable';
 import ReceptionForm from '@/components/Reception/ReceptionForm';
 import DeleteReceptionModal from '@/components/Reception/DeleteReceptionModal';
@@ -35,6 +36,7 @@ export default function RecepcionesPage() {
   const [receptionToClose, setReceptionToClose] = useState<Reception | null>(null);
   const [isClosingReception, setIsClosingReception] = useState(false);
   const [closeResult, setCloseResult] = useState<ReceptionCloseResponse | null>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef<ReceptionFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -96,6 +98,32 @@ export default function RecepcionesPage() {
       }
     } finally {
       setIsClosingReception(false);
+    }
+  };
+
+  const handleGeneratePDF = async (reception: Reception) => {
+    try {
+      setIsGeneratingPDF(true);
+      
+      // Obtener los detalles de la recepción
+      const detailsResponse = await receptionService.getReceptionDetails(reception.id);
+      const details = detailsResponse.data || [];
+      
+      // Generar el PDF usando la recepción completa y los detalles
+      const pdfService = new PDFService();
+      pdfService.generateReceptionPDF(reception, details, {
+        filename: `reception-${reception.code}.pdf`
+      });
+      
+      toastService.success(t('messages.pdfGenerated'));
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorGeneratingPDF'));
+      }
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
@@ -200,6 +228,7 @@ export default function RecepcionesPage() {
               onDelete={openDeleteModal}
               onDetails={handleDetails}
               onClose={openCloseModal}
+              onGeneratePDF={handleGeneratePDF}
             />
           </div>
 

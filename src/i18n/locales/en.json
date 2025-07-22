@@ -916,18 +916,22 @@
         "delete": "Delete",
         "cannotEditClosed": "Cannot edit a closed reception",
         "cannotDeleteClosed": "Cannot delete a closed reception",
-        "createNewProvider": "Create new provider"
+        "createNewProvider": "Create new provider",
+        "generatePDF": "Generate PDF",
+        "generatingPDF": "Generating PDF..."
       },
       "messages": {
         "receptionCreated": "Reception created successfully",
         "receptionUpdated": "Reception updated successfully",
         "receptionDeleted": "Reception deleted successfully",
         "receptionClosed": "Reception closed successfully",
+        "pdfGenerated": "PDF generated successfully",
         "errorLoading": "Error loading receptions",
         "errorCreating": "Error creating reception",
         "errorUpdating": "Error updating reception",
         "errorDeleting": "Error deleting reception",
         "errorClosing": "Error closing reception",
+        "errorGeneratingPDF": "Error generating PDF",
         "confirmDelete": "Are you sure you want to delete the reception \"{code}\"? This action cannot be undone.",
         "confirmClose": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone."
       },
@@ -1314,6 +1318,7 @@
         "closed": "Closed",
         "cashRegister": "Cash Register",
         "currentBalance": "Current Balance",
+        "cashAmount": "Cash Amount",
         "initialize": "Initialize",
         "drawer": "Drawer",
         "updateBalance": "Update Balance",

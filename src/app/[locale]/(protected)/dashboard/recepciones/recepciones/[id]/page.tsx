@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
+import { PDFService } from '@/services/pdf.service';
 import { Reception, ReceptionDetail, ReceptionCloseResponse } from '@/types/reception';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
@@ -32,6 +33,7 @@ export default function ReceptionDetailsPage() {
   const [isClosingReception, setIsClosingReception] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [closeResult, setCloseResult] = useState<ReceptionCloseResponse | null>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const productFormRef = useRef<AddProductFormRef>(null);
 
   const fetchReception = async () => {
@@ -52,36 +54,67 @@ export default function ReceptionDetailsPage() {
   };
 
   const fetchProducts = async () => {
-    if (!params.id) return;
-    
     try {
       setLoadingProducts(true);
-      const response = await receptionService.getReceptionDetails(params.id as string, 1);
+      const response = await receptionService.getReceptionDetails(params.id as string);
       setProducts(response.data || []);
     } catch (error) {
-      console.error('Error cargando productos:', error);
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorLoading'));
+      }
     } finally {
       setLoadingProducts(false);
     }
   };
 
   useEffect(() => {
-    if (params.id) {
-      fetchReception();
-      fetchProducts();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchReception();
+    fetchProducts();
   }, [params.id]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES');
+  const handleGeneratePDF = async () => {
+    if (!reception) return;
+
+    try {
+      setIsGeneratingPDF(true);
+      
+      // Generar el PDF con los productos ya cargados
+      const pdfService = new PDFService();
+      pdfService.generateReceptionPDF(reception, products, {
+        filename: `reception-${reception.code}.pdf`
+      });
+      
+      toastService.success(t('messages.pdfGenerated'));
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorGeneratingPDF'));
+      }
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
+  const handleDeleteProduct = async (detailId: string) => {
+    try {
+      await receptionService.deleteReceptionDetail(params.id as string, detailId);
+      fetchProducts();
+      toastService.success(t('deleteProduct.success'));
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('deleteProduct.error'));
+      }
+    }
+  };
+
+  const handleEditProduct = (product: ReceptionDetail) => {
+    setProductToEdit(product);
+    setIsEditProductDrawerOpen(true);
   };
 
   const handleAddProductDrawerClose = () => {
@@ -97,124 +130,65 @@ export default function ReceptionDetailsPage() {
 
   const handleAddProductFormSuccess = () => {
     handleAddProductDrawerClose();
-    fetchReception(); // Recargar los datos de la recepción
-    fetchProducts(); // Recargar los productos
+    fetchProducts();
   };
 
   const handleEditProductFormSuccess = () => {
     handleEditProductDrawerClose();
-    fetchReception(); // Recargar los datos de la recepción
-    fetchProducts(); // Recargar los productos
+    fetchProducts();
   };
 
-  const handleAddProductSave = async () => {
-    if (!productFormRef.current || !reception) return;
-
-    try {
-      setIsSavingProduct(true);
-      const formData = await productFormRef.current.submit();
-      
-      if (formData) {
-        await receptionService.addProductToReception(reception.id, formData);
-        toastService.success(t('addProduct.messages.productAdded'));
-        handleAddProductFormSuccess();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('addProduct.messages.errorAdding'));
-      }
-    } finally {
-      setIsSavingProduct(false);
+  const handleAddProductSave = () => {
+    if (productFormRef.current) {
+      productFormRef.current.submit();
     }
   };
 
-  const handleEditProductSave = async () => {
-    if (!productFormRef.current || !reception || !productToEdit) return;
-
-    try {
-      setIsSavingProduct(true);
-      const formData = await productFormRef.current.submit();
-      
-      if (formData) {
-        await receptionService.updateReceptionDetail(reception.id, productToEdit.id, formData);
-        toastService.success(t('addProduct.messages.productUpdated'));
-        handleEditProductFormSuccess();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('addProduct.messages.errorUpdating'));
-      }
-    } finally {
-      setIsSavingProduct(false);
+  const handleEditProductSave = () => {
+    if (productFormRef.current) {
+      productFormRef.current.submit();
     }
   };
 
-  const handleDeleteProduct = async (detailId: string) => {
-    if (!reception) return;
-
-    try {
-      await receptionService.deleteReceptionDetail(reception.id, detailId);
-      toastService.success(t('deleteProduct.success'));
-      fetchReception(); // Recargar los datos de la recepción
-      fetchProducts(); // Recargar los productos
-    } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('deleteProduct.error'));
-      }
-      throw error; // Re-lanzar para que el modal maneje el error
-    }
+  const handleCloseReception = () => {
+    setIsCloseModalOpen(true);
   };
 
-  const handleEditProduct = (product: ReceptionDetail) => {
-    setProductToEdit(product);
-    setIsEditProductDrawerOpen(true);
+  const handleCloseModalClose = () => {
+    setIsCloseModalOpen(false);
   };
 
-  const handleCloseReception = async () => {
+  const handleCloseModalConfirm = async () => {
     if (!reception) return;
 
     try {
       setIsClosingReception(true);
       const result = await receptionService.closeReception(reception.id);
       setCloseResult(result);
+      fetchReception();
       setIsCloseModalOpen(false);
-      fetchReception(); // Recargar los datos de la recepción
-      fetchProducts(); // Recargar los productos
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error(t('closeReception.error'));
+        toastService.error(t('messages.errorClosing'));
       }
     } finally {
       setIsClosingReception(false);
     }
   };
 
-  const handleCloseReceptionModalClose = () => {
-    setIsCloseModalOpen(false);
-  };
-
-  const handleCloseReceptionClick = () => {
-    setIsCloseModalOpen(true);
-  };
-
-  const handleCloseResultModalClose = () => {
-    setCloseResult(null);
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
   };
 
   if (loading) {
     return (
-      <div className="p-6">
-        <div className="flex justify-center items-center h-64">
-          <Loading size="lg" />
-        </div>
+      <div className="flex justify-center items-center h-64">
+        <Loading size="lg" />
       </div>
     );
   }
@@ -223,7 +197,15 @@ export default function ReceptionDetailsPage() {
     return (
       <div className="p-6">
         <div className="text-center">
-          <p className="text-gray-500">{t('details.notFound')}</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            {t('details.notFound')}
+          </h2>
+          <Btn
+            onClick={() => router.push(`/${locale}/dashboard/recepciones/lista-de-recepciones`)}
+            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+          >
+            {t('details.back')}
+          </Btn>
         </div>
       </div>
     );
@@ -232,7 +214,7 @@ export default function ReceptionDetailsPage() {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-4">
           <Btn
             variant="ghost"
@@ -245,48 +227,45 @@ export default function ReceptionDetailsPage() {
             <h1 className="text-2xl font-bold" style={{ color: `rgb(var(--color-primary-800))` }}>
               {t('details.title', { code: reception.code })}
             </h1>
-            <p className="text-sm text-gray-500">
-              {t('details.subtitle')}
-            </p>
+            <p className="text-sm text-gray-600">{t('details.subtitle')}</p>
           </div>
         </div>
         
-        <div className="flex items-center space-x-3">
+        <div className="flex space-x-2">
+          <Btn
+            onClick={handleGeneratePDF}
+            leftIcon={<DocumentArrowDownIcon className="h-5 w-5" />}
+            disabled={isGeneratingPDF}
+          >
+            {isGeneratingPDF ? t('actions.generatingPDF') : t('actions.generatePDF')}
+          </Btn>
+          
           {reception.status && (
-            <>
-              <Btn
-                leftIcon={<PlusIcon className="h-5 w-5" />}
-                onClick={() => setIsAddProductDrawerOpen(true)}
-              >
-                {t('details.addProduct')}
-              </Btn>
-              <Btn
-                variant="danger"
-                leftIcon={<CheckCircleIcon className="h-5 w-5" />}
-                onClick={handleCloseReceptionClick}
-                loading={isClosingReception}
-              >
-                {t('actions.closeReception')}
-              </Btn>
-            </>
+            <Btn
+              onClick={handleCloseReception}
+              leftIcon={<CheckCircleIcon className="h-5 w-5" />}
+              style={{ backgroundColor: '#dc2626', color: 'white' }}
+            >
+              {t('actions.closeReception')}
+            </Btn>
           )}
         </div>
       </div>
 
-      {/* Información de la recepción */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      {/* Información general */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4" style={{ color: `rgb(var(--color-primary-700))` }}>
             {t('details.generalInfo')}
           </h3>
           <div className="space-y-3">
             <div>
-              <span className="text-sm font-medium text-gray-500">{t('details.labels.code')}:</span>
-              <p className="text-sm text-gray-900">{reception.code}</p>
+              <span className="text-sm font-medium text-gray-500">{t('details.labels.date')}:</span>
+              <p className="text-sm text-gray-900">{new Date(reception.date).toLocaleDateString('es-ES')}</p>
             </div>
             <div>
-              <span className="text-sm font-medium text-gray-500">{t('details.labels.date')}:</span>
-              <p className="text-sm text-gray-900">{formatDate(reception.date)}</p>
+              <span className="text-sm font-medium text-gray-500">{t('details.labels.code')}:</span>
+              <p className="text-sm text-gray-900">{reception.code}</p>
             </div>
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.status')}:</span>
@@ -341,7 +320,7 @@ export default function ReceptionDetailsPage() {
         </h3>
       </div>
       
-      <div>
+      <div className="mb-6">
         {loadingProducts ? (
           <div className="flex justify-center items-center h-32">
             <Loading className="h-6 w-6" />
@@ -391,14 +370,14 @@ export default function ReceptionDetailsPage() {
         id="edit-product-drawer"
         isOpen={isEditProductDrawerOpen}
         onClose={handleEditProductDrawerClose}
-        title={t('addProduct.editTitle')}
+        title={t('editProduct.title')}
         onSave={handleEditProductSave}
         isSaving={isSavingProduct}
         isFormValid={isProductFormValid}
       >
         <AddProductForm
           ref={productFormRef}
-          receptionDetail={productToEdit}
+          product={productToEdit}
           onClose={handleEditProductDrawerClose}
           onSuccess={handleEditProductFormSuccess}
           onSavingChange={setIsSavingProduct}
@@ -406,20 +385,22 @@ export default function ReceptionDetailsPage() {
         />
       </Drawer>
 
-      {/* Modal de confirmación para cerrar recepción */}
+      {/* Modal para cerrar recepción */}
       <CloseReceptionModal
         isOpen={isCloseModalOpen}
         reception={reception}
-        onClose={handleCloseReceptionModalClose}
-        onConfirm={handleCloseReception}
+        onClose={handleCloseModalClose}
+        onConfirm={handleCloseModalConfirm}
         isLoading={isClosingReception}
       />
 
-      {/* Modal de resultado del cierre de recepción */}
-      <ReceptionCloseResultModal
-        closeResult={closeResult}
-        onClose={handleCloseResultModalClose}
-      />
+      {/* Modal para mostrar resultado del cierre */}
+      {closeResult && (
+        <ReceptionCloseResultModal
+          closeResult={closeResult}
+          onClose={() => setCloseResult(null)}
+        />
+      )}
     </div>
   );
 } 

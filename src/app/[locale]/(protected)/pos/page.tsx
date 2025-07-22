@@ -253,6 +253,7 @@ export default function POSPage() {
         code: `POS-${Date.now()}`,
         destination: 'Venta POS',
         client_id: selectedClient,
+        type: 'POS',
         amount: getTotal()
       };
 
@@ -266,6 +267,8 @@ export default function POSPage() {
           warehouse_id: item.product.warehouse.id
         });
       }
+
+      await saleService.closeSale(sale.id);
 
       // Registrar transacción de caja según el método de pago
       if (currentCashRegister && currentCashRegister.status === 'open') {
@@ -293,9 +296,11 @@ export default function POSPage() {
           });
 
           // Actualizar el balance de la caja
+          console.log('💰 Fetching updated cash register...');
           await fetchCurrentCashRegister();
+          console.log('💰 Cash register updated successfully');
         } catch (error) {
-          console.error('Error registering cash transaction:', error);
+          console.error('❌ Error registering cash transaction:', error);
           // No fallar la venta si hay error en la transacción de caja
         }
       }

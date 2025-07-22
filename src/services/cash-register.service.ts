@@ -86,10 +86,12 @@ class CashRegisterService {
 
   async getCurrentCashRegister(): Promise<CashRegister | null> {
     try {
+      console.log('🏦 Fetching current cash register...');
       const response = await api.get<CashRegister>('/cash-registers/current');
+      console.log('🏦 Current cash register:', response);
       return response;
     } catch (error) {
-      console.error('Error getting current cash register:', error);
+      console.error('❌ Error getting current cash register:', error);
       
       // Manejar el error específico de "no open cash register"
       if (error instanceof Error) {
@@ -127,7 +129,9 @@ class CashRegisterService {
   }
 
   async createCashTransaction(data: Record<string, unknown>): Promise<CashTransaction> {
+    console.log('🏦 Creating cash transaction:', data);
     const response = await api.post<CashTransaction>('/cash-transactions', data);
+    console.log('🏦 Cash transaction created:', response);
     return response;
   }
 

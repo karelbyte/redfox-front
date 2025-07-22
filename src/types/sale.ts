@@ -29,6 +29,7 @@ export interface SaleFormData {
   destination: string;
   client_id: string;
   status?: boolean;
+  type: string;
 }
 
 export interface SaleDetailFormData {

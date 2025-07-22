@@ -53,8 +53,8 @@ export interface ReceptionCreateData extends ReceptionFormData {
 
 export interface ReceptionDetailFormData {
   product_id: string;
-  quantity: number;
-  price: number;
+  quantity: string | number;
+  price: string | number;
 }
 
 export interface ReceptionDetail {
@@ -98,8 +98,8 @@ export interface ReceptionDetail {
     images: string[];
     created_at: string;
   };
-  quantity: number;
-  price: number;
+  quantity: string | number;
+  price: string | number;
   created_at: string;
 }
 

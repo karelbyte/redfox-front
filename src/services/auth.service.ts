@@ -4,9 +4,6 @@ import { toastService } from './toast.service';
 
 // Configuración de la API con valor por defecto
 const API_BASE_URL = process.env.NEXT_PUBLIC_URL_API || 'https://nitro-api-d80s.onrender.com';
-
-
-
 interface LoginResponse {
   access_token: string;
   expires_at: string;

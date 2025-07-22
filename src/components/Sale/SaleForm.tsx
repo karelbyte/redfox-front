@@ -36,6 +36,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
     const [formData, setFormData] = useState<SaleFormData>({
       code: '',
       destination: '',
+      type: 'WITHDRAWAL',
       client_id: '',
       amount: 0,
     });
@@ -57,6 +58,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
       if (sale) {
         setFormData({
           code: sale.code,
+          type: 'WITHDRAWAL',
           destination: sale.destination,
           client_id: sale.client.id,
           amount: parseFloat(sale.amount),
@@ -64,6 +66,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
       } else {
         setFormData({
           code: '',
+          type: 'WITHDRAWAL',
           destination: '',
           client_id: '',
           amount: 0,
