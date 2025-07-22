@@ -12,4 +12,6 @@ restartPolicyMaxRetries = 10
 [deploy.envs]
 NODE_ENV = "production"
 NEXT_TELEMETRY_DISABLED = "1"
-NEXT_CACHE_DISABLED = "1" 
+NEXT_CACHE_DISABLED = "1"
+NEXT_BUILD_CACHE_DISABLED = "1"
+NEXT_CLEAR_CACHE = "1" 

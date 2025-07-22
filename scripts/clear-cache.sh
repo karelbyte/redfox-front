@@ -10,9 +10,20 @@ rm -rf .next/cache
 # Limpiar caché de npm
 npm cache clean --force
 
+# Limpiar caché de node_modules
+rm -rf node_modules/.cache
+
 # Limpiar caché de Docker (si está disponible)
 if command -v docker &> /dev/null; then
+    echo "🐳 Limpiando caché de Docker..."
     docker system prune -f
+    docker builder prune -f
 fi
 
-echo "✅ Caché limpiada exitosamente" 
+# Limpiar archivos temporales
+rm -rf .turbo
+rm -rf .swc
+
+echo "✅ Caché limpiada exitosamente"
+echo "📝 Para forzar un rebuild completo en Railway, usa:"
+echo "   railway up --force" 

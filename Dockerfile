@@ -8,9 +8,12 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Limpiar caché de npm antes de instalar
+RUN npm cache clean --force
+
 # Copiar archivos de dependencias
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci --no-cache
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -20,12 +23,19 @@ COPY . .
 
 # Configurar variables de entorno para el build
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_CACHE_DISABLED 1
+ENV NEXT_BUILD_CACHE_DISABLED 1
+
+# Limpiar cualquier caché existente antes del build
+RUN rm -rf .next
+RUN rm -rf node_modules/.cache
 
 # Construir la aplicación
 RUN npm run build
 
 # Limpiar caché después del build
 RUN rm -rf .next/cache
+RUN rm -rf node_modules/.cache
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -33,6 +43,7 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_CACHE_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
