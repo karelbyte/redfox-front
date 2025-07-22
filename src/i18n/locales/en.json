@@ -1116,18 +1116,22 @@
         "delete": "Delete",
         "cannotEditCompleted": "Cannot edit a completed sale",
         "cannotDeleteCompleted": "Cannot delete a completed sale",
-        "createNewClient": "Create new client"
+        "createNewClient": "Create new client",
+        "generatePDF": "Generate PDF",
+        "generatingPDF": "Generating PDF..."
       },
       "messages": {
         "saleCreated": "Sale created successfully",
         "saleUpdated": "Sale updated successfully",
         "saleDeleted": "Sale deleted successfully",
         "saleClosed": "Sale completed successfully",
+        "pdfGenerated": "PDF generated successfully",
         "errorLoading": "Error loading sales",
         "errorCreating": "Error creating sale",
         "errorUpdating": "Error updating sale",
         "errorDeleting": "Error deleting sale",
         "errorClosing": "Error completing sale",
+        "errorGeneratingPDF": "Error generating PDF",
         "confirmDelete": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone.",
         "confirmClose": "Are you sure you want to complete the sale \"{code}\"? This action cannot be undone."
       },

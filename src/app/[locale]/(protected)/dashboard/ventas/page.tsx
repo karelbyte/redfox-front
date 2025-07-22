@@ -4,9 +4,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Sale, SaleCloseResponse } from '@/types/sale';
+import { Sale, SaleCloseResponse, SaleDetail } from '@/types/sale';
 import { saleService } from '@/services/sales.service';
 import { toastService } from '@/services/toast.service';
+import { PDFService } from '@/services/pdf.service';
 import SaleTable from '@/components/Sale/SaleTable';
 import SaleForm from '@/components/Sale/SaleForm';
 import DeleteSaleModal from '@/components/Sale/DeleteSaleModal';
@@ -35,6 +36,7 @@ export default function VentasPage() {
   const [saleToClose, setSaleToClose] = useState<Sale | null>(null);
   const [isClosingSale, setIsClosingSale] = useState(false);
   const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef<SaleFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -96,6 +98,32 @@ export default function VentasPage() {
       }
     } finally {
       setIsClosingSale(false);
+    }
+  };
+
+  const handleGeneratePDF = async (sale: Sale) => {
+    try {
+      setIsGeneratingPDF(true);
+      
+      // Obtener los detalles de la venta
+      const detailsResponse = await saleService.getSaleDetails(sale.id);
+      const details = detailsResponse.data || [];
+      
+      // Generar el PDF usando la venta completa y los detalles
+      const pdfService = new PDFService();
+      pdfService.generateSalePDF(sale, details, {
+        filename: `sale-${sale.code}.pdf`
+      });
+      
+      toastService.success(t('messages.pdfGenerated'));
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorGeneratingPDF'));
+      }
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
@@ -200,6 +228,7 @@ export default function VentasPage() {
               onDelete={openDeleteModal}
               onDetails={handleDetails}
               onClose={openCloseModal}
+              onGeneratePDF={handleGeneratePDF}
             />
           </div>
 

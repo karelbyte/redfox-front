@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { Reception, ReceptionDetail } from '@/types/reception';
+import { Sale, SaleDetail } from '@/types/sale';
 
 export interface PDFTableData {
   headers: string[];
@@ -342,6 +343,175 @@ export class PDFService {
     const margin = 20;
     
     // Anchos de columna personalizados para recepciones
+    const colWidths = [60, 30, 30, 30, 25, 30, 35]; // Ajustados para 7 columnas
+    
+    let currentY = startY;
+    const rowHeight = 12;
+    const headerHeight = 14;
+
+    // Estilos para encabezados
+    this.doc.setFillColor(240, 240, 240); // Gris claro
+    this.doc.setFontSize(9);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.setTextColor(0, 0, 0); // Texto negro
+
+    // Dibujar encabezados
+    let currentX = margin;
+    
+    // Primero dibujar todos los rectángulos de fondo
+    headers.forEach((header, index) => {
+      const colWidth = colWidths[index] || 30; // Usar ancho personalizado o default
+      this.doc.rect(currentX, currentY, colWidth, headerHeight, 'F');
+      currentX += colWidth;
+    });
+    
+    // Luego dibujar todo el texto
+    currentX = margin;
+    headers.forEach((header, index) => {
+      const colWidth = colWidths[index] || 30;
+      this.doc.text(header, currentX + 3, currentY + 10);
+      currentX += colWidth;
+    });
+
+    currentY += headerHeight;
+
+    // Estilos para filas
+    this.doc.setFontSize(8);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setTextColor(0, 0, 0);
+
+    // Dibujar filas
+    rows.forEach((row) => {
+      // Verificar si necesitamos una nueva página
+      if (currentY + rowHeight > this.doc.internal.pageSize.getHeight() - 30) {
+        this.doc.addPage();
+        currentY = 20;
+      }
+    
+      currentX = margin;
+      row.forEach((cell, colIndex) => {
+        const colWidth = colWidths[colIndex] || 30;
+        const cellText = String(cell || '');
+        
+        // Truncar texto si es muy largo
+        const maxWidth = colWidth - 6;
+        const truncatedText = this.doc.splitTextToSize(cellText, maxWidth);
+        
+        // Centrar texto verticalmente
+        const textY = currentY + (rowHeight - (truncatedText.length * 3)) / 2 + 3;
+        this.doc.text(truncatedText, currentX + 3, textY);
+        
+        currentX += colWidth;
+      });
+
+      currentY += rowHeight;
+    });
+  }
+
+  /**
+   * Genera un PDF de venta con sus detalles
+   */
+  generateSalePDF(sale: Sale, details: SaleDetail[], options: PDFOptions = {}): void {
+    const { filename } = options;
+    
+    this.doc.setFont('helvetica');
+    this.doc.setFontSize(16);
+    this.doc.setTextColor(0, 0, 0);
+
+    let currentY = 20;
+    const margin = 20;
+    const pageWidth = this.doc.internal.pageSize.getWidth();
+
+    // Título del documento
+    this.doc.setFontSize(18);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('FACTURA DE VENTA', pageWidth / 2, currentY, { align: 'center' });
+    currentY += 15;
+
+    // Información de la venta
+    this.doc.setFontSize(12);
+    this.doc.setFont('helvetica', 'normal');
+    
+    // Código y fecha
+    this.doc.text(`Código: ${sale.code}`, margin, currentY);
+    this.doc.text(`Fecha: ${new Date(sale.created_at).toLocaleDateString('es-ES')}`, pageWidth - margin - 60, currentY);
+    currentY += 10;
+
+    // Cliente
+    this.doc.text(`Cliente: ${sale.client.name}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Email: ${sale.client.email}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Teléfono: ${sale.client.phone}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Dirección: ${sale.client.address}`, margin, currentY);
+    currentY += 10;
+
+    // Destino
+    this.doc.text(`Destino: ${sale.destination}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Estado: ${sale.status ? 'Completada' : 'Pendiente'}`, margin, currentY);
+    currentY += 15;
+
+    // Tabla de productos
+    if (details.length > 0) {
+      this.doc.setFontSize(14);
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.text('DETALLES DE PRODUCTOS', margin, currentY);
+      currentY += 10;
+
+      // Preparar datos para la tabla
+      const headers = ['Producto', 'SKU', 'Marca', 'Categoría', 'Cantidad', 'Precio', 'Subtotal'];
+      const rows: (string | number)[][] = [];
+      let totalAmount = 0;
+
+      details.forEach((detail) => {
+        const quantity = detail.quantity;
+        const price = detail.price;
+        const subtotal = quantity * price;
+        totalAmount += subtotal;
+
+        rows.push([
+          detail.product.name,
+          detail.product.sku,
+          detail.product.brand.description,
+          detail.product.category.name,
+          quantity.toString(),
+          `$${price.toFixed(2)}`,
+          `$${subtotal.toFixed(2)}`
+        ]);
+      });
+
+      // Generar tabla usando el método específico para ventas
+      this.generateSaleTable(headers, rows, currentY);
+
+      // Agregar total después de la tabla
+      currentY = this.doc.internal.pageSize.getHeight() - 40;
+      this.doc.setFontSize(12);
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.setTextColor(0, 0, 0); // Asegurar que el texto sea negro
+      this.doc.text(`TOTAL: $${totalAmount.toFixed(2)}`, pageWidth - margin - 50, currentY);
+    } else {
+      this.doc.setFontSize(12);
+      this.doc.text('No hay productos registrados en esta venta.', margin, currentY);
+    }
+
+    // Pie de página
+    currentY = this.doc.internal.pageSize.getHeight() - 20;
+    this.doc.setFontSize(8);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')} ${new Date().toLocaleTimeString('es-ES')}`, margin, currentY);
+
+    this.doc.save(filename || `sale-${sale.code}.pdf`);
+  }
+
+  /**
+   * Genera una tabla específica para ventas con mejor formato
+   */
+  private generateSaleTable(headers: string[], rows: (string | number)[][], startY: number): void {
+    const margin = 20;
+    
+    // Anchos de columna personalizados para ventas
     const colWidths = [60, 30, 30, 30, 25, 30, 35]; // Ajustados para 7 columnas
     
     let currentY = startY;

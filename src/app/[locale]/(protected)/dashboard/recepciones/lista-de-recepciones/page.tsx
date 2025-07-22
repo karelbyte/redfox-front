@@ -110,7 +110,7 @@ export default function RecepcionesPage() {
       const details = detailsResponse.data || [];
       
       // Generar el PDF usando la recepción completa y los detalles
-      const pdfService = new PDFService();
+      const pdfService = new PDFService({orientation: 'landscape'});
       pdfService.generateReceptionPDF(reception, details, {
         filename: `reception-${reception.code}.pdf`
       });

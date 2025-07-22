@@ -191,7 +191,7 @@ export default function WarehouseTable({
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
+                  <div className="flex justify-end gap-2">
                     {warehouse.is_open &&
                       can([
                         "warehouse_opening_module_view",

@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Sale } from '@/types/sale';
 import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 
 interface SaleTableProps {
   sales: Sale[];
@@ -11,9 +11,10 @@ interface SaleTableProps {
   onDelete: (sale: Sale) => void;
   onDetails: (sale: Sale) => void;
   onClose: (sale: Sale) => void;
+  onGeneratePDF: (sale: Sale) => void;
 }
 
-export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose }: SaleTableProps) {
+export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onGeneratePDF }: SaleTableProps) {
   const t = useTranslations('pages.sales');
 
   const formatCurrency = (amount: string) => {
@@ -126,6 +127,13 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose 
                     onClick={() => onDetails(sale)}
                     leftIcon={<EyeIcon className="h-4 w-4" />}
                     title={t('actions.viewDetails')}
+                  />
+                  <Btn
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onGeneratePDF(sale)}
+                    leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
+                    title={t('actions.generatePDF')}
                   />
                   {!sale.status && (
                     <Btn

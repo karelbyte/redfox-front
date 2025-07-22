@@ -1123,18 +1123,22 @@
         "delete": "Eliminar",
         "cannotEditCompleted": "No se puede editar una venta completada",
         "cannotDeleteCompleted": "No se puede eliminar una venta completada",
-        "createNewClient": "Crear nuevo cliente"
+        "createNewClient": "Crear nuevo cliente",
+        "generatePDF": "Generar PDF",
+        "generatingPDF": "Generando PDF..."
       },
       "messages": {
         "saleCreated": "Venta creada correctamente",
         "saleUpdated": "Venta actualizada correctamente",
         "saleDeleted": "Venta eliminada correctamente",
         "saleClosed": "Venta completada correctamente",
+        "pdfGenerated": "PDF generado correctamente",
         "errorLoading": "Error al cargar las ventas",
         "errorCreating": "Error al crear la venta",
         "errorUpdating": "Error al actualizar la venta",
         "errorDeleting": "Error al eliminar la venta",
         "errorClosing": "Error al completar la venta",
+        "errorGeneratingPDF": "Error al generar el PDF",
         "confirmDelete": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer.",
         "confirmClose": "¿Estás seguro de que deseas completar la venta \"{code}\"? Esta acción no se puede deshacer."
       },

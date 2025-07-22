@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { saleService } from '@/services/sales.service';
 import { toastService } from '@/services/toast.service';
+import { PDFService } from '@/services/pdf.service';
 import { Sale, SaleDetail, SaleCloseResponse } from '@/types/sale';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
@@ -32,6 +33,7 @@ export default function SaleDetailsPage() {
   const [isClosingSale, setIsClosingSale] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const productFormRef = useRef<AddProductFormRef>(null);
 
   const fetchSale = async () => {
@@ -73,12 +75,51 @@ export default function SaleDetailsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
-  const formatCurrency = (amount: string) => {
-    const numericAmount = parseFloat(amount);
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(numericAmount);
+  const handleGeneratePDF = async () => {
+    if (!sale) return;
+
+    try {
+      setIsGeneratingPDF(true);
+      
+      // Generar el PDF con los productos ya cargados
+      const pdfService = new PDFService();
+      pdfService.generateSalePDF(sale, products, {
+        filename: `sale-${sale.code}.pdf`
+      });
+      
+      toastService.success(t('messages.pdfGenerated'));
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorGeneratingPDF'));
+      }
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
+  const handleDeleteProduct = async (detailId: string) => {
+    if (!sale) return;
+
+    try {
+      await saleService.deleteSaleDetail(sale.id, detailId);
+      toastService.success(t('deleteProduct.success'));
+      fetchSale(); // Recargar los datos de la venta
+      fetchProducts(); // Recargar los productos
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('deleteProduct.error'));
+      }
+      throw error; // Re-lanzar para que el modal maneje el error
+    }
+  };
+
+  const handleEditProduct = (product: SaleDetail) => {
+    setProductToEdit(product);
+    setIsEditProductDrawerOpen(true);
   };
 
   const handleAddProductDrawerClose = () => {
@@ -150,68 +191,46 @@ export default function SaleDetailsPage() {
     }
   };
 
-  const handleDeleteProduct = async (detailId: string) => {
-    if (!sale) return;
-
-    try {
-      await saleService.deleteSaleDetail(sale.id, detailId);
-      toastService.success(t('deleteProduct.success'));
-      fetchSale(); // Recargar los datos de la venta
-      fetchProducts(); // Recargar los productos
-    } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('deleteProduct.error'));
-      }
-      throw error; // Re-lanzar para que el modal maneje el error
-    }
+  const handleCloseReception = () => {
+    setIsCloseModalOpen(true);
   };
 
-  const handleEditProduct = (product: SaleDetail) => {
-    setProductToEdit(product);
-    setIsEditProductDrawerOpen(true);
+  const handleCloseModalClose = () => {
+    setIsCloseModalOpen(false);
   };
 
-  const handleCloseSale = async () => {
+  const handleCloseModalConfirm = async () => {
     if (!sale) return;
 
     try {
       setIsClosingSale(true);
       const result = await saleService.closeSale(sale.id);
       setCloseResult(result);
+      fetchSale();
       setIsCloseModalOpen(false);
-      fetchSale(); // Recargar los datos de la venta
-      fetchProducts(); // Recargar los productos
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
-        toastService.error(t('closeSale.error'));
+        toastService.error(t('closeReception.error'));
       }
     } finally {
       setIsClosingSale(false);
     }
   };
 
-  const handleCloseSaleModalClose = () => {
-    setIsCloseModalOpen(false);
-  };
-
-  const handleCloseSaleClick = () => {
-    setIsCloseModalOpen(true);
-  };
-
-  const handleCloseResultModalClose = () => {
-    setCloseResult(null);
+  const formatCurrency = (amount: string) => {
+    const numericAmount = parseFloat(amount);
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(numericAmount);
   };
 
   if (loading) {
     return (
-      <div className="p-6">
-        <div className="flex justify-center items-center h-64">
-          <Loading size="lg" />
-        </div>
+      <div className="flex justify-center items-center h-64">
+        <Loading size="lg" />
       </div>
     );
   }
@@ -249,6 +268,14 @@ export default function SaleDetailsPage() {
         </div>
         
         <div className="flex items-center space-x-3">
+          <Btn
+            onClick={handleGeneratePDF}
+            leftIcon={<DocumentArrowDownIcon className="h-5 w-5" />}
+            disabled={isGeneratingPDF}
+          >
+            {isGeneratingPDF ? t('actions.generatingPDF') : t('actions.generatePDF')}
+          </Btn>
+          
           {!sale.status && (
             <>
               <Btn
@@ -260,7 +287,7 @@ export default function SaleDetailsPage() {
               <Btn
                 variant="danger"
                 leftIcon={<CheckCircleIcon className="h-5 w-5" />}
-                onClick={handleCloseSaleClick}
+                onClick={handleCloseReception}
                 loading={isClosingSale}
               >
                 {t('actions.closeSale')}
@@ -271,7 +298,7 @@ export default function SaleDetailsPage() {
       </div>
 
       {/* Información de la venta */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4" style={{ color: `rgb(var(--color-primary-700))` }}>
             {t('details.generalInfo')}
@@ -289,7 +316,9 @@ export default function SaleDetailsPage() {
               <span className="text-sm font-medium text-gray-500">{t('details.labels.status')}:</span>
               <span
                 className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                  sale.status ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  sale.status
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-yellow-100 text-yellow-800'
                 }`}
               >
                 {sale.status ? t('status.completed') : t('status.pending')}
@@ -404,15 +433,15 @@ export default function SaleDetailsPage() {
       <CloseSaleModal
         isOpen={isCloseModalOpen}
         sale={sale}
-        onClose={handleCloseSaleModalClose}
-        onConfirm={handleCloseSale}
+        onClose={handleCloseModalClose}
+        onConfirm={handleCloseModalConfirm}
         isLoading={isClosingSale}
       />
 
       {/* Modal de resultado del cierre de venta */}
       <SaleCloseResultModal
         closeResult={closeResult}
-        onClose={handleCloseResultModalClose}
+        onClose={() => setCloseResult(null)}
       />
     </div>
   );
