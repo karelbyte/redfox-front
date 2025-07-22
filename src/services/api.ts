@@ -1,4 +1,4 @@
-const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitro-api-d80s.onrender.com') + '/api';
+const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitro-api-app-production.up.railway.app') + '/api';
 //const baseURL = 'https://nitro-api-app-production-4b41.up.railway.app/api';
 const handleUnauthorized = () => {
   if (typeof window !== 'undefined') {
