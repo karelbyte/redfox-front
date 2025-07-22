@@ -32,6 +32,7 @@ export default function TaxesPage() {
   const formRef = useRef<TaxFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTaxes = async (page: number = 1, term?: string) => {
     try {
       setIsLoading(true);

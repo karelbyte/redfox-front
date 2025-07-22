@@ -26,7 +26,8 @@ export default function AddSalePage() {
     code: '',
     destination: '',
     client_id: '',
-    amount: 0
+    amount: 0,
+    type: ''
   });
   const [errors, setErrors] = useState<Partial<SaleFormData>>({});
 
@@ -113,7 +114,8 @@ export default function AddSalePage() {
         code: formData.code.trim(),
         destination: formData.destination.trim(),
         client_id: formData.client_id,
-        amount: formData.amount
+        amount: formData.amount,
+        type: formData.type
       });
 
       toastService.success(t('messages.saleCreated'));

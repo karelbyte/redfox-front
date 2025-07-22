@@ -32,6 +32,7 @@ export default function CurrenciesPage() {
   const formRef = useRef<CurrencyFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchCurrencies = async (page: number = 1, term?: string) => {
     try {
       setIsLoading(true);

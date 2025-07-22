@@ -70,14 +70,17 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
         newErrors.product_id = t('form.errors.productRequired');
       }
 
-      if (!formData.quantity || formData.quantity <= 0) {
-        newErrors.quantity = formData.quantity <= 0 
+      const quantity = typeof formData.quantity === 'string' ? parseFloat(formData.quantity) : formData.quantity;
+      const price = typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price;
+
+      if (!formData.quantity || quantity <= 0) {
+        newErrors.quantity = quantity <= 0 
           ? t('form.errors.quantityPositive') 
           : t('form.errors.quantityRequired');
       }
 
-      if (!formData.price || formData.price <= 0) {
-        newErrors.price = formData.price <= 0 
+      if (!formData.price || price <= 0) {
+        newErrors.price = price <= 0 
           ? t('form.errors.pricePositive') 
           : t('form.errors.priceRequired');
       }

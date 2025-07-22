@@ -48,6 +48,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
         };
         loadInventoryInfo();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [returnDetail?.product.id]);
 
     // Función para obtener el producto de inventario completo cuando se selecciona

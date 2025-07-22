@@ -33,6 +33,7 @@ export default function ProvidersPage() {
   const formRef = useRef<ProviderFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchProviders = async (page: number = 1, term?: string) => {
     try {
       setIsLoading(true);

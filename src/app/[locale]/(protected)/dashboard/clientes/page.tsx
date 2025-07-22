@@ -33,6 +33,7 @@ export default function ClientsPage() {
   const formRef = useRef<ClientFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchClients = async (page: number = 1, term?: string) => {
     try {
       setIsLoading(true);

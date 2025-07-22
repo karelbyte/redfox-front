@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Sale, SaleCloseResponse, SaleDetail } from '@/types/sale';
+import { Sale, SaleCloseResponse } from '@/types/sale';
 import { saleService } from '@/services/sales.service';
 import { toastService } from '@/services/toast.service';
 import { PDFService } from '@/services/pdf.service';
@@ -36,6 +36,7 @@ export default function VentasPage() {
   const [saleToClose, setSaleToClose] = useState<Sale | null>(null);
   const [isClosingSale, setIsClosingSale] = useState(false);
   const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef<SaleFormRef>(null);
   const initialFetchDone = useRef(false);

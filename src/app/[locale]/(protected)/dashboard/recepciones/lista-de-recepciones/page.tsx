@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Reception, ReceptionCloseResponse, ReceptionDetail } from '@/types/reception';
+import { Reception, ReceptionCloseResponse } from '@/types/reception';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
 import { PDFService } from '@/services/pdf.service';
@@ -36,6 +36,7 @@ export default function RecepcionesPage() {
   const [receptionToClose, setReceptionToClose] = useState<Reception | null>(null);
   const [isClosingReception, setIsClosingReception] = useState(false);
   const [closeResult, setCloseResult] = useState<ReceptionCloseResponse | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef<ReceptionFormRef>(null);
   const initialFetchDone = useRef(false);

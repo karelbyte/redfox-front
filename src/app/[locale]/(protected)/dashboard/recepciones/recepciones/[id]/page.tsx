@@ -72,6 +72,7 @@ export default function ReceptionDetailsPage() {
   useEffect(() => {
     fetchReception();
     fetchProducts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const handleGeneratePDF = async () => {
@@ -377,7 +378,7 @@ export default function ReceptionDetailsPage() {
       >
         <AddProductForm
           ref={productFormRef}
-          product={productToEdit}
+          receptionDetail={productToEdit}
           onClose={handleEditProductDrawerClose}
           onSuccess={handleEditProductFormSuccess}
           onSavingChange={setIsSavingProduct}
