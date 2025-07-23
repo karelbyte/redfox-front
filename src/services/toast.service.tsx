@@ -1,6 +1,4 @@
-import React from 'react';
-import toast, { Toast } from 'react-hot-toast';
-import { useTheme } from '@/context/ThemeContext';
+import toast from 'react-hot-toast';
 
 interface ErrorResponse {
   message: string;

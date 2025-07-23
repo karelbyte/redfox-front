@@ -191,8 +191,7 @@ export default function OpeningsPage() {
       const result = await warehousesService.closeWarehouse(warehouseId);
       setCloseResult(result);
       setIsCloseModalOpen(false);
-      // Redirigir a la lista de almacenes después del cierre
-      router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`);
+      // No redirigir inmediatamente, esperar a que el usuario cierre el modal de resultado
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);

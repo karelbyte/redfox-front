@@ -27,8 +27,7 @@ export function usePermissions() {
     if (permissions.includes("all")) {
       return true;
     }
-
-    // Verificar si el usuario tiene al menos uno de los permisos especificados
+   // Verificar si el usuario tiene al menos uno de los permisos especificados
     return permissions.some(permission => 
       user.permissions.includes(permission)
     );

@@ -1895,6 +1895,7 @@
       },
       "actions": {
         "create": "Crear Orden de Compra",
+        "createNewProvider": "Crear nuevo proveedor",
         "save": "Guardar",
         "saving": "Guardando...",
         "cancel": "Cancelar",
@@ -1938,15 +1939,17 @@
           "provider": "Buscar proveedor...",
           "warehouse": "Buscar almacén...",
           "document": "Ej: FACT-001",
+          "amount": "0.00",
           "notes": "Notas adicionales",
           "expectedDeliveryDate": "Seleccionar fecha de entrega"
         },
-        "validation": {
+        "errors": {
           "codeRequired": "El código es requerido",
           "dateRequired": "La fecha es requerida",
           "providerRequired": "El proveedor es requerido",
           "warehouseRequired": "El almacén es requerido",
           "documentRequired": "El documento es requerido",
+          "amountRequired": "El monto es requerido",
           "expectedDeliveryDateRequired": "La fecha de entrega es requerida"
         }
       },
@@ -1969,6 +1972,10 @@
         "pdfGenerated": "PDF generado correctamente",
         "errorGeneratingPDF": "Error al generar el PDF"
       },
+      "approveOrder": {
+        "success": "Orden de compra aprobada correctamente",
+        "error": "Error al aprobar la orden de compra"
+      },
       "deleteModal": {
         "title": "Eliminar {item}",
         "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
@@ -1989,9 +1996,12 @@
         "title": "Orden de Compra {name}",
         "subtitle": "Detalles de la orden de compra",
         "generalInfo": "Información General",
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
         "labels": {
           "code": "Código",
           "date": "Fecha",
+          "name": "Nombre",
           "provider": "Proveedor",
           "warehouse": "Almacén",
           "document": "Documento",
@@ -2057,6 +2067,9 @@
         "message": "¿Estás seguro de que deseas eliminar el producto \"{productName}\"? Esta acción no se puede deshacer.",
         "success": "Producto eliminado correctamente",
         "error": "Error al eliminar el producto"
+      },
+      "editProduct": {
+        "title": "Editar Producto"
       },
       "approvalResult": {
         "title": "Orden Aprobada Exitosamente",

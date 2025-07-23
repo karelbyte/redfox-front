@@ -48,39 +48,68 @@ export default function PurchaseOrderProductsTable({
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div 
+      className="bg-white rounded-lg overflow-hidden"
+      style={{ 
+        boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+      }}
+    >
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.product')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.sku')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.brand')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.category')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.quantity')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.price')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.subtotal')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th 
+              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('products.headers.actions')}
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {products.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-50">
+            <tr key={product.id} className="hover:bg-primary-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   <div className="flex-shrink-0 h-10 w-10">

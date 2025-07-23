@@ -1872,6 +1872,7 @@
       },
       "actions": {
         "create": "Create Purchase Order",
+        "createNewProvider": "Create new provider",
         "save": "Save",
         "saving": "Saving...",
         "cancel": "Cancel",
@@ -1915,6 +1916,7 @@
           "provider": "Search provider...",
           "warehouse": "Search warehouse...",
           "document": "Ex: FACT-001",
+          "amount": "0.00",
           "notes": "Additional notes",
           "expectedDeliveryDate": "Select delivery date"
         },
@@ -1924,6 +1926,7 @@
           "providerRequired": "Provider is required",
           "warehouseRequired": "Warehouse is required",
           "documentRequired": "Document is required",
+          "amountRequired": "Amount is required",
           "expectedDeliveryDateRequired": "Expected delivery date is required"
         }
       },
@@ -1946,6 +1949,10 @@
         "pdfGenerated": "PDF generated successfully",
         "errorGeneratingPDF": "Error generating PDF"
       },
+      "approveOrder": {
+        "success": "Purchase order approved successfully",
+        "error": "Error approving purchase order"
+      },
       "deleteModal": {
         "title": "Delete {item}",
         "message": "Are you sure you want to delete {item} \"{name}\"? This action cannot be undone."
@@ -1966,9 +1973,12 @@
         "title": "Purchase Order {name}",
         "subtitle": "Purchase order details",
         "generalInfo": "General Information",
+        "provider": "Provider",
+        "warehouse": "Warehouse",
         "labels": {
           "code": "Code",
           "date": "Date",
+          "name": "Name",
           "provider": "Provider",
           "warehouse": "Warehouse",
           "document": "Document",
@@ -2034,6 +2044,9 @@
         "message": "Are you sure you want to delete the product \"{productName}\"? This action cannot be undone.",
         "success": "Product deleted successfully",
         "error": "Error deleting product"
+      },
+      "editProduct": {
+        "title": "Edit Product"
       },
       "approvalResult": {
         "title": "Order Approved Successfully",
