@@ -80,6 +80,7 @@
     "receptions": "Recepciones",
     "warehouseOpenings": "Aperturas de Almacén",
     "entities": "Entidades",
+    "purchaseOrders": "Órdenes de Compra",
     "sales": "Ventas",
     "settings": "Configuración",
     "addProduct": "Añadir Producto",
@@ -91,6 +92,8 @@
     "purchaseList": "Lista de Compras",
     "createReception": "Crear Recepción",
     "receptionList": "Lista de Recepciones",
+    "createPurchaseOrder": "Crear Orden de Compra",
+    "purchaseOrderList": "Lista de Órdenes de Compra",
     "salesList": "Lista de Ventas",
     "addSale": "Añadir Venta",
     "pos": "POS",
@@ -1863,6 +1866,228 @@
       "error": {
         "title": "Error",
         "adjustmentNotFound": "Ajuste de almacén no encontrado"
+      }
+    },
+    "purchaseOrders": {
+      "title": "Órdenes de Compra",
+      "subtitle": "Gestión de órdenes de compra",
+      "createTitle": "Crear Orden de Compra",
+      "createSubtitle": "Crear una nueva orden de compra",
+      "noPurchaseOrders": "No hay órdenes de compra",
+      "noPurchaseOrdersDesc": "Haz clic en \"Crear Orden de Compra\" para agregar una.",
+      "noPermissionDesc": "No tienes permisos para ver esta página",
+      "table": {
+        "code": "Código",
+        "date": "Fecha",
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
+        "document": "Documento",
+        "amount": "Monto",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "approved": "Aprobada",
+        "rejected": "Rechazada",
+        "cancelled": "Cancelada",
+        "completed": "Completada"
+      },
+      "actions": {
+        "create": "Crear Orden de Compra",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "viewDetails": "Ver Detalles",
+        "back": "Volver",
+        "edit": "Editar",
+        "add": "Agregar",
+        "cannotEditApproved": "No se puede editar una orden aprobada",
+        "cannotEditRejected": "No se puede editar una orden rechazada",
+        "cannotEditCancelled": "No se puede editar una orden cancelada",
+        "cannotEditCompleted": "No se puede editar una orden completada",
+        "cannotDeleteApproved": "No se puede eliminar una orden aprobada",
+        "cannotDeleteRejected": "No se puede eliminar una orden rechazada",
+        "cannotDeleteCancelled": "No se puede eliminar una orden cancelada",
+        "cannotDeleteCompleted": "No se puede eliminar una orden completada",
+        "continue": "Continuar",
+        "generatePDF": "Generar PDF",
+        "generatingPDF": "Generando PDF..."
+      },
+      "form": {
+        "title": "Información de la Orden de Compra",
+        "subtitle": "Completa la información para crear una nueva orden de compra",
+        "description": "Crea una nueva orden de compra para gestionar las compras de productos",
+        "code": "Código",
+        "date": "Fecha",
+        "provider": "Proveedor",
+        "providerId": "Proveedor",
+        "warehouse": "Almacén",
+        "warehouseId": "Almacén",
+        "document": "Documento",
+        "amount": "Monto",
+        "notes": "Notas",
+        "expectedDeliveryDate": "Fecha de Entrega Esperada",
+        "status": "Estado",
+        "placeholders": {
+          "code": "Ingrese código de la orden",
+          "date": "Seleccionar fecha",
+          "provider": "Buscar proveedor...",
+          "warehouse": "Buscar almacén...",
+          "document": "Ej: FACT-001",
+          "notes": "Notas adicionales",
+          "expectedDeliveryDate": "Seleccionar fecha de entrega"
+        },
+        "validation": {
+          "codeRequired": "El código es requerido",
+          "dateRequired": "La fecha es requerida",
+          "providerRequired": "El proveedor es requerido",
+          "warehouseRequired": "El almacén es requerido",
+          "documentRequired": "El documento es requerido",
+          "expectedDeliveryDateRequired": "La fecha de entrega es requerida"
+        }
+      },
+      "messages": {
+        "purchaseOrderCreated": "Orden de compra creada correctamente",
+        "purchaseOrderUpdated": "Orden de compra actualizada correctamente",
+        "purchaseOrderDeleted": "Orden de compra eliminada correctamente",
+        "purchaseOrderApproved": "Orden de compra aprobada correctamente",
+        "purchaseOrderRejected": "Orden de compra rechazada correctamente",
+        "purchaseOrderCancelled": "Orden de compra cancelada correctamente",
+        "errorLoading": "Error al cargar las órdenes de compra",
+        "errorCreating": "Error al crear la orden de compra",
+        "errorUpdating": "Error al actualizar la orden de compra",
+        "errorDeleting": "Error al eliminar la orden de compra",
+        "errorApproving": "Error al aprobar la orden de compra",
+        "errorRejecting": "Error al rechazar la orden de compra",
+        "errorCancelling": "Error al cancelar la orden de compra",
+        "errorLoadingProviders": "Error al cargar los proveedores",
+        "errorLoadingWarehouses": "Error al cargar los almacenes",
+        "pdfGenerated": "PDF generado correctamente",
+        "errorGeneratingPDF": "Error al generar el PDF"
+      },
+      "deleteModal": {
+        "title": "Eliminar {item}",
+        "message": "¿Estás seguro de que deseas eliminar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "approveModal": {
+        "title": "Aprobar {item}",
+        "message": "¿Estás seguro de que deseas aprobar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "rejectModal": {
+        "title": "Rechazar {item}",
+        "message": "¿Estás seguro de que deseas rechazar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "cancelModal": {
+        "title": "Cancelar {item}",
+        "message": "¿Estás seguro de que deseas cancelar {item} \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "details": {
+        "title": "Orden de Compra {name}",
+        "subtitle": "Detalles de la orden de compra",
+        "generalInfo": "Información General",
+        "labels": {
+          "code": "Código",
+          "date": "Fecha",
+          "provider": "Proveedor",
+          "warehouse": "Almacén",
+          "document": "Documento",
+          "amount": "Monto Total",
+          "status": "Estado",
+          "notes": "Notas",
+          "expectedDeliveryDate": "Fecha de Entrega Esperada"
+        },
+        "addProduct": "Agregar Producto",
+        "productsTable": {
+          "title": "Productos de la Orden de Compra"
+        }
+      },
+      "products": {
+        "title": "Productos de la Orden de Compra",
+        "noProducts": "No hay productos",
+        "noProductsDesc": "Agrega productos a esta orden de compra para comenzar.",
+        "noProductsCompletedDesc": "Esta orden de compra no tiene productos registrados.",
+        "headers": {
+          "product": "Producto",
+          "sku": "SKU",
+          "brand": "Marca",
+          "category": "Categoría",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "subtotal": "Subtotal",
+          "actions": "Acciones"
+        },
+        "actions": {
+          "edit": "Editar",
+          "delete": "Eliminar"
+        }
+      },
+      "addProduct": {
+        "title": "Agregar Producto",
+        "editTitle": "Editar Producto",
+        "form": {
+          "product": "Producto",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "selectProduct": "Seleccionar producto",
+          "placeholders": {
+            "quantity": "Ej: 10",
+            "price": "Ej: 100.00"
+          },
+          "validation": {
+            "productRequired": "El producto es requerido",
+            "quantityRequired": "La cantidad es requerida",
+            "quantityPositive": "La cantidad debe ser mayor a 0",
+            "priceRequired": "El precio es requerido",
+            "pricePositive": "El precio debe ser mayor a 0"
+          }
+        },
+        "messages": {
+          "productAdded": "Producto agregado correctamente",
+          "productUpdated": "Producto actualizado correctamente",
+          "errorAdding": "Error al agregar el producto",
+          "errorUpdating": "Error al actualizar el producto"
+        }
+      },
+      "deleteProduct": {
+        "title": "Eliminar Producto",
+        "message": "¿Estás seguro de que deseas eliminar el producto \"{productName}\"? Esta acción no se puede deshacer.",
+        "success": "Producto eliminado correctamente",
+        "error": "Error al eliminar el producto"
+      },
+      "approvalResult": {
+        "title": "Orden Aprobada Exitosamente",
+        "message": "La orden de compra ha sido aprobada exitosamente.",
+        "purchaseOrderCode": "Código de la Orden",
+        "approvedAt": "Aprobada el",
+        "actions": {
+          "continue": "Continuar"
+        }
+      },
+      "rejectionResult": {
+        "title": "Orden Rechazada",
+        "message": "La orden de compra ha sido rechazada.",
+        "purchaseOrderCode": "Código de la Orden",
+        "rejectedAt": "Rechazada el",
+        "actions": {
+          "continue": "Continuar"
+        }
+      },
+      "cancellationResult": {
+        "title": "Orden Cancelada",
+        "message": "La orden de compra ha sido cancelada.",
+        "purchaseOrderCode": "Código de la Orden",
+        "cancelledAt": "Cancelada el",
+        "actions": {
+          "continue": "Continuar"
+        }
+      },
+      "error": {
+        "title": "Error",
+        "purchaseOrderNotFound": "Orden de compra no encontrada"
       }
     }
   },

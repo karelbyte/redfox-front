@@ -38,18 +38,12 @@ export function LocaleProvider({ messages, locale, children }: LocaleProviderPro
             <DrawerProvider>
               <LanguageInitializer />
               {children}
-              {typeof window !== 'undefined' && (
-                <Toaster
-                  toastOptions={{
-                    className: '',
-                    style: {
-                      padding: '16px',
-                      borderRadius: '8px',
-                      maxWidth: '400px',
-                    },
-                  }}
-                />
-              )}
+              <Toaster 
+                position="top-right"
+                toastOptions={{
+                  duration: 3000,
+                }}
+              />
             </DrawerProvider>
           </AuthProvider>
         </ThemeProvider>

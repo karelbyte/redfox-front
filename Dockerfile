@@ -22,6 +22,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Configurar variables de entorno para el build
+ARG NEXT_PUBLIC_URL_API
+ENV NEXT_PUBLIC_URL_API=${NEXT_PUBLIC_URL_API
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NEXT_CACHE_DISABLED 1
 ENV NEXT_BUILD_CACHE_DISABLED 1

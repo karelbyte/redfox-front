@@ -71,29 +71,33 @@ const SearchSelect = ({
     }
   }, [onSearch]);
 
-  // Debounce para la búsqueda
+  // Debounce para la búsqueda - solo ejecutar si hay un término de búsqueda y no está deshabilitado
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    searchTimeoutRef.current = setTimeout(() => {
-      searchOptions(searchTerm);
-    }, 300); // 300ms de debounce
+    // Solo buscar si hay un término de búsqueda y no está deshabilitado
+    if (searchTerm.trim() && !disabled) {
+      searchTimeoutRef.current = setTimeout(() => {
+        searchOptions(searchTerm);
+      }, 300); // 300ms de debounce
+    }
 
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [searchTerm, searchOptions]);
+  }, [searchTerm, searchOptions, disabled]);
 
   // Cargar opciones iniciales cuando se abre el dropdown
   useEffect(() => {
-    if (isOpen && options.length === 0 && !searchTerm) {
+    if (isOpen && options.length === 0 && !searchTerm && !disabled) {
+      // Cargar opciones iniciales cuando se abre el dropdown por primera vez
       searchOptions('');
     }
-  }, [isOpen, options.length, searchTerm, searchOptions]);
+  }, [isOpen, options.length, searchTerm, searchOptions, disabled]);
 
   // Cargar la opción seleccionada cuando cambia el value
   useEffect(() => {

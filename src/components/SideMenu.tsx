@@ -526,6 +526,68 @@ export function SideMenu() {
         ],
       },
       {
+        name: t("purchaseOrders"),
+        path: getLocalizedPath("/dashboard/ordenes-de-compra"),
+        howCan: ["purchase_order_module_view"],
+        icon: (
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+        ),
+        subItems: [
+          {
+            name: t("createPurchaseOrder"),
+            path: getLocalizedPath("/dashboard/ordenes-de-compra/crear-orden-compra"),
+            howCan: ["purchase_order_create"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            ),
+          },
+          {
+            name: t("purchaseOrderList"),
+            path: getLocalizedPath("/dashboard/ordenes-de-compra"),
+            howCan: ["purchase_order_module_view"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                />
+              </svg>
+            ),
+          },
+        ],
+      },
+      {
         name: t("sales"),
         path: getLocalizedPath("/dashboard/ventas"),
         howCan: ["withdrawal_module_view"],

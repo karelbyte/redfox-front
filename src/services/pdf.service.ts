@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import { Reception, ReceptionDetail } from '@/types/reception';
 import { Sale, SaleDetail } from '@/types/sale';
+import { PurchaseOrder, PurchaseOrderDetail } from '@/types/purchase-order';
 
 export interface PDFTableData {
   headers: string[];
@@ -530,6 +531,161 @@ export class PDFService {
     // Primero dibujar todos los rectángulos de fondo
     headers.forEach((header, index) => {
       const colWidth = colWidths[index] || 30; // Usar ancho personalizado o default
+      this.doc.rect(currentX, currentY, colWidth, headerHeight, 'F');
+      currentX += colWidth;
+    });
+    
+    // Luego dibujar todo el texto
+    currentX = margin;
+    headers.forEach((header, index) => {
+      const colWidth = colWidths[index] || 30;
+      this.doc.text(header, currentX + 3, currentY + 10);
+      currentX += colWidth;
+    });
+
+    currentY += headerHeight;
+
+    // Estilos para filas
+    this.doc.setFontSize(8);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setTextColor(0, 0, 0);
+
+    // Dibujar filas
+    rows.forEach((row) => {
+      // Verificar si necesitamos una nueva página
+      if (currentY + rowHeight > this.doc.internal.pageSize.getHeight() - 30) {
+        this.doc.addPage();
+        currentY = 20;
+      }
+    
+      currentX = margin;
+      row.forEach((cell, colIndex) => {
+        const colWidth = colWidths[colIndex] || 30;
+        const cellText = String(cell || '');
+        
+        // Truncar texto si es muy largo
+        const maxWidth = colWidth - 6;
+        const truncatedText = this.doc.splitTextToSize(cellText, maxWidth);
+        
+        // Centrar texto verticalmente
+        const textY = currentY + (rowHeight - (truncatedText.length * 3)) / 2 + 3;
+        this.doc.text(truncatedText, currentX + 3, textY);
+        
+        currentX += colWidth;
+      });
+
+      currentY += rowHeight;
+    });
+  }
+
+  /**
+   * Genera un PDF para una orden de compra
+   */
+  generatePurchaseOrderPDF(purchaseOrder: PurchaseOrder, details: PurchaseOrderDetail[], options: PDFOptions = {}): void {
+    const { filename } = options;
+    const margin = 20;
+    const pageWidth = this.doc.internal.pageSize.getWidth();
+    let currentY = 20;
+
+    // Configurar fuente y colores
+    this.doc.setFont('helvetica');
+    this.doc.setFontSize(16);
+    this.doc.setTextColor(0, 0, 0);
+
+    // Título
+    this.doc.text('ORDEN DE COMPRA', pageWidth / 2, currentY, { align: 'center' });
+    currentY += 15;
+
+    // Información de la orden
+    this.doc.setFontSize(12);
+    this.doc.text(`Código: ${purchaseOrder.code}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Fecha: ${new Date(purchaseOrder.date).toLocaleDateString('es-ES')}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Proveedor: ${purchaseOrder.provider.name}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Almacén: ${purchaseOrder.warehouse.name}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Documento: ${purchaseOrder.document}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Fecha de Entrega Esperada: ${new Date(purchaseOrder.expected_delivery_date).toLocaleDateString('es-ES')}`, margin, currentY);
+    currentY += 8;
+    this.doc.text(`Estado: ${purchaseOrder.status}`, margin, currentY);
+    currentY += 15;
+
+    // Tabla de productos
+    if (details && details.length > 0) {
+      this.doc.setFontSize(14);
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.text('PRODUCTOS', margin, currentY);
+      currentY += 10;
+
+      const headers = ['Producto', 'SKU', 'Marca', 'Categoría', 'Cantidad', 'Precio', 'Subtotal'];
+      const rows: (string | number)[][] = [];
+      let totalAmount = 0;
+
+      details.forEach((detail) => {
+        const subtotal = detail.quantity * detail.price;
+        totalAmount += subtotal;
+        rows.push([
+          detail.product.name,
+          detail.product.sku,
+          detail.product.brand.name,
+          detail.product.category.name,
+          detail.quantity.toString(),
+          `$${detail.price.toFixed(2)}`,
+          `$${subtotal.toFixed(2)}`
+        ]);
+      });
+
+      // Generar tabla usando el método específico para órdenes de compra
+      this.generatePurchaseOrderTable(headers, rows, currentY);
+
+      // Agregar total después de la tabla
+      currentY = this.doc.internal.pageSize.getHeight() - 40;
+      this.doc.setFontSize(12);
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.setTextColor(0, 0, 0);
+      this.doc.text(`TOTAL: $${totalAmount.toFixed(2)}`, pageWidth - margin - 50, currentY);
+    } else {
+      this.doc.setFontSize(12);
+      this.doc.text('No hay productos registrados en esta orden de compra.', margin, currentY);
+    }
+
+    // Pie de página
+    currentY = this.doc.internal.pageSize.getHeight() - 20;
+    this.doc.setFontSize(8);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text(`Generado el: ${new Date().toLocaleDateString('es-ES')} ${new Date().toLocaleTimeString('es-ES')}`, margin, currentY);
+
+    this.doc.save(filename || `purchase-order-${purchaseOrder.code}.pdf`);
+  }
+
+  /**
+   * Genera una tabla específica para órdenes de compra con mejor formato
+   */
+  private generatePurchaseOrderTable(headers: string[], rows: (string | number)[][], startY: number): void {
+    const margin = 20;
+    
+    // Anchos de columna personalizados para órdenes de compra
+    const colWidths = [60, 30, 30, 30, 25, 30, 35]; // Ajustados para 7 columnas
+    
+    let currentY = startY;
+    const rowHeight = 12;
+    const headerHeight = 14;
+
+    // Estilos para encabezados
+    this.doc.setFillColor(240, 240, 240); // Gris claro
+    this.doc.setFontSize(9);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.setTextColor(0, 0, 0);
+
+    // Dibujar encabezados
+    let currentX = margin;
+    
+    // Primero dibujar todos los rectángulos de fondo
+    headers.forEach((header, index) => {
+      const colWidth = colWidths[index] || 30;
       this.doc.rect(currentX, currentY, colWidth, headerHeight, 'F');
       currentX += colWidth;
     });

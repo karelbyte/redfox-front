@@ -80,6 +80,7 @@
     "receptions": "Receptions",
     "warehouseOpenings": "Warehouse Openings",
     "entities": "Entities",
+    "purchaseOrders": "Purchase Orders",
     "sales": "Sales",
     "settings": "Settings",
     "addProduct": "Add Product",
@@ -91,6 +92,8 @@
     "purchaseList": "Purchase List",
     "createReception": "Create Reception",
     "receptionList": "Reception List",
+    "createPurchaseOrder": "Create Purchase Order",
+    "purchaseOrderList": "Purchase Order List",
     "salesList": "Sales List",
     "addSale": "Add Sale",
     "pos": "POS",
@@ -1840,6 +1843,228 @@
       "error": {
         "title": "Error",
         "adjustmentNotFound": "Warehouse adjustment not found"
+      }
+    },
+    "purchaseOrders": {
+      "title": "Purchase Orders",
+      "subtitle": "Purchase order management",
+      "createTitle": "Create Purchase Order",
+      "createSubtitle": "Create a new purchase order",
+      "noPurchaseOrders": "No purchase orders",
+      "noPurchaseOrdersDesc": "Click on \"Create Purchase Order\" to add one.",
+      "noPermissionDesc": "You don't have permission to view this page",
+      "table": {
+        "code": "Code",
+        "date": "Date",
+        "provider": "Provider",
+        "warehouse": "Warehouse",
+        "document": "Document",
+        "amount": "Amount",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled",
+        "completed": "Completed"
+      },
+      "actions": {
+        "create": "Create Purchase Order",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "approve": "Approve",
+        "reject": "Reject",
+        "viewDetails": "View Details",
+        "back": "Back",
+        "edit": "Edit",
+        "add": "Add",
+        "cannotEditApproved": "Cannot edit an approved order",
+        "cannotEditRejected": "Cannot edit a rejected order",
+        "cannotEditCancelled": "Cannot edit a cancelled order",
+        "cannotEditCompleted": "Cannot edit a completed order",
+        "cannotDeleteApproved": "Cannot delete an approved order",
+        "cannotDeleteRejected": "Cannot delete a rejected order",
+        "cannotDeleteCancelled": "Cannot delete a cancelled order",
+        "cannotDeleteCompleted": "Cannot delete a completed order",
+        "continue": "Continue",
+        "generatePDF": "Generate PDF",
+        "generatingPDF": "Generating PDF..."
+      },
+      "form": {
+        "title": "Purchase Order Information",
+        "subtitle": "Complete the information to create a new purchase order",
+        "description": "Create a new purchase order to manage product purchases",
+        "code": "Code",
+        "date": "Date",
+        "provider": "Provider",
+        "providerId": "Provider",
+        "warehouse": "Warehouse",
+        "warehouseId": "Warehouse",
+        "document": "Document",
+        "amount": "Amount",
+        "notes": "Notes",
+        "expectedDeliveryDate": "Expected Delivery Date",
+        "status": "Status",
+        "placeholders": {
+          "code": "Enter order code",
+          "date": "Select date",
+          "provider": "Search provider...",
+          "warehouse": "Search warehouse...",
+          "document": "Ex: FACT-001",
+          "notes": "Additional notes",
+          "expectedDeliveryDate": "Select delivery date"
+        },
+        "validation": {
+          "codeRequired": "Code is required",
+          "dateRequired": "Date is required",
+          "providerRequired": "Provider is required",
+          "warehouseRequired": "Warehouse is required",
+          "documentRequired": "Document is required",
+          "expectedDeliveryDateRequired": "Expected delivery date is required"
+        }
+      },
+      "messages": {
+        "purchaseOrderCreated": "Purchase order created successfully",
+        "purchaseOrderUpdated": "Purchase order updated successfully",
+        "purchaseOrderDeleted": "Purchase order deleted successfully",
+        "purchaseOrderApproved": "Purchase order approved successfully",
+        "purchaseOrderRejected": "Purchase order rejected successfully",
+        "purchaseOrderCancelled": "Purchase order cancelled successfully",
+        "errorLoading": "Error loading purchase orders",
+        "errorCreating": "Error creating purchase order",
+        "errorUpdating": "Error updating purchase order",
+        "errorDeleting": "Error deleting purchase order",
+        "errorApproving": "Error approving purchase order",
+        "errorRejecting": "Error rejecting purchase order",
+        "errorCancelling": "Error cancelling purchase order",
+        "errorLoadingProviders": "Error loading providers",
+        "errorLoadingWarehouses": "Error loading warehouses",
+        "pdfGenerated": "PDF generated successfully",
+        "errorGeneratingPDF": "Error generating PDF"
+      },
+      "deleteModal": {
+        "title": "Delete {item}",
+        "message": "Are you sure you want to delete {item} \"{name}\"? This action cannot be undone."
+      },
+      "approveModal": {
+        "title": "Approve {item}",
+        "message": "Are you sure you want to approve {item} \"{name}\"? This action cannot be undone."
+      },
+      "rejectModal": {
+        "title": "Reject {item}",
+        "message": "Are you sure you want to reject {item} \"{name}\"? This action cannot be undone."
+      },
+      "cancelModal": {
+        "title": "Cancel {item}",
+        "message": "Are you sure you want to cancel {item} \"{name}\"? This action cannot be undone."
+      },
+      "details": {
+        "title": "Purchase Order {name}",
+        "subtitle": "Purchase order details",
+        "generalInfo": "General Information",
+        "labels": {
+          "code": "Code",
+          "date": "Date",
+          "provider": "Provider",
+          "warehouse": "Warehouse",
+          "document": "Document",
+          "amount": "Total Amount",
+          "status": "Status",
+          "notes": "Notes",
+          "expectedDeliveryDate": "Expected Delivery Date"
+        },
+        "addProduct": "Add Product",
+        "productsTable": {
+          "title": "Purchase Order Products"
+        }
+      },
+      "products": {
+        "title": "Purchase Order Products",
+        "noProducts": "No products",
+        "noProductsDesc": "Add products to this purchase order to get started.",
+        "noProductsCompletedDesc": "This purchase order has no registered products.",
+        "headers": {
+          "product": "Product",
+          "sku": "SKU",
+          "brand": "Brand",
+          "category": "Category",
+          "quantity": "Quantity",
+          "price": "Price",
+          "subtotal": "Subtotal",
+          "actions": "Actions"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete"
+        }
+      },
+      "addProduct": {
+        "title": "Add Product",
+        "editTitle": "Edit Product",
+        "form": {
+          "product": "Product",
+          "quantity": "Quantity",
+          "price": "Price",
+          "selectProduct": "Select product",
+          "placeholders": {
+            "quantity": "Ex: 10",
+            "price": "Ex: 100.00"
+          },
+          "validation": {
+            "productRequired": "Product is required",
+            "quantityRequired": "Quantity is required",
+            "quantityPositive": "Quantity must be greater than 0",
+            "priceRequired": "Price is required",
+            "pricePositive": "Price must be greater than 0"
+          }
+        },
+        "messages": {
+          "productAdded": "Product added successfully",
+          "productUpdated": "Product updated successfully",
+          "errorAdding": "Error adding product",
+          "errorUpdating": "Error updating product"
+        }
+      },
+      "deleteProduct": {
+        "title": "Delete Product",
+        "message": "Are you sure you want to delete the product \"{productName}\"? This action cannot be undone.",
+        "success": "Product deleted successfully",
+        "error": "Error deleting product"
+      },
+      "approvalResult": {
+        "title": "Order Approved Successfully",
+        "message": "The purchase order has been approved successfully.",
+        "purchaseOrderCode": "Order Code",
+        "approvedAt": "Approved at",
+        "actions": {
+          "continue": "Continue"
+        }
+      },
+      "rejectionResult": {
+        "title": "Order Rejected",
+        "message": "The purchase order has been rejected.",
+        "purchaseOrderCode": "Order Code",
+        "rejectedAt": "Rejected at",
+        "actions": {
+          "continue": "Continue"
+        }
+      },
+      "cancellationResult": {
+        "title": "Order Cancelled",
+        "message": "The purchase order has been cancelled.",
+        "purchaseOrderCode": "Order Code",
+        "cancelledAt": "Cancelled at",
+        "actions": {
+          "continue": "Continue"
+        }
+      },
+      "error": {
+        "title": "Error",
+        "purchaseOrderNotFound": "Purchase order not found"
       }
     }
   },

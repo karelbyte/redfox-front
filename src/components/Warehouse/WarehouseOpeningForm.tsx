@@ -1,14 +1,13 @@
 'use client'
 
-import { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { warehouseOpeningsService } from '@/services/warehouse-openings.service';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
 import { WarehouseOpeningFormData, WarehouseOpening } from '@/types/warehouse-opening';
-import { Product } from '@/types/product';
 import { Warehouse } from '@/types/warehouse';
-import { Input } from '@/components/atoms';
+import { Input, SearchSelect } from '@/components/atoms';
 
 export interface WarehouseOpeningFormProps {
   warehouseId: string;
@@ -40,14 +39,8 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       price: 0,
     });
 
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loadingProducts, setLoadingProducts] = useState(true);
     const [errors, setErrors] = useState<FormErrors>({});
-
-    useEffect(() => {
-      fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const isSubmittingRef = useRef(false);
 
     useEffect(() => {
       if (opening) {
@@ -67,17 +60,23 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       }
     }, [opening, warehouseId]);
 
-    const fetchProducts = async () => {
+    // Función para buscar productos - memoizada para evitar llamadas innecesarias
+    const searchProducts = useCallback(async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
-        setLoadingProducts(true);
-        const response = await productService.getProducts(1);
-        setProducts(response.data);
-      } catch {
-        toastService.error(t('messages.errorLoadingProducts'));
-      } finally {
-        setLoadingProducts(false);
+        // Usar la API con el parámetro term para búsquedas reales en el servidor
+        const response = await productService.getProducts(1, term.trim());
+        const products = response.data || [];
+        
+        return products.map(product => ({
+          id: product.id,
+          label: product.name,
+          subtitle: `SKU: ${product.sku}`
+        }));
+      } catch (error) {
+        console.error('Error buscando productos:', error);
+        return [];
       }
-    };
+    }, []);
 
     const validateForm = useCallback((): boolean => {
       const newErrors: FormErrors = {};
@@ -108,88 +107,125 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       validateForm();
     }, [validateForm]);
 
+    const formDataRef = useRef(formData);
+    const openingRef = useRef(opening);
+    const tRef = useRef(t);
+    const onSuccessRef = useRef(onSuccess);
+    const onSavingChangeRef = useRef(onSavingChange);
+    const onValidChangeRef = useRef(onValidChange);
+
+    // Actualizar las refs cuando cambien los valores
+    useEffect(() => {
+      formDataRef.current = formData;
+    }, [formData]);
+
+    useEffect(() => {
+      openingRef.current = opening;
+    }, [opening]);
+
+    useEffect(() => {
+      tRef.current = t;
+    }, [t]);
+
+    useEffect(() => {
+      onSuccessRef.current = onSuccess;
+    }, [onSuccess]);
+
+    useEffect(() => {
+      onSavingChangeRef.current = onSavingChange;
+    }, [onSavingChange]);
+
+    useEffect(() => {
+      onValidChangeRef.current = onValidChange;
+    }, [onValidChange]);
+
     const handleSubmit = async () => {
-      if (!validateForm()) {
+      // Evitar múltiples ejecuciones
+      if (isSubmittingRef.current) {
+        return;
+      }
+      
+      isSubmittingRef.current = true;
+
+      // Usar los valores de las refs para evitar dependencias
+      const currentFormData = formDataRef.current;
+      const currentOpening = openingRef.current;
+      const currentT = tRef.current;
+      const currentOnSuccess = onSuccessRef.current;
+      const currentOnSavingChange = onSavingChangeRef.current;
+      const currentOnValidChange = onValidChangeRef.current;
+
+      // Validar formulario directamente sin dependencias
+      const newErrors: FormErrors = {};
+      let isValid = true;
+
+      if (!currentOpening && !currentFormData.productId) {
+        newErrors.productId = currentT('form.errors.productRequired');
+        isValid = false;
+      }
+
+      if (!currentFormData.quantity || currentFormData.quantity <= 0) {
+        newErrors.quantity = currentT('form.errors.quantityRequired');
+        isValid = false;
+      }
+
+      if (!currentFormData.price || currentFormData.price <= 0) {
+        newErrors.price = currentT('form.errors.priceRequired');
+        isValid = false;
+      }
+
+      setErrors(newErrors);
+      currentOnValidChange?.(isValid);
+
+      if (!isValid) {
+        isSubmittingRef.current = false;
         return;
       }
 
       try {
-        onSavingChange?.(true);
-        if (opening) {
+        currentOnSavingChange?.(true);
+        if (currentOpening) {
           // Editar apertura existente
-          await warehouseOpeningsService.updateWarehouseOpening(opening.id, {
-            quantity: formData.quantity,
-            price: formData.price
+          await warehouseOpeningsService.updateWarehouseOpening(currentOpening.id, {
+            quantity: currentFormData.quantity,
+            price: currentFormData.price
           });
-          toastService.success(t('messages.openingUpdated'));
+          toastService.success(currentT('messages.openingUpdated'));
         } else {
           // Crear nueva apertura
-          await warehouseOpeningsService.createWarehouseOpening(formData);
-          toastService.success(t('messages.openingCreated'));
+          await warehouseOpeningsService.createWarehouseOpening(currentFormData);
+          toastService.success(currentT('messages.openingCreated'));
         }
-        onSuccess();
+        currentOnSuccess();
       } catch (error) {
         if (error instanceof Error) {
           toastService.error(error.message);
         } else {
-          toastService.error(opening ? t('messages.errorUpdating') : t('messages.errorCreating'));
+          toastService.error(currentOpening ? currentT('messages.errorUpdating') : currentT('messages.errorCreating'));
         }
       } finally {
-        onSavingChange?.(false);
+        currentOnSavingChange?.(false);
+        isSubmittingRef.current = false;
       }
     };
 
     useImperativeHandle(ref, () => ({
       submit: handleSubmit,
-    }));
+    }), []);
 
     return (
       <form className="space-y-6">
         <div>
-          <label 
-            htmlFor="productId" 
-            className="block text-sm font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-500))` }}
-          >
-            {t('form.product')} <span style={{ color: `rgb(var(--color-primary-500))` }}>*</span>
-          </label>
-          {loadingProducts ? (
-            <div 
-              className="animate-pulse h-12 rounded-lg"
-              style={{ backgroundColor: `rgb(var(--color-primary-100))` }}
-            ></div>
-          ) : (
-            <select
-              id="productId"
-              value={formData.productId}
-              onChange={(e) => setFormData(prev => ({ ...prev, productId: e.target.value }))}
-              className={`appearance-none block w-full px-4 py-3 border rounded-lg text-black focus:outline-none transition-colors ${
-                opening 
-                  ? 'bg-gray-100 border-gray-300 cursor-not-allowed' 
-                  : 'focus:ring-1 focus:border-gray-400'
-              }`}
-              style={{
-                borderColor: opening ? '#d1d5db' : `rgb(var(--color-primary-300))`,
-              }}
-              disabled={!!opening}
-              required
-            >
-              <option value="">{t('form.selectProduct')}</option>
-              {products.map((product) => (
-                <option key={product.id} value={product.id}>
-                  {product.name} - {product.sku}
-                </option>
-              ))}
-            </select>
-          )}
-          {errors.productId && (
-            <p 
-              className="mt-1 text-xs"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {errors.productId}
-            </p>
-          )}
+          <SearchSelect
+            value={formData.productId}
+            onChange={(productId) => setFormData(prev => ({ ...prev, productId }))}
+            onSearch={searchProducts}
+            label={t('form.product')}
+            placeholder={t('form.selectProduct')}
+            required
+            error={errors.productId}
+            disabled={!!opening}
+          />
         </div>
 
         <Input
