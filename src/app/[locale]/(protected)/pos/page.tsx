@@ -6,6 +6,7 @@ import { saleService } from '@/services/sales.service';
 import { clientsService } from '@/services/clients.service';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { cashRegisterService } from '@/services/cash-register.service';
+import { ticketPrinterService } from '@/services/ticket-printer.service';
 import { toastService } from '@/services/toast.service';
 import { SaleFormData } from '@/types/sale';
 import { Client } from '@/types/client';
@@ -230,6 +231,69 @@ export default function POSPage() {
     }
   };
 
+  const handleDownloadTicket = async () => {
+    if (cart.length === 0) {
+      toastService.error(t('messages.emptyCart'));
+      return;
+    }
+
+    if (!selectedClient) {
+      toastService.error(t('messages.selectClient'));
+      return;
+    }
+
+    try {
+      // Crear una venta temporal para generar el ticket
+      const saleData: SaleFormData = {
+        code: `TEMP-${Date.now()}`,
+        destination: 'Venta POS',
+        client_id: selectedClient,
+        type: 'POS',
+        amount: getTotal()
+      };
+
+      const sale = await saleService.createSale(saleData);
+
+      for (const item of cart) {
+        await saleService.addProductToSale(sale.id, {
+          product_id: item.product.product.id,
+          quantity: item.quantity,
+          price: item.price,
+          warehouse_id: item.product.warehouse.id
+        });
+      }
+
+      await saleService.closeSale(sale.id);
+
+      // Obtener los detalles de la venta para el ticket
+      const saleDetails = await saleService.getSaleDetails(sale.id);
+      
+      // Obtener información del cliente
+      const selectedClientData = clients.find(client => client.id === selectedClient);
+      
+      // Generar y descargar el ticket
+      const ticketData = {
+        sale: sale,
+        saleDetails: saleDetails.data || [],
+        client: selectedClientData || null,
+        cashierName: 'POS System',
+        paymentMethod: paymentMethod,
+        cashAmount: paymentMethod === 'cash' ? cashAmount : undefined,
+        change: paymentMethod === 'cash' ? getChange() : undefined
+      };
+      
+      ticketPrinterService.downloadTicket(ticketData);
+      toastService.success(t('messages.ticketDownloaded'));
+
+      // Eliminar la venta temporal
+      await saleService.deleteSale(sale.id);
+      
+    } catch (error) {
+      console.error('Error downloading ticket:', error);
+      toastService.error(t('messages.ticketDownloadError'));
+    }
+  };
+
   const handleCheckout = async () => {
     if (cart.length === 0) {
       toastService.error(t('messages.emptyCart'));
@@ -269,6 +333,32 @@ export default function POSPage() {
       }
 
       await saleService.closeSale(sale.id);
+
+      // Obtener los detalles de la venta para el ticket
+      const saleDetails = await saleService.getSaleDetails(sale.id);
+      
+      // Obtener información del cliente
+      const selectedClientData = clients.find(client => client.id === selectedClient);
+      
+      // Generar e imprimir el ticket
+      try {
+        const ticketData = {
+          sale: sale,
+          saleDetails: saleDetails.data || [],
+          client: selectedClientData || null,
+          cashierName: 'POS System', // Se puede obtener del contexto de usuario
+          paymentMethod: paymentMethod,
+          cashAmount: paymentMethod === 'cash' ? cashAmount : undefined,
+          change: paymentMethod === 'cash' ? getChange() : undefined
+        };
+        
+        await ticketPrinterService.printTicket(ticketData);
+        toastService.success(t('messages.ticketPrinted'));
+      } catch (error) {
+        console.error('Error printing ticket:', error);
+        // No fallar la venta si hay error en la impresión
+        toastService.warning(t('messages.ticketPrintError'));
+      }
 
       // Registrar transacción de caja según el método de pago
       if (currentCashRegister && currentCashRegister.status === 'open') {
@@ -432,6 +522,7 @@ export default function POSPage() {
         onPaymentMethodChange={setPaymentMethod}
         onCashAmountChange={setCashAmount}
         getChange={getChange}
+        onDownloadTicket={handleDownloadTicket}
       />
 
       {/* Modal de inicialización de caja */}

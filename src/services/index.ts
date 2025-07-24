@@ -23,4 +23,5 @@ export { warehousesService } from './warehouses.service';
 export { permissionsService } from './permissions.service';
 export { returnService } from './returns.service';
 export { purchaseOrdersService } from './purchase-orders.service';
-export { PDFService } from './pdf.service'; 
+export { PDFService } from './pdf.service';
+export { ticketPrinterService } from './ticket-printer.service'; 

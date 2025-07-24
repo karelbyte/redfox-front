@@ -1029,6 +1029,9 @@
         "success": "Producto eliminado correctamente",
         "error": "Error al eliminar el producto"
       },
+      "editProduct": {
+        "title": "Editar Producto"
+      },
       "details": {
         "provider": "Proveedor",
         "warehouse": "Almacén",
@@ -1303,7 +1306,8 @@
         "insufficientCash": "El monto en efectivo es insuficiente",
         "cancel": "Cancelar",
         "confirm": "Confirmar Pago",
-        "processing": "Procesando..."
+        "processing": "Procesando...",
+        "downloadTicket": "Descargar Ticket"
       },
       "messages": {
         "saleCompleted": "Venta completada exitosamente",
@@ -1321,7 +1325,11 @@
         "cashRegisterClosed": "Caja cerrada exitosamente",
         "cashDrawerCompleted": "Corte de caja completado exitosamente",
         "noCashRegister": "No hay caja activa",
-        "noCashRegisterInfo": "No hay caja abierta actualmente. Se recomienda inicializar la caja para un mejor control de efectivo."
+        "noCashRegisterInfo": "No hay caja abierta actualmente. Se recomienda inicializar la caja para un mejor control de efectivo.",
+        "ticketPrinted": "Ticket impreso exitosamente",
+        "ticketPrintError": "Error al imprimir el ticket, pero la venta se completó",
+        "ticketDownloaded": "Ticket descargado exitosamente",
+        "ticketDownloadError": "Error al descargar el ticket"
       },
       "cashBalance": {
         "title": "Balance de Caja",

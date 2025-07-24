@@ -1023,6 +1023,9 @@
         "success": "Product deleted successfully",
         "error": "Error deleting product"
       },
+      "editProduct": {
+        "title": "Edit Product"
+      },
       "details": {
         "title": "Reception {code}",
         "subtitle": "Reception details",
@@ -1298,7 +1301,8 @@
         "insufficientCash": "Cash amount is insufficient",
         "cancel": "Cancel",
         "confirm": "Confirm Payment",
-        "processing": "Processing..."
+        "processing": "Processing...",
+        "downloadTicket": "Download Ticket"
       },
       "messages": {
         "saleCompleted": "Sale completed successfully",
@@ -1316,7 +1320,11 @@
         "cashRegisterClosed": "Cash register closed successfully",
         "cashDrawerCompleted": "Cash drawer completed successfully",
         "noCashRegister": "No active cash register",
-        "noCashRegisterInfo": "There is no open cash register currently. It is recommended to initialize the cash register for better cash control."
+        "noCashRegisterInfo": "There is no open cash register currently. It is recommended to initialize the cash register for better cash control.",
+        "ticketPrinted": "Ticket printed successfully",
+        "ticketPrintError": "Error printing ticket, but sale was completed",
+        "ticketDownloaded": "Ticket downloaded successfully",
+        "ticketDownloadError": "Error downloading ticket"
       },
       "cashBalance": {
         "title": "Cash Balance",

@@ -65,10 +65,10 @@ export class PDFService {
     const pageWidth = this.doc.internal.pageSize.getWidth();
     const margin = orientation === 'landscape' ? 10 : 15; // Márgenes más pequeños en horizontal
     const tableWidth = pageWidth - (margin * 2);
-    
+
     // Calcular anchos de columna personalizados basados en el contenido y orientación
     const colWidths = this.calculateColumnWidths(headers, rows, tableWidth);
-    
+
     let currentY = startY;
     const rowHeight = orientation === 'landscape' ? 10 : 12; // Filas más pequeñas en horizontal
     const headerHeight = orientation === 'landscape' ? 12 : 14; // Headers más pequeños en horizontal
@@ -81,24 +81,24 @@ export class PDFService {
 
     // Dibujar encabezados
     let currentX = margin;
-    
+
     // Primero dibujar todos los rectángulos de fondo
     headers.forEach((header, index) => {
       const colWidth = colWidths[index];
       // Dibujar rectángulo de fondo para esta columna específica
       this.doc.rect(currentX, currentY, colWidth, headerHeight, 'F');
-      
+
       // Mover a la siguiente columna
       currentX += colWidth;
     });
-    
+
     // Luego dibujar todo el texto
     currentX = margin;
     headers.forEach((header, index) => {
       const colWidth = colWidths[index];
       // Alinear texto a la izquierda (igual que los datos)
       this.doc.text(header, currentX + 2, currentY + 9);
-      
+
       // Mover a la siguiente columna
       currentX += colWidth;
     });
@@ -117,26 +117,26 @@ export class PDFService {
         this.doc.addPage();
         currentY = 20;
       }
-    
+
       // Verificar que la fila tenga el mismo número de columnas que los headers
       if (row.length !== headers.length) {
         console.warn(`Row ${rowIndex} has ${row.length} columns but headers has ${headers.length}`);
       }
-      
+
       // Reiniciar X para cada fila
       currentX = margin;
       row.forEach((cell, colIndex) => {
         const colWidth = colWidths[colIndex];
         const cellText = String(cell || ''); // Manejar valores null/undefined
-        
-         // Truncar texto si es muy largo
+
+        // Truncar texto si es muy largo
         const maxWidth = colWidth - 4;
         const truncatedText = this.doc.splitTextToSize(cellText, maxWidth);
-        
+
         // Centrar texto verticalmente
         const textY = currentY + (rowHeight - (truncatedText.length * 3)) / 2 + 3;
         this.doc.text(truncatedText, currentX + 2, textY);
-        
+
         // Mover a la siguiente columna
         currentX += colWidth;
       });
@@ -150,7 +150,7 @@ export class PDFService {
    */
   private calculateColumnWidths(headers: string[], rows: (string | number)[][], totalWidth: number): number[] {
     const numColumns = headers.length;
-    
+
     // Dividir el ancho total entre el número de columnas
     const equalWidth = totalWidth / numColumns;
     return new Array(numColumns).fill(equalWidth);
@@ -161,7 +161,7 @@ export class PDFService {
    */
   generateTextPDF(content: string[], options: PDFOptions = {}): void {
     const { title, filename } = options;
-    
+
     this.doc.setFont('helvetica');
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
@@ -192,7 +192,7 @@ export class PDFService {
    */
   generateBarcodePDF(barcodes: Array<{ name: string; code: string }>, options: PDFOptions = {}): void {
     const { title, filename } = options;
-    
+
     this.doc.setFont('helvetica');
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
@@ -245,7 +245,7 @@ export class PDFService {
    */
   generateReceptionPDF(reception: Reception, details: ReceptionDetail[], options: PDFOptions = {}): void {
     const { filename } = options;
-    
+
     this.doc.setFont('helvetica');
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
@@ -263,7 +263,7 @@ export class PDFService {
     // Información de la recepción
     this.doc.setFontSize(12);
     this.doc.setFont('helvetica', 'normal');
-    
+
     // Código y fecha
     this.doc.text(`Código: ${reception.code}`, margin, currentY);
     this.doc.text(`Fecha: ${new Date(reception.date).toLocaleDateString('es-ES')}`, pageWidth - margin - 60, currentY);
@@ -342,10 +342,10 @@ export class PDFService {
    */
   private generateReceptionTable(headers: string[], rows: (string | number)[][], startY: number): void {
     const margin = 20;
-    
+
     // Anchos de columna personalizados para recepciones
     const colWidths = [60, 30, 30, 30, 25, 30, 35]; // Ajustados para 7 columnas
-    
+
     let currentY = startY;
     const rowHeight = 12;
     const headerHeight = 14;
@@ -358,14 +358,14 @@ export class PDFService {
 
     // Dibujar encabezados
     let currentX = margin;
-    
+
     // Primero dibujar todos los rectángulos de fondo
     headers.forEach((header, index) => {
       const colWidth = colWidths[index] || 30; // Usar ancho personalizado o default
       this.doc.rect(currentX, currentY, colWidth, headerHeight, 'F');
       currentX += colWidth;
     });
-    
+
     // Luego dibujar todo el texto
     currentX = margin;
     headers.forEach((header, index) => {
@@ -388,20 +388,20 @@ export class PDFService {
         this.doc.addPage();
         currentY = 20;
       }
-    
+
       currentX = margin;
       row.forEach((cell, colIndex) => {
         const colWidth = colWidths[colIndex] || 30;
         const cellText = String(cell || '');
-        
+
         // Truncar texto si es muy largo
         const maxWidth = colWidth - 6;
         const truncatedText = this.doc.splitTextToSize(cellText, maxWidth);
-        
+
         // Centrar texto verticalmente
         const textY = currentY + (rowHeight - (truncatedText.length * 3)) / 2 + 3;
         this.doc.text(truncatedText, currentX + 3, textY);
-        
+
         currentX += colWidth;
       });
 
@@ -414,7 +414,7 @@ export class PDFService {
    */
   generateSalePDF(sale: Sale, details: SaleDetail[], options: PDFOptions = {}): void {
     const { filename } = options;
-    
+
     this.doc.setFont('helvetica');
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
@@ -426,13 +426,13 @@ export class PDFService {
     // Título del documento
     this.doc.setFontSize(18);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text('FACTURA DE VENTA', pageWidth / 2, currentY, { align: 'center' });
+    this.doc.text('NOTA DE VENTA', pageWidth / 2, currentY, { align: 'center' });
     currentY += 15;
 
     // Información de la venta
     this.doc.setFontSize(12);
     this.doc.setFont('helvetica', 'normal');
-    
+
     // Código y fecha
     this.doc.text(`Código: ${sale.code}`, margin, currentY);
     this.doc.text(`Fecha: ${new Date(sale.created_at).toLocaleDateString('es-ES')}`, pageWidth - margin - 60, currentY);
@@ -465,13 +465,11 @@ export class PDFService {
       const headers = ['Producto', 'SKU', 'Marca', 'Categoría', 'Cantidad', 'Precio', 'Subtotal'];
       const rows: (string | number)[][] = [];
       let totalAmount = 0;
-
       details.forEach((detail) => {
-        const quantity = detail.quantity;
-        const price = detail.price;
-        const subtotal = quantity * price;
+        const quantity = Number(detail.quantity);
+        const price = Number(detail.price);
+        const subtotal = Number(quantity) * Number(price);
         totalAmount += subtotal;
-
         rows.push([
           detail.product.name,
           detail.product.sku,
@@ -511,10 +509,10 @@ export class PDFService {
    */
   private generateSaleTable(headers: string[], rows: (string | number)[][], startY: number): void {
     const margin = 20;
-    
+
     // Anchos de columna personalizados para ventas
     const colWidths = [60, 30, 30, 30, 25, 30, 35]; // Ajustados para 7 columnas
-    
+
     let currentY = startY;
     const rowHeight = 12;
     const headerHeight = 14;
@@ -527,14 +525,14 @@ export class PDFService {
 
     // Dibujar encabezados
     let currentX = margin;
-    
+
     // Primero dibujar todos los rectángulos de fondo
     headers.forEach((header, index) => {
       const colWidth = colWidths[index] || 30; // Usar ancho personalizado o default
       this.doc.rect(currentX, currentY, colWidth, headerHeight, 'F');
       currentX += colWidth;
     });
-    
+
     // Luego dibujar todo el texto
     currentX = margin;
     headers.forEach((header, index) => {
@@ -557,20 +555,20 @@ export class PDFService {
         this.doc.addPage();
         currentY = 20;
       }
-    
+
       currentX = margin;
       row.forEach((cell, colIndex) => {
         const colWidth = colWidths[colIndex] || 30;
         const cellText = String(cell || '');
-        
+
         // Truncar texto si es muy largo
         const maxWidth = colWidth - 6;
         const truncatedText = this.doc.splitTextToSize(cellText, maxWidth);
-        
+
         // Centrar texto verticalmente
         const textY = currentY + (rowHeight - (truncatedText.length * 3)) / 2 + 3;
         this.doc.text(truncatedText, currentX + 3, textY);
-        
+
         currentX += colWidth;
       });
 
@@ -666,10 +664,10 @@ export class PDFService {
    */
   private generatePurchaseOrderTable(headers: string[], rows: (string | number)[][], startY: number): void {
     const margin = 20;
-    
+
     // Anchos de columna personalizados para órdenes de compra
     const colWidths = [60, 30, 30, 30, 25, 30, 35]; // Ajustados para 7 columnas
-    
+
     let currentY = startY;
     const rowHeight = 12;
     const headerHeight = 14;
@@ -682,14 +680,14 @@ export class PDFService {
 
     // Dibujar encabezados
     let currentX = margin;
-    
+
     // Primero dibujar todos los rectángulos de fondo
     headers.forEach((header, index) => {
       const colWidth = colWidths[index] || 30;
       this.doc.rect(currentX, currentY, colWidth, headerHeight, 'F');
       currentX += colWidth;
     });
-    
+
     // Luego dibujar todo el texto
     currentX = margin;
     headers.forEach((header, index) => {
@@ -712,20 +710,20 @@ export class PDFService {
         this.doc.addPage();
         currentY = 20;
       }
-    
+
       currentX = margin;
       row.forEach((cell, colIndex) => {
         const colWidth = colWidths[colIndex] || 30;
         const cellText = String(cell || '');
-        
+
         // Truncar texto si es muy largo
         const maxWidth = colWidth - 6;
         const truncatedText = this.doc.splitTextToSize(cellText, maxWidth);
-        
+
         // Centrar texto verticalmente
         const textY = currentY + (rowHeight - (truncatedText.length * 3)) / 2 + 3;
         this.doc.text(truncatedText, currentX + 3, textY);
-        
+
         currentX += colWidth;
       });
 

@@ -82,7 +82,7 @@ export default function SaleDetailsPage() {
       setIsGeneratingPDF(true);
       
       // Generar el PDF con los productos ya cargados
-      const pdfService = new PDFService();
+      const pdfService = new PDFService({orientation: 'landscape'});
       pdfService.generateSalePDF(sale, products, {
         filename: `sale-${sale.code}.pdf`
       });
@@ -303,7 +303,7 @@ export default function SaleDetailsPage() {
           <h3 className="text-lg font-semibold mb-4" style={{ color: `rgb(var(--color-primary-700))` }}>
             {t('details.generalInfo')}
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-3 grid grid-cols-2 ">
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.code')}:</span>
               <p className="text-sm text-gray-900">{sale.code}</p>
@@ -335,7 +335,7 @@ export default function SaleDetailsPage() {
           <h3 className="text-lg font-semibold mb-4" style={{ color: `rgb(var(--color-primary-700))` }}>
             {t('details.client')}
           </h3>
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 space-y-3">
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.name')}:</span>
               <p className="text-sm text-gray-900">{sale.client.name}</p>

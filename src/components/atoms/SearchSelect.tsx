@@ -250,9 +250,9 @@ const SearchSelect = ({
                   {searchTerm ? defaultNoResultsText : defaultNoOptionsText}
                 </div>
               ) : (
-                options.map((option) => (
+                options.map((option, index) => (
                   <button
-                    key={option.id}
+                    key={`${option.id}-${index}`}
                     type="button"
                     onClick={() => handleSelect(option.id)}
                     className={`

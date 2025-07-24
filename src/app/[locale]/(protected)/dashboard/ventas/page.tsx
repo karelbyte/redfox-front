@@ -111,7 +111,7 @@ export default function VentasPage() {
       const details = detailsResponse.data || [];
       
       // Generar el PDF usando la venta completa y los detalles
-      const pdfService = new PDFService();
+      const pdfService = new PDFService({orientation: 'landscape'});
       pdfService.generateSalePDF(sale, details, {
         filename: `sale-${sale.code}.pdf`
       });

@@ -3,10 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
-import { PDFService } from '@/services/pdf.service';
 import { Reception, ReceptionDetail, ReceptionCloseResponse } from '@/types/reception';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
@@ -33,7 +32,6 @@ export default function ReceptionDetailsPage() {
   const [isClosingReception, setIsClosingReception] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [closeResult, setCloseResult] = useState<ReceptionCloseResponse | null>(null);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const productFormRef = useRef<AddProductFormRef>(null);
 
   const fetchReception = async () => {
@@ -74,30 +72,6 @@ export default function ReceptionDetailsPage() {
     fetchProducts();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
-
-  const handleGeneratePDF = async () => {
-    if (!reception) return;
-
-    try {
-      setIsGeneratingPDF(true);
-      
-      // Generar el PDF con los productos ya cargados
-      const pdfService = new PDFService();
-      pdfService.generateReceptionPDF(reception, products, {
-        filename: `reception-${reception.code}.pdf`
-      });
-      
-      toastService.success(t('messages.pdfGenerated'));
-    } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('messages.errorGeneratingPDF'));
-      }
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
 
   const handleDeleteProduct = async (detailId: string) => {
     try {
@@ -233,19 +207,11 @@ export default function ReceptionDetailsPage() {
         </div>
         
         <div className="flex space-x-2">
-          <Btn
-            onClick={handleGeneratePDF}
-            leftIcon={<DocumentArrowDownIcon className="h-5 w-5" />}
-            disabled={isGeneratingPDF}
-          >
-            {isGeneratingPDF ? t('actions.generatingPDF') : t('actions.generatePDF')}
-          </Btn>
-          
           {reception.status && (
             <Btn
+              variant="danger"
               onClick={handleCloseReception}
               leftIcon={<CheckCircleIcon className="h-5 w-5" />}
-              style={{ backgroundColor: '#dc2626', color: 'white' }}
             >
               {t('actions.closeReception')}
             </Btn>
@@ -254,7 +220,7 @@ export default function ReceptionDetailsPage() {
       </div>
 
       {/* Información general */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-4" style={{ color: `rgb(var(--color-primary-700))` }}>
             {t('details.generalInfo')}
@@ -335,7 +301,8 @@ export default function ReceptionDetailsPage() {
           />
         )}
         
-        {reception.status && products.length === 0 && !loadingProducts && (
+        {/* Botón de agregar producto - solo visible cuando la recepción está abierta */}
+        {reception.status && !loadingProducts && (
           <div className="mt-6 text-center">
             <Btn
               leftIcon={<PlusIcon className="h-5 w-5" />}
