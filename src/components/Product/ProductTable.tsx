@@ -40,6 +40,12 @@ export default function ProductTable({ products, onEdit, onDelete, onGenerateBar
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
+              {t('table.code')}
+            </th>
+            <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
               {t('table.sku')}
             </th>
             <th 
@@ -75,6 +81,7 @@ export default function ProductTable({ products, onEdit, onDelete, onGenerateBar
                 <div className="text-sm font-medium text-gray-900">{product.name}</div>
                 <div className="text-sm text-gray-500">{product.description}</div>
               </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.code}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.sku}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {typeof product.brand === 'object' ? product.brand.code : product.brand}

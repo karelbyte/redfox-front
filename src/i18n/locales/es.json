@@ -102,7 +102,10 @@
     "emailConfig": "Configuración de Correo",
     "paymentGateway": "Pasarela de Pago",
     "backup": "Respaldo",
-    "returns": "Devoluciones"
+    "returns": "Devoluciones",
+    "invoices": "Facturas",
+    "createInvoice": "Crear Factura",
+    "invoiceList": "Lista de Facturas"
   },
   "pages": {
     "dashboard": {
@@ -236,6 +239,7 @@
         "slug": "Slug",
         "description": "Descripción",
         "sku": "SKU",
+        "code": "Código",
         "weight": "Peso",
         "width": "Ancho",
         "height": "Alto",
@@ -281,6 +285,7 @@
       },
       "table": {
         "name": "Nombre",
+        "code": "Código",
         "sku": "SKU",
         "brand": "Marca",
         "category": "Categoría",
@@ -1131,7 +1136,8 @@
         "cannotDeleteCompleted": "No se puede eliminar una venta completada",
         "createNewClient": "Crear nuevo cliente",
         "generatePDF": "Generar PDF",
-        "generatingPDF": "Generando PDF..."
+        "generatingPDF": "Generando PDF...",
+        "invoice": "Facturar"
       },
       "messages": {
         "saleCreated": "Venta creada correctamente",
@@ -1146,7 +1152,9 @@
         "errorClosing": "Error al completar la venta",
         "errorGeneratingPDF": "Error al generar el PDF",
         "confirmDelete": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer.",
-        "confirmClose": "¿Estás seguro de que deseas completar la venta \"{code}\"? Esta acción no se puede deshacer."
+        "confirmClose": "¿Estás seguro de que deseas completar la venta \"{code}\"? Esta acción no se puede deshacer.",
+        "invoiceCreated": "Factura creada exitosamente",
+        "errorCreatingInvoice": "Error al crear la factura"
       },
       "modals": {
         "delete": {
@@ -1217,7 +1225,8 @@
         "inventoryInfo": {
           "title": "Información del Producto en Inventario",
           "product": "Producto",
-          "sku": "SKU",
+          "sku": "SKU", 
+          "code": "Código",
           "stockAvailable": "Stock Disponible",
           "inventoryPrice": "Precio en Inventario",
           "warehouse": "Almacén",
@@ -1229,6 +1238,7 @@
         "headers": {
           "product": "Producto",
           "sku": "SKU",
+          "code": "Código",
           "brand": "Marca",
           "category": "Categoría",
           "quantity": "Cantidad",
@@ -1397,6 +1407,141 @@
         "processing": "Procesando...",
         "close": "Cerrar Caja",
         "adjust": "Ajustar"
+      }
+    },
+    "invoices": {
+      "title": "Facturas",
+      "subtitle": "Gestión de facturas y CFDI",
+      "create": {
+        "title": "Crear Factura",
+        "subtitle": "Crear una nueva factura"
+      },
+      "table": {
+        "code": "Código",
+        "date": "Fecha",
+        "client": "Cliente",
+        "subtotal": "Subtotal",
+        "tax": "Impuesto",
+        "total": "Total",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "draft": "Borrador",
+        "sent": "Enviada",
+        "paid": "Pagada",
+        "cancelled": "Cancelada"
+      },
+      "actions": {
+        "createInvoice": "Crear Factura",
+        "viewDetails": "Ver Detalles",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "generateCFDI": "Generar CFDI",
+        "cancelCFDI": "Cancelar CFDI",
+        "downloadPDF": "Descargar PDF",
+        "downloadXML": "Descargar XML",
+        "downloadingPDF": "Descargando PDF...",
+        "downloadingXML": "Descargando XML...",
+        "cannotEdit": "No se puede editar",
+        "cannotDelete": "No se puede eliminar"
+      },
+      "form": {
+        "code": "Código de Factura",
+        "codePlaceholder": "Ingrese el código de la factura",
+        "date": "Fecha",
+        "client": "Cliente",
+        "clientPlaceholder": "Seleccione un cliente",
+        "paymentMethod": "Método de Pago",
+        "paymentMethodPlaceholder": "Seleccione el método de pago",
+        "paymentConditions": "Condiciones de Pago",
+        "paymentConditionsPlaceholder": "Ingrese las condiciones de pago",
+        "notes": "Notas",
+        "notesPlaceholder": "Ingrese notas adicionales",
+        "paymentMethods": {
+          "cash": "Efectivo",
+          "card": "Tarjeta",
+          "transfer": "Transferencia",
+          "check": "Cheque"
+        },
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "saving": "Guardando..."
+      },
+      "drawer": {
+        "createTitle": "Crear Factura",
+        "editTitle": "Editar Factura"
+      },
+      "deleteModal": {
+        "title": "Eliminar Factura",
+        "message": "¿Estás seguro de que deseas eliminar la factura {code}? Esta acción no se puede deshacer.",
+        "confirm": "Eliminar",
+        "cancel": "Cancelar"
+      },
+      "generateCFDIModal": {
+        "title": "Generar CFDI",
+        "message": "¿Estás seguro de que deseas generar el CFDI para la factura {code}?",
+        "confirm": "Generar CFDI",
+        "cancel": "Cancelar",
+        "generating": "Generando..."
+      },
+      "cancelCFDIModal": {
+        "title": "Cancelar CFDI",
+        "message": "¿Estás seguro de que deseas cancelar el CFDI de la factura {code}?",
+        "reasonLabel": "Motivo de Cancelación",
+        "reasonPlaceholder": "Ingrese el motivo de la cancelación",
+        "confirm": "Cancelar CFDI",
+        "cancel": "Cancelar",
+        "cancelling": "Cancelando..."
+      },
+      "details": {
+        "title": "Detalles de Factura",
+        "subtitle": "Información detallada de la factura {code}",
+        "notFound": "Factura no encontrada",
+        "invoiceInfo": "Información de la Factura",
+        "code": "Código",
+        "date": "Fecha",
+        "client": "Cliente",
+        "paymentMethod": "Método de Pago",
+        "paymentConditions": "Condiciones de Pago",
+        "notes": "Notas",
+        "products": "Productos",
+        "product": "Producto",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "subtotal": "Subtotal",
+        "tax": "Impuesto",
+        "total": "Total",
+        "summary": "Resumen",
+        "cfdi": "CFDI",
+        "uuid": "UUID",
+        "facturapiId": "ID FacturaAPI"
+      },
+      "empty": {
+        "title": "No hay facturas",
+        "description": "Comienza creando tu primera venta para generar una factura.",
+        "action": "Crear Factura"
+      },
+      "messages": {
+        "invoiceCreated": "Factura creada exitosamente",
+        "invoiceUpdated": "Factura actualizada exitosamente",
+        "invoiceDeleted": "Factura eliminada exitosamente",
+        "cfdiGenerated": "CFDI generado exitosamente",
+        "cfdiCancelled": "CFDI cancelado exitosamente",
+        "pdfDownloaded": "PDF descargado exitosamente",
+        "xmlDownloaded": "XML descargado exitosamente"
+      },
+      "errors": {
+        "loadInvoices": "Error al cargar las facturas",
+        "loadClients": "Error al cargar los clientes",
+        "saveInvoice": "Error al guardar la factura",
+        "createInvoice": "Error al crear la factura",
+        "deleteInvoice": "Error al eliminar la factura",
+        "generateCFDI": "Error al generar el CFDI",
+        "cancelCFDI": "Error al cancelar el CFDI",
+        "downloadPDF": "Error al descargar el PDF",
+        "downloadXML": "Error al descargar el XML",
+        "loadInvoiceDetails": "Error al cargar los detalles de la factura"
       }
     },
     "roles": {
@@ -1641,6 +1786,7 @@
         "headers": {
           "product": "Producto",
           "sku": "SKU",
+          "code": "Código",
           "brand": "Marca",
           "category": "Categoría",
           "quantity": "Cantidad",
@@ -1684,6 +1830,7 @@
           "title": "Información del Inventario",
           "product": "Producto",
           "sku": "SKU",
+          "code": "Código",
           "stockAvailable": "Stock Disponible",
           "inventoryPrice": "Precio de Inventario",
           "warehouse": "Almacén",
@@ -1809,6 +1956,7 @@
         "headers": {
           "product": "Producto",
           "sku": "SKU",
+          "code": "Código",
           "brand": "Marca",
           "category": "Categoría",
           "quantity": "Cantidad",
@@ -1848,6 +1996,7 @@
           "title": "Información del Inventario",
           "product": "Producto",
           "sku": "SKU",
+          "code": "Código",
           "stockAvailable": "Stock Disponible",
           "inventoryPrice": "Precio de Inventario",
           "warehouse": "Almacén",
@@ -2031,6 +2180,7 @@
         "headers": {
           "product": "Producto",
           "sku": "SKU",
+          "code": "Código",
           "brand": "Marca",
           "category": "Categoría",
           "quantity": "Cantidad",

@@ -9,6 +9,7 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
+  code: string;
   sku: string;
   weight: number;
   width: number;

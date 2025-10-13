@@ -24,4 +24,5 @@ export { permissionsService } from './permissions.service';
 export { returnService } from './returns.service';
 export { purchaseOrdersService } from './purchase-orders.service';
 export { PDFService } from './pdf.service';
-export { ticketPrinterService } from './ticket-printer.service'; 
+export { ticketPrinterService } from './ticket-printer.service';
+export { invoiceService } from './invoices.service'; 

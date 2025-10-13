@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Sale } from '@/types/sale';
 import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentArrowDownIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 
 interface SaleTableProps {
   sales: Sale[];
@@ -12,9 +12,10 @@ interface SaleTableProps {
   onDetails: (sale: Sale) => void;
   onClose: (sale: Sale) => void;
   onGeneratePDF: (sale: Sale) => void;
+  onInvoice?: (sale: Sale) => void;
 }
 
-export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onGeneratePDF }: SaleTableProps) {
+export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onGeneratePDF, onInvoice }: SaleTableProps) {
   const t = useTranslations('pages.sales');
 
   const formatCurrency = (amount: string) => {
@@ -135,6 +136,16 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                     leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
                     title={t('actions.generatePDF')}
                   />
+                  {sale.status && onInvoice && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onInvoice(sale)}
+                      leftIcon={<DocumentTextIcon className="h-4 w-4" />}
+                      title={t('actions.invoice')}
+                      style={{ color: '#059669' }}
+                    />
+                  )}
                   {!sale.status && (
                     <Btn
                       variant="ghost"

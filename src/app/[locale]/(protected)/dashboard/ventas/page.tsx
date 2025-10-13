@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Sale, SaleCloseResponse } from '@/types/sale';
 import { saleService } from '@/services/sales.service';
+import { invoiceService } from '@/services';
 import { toastService } from '@/services/toast.service';
 import { PDFService } from '@/services/pdf.service';
 import SaleTable from '@/components/Sale/SaleTable';
@@ -128,6 +129,23 @@ export default function VentasPage() {
     }
   };
 
+  const handleInvoice = async (sale: Sale) => {
+    try {
+      const invoiceCode = `INV-${sale.code}`;
+      const invoice = await invoiceService.convertWithdrawalToInvoice({
+        withdrawal_id: sale.id,
+        invoice_code: invoiceCode,
+        status: 'DRAFT' as any
+      });
+      
+      toastService.success(t('messages.invoiceCreated'));
+      router.push(`/${locale}/dashboard/facturas/facturas/${invoice.id}`);
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      toastService.error(t('messages.errorCreatingInvoice'));
+    }
+  };
+
   const handleDetails = (sale: Sale) => {
     router.push(`/${locale}/dashboard/ventas/ventas/${sale.id}`);
   };
@@ -230,6 +248,7 @@ export default function VentasPage() {
               onDetails={handleDetails}
               onClose={openCloseModal}
               onGeneratePDF={handleGeneratePDF}
+              onInvoice={handleInvoice}
             />
           </div>
 

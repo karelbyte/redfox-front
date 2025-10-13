@@ -102,7 +102,10 @@
     "emailConfig": "Email Configuration",
     "paymentGateway": "Payment Gateway",
     "backup": "Backup",
-    "returns": "Returns"
+    "returns": "Returns",
+    "invoices": "Invoices",
+    "createInvoice": "Create Invoice",
+    "invoiceList": "Invoice List"
   },
   "pages": {
     "dashboard": {
@@ -282,6 +285,7 @@
       "table": {
         "name": "Name",
         "sku": "SKU",
+        "code": "Code",
         "brand": "Brand",
         "category": "Category",
         "measurementUnit": "Measurement Unit",
@@ -1124,7 +1128,8 @@
         "cannotDeleteCompleted": "Cannot delete a completed sale",
         "createNewClient": "Create new client",
         "generatePDF": "Generate PDF",
-        "generatingPDF": "Generating PDF..."
+        "generatingPDF": "Generating PDF...",
+        "invoice": "Invoice"
       },
       "messages": {
         "saleCreated": "Sale created successfully",
@@ -1139,7 +1144,9 @@
         "errorClosing": "Error completing sale",
         "errorGeneratingPDF": "Error generating PDF",
         "confirmDelete": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone.",
-        "confirmClose": "Are you sure you want to complete the sale \"{code}\"? This action cannot be undone."
+        "confirmClose": "Are you sure you want to complete the sale \"{code}\"? This action cannot be undone.",
+        "invoiceCreated": "Invoice created successfully",
+        "errorCreatingInvoice": "Error creating invoice"
       },
       "modals": {
         "delete": {
@@ -1394,6 +1401,141 @@
         "adjust": "Adjust"
       }
     },
+    "invoices": {
+      "title": "Invoices",
+      "subtitle": "Invoice and CFDI management",
+      "create": {
+        "title": "Create Invoice",
+        "subtitle": "Create a new invoice"
+      },
+      "table": {
+        "code": "Code",
+        "date": "Date",
+        "client": "Client",
+        "subtotal": "Subtotal",
+        "tax": "Tax",
+        "total": "Total",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "paid": "Paid",
+        "cancelled": "Cancelled"
+      },
+      "actions": {
+        "createInvoice": "Create Invoice",
+        "viewDetails": "View Details",
+        "edit": "Edit",
+        "delete": "Delete",
+        "generateCFDI": "Generate CFDI",
+        "cancelCFDI": "Cancel CFDI",
+        "downloadPDF": "Download PDF",
+        "downloadXML": "Download XML",
+        "downloadingPDF": "Downloading PDF...",
+        "downloadingXML": "Downloading XML...",
+        "cannotEdit": "Cannot edit",
+        "cannotDelete": "Cannot delete"
+      },
+      "form": {
+        "code": "Invoice Code",
+        "codePlaceholder": "Enter invoice code",
+        "date": "Date",
+        "client": "Client",
+        "clientPlaceholder": "Select a client",
+        "paymentMethod": "Payment Method",
+        "paymentMethodPlaceholder": "Select payment method",
+        "paymentConditions": "Payment Conditions",
+        "paymentConditionsPlaceholder": "Enter payment conditions",
+        "notes": "Notes",
+        "notesPlaceholder": "Enter additional notes",
+        "paymentMethods": {
+          "cash": "Cash",
+          "card": "Card",
+          "transfer": "Transfer",
+          "check": "Check"
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "saving": "Saving..."
+      },
+      "drawer": {
+        "createTitle": "Create Invoice",
+        "editTitle": "Edit Invoice"
+      },
+      "deleteModal": {
+        "title": "Delete Invoice",
+        "message": "Are you sure you want to delete invoice {code}? This action cannot be undone.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      },
+      "generateCFDIModal": {
+        "title": "Generate CFDI",
+        "message": "Are you sure you want to generate CFDI for invoice {code}?",
+        "confirm": "Generate CFDI",
+        "cancel": "Cancel",
+        "generating": "Generating..."
+      },
+      "cancelCFDIModal": {
+        "title": "Cancel CFDI",
+        "message": "Are you sure you want to cancel CFDI for invoice {code}?",
+        "reasonLabel": "Cancellation Reason",
+        "reasonPlaceholder": "Enter cancellation reason",
+        "confirm": "Cancel CFDI",
+        "cancel": "Cancel",
+        "cancelling": "Cancelling..."
+      },
+      "details": {
+        "title": "Invoice Details",
+        "subtitle": "Detailed information for invoice {code}",
+        "notFound": "Invoice not found",
+        "invoiceInfo": "Invoice Information",
+        "code": "Code",
+        "date": "Date",
+        "client": "Client",
+        "paymentMethod": "Payment Method",
+        "paymentConditions": "Payment Conditions",
+        "notes": "Notes",
+        "products": "Products",
+        "product": "Product",
+        "quantity": "Quantity",
+        "price": "Price",
+        "subtotal": "Subtotal",
+        "tax": "Tax",
+        "total": "Total",
+        "summary": "Summary",
+        "cfdi": "CFDI",
+        "uuid": "UUID",
+        "facturapiId": "FacturaAPI ID"
+      },
+      "empty": {
+        "title": "No invoices",
+        "description": "Start by creating your first sale to generate an invoice.",
+        "action": "Create Invoice"
+      },
+      "messages": {
+        "invoiceCreated": "Invoice created successfully",
+        "invoiceUpdated": "Invoice updated successfully",
+        "invoiceDeleted": "Invoice deleted successfully",
+        "cfdiGenerated": "CFDI generated successfully",
+        "cfdiCancelled": "CFDI cancelled successfully",
+        "pdfDownloaded": "PDF downloaded successfully",
+        "xmlDownloaded": "XML downloaded successfully"
+      },
+      "errors": {
+        "loadInvoices": "Error loading invoices",
+        "loadClients": "Error loading clients",
+        "saveInvoice": "Error saving invoice",
+        "createInvoice": "Error creating invoice",
+        "deleteInvoice": "Error deleting invoice",
+        "generateCFDI": "Error generating CFDI",
+        "cancelCFDI": "Error cancelling CFDI",
+        "downloadPDF": "Error downloading PDF",
+        "downloadXML": "Error downloading XML",
+        "loadInvoiceDetails": "Error loading invoice details"
+      }
+    },
     "roles": {
       "title": "Roles",
       "subtitle": "User role management",
@@ -1635,7 +1777,8 @@
         "noProductsClosedDesc": "This return has no registered products.",
         "headers": {
           "product": "Product",
-          "sku": "SKU",
+          "sku": "SKU", 
+          "code": "Code",
           "brand": "Brand",
           "category": "Category",
           "quantity": "Quantity",
