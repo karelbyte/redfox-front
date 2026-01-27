@@ -34,3 +34,9 @@ export interface ClientsResponse {
     totalPages: number;
   };
 } 
+
+export interface ClientWithPackStatus {
+  client: Client;
+  pack_sync_success: boolean;
+  pack_sync_error?: string;
+}

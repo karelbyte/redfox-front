@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Product } from '@/types/product';
+import { Product, ProductWithPackStatus } from '@/types/product';
 
 export interface ProductKeySuggestion {
   key: string;
@@ -31,7 +31,7 @@ class ProductService {
     return response;
   }
 
-  async createProduct(data: Partial<Product>, imageFiles?: File[]): Promise<Product> {
+  async createProduct(data: Partial<Product>, imageFiles?: File[]): Promise<ProductWithPackStatus> {
     const formData = new FormData();
     
     // Agregar campos de texto
@@ -54,11 +54,11 @@ class ProductService {
       });
     }
 
-    const response = await api.post<Product>('/products', formData);
+    const response = await api.post<ProductWithPackStatus>('/products', formData);
     return response;
   }
 
-  async updateProduct(id: string, data: Partial<Product>, imageFiles?: File[]): Promise<Product> {
+  async updateProduct(id: string, data: Partial<Product>, imageFiles?: File[]): Promise<ProductWithPackStatus> {
     const formData = new FormData();
     
     // Agregar campos de texto
@@ -81,7 +81,7 @@ class ProductService {
       });
     }
 
-    const response = await api.put<Product>(`/products/${id}`, formData);
+    const response = await api.put<ProductWithPackStatus>(`/products/${id}`, formData);
     return response;
   }
 

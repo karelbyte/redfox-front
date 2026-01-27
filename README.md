@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is the RedFox POS frontend: a [Next.js](https://nextjs.org) application with multi-language support (es/en) and integration to the RedFox API.
 
 ## Getting Started
 
@@ -16,9 +16,13 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Certification pack sync (PAC)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+When creating or editing **clients** or **products**, the app calls the API, which syncs with the active certification pack (e.g. Facturapi). The API returns `pack_sync_success` and optionally `pack_sync_error`.
+
+- **Clients / Products list**: A green check icon next to the name indicates the record is registered in the pack (`pack_product_id` set).
+- **Create/Edit forms**: If the pack sync fails after save, a toast shows the error (e.g. `packSyncFailedCreate` / `packSyncFailedUpdate`) with the detail from `pack_sync_error`. The list still refreshes so the user sees the saved entity.
+- **i18n**: Keys `pages.clients.table.inPack`, `pages.products.table.inPack`, and `pages.*.messages.packSyncFailedCreate` / `packSyncFailedUpdate` are used for labels and messages (es/en).
 
 ## Learn More
 

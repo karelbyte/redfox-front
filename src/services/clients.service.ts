@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { Client, ClientsResponse } from "@/types/client";
+import { Client, ClientsResponse, ClientWithPackStatus } from "@/types/client";
 
 export const clientsService = {
   getClients: async (page?: number, term?: string): Promise<ClientsResponse> => {
@@ -14,12 +14,12 @@ export const clientsService = {
     return response;
   },
 
-  createClient: async (client: Partial<Client>): Promise<Client> => {
-    return api.post<Client>("/clients", client);
+  createClient: async (client: Partial<Client>): Promise<ClientWithPackStatus> => {
+    return api.post<ClientWithPackStatus>("/clients", client);
   },
 
-  updateClient: async (id: string, client: Partial<Client>): Promise<Client> => {
-    return api.put<Client>(`/clients/${id}`, client);
+  updateClient: async (id: string, client: Partial<Client>): Promise<ClientWithPackStatus> => {
+    return api.put<ClientWithPackStatus>(`/clients/${id}`, client);
   },
 
   deleteClient: async (id: string): Promise<void> => {

@@ -2,9 +2,10 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePermissions } from "@/hooks/usePermissions";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 interface MenuItem {
   name: string;
@@ -20,6 +21,7 @@ interface MenuItem {
 }
 
 const EXPANDED_MENU_STORAGE_KEY = "nitro-expanded-menu";
+const SIDEBAR_COLLAPSED_STORAGE_KEY = "nitro-sidebar-collapsed";
 
 export function SideMenu() {
   const pathname = usePathname();
@@ -28,8 +30,19 @@ export function SideMenu() {
   const t = useTranslations("navigation");
   const { can } = usePermissions();
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [hoveredCollapsedItem, setHoveredCollapsedItem] = useState<string | null>(null);
+  const collapsePopoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load expanded menu state from localStorage on mount
+  useEffect(() => {
+    return () => {
+      if (collapsePopoverTimeoutRef.current) {
+        clearTimeout(collapsePopoverTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Load expanded menu and collapsed state from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
@@ -37,10 +50,32 @@ export function SideMenu() {
         if (stored) {
           setExpandedMenu(stored);
         }
+        const storedCollapsed = localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY);
+        if (storedCollapsed === "true") {
+          setCollapsed(true);
+        }
       } catch (error) {
-        console.warn("Error reading expanded menu from localStorage:", error);
+        console.warn("Error reading sidebar state from localStorage:", error);
       }
     }
+  }, []);
+
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        try {
+          if (next) {
+            localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, "true");
+          } else {
+            localStorage.removeItem(SIDEBAR_COLLAPSED_STORAGE_KEY);
+          }
+        } catch (error) {
+          console.warn("Error saving sidebar collapsed state:", error);
+        }
+      }
+      return next;
+    });
   }, []);
 
   const toggleSubmenu = (path: string) => {
@@ -929,11 +964,24 @@ export function SideMenu() {
 
   return (
     <aside
-      className="w-64 flex-shrink-0 bg-white border-r h-full"
+      className={`relative flex-shrink-0 bg-white border-r h-full transition-[width] duration-200 ${collapsed ? "w-20" : "w-64"}`}
       style={{ borderColor: `rgb(var(--color-primary-100))` }}
     >
-      <nav className="h-full p-4">
-        <div className="space-y-1">
+      <button
+        type="button"
+        onClick={toggleCollapsed}
+        className="absolute -right-3 top-4 z-10 p-1 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors flex items-center justify-center"
+        title={collapsed ? t("expandMenu") : t("collapseMenu")}
+        aria-label={collapsed ? t("expandMenu") : t("collapseMenu")}
+      >
+        {collapsed ? (
+          <ChevronRightIcon className="h-4 w-4 text-gray-600" />
+        ) : (
+          <ChevronLeftIcon className="h-4 w-4 text-gray-600" />
+        )}
+      </button>
+      <nav className="h-full flex flex-col pt-10 pb-4 px-4">
+        <div className={`space-y-1 flex-1 ${collapsed ? "overflow-visible" : "overflow-hidden"}`}>
           {filteredMenuItems.map((item) => {
             const isActive =
               pathname === item.path ||
@@ -942,44 +990,157 @@ export function SideMenu() {
 
             // Filtrar subelementos basándose en permisos
             const filteredSubItems = item.subItems?.filter(shouldShowSubItem) || [];
+            const hrefWhenCollapsed = item.subItems && filteredSubItems.length > 0
+              ? filteredSubItems[0].path
+              : item.path;
+
+            const iconContent = (
+              <span
+                className={collapsed ? "flex items-center justify-center" : "mr-3"}
+                style={{
+                  color: isActive
+                    ? `rgb(var(--color-primary-500))`
+                    : "#9ca3af",
+                }}
+              >
+                {item.icon}
+              </span>
+            );
+
+            const itemClassName = collapsed
+              ? "w-full flex items-center justify-center px-2 py-3 rounded-lg transition-colors"
+              : "w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors";
+            const itemStyle = {
+              backgroundColor: isActive ? `rgb(var(--color-primary-50))` : "transparent",
+              color: isActive ? `rgb(var(--color-primary-600))` : "#4b5563",
+            };
+            const itemHover = (e: React.MouseEvent<HTMLElement>, active: boolean) => {
+              if (!active) {
+                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+                e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+              }
+            };
+            const itemHoverLeave = (e: React.MouseEvent<HTMLElement>, active: boolean) => {
+              if (!active) {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#4b5563";
+              }
+            };
+
+            if (collapsed) {
+              const showPopover = hoveredCollapsedItem === item.path;
+              const options = filteredSubItems.length > 0
+                ? filteredSubItems
+                : [{ name: item.name, path: item.path, icon: item.icon }];
+              const handleCollapsedEnter = () => {
+                if (collapsePopoverTimeoutRef.current) {
+                  clearTimeout(collapsePopoverTimeoutRef.current);
+                  collapsePopoverTimeoutRef.current = null;
+                }
+                setHoveredCollapsedItem(item.path);
+              };
+              const handleCollapsedLeave = () => {
+                collapsePopoverTimeoutRef.current = setTimeout(() => {
+                  setHoveredCollapsedItem(null);
+                  collapsePopoverTimeoutRef.current = null;
+                }, 120);
+              };
+              return (
+                <div
+                  key={item.path}
+                  className="relative"
+                  onMouseEnter={handleCollapsedEnter}
+                  onMouseLeave={handleCollapsedLeave}
+                >
+                  {filteredSubItems.length > 0 ? (
+                    <div
+                      className={itemClassName}
+                      style={itemStyle}
+                      onMouseEnter={(e) => itemHover(e, isActive)}
+                      onMouseLeave={(e) => itemHoverLeave(e, isActive)}
+                    >
+                      {iconContent}
+                    </div>
+                  ) : (
+                    <Link
+                      href={item.path}
+                      className={itemClassName}
+                      style={itemStyle}
+                      onMouseEnter={(e) => itemHover(e, isActive)}
+                      onMouseLeave={(e) => itemHoverLeave(e, isActive)}
+                    >
+                      {iconContent}
+                    </Link>
+                  )}
+                  {showPopover && (
+                    <div
+                      className="absolute left-full top-0 z-50 py-1 min-w-[180px] bg-white rounded-lg shadow-lg border border-gray-200 -ml-px"
+                      style={{ borderColor: "rgb(var(--color-primary-100))" }}
+                      role="menu"
+                    >
+                      {options.map((opt) => (
+                        <Link
+                          key={opt.path}
+                          href={opt.path}
+                          className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors mx-1"
+                          style={{
+                            backgroundColor:
+                              pathname === opt.path
+                                ? "rgb(var(--color-primary-50))"
+                                : "transparent",
+                            color:
+                              pathname === opt.path
+                                ? "rgb(var(--color-primary-600))"
+                                : "#4b5563",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (pathname !== opt.path) {
+                              e.currentTarget.style.backgroundColor =
+                                "rgb(var(--color-primary-50))";
+                              e.currentTarget.style.color =
+                                "rgb(var(--color-primary-600))";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (pathname !== opt.path) {
+                              e.currentTarget.style.backgroundColor =
+                                "transparent";
+                              e.currentTarget.style.color = "#4b5563";
+                            }
+                          }}
+                          role="menuitem"
+                        >
+                          <span
+                            className="mr-3 shrink-0"
+                            style={{
+                              color:
+                                pathname === opt.path
+                                  ? "rgb(var(--color-primary-500))"
+                                  : "#9ca3af",
+                            }}
+                          >
+                            {opt.icon}
+                          </span>
+                          {opt.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
 
             return (
               <div key={item.path}>
                 {item.subItems ? (
                   <button
                     onClick={() => handleMenuClick(item)}
-                    className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
-                    style={{
-                      backgroundColor: isActive
-                        ? `rgb(var(--color-primary-50))`
-                        : "transparent",
-                      color: isActive
-                        ? `rgb(var(--color-primary-600))`
-                        : "#4b5563",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
-                        e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = "transparent";
-                        e.currentTarget.style.color = "#4b5563";
-                      }
-                    }}
+                    className={itemClassName}
+                    style={itemStyle}
+                    onMouseEnter={(e) => itemHover(e, isActive)}
+                    onMouseLeave={(e) => itemHoverLeave(e, isActive)}
                   >
-                    <span
-                      className="mr-3"
-                      style={{
-                        color: isActive
-                          ? `rgb(var(--color-primary-500))`
-                          : "#9ca3af",
-                      }}
-                    >
-                      {item.icon}
-                    </span>
+                    {iconContent}
                     {item.name}
                     <svg
                       className={`ml-auto w-4 h-4 transform transition-transform ${
@@ -1000,38 +1161,12 @@ export function SideMenu() {
                 ) : (
                   <Link
                     href={item.path}
-                    className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
-                    style={{
-                      backgroundColor: isActive
-                        ? `rgb(var(--color-primary-50))`
-                        : "transparent",
-                      color: isActive
-                        ? `rgb(var(--color-primary-600))`
-                        : "#4b5563",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
-                        e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = "transparent";
-                        e.currentTarget.style.color = "#4b5563";
-                      }
-                    }}
+                    className={itemClassName}
+                    style={itemStyle}
+                    onMouseEnter={(e) => itemHover(e, isActive)}
+                    onMouseLeave={(e) => itemHoverLeave(e, isActive)}
                   >
-                    <span
-                      className="mr-3"
-                      style={{
-                        color: isActive
-                          ? `rgb(var(--color-primary-500))`
-                          : "#9ca3af",
-                      }}
-                    >
-                      {item.icon}
-                    </span>
+                    {iconContent}
                     {item.name}
                   </Link>
                 )}

@@ -106,7 +106,9 @@
     "invoices": "Facturas",
     "createInvoice": "Crear Factura",
     "invoiceList": "Lista de Facturas",
-    "certificationPacks": "Packs SAT"
+    "certificationPacks": "Packs SAT",
+    "collapseMenu": "Minimizar menú (solo iconos)",
+    "expandMenu": "Expandir menú"
   },
   "pages": {
     "dashboard": {
@@ -307,7 +309,8 @@
         "type": "Tipo",
         "tax": "Impuesto",
         "status": "Estado",
-        "actions": "Acciones"
+        "actions": "Acciones",
+        "inPack": "Registrado en PAC"
       },
       "actions": {
         "generateBarcode": "Generar Código de Barras"
@@ -336,7 +339,9 @@
         "confirmDelete": "¿Estás seguro de que deseas eliminar el producto \"{name}\"? Esta acción no se puede deshacer.",
         "noProductsToExport": "No hay productos para exportar",
         "pdfGenerated": "PDF generado correctamente",
-        "errorGeneratingPDF": "Error al generar el PDF"
+        "errorGeneratingPDF": "Error al generar el PDF",
+        "packSyncFailedCreate": "Producto guardado en Redfox. Atención: no se registró en el PAC. No podrá usarlo en facturación hasta corregirlo. Detalle: {detail}",
+        "packSyncFailedUpdate": "Producto guardado en Redfox. Atención: no se actualizó en el PAC. No podrá usarlo en facturación hasta corregirlo. Detalle: {detail}"
       },
       "pdf": {
         "title": "Lista de Productos",
@@ -728,7 +733,8 @@
         "email": "Email",
         "taxDocument": "Documento Fiscal",
         "status": "Estado",
-        "actions": "Acciones"
+        "actions": "Acciones",
+        "inPack": "Registrado en PAC"
       },
       "messages": {
         "clientCreated": "Cliente creado correctamente",
@@ -738,6 +744,8 @@
         "errorCreating": "Error al crear el cliente",
         "errorUpdating": "Error al actualizar el cliente",
         "errorDeleting": "Error al eliminar el cliente",
+        "packSyncFailedCreate": "Cliente guardado en Redfox. Atención: no se registró en el PAC. No podrá facturar hasta corregirlo. Detalle: {detail}",
+        "packSyncFailedUpdate": "Cliente guardado en Redfox. Atención: no se actualizó en el PAC. No podrá facturar hasta corregirlo. Detalle: {detail}",
         "confirmDelete": "¿Estás seguro de que deseas eliminar el cliente \"{name}\"? Esta acción no se puede deshacer."
       }
     },

@@ -190,11 +190,23 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
         };
 
         if (client) {
-          await clientsService.updateClient(client.id, data);
-          toastService.success(t('messages.clientUpdated'));
+          const res = await clientsService.updateClient(client.id, data);
+          if (res.pack_sync_success) {
+            toastService.success(t('messages.clientUpdated'));
+          } else {
+            toastService.error(
+              t('messages.packSyncFailedUpdate', { detail: res.pack_sync_error ?? '' })
+            );
+          }
         } else {
-          await clientsService.createClient(data);
-          toastService.success(t('messages.clientCreated'));
+          const res = await clientsService.createClient(data);
+          if (res.pack_sync_success) {
+            toastService.success(t('messages.clientCreated'));
+          } else {
+            toastService.error(
+              t('messages.packSyncFailedCreate', { detail: res.pack_sync_error ?? '' })
+            );
+          }
         }
         onSuccess();
       } catch (error) {

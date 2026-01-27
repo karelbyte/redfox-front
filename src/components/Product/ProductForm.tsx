@@ -347,15 +347,27 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         };
 
         if (product) {
-          await productService.updateProduct(
+          const res = await productService.updateProduct(
             product.id,
             data,
             images as File[]
           );
-          toastService.success(t('messages.productUpdated'));
+          if (res.pack_sync_success) {
+            toastService.success(t('messages.productUpdated'));
+          } else {
+            toastService.error(
+              t('messages.packSyncFailedUpdate', { detail: res.pack_sync_error ?? '' })
+            );
+          }
         } else {
-          await productService.createProduct(data, images as File[]);
-          toastService.success(t('messages.productCreated'));
+          const res = await productService.createProduct(data, images as File[]);
+          if (res.pack_sync_success) {
+            toastService.success(t('messages.productCreated'));
+          } else {
+            toastService.error(
+              t('messages.packSyncFailedCreate', { detail: res.pack_sync_error ?? '' })
+            );
+          }
         }
 
         onSuccess();

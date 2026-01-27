@@ -106,7 +106,9 @@
     "invoices": "Invoices",
     "createInvoice": "Create Invoice",
     "invoiceList": "Invoice List",
-    "certificationPacks": "SAT Packs"
+    "certificationPacks": "SAT Packs",
+    "collapseMenu": "Collapse menu (icons only)",
+    "expandMenu": "Expand menu"
   },
   "pages": {
     "dashboard": {
@@ -307,7 +309,8 @@
         "type": "Type",
         "tax": "Tax",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "inPack": "Registered in PAC"
       },
       "actions": {
         "generateBarcode": "Generate Barcode"
@@ -336,7 +339,9 @@
         "confirmDelete": "Are you sure you want to delete the product \"{name}\"? This action cannot be undone.",
         "noProductsToExport": "No products to export",
         "pdfGenerated": "PDF generated successfully",
-        "errorGeneratingPDF": "Error generating PDF"
+        "errorGeneratingPDF": "Error generating PDF",
+        "packSyncFailedCreate": "Product saved in Redfox. Attention: it was not registered in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}",
+        "packSyncFailedUpdate": "Product saved in Redfox. Attention: it was not updated in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}"
       },
       "pdf": {
         "title": "Products List",
@@ -712,7 +717,8 @@
         "email": "Email",
         "taxDocument": "Tax Document",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "inPack": "Registered in PAC"
       },
       "messages": {
         "clientCreated": "Client created successfully",
@@ -722,6 +728,8 @@
         "errorCreating": "Error creating client",
         "errorUpdating": "Error updating client",
         "errorDeleting": "Error deleting client",
+        "packSyncFailedCreate": "Client saved in Redfox. Attention: it was not registered in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
+        "packSyncFailedUpdate": "Client saved in Redfox. Attention: it was not updated in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
         "confirmDelete": "Are you sure you want to delete the client \"{name}\"? This action cannot be undone."
       }
     },

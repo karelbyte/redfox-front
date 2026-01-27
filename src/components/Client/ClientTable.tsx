@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -79,7 +79,17 @@ export default function ClientTable({ clients, onEdit, onDelete }: ClientTablePr
                 {client.code}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {client.name}
+                <span className="inline-flex items-center gap-1.5">
+                  {client.pack_product_id && (
+                    <span title={t('table.inPack')} className="inline-flex">
+                      <CheckCircleIcon
+                        className="h-4 w-4 shrink-0 text-green-600"
+                        aria-label={t('table.inPack')}
+                      />
+                    </span>
+                  )}
+                  {client.name}
+                </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {client.description}
