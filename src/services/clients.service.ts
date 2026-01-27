@@ -14,7 +14,7 @@ export const clientsService = {
     return response;
   },
 
-  createClient: async (client: Omit<Client, "id" | "created_at">): Promise<Client> => {
+  createClient: async (client: Partial<Client>): Promise<Client> => {
     return api.post<Client>("/clients", client);
   },
 

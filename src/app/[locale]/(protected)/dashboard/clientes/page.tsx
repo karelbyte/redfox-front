@@ -177,6 +177,7 @@ export default function ClientsPage() {
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
+        width="max-w-4xl"
       >
         <ClientForm
           ref={formRef}

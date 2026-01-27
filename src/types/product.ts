@@ -11,6 +11,7 @@ export interface Product {
   description: string;
   code: string;
   sku: string;
+  barcode?: string;
   weight: number;
   width: number;
   height: number;
@@ -29,7 +30,9 @@ export interface ProductFormData {
   name: string;
   slug: string;
   description: string;
+  code: string;
   sku: string;
+  barcode?: string;
   weight: number;
   width: number;
   height: number;

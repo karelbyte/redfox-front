@@ -105,7 +105,8 @@
     "returns": "Returns",
     "invoices": "Invoices",
     "createInvoice": "Create Invoice",
-    "invoiceList": "Invoice List"
+    "invoiceList": "Invoice List",
+    "certificationPacks": "SAT Packs"
   },
   "pages": {
     "dashboard": {
@@ -239,6 +240,8 @@
         "slug": "Slug",
         "description": "Description",
         "sku": "SKU",
+        "code": "Code",
+        "barcode": "Barcode",
         "weight": "Weight",
         "width": "Width",
         "height": "Height",
@@ -255,7 +258,9 @@
           "name": "Ex: Product XYZ",
           "slug": "Ex: product-xyz",
           "description": "Ex: Product description",
+          "code": "Ex: COD001",
           "sku": "Ex: SKU001",
+          "barcode": "Ex: 1234567890123",
           "weight": "Ex: 1.5",
           "width": "Ex: 10",
           "height": "Ex: 5",
@@ -270,6 +275,7 @@
           "nameRequired": "Name is required",
           "slugRequired": "Slug is required",
           "descriptionRequired": "Description is required",
+          "codeRequired": "Code is required",
           "skuRequired": "SKU is required",
           "categoryRequired": "Category is required",
           "brandRequired": "Brand is required",
@@ -280,7 +286,16 @@
           "invalidWidth": "Width must be a valid number",
           "invalidHeight": "Height must be a valid number",
           "invalidLength": "Length must be a valid number"
-        }
+        },
+        "searchCodeModal": {
+          "title": "Search product code",
+          "placeholder": "Type a term to search...",
+          "noResults": "No results found",
+          "noPackError": "No active certification pack configured",
+          "searchError": "Error searching codes. Please try again.",
+          "close": "Close"
+        },
+        "searchCode": "Search code"
       },
       "table": {
         "name": "Name",
@@ -550,6 +565,10 @@
         "errors": {
           "codeRequired": "Code is required",
           "descriptionRequired": "Description is required"
+        },
+        "suggestions": {
+          "note": "It is imperative to select an appropriate one",
+          "searching": "Searching suggestions..."
         }
       },
       "table": {
@@ -643,7 +662,19 @@
         "phone": "Phone",
         "email": "Email",
         "address": "Address",
+        "detailedAddress": "Detailed Address",
+        "addressStreet": "Street",
+        "addressExterior": "Exterior Number",
+        "addressInterior": "Interior Number",
+        "addressNeighborhood": "Neighborhood",
+        "addressCity": "City",
+        "addressMunicipality": "Municipality",
+        "addressZip": "Zip Code",
+        "addressState": "State",
+        "addressCountry": "Country",
         "taxDocument": "Tax Document",
+        "taxSystem": "Tax System",
+        "defaultInvoiceUse": "Default Invoice Use",
         "status": "Status",
         "active": "Active",
         "placeholders": {
@@ -653,7 +684,18 @@
           "phone": "Ex: +51 987654321",
           "email": "Ex: contact@client.com",
           "address": "Ex: Main St 123, Lima",
-          "taxDocument": "Ex: RUC 20123456789"
+          "addressStreet": "Ex: Blvd. Atardecer",
+          "addressExterior": "Ex: 142",
+          "addressInterior": "Ex: 4",
+          "addressNeighborhood": "Ex: Centro",
+          "addressCity": "Ex: Huatabampo",
+          "addressMunicipality": "Ex: Huatabampo",
+          "addressZip": "Ex: 86500",
+          "addressState": "Ex: Sonora",
+          "addressCountry": "Ex: MEX",
+          "taxDocument": "Ex: RUC 20123456789",
+          "taxSystem": "Ex: 601",
+          "defaultInvoiceUse": "Ex: G01"
         },
         "errors": {
           "codeRequired": "Code is required",
@@ -1684,6 +1726,53 @@
       "error": {
         "title": "Error",
         "userNotFound": "User not found"
+      }
+    },
+    "certificationPacks": {
+      "title": "SAT Packs",
+      "subtitle": "Certified pack management for invoicing",
+      "searchPlaceholder": "Search packs...",
+      "noData": "No packs",
+      "noDataDesc": "No packs found. Create the first pack to get started.",
+      "form": {
+        "type": "Type",
+        "name": "Name",
+        "description": "Description",
+        "configuration": "Configuration",
+        "isActive": "Active",
+        "isDefault": "Default"
+      },
+      "table": {
+        "name": "Name",
+        "type": "Type",
+        "status": "Status",
+        "default": "Default",
+        "actions": "Actions",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "create": "Create Pack",
+        "edit": "Edit",
+        "delete": "Delete",
+        "setDefault": "Set as default",
+        "cancel": "Cancel",
+        "update": "Update",
+        "saving": "Saving..."
+      },
+      "messages": {
+        "successCreated": "Pack created successfully",
+        "successUpdated": "Pack updated successfully",
+        "successDeleted": "Pack deleted successfully",
+        "successSetDefault": "Pack set as default",
+        "errorLoading": "Error loading packs",
+        "errorSaving": "Error saving pack",
+        "errorDeleting": "Error deleting pack",
+        "errorSetDefault": "Error setting default pack"
+      },
+      "deleteModal": {
+        "title": "Delete Pack",
+        "message": "Are you sure you want to delete pack \"{name}\"? This action cannot be undone."
       }
     },
     "returns": {

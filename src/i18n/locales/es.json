@@ -105,7 +105,8 @@
     "returns": "Devoluciones",
     "invoices": "Facturas",
     "createInvoice": "Crear Factura",
-    "invoiceList": "Lista de Facturas"
+    "invoiceList": "Lista de Facturas",
+    "certificationPacks": "Packs SAT"
   },
   "pages": {
     "dashboard": {
@@ -240,6 +241,7 @@
         "description": "Descripción",
         "sku": "SKU",
         "code": "Código",
+        "barcode": "Código de Barras",
         "weight": "Peso",
         "width": "Ancho",
         "height": "Alto",
@@ -256,7 +258,9 @@
           "name": "Ej: Producto XYZ",
           "slug": "Ej: producto-xyz",
           "description": "Ej: Descripción del producto",
+          "code": "Ej: COD001",
           "sku": "Ej: SKU001",
+          "barcode": "Ej: 1234567890123",
           "weight": "Ej: 1.5",
           "width": "Ej: 10",
           "height": "Ej: 5",
@@ -271,6 +275,7 @@
           "nameRequired": "El nombre es requerido",
           "slugRequired": "El slug es requerido",
           "descriptionRequired": "La descripción es requerida",
+          "codeRequired": "El código es requerido",
           "skuRequired": "El SKU es requerido",
           "categoryRequired": "La categoría es requerida",
           "brandRequired": "La marca es requerida",
@@ -281,7 +286,16 @@
           "invalidWidth": "El ancho debe ser un número válido",
           "invalidHeight": "El alto debe ser un número válido",
           "invalidLength": "El largo debe ser un número válido"
-        }
+        },
+        "searchCodeModal": {
+          "title": "Buscar código de producto",
+          "placeholder": "Escribe un término para buscar...",
+          "noResults": "No se encontraron resultados",
+          "noPackError": "No hay un pack de certificación activo configurado",
+          "searchError": "Error al buscar códigos. Intenta de nuevo.",
+          "close": "Cerrar"
+        },
+        "searchCode": "Buscar código"
       },
       "table": {
         "name": "Nombre",
@@ -567,6 +581,10 @@
         "errors": {
           "codeRequired": "El código es requerido",
           "descriptionRequired": "La descripción es requerida"
+        },
+        "suggestions": {
+          "note": "Es imperativo seleccionar uno adecuado",
+          "searching": "Buscando sugerencias..."
         }
       },
       "table": {
@@ -660,7 +678,19 @@
         "phone": "Teléfono",
         "email": "Email",
         "address": "Dirección",
+        "detailedAddress": "Dirección Detallada",
+        "addressStreet": "Calle",
+        "addressExterior": "Número Exterior",
+        "addressInterior": "Número Interior",
+        "addressNeighborhood": "Colonia",
+        "addressCity": "Ciudad",
+        "addressMunicipality": "Municipio",
+        "addressZip": "Código Postal",
+        "addressState": "Estado",
+        "addressCountry": "País",
         "taxDocument": "Documento Fiscal",
+        "taxSystem": "Régimen Fiscal",
+        "defaultInvoiceUse": "Uso de CFDI",
         "status": "Estado",
         "active": "Activo",
         "placeholders": {
@@ -670,7 +700,18 @@
           "phone": "Ej: +51 987654321",
           "email": "Ej: contacto@cliente.com",
           "address": "Ej: Av. Principal 123, Lima",
-          "taxDocument": "Ej: RUC 20123456789"
+          "addressStreet": "Ej: Blvd. Atardecer",
+          "addressExterior": "Ej: 142",
+          "addressInterior": "Ej: 4",
+          "addressNeighborhood": "Ej: Centro",
+          "addressCity": "Ej: Huatabampo",
+          "addressMunicipality": "Ej: Huatabampo",
+          "addressZip": "Ej: 86500",
+          "addressState": "Ej: Sonora",
+          "addressCountry": "Ej: MEX",
+          "taxDocument": "Ej: RUC 20123456789",
+          "taxSystem": "Ej: 601",
+          "defaultInvoiceUse": "Ej: G01"
         },
         "errors": {
           "codeRequired": "El código es requerido",
@@ -1692,6 +1733,53 @@
       "error": {
         "title": "Error",
         "userNotFound": "Usuario no encontrado"
+      }
+    },
+    "certificationPacks": {
+      "title": "Packs SAT",
+      "subtitle": "Gestión de packs certificados para facturación",
+      "searchPlaceholder": "Buscar packs...",
+      "noData": "No hay packs",
+      "noDataDesc": "No se encontraron packs. Crea el primer pack para comenzar.",
+      "form": {
+        "type": "Tipo",
+        "name": "Nombre",
+        "description": "Descripción",
+        "configuration": "Configuración",
+        "isActive": "Activo",
+        "isDefault": "Por defecto"
+      },
+      "table": {
+        "name": "Nombre",
+        "type": "Tipo",
+        "status": "Estado",
+        "default": "Por defecto",
+        "actions": "Acciones",
+        "active": "Activo",
+        "inactive": "Inactivo"
+      },
+      "actions": {
+        "create": "Crear Pack",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "setDefault": "Establecer como predeterminado",
+        "cancel": "Cancelar",
+        "update": "Actualizar",
+        "saving": "Guardando..."
+      },
+      "messages": {
+        "successCreated": "Pack creado exitosamente",
+        "successUpdated": "Pack actualizado exitosamente",
+        "successDeleted": "Pack eliminado exitosamente",
+        "successSetDefault": "Pack establecido como predeterminado",
+        "errorLoading": "Error al cargar los packs",
+        "errorSaving": "Error al guardar el pack",
+        "errorDeleting": "Error al eliminar el pack",
+        "errorSetDefault": "Error al establecer pack predeterminado"
+      },
+      "deleteModal": {
+        "title": "Eliminar Pack",
+        "message": "¿Estás seguro de que deseas eliminar el pack \"{name}\"? Esta acción no se puede deshacer."
       }
     },
     "returns": {

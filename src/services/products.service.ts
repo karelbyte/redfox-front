@@ -1,6 +1,12 @@
 import { api } from './api';
 import { Product } from '@/types/product';
 
+export interface ProductKeySuggestion {
+  key: string;
+  description: string;
+  score?: number;
+}
+
 interface PaginatedResponse {
   data: Product[];
   meta: {
@@ -85,6 +91,14 @@ class ProductService {
 
   async getProductById(id: string): Promise<Product> {
     const response = await api.get<Product>(`/products/${id}`);
+    return response;
+  }
+
+  async searchFromPack(term: string): Promise<ProductKeySuggestion[]> {
+    if (!term || term.trim().length === 0) {
+      return [];
+    }
+    const response = await api.get<ProductKeySuggestion[]>(`/products/search-from-pack?term=${encodeURIComponent(term.trim())}`);
     return response;
   }
 }

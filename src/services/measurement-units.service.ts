@@ -13,6 +13,12 @@ interface PaginatedResponse<T> {
   };
 }
 
+export interface MeasurementUnitSuggestion {
+  key: string;
+  description: string;
+  score?: number;
+}
+
 export const measurementUnitsService = {
   async getMeasurementUnits(page?: number, term?: string): Promise<PaginatedResponse<MeasurementUnit>> {
     const params = new URLSearchParams();
@@ -23,6 +29,14 @@ export const measurementUnitsService = {
     const url = `/measurement-units${queryString ? `?${queryString}` : ''}`;
     
     const response = await api.get<PaginatedResponse<MeasurementUnit>>(url);
+    return response;
+  },
+
+  async searchFromPack(term: string): Promise<MeasurementUnitSuggestion[]> {
+    if (!term || term.trim().length === 0) {
+      return [];
+    }
+    const response = await api.get<MeasurementUnitSuggestion[]>(`/measurement-units/search/from-pack?term=${encodeURIComponent(term.trim())}`);
     return response;
   },
 
