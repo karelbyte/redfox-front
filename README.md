@@ -16,12 +16,31 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Company settings (Generales de empresa)
+
+- **Purpose**: Centralize the company/business info used by the app to customize tickets/reports and branding.
+- **UI route**: `/{locale}/dashboard/configuracion/generales-empresa`
+- **Menu**: Under **Configuración**, above **Roles**.
+- **Fields**: trade name, legal name, tax id (RFC), address, phone, email, website, and **logo** upload.
+
+### Ticket header (POS)
+
+The POS ticket header is no longer hardcoded. It is loaded from **Company settings**:
+- Name: `name` (fallback: `legalName`)
+- Address: `address`
+- Phone: `phone`
+- Tax ID: `taxId` (label shown as `RFC` for `es` locale, otherwise `Tax ID`)
+
+### Environment variable
+
+- `NEXT_PUBLIC_URL_API`: Base URL of the backend API **without** `/api` (example: `http://localhost:4010`).
+  - The frontend uses it to call the API at `${NEXT_PUBLIC_URL_API}/api/...`
+  - The company logo is loaded from `${NEXT_PUBLIC_URL_API}/api/uploads/...`
+
 ### Certification pack sync (PAC)
 
-When creating or editing **clients** or **products**, the app calls the API, which syncs with the active certification pack (e.g. Facturapi). The API returns `pack_sync_success` and optionally `pack_sync_error`.
-
-- **Clients / Products list**: A green check icon next to the name indicates the record is registered in the pack (`pack_product_id` set).
-- **Create/Edit forms**: If the pack sync fails after save, a toast shows the error (e.g. `packSyncFailedCreate` / `packSyncFailedUpdate`) with the detail from `pack_sync_error`. The list still refreshes so the user sees the saved entity.
+- **Clients**: On create/edit, the API syncs with the pack and returns `pack_sync_success` / `pack_sync_error`. A green check icon in the list indicates `pack_client_id` is set. Toasts show pack sync errors on save.
+- **Products**: Products are catalog only; sync to the pack happens when applying a **reception** or **closing a warehouse**. Pack data lives in inventory (`pack_product_id`). The product list no longer shows an “en pack” icon; that can be shown in the inventory list when available.
 - **i18n**: Keys `pages.clients.table.inPack`, `pages.products.table.inPack`, and `pages.*.messages.packSyncFailedCreate` / `packSyncFailedUpdate` are used for labels and messages (es/en).
 
 ## Learn More

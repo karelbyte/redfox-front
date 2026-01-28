@@ -793,6 +793,26 @@ export function SideMenu() {
         ),
         subItems: [
           {
+            name: t("companySettings"),
+            path: getLocalizedPath("/dashboard/configuracion/generales-empresa"),
+            howCan: ["all"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            ),
+          },
+          {
             name: t("roles"),
             path: getLocalizedPath("/dashboard/configuracion/roles"),
             howCan: ["role_module_view"],
@@ -981,7 +1001,7 @@ export function SideMenu() {
         )}
       </button>
       <nav className="h-full flex flex-col pt-10 pb-4 px-4">
-        <div className={`space-y-1 flex-1 ${collapsed ? "overflow-visible" : "overflow-hidden"}`}>
+        <div className={`space-y-1 flex-1 min-h-0 ${collapsed ? "overflow-visible" : "overflow-y-auto"}`}>
           {filteredMenuItems.map((item) => {
             const isActive =
               pathname === item.path ||

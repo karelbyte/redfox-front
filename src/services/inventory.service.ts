@@ -1,5 +1,5 @@
 import { api } from './api';
-import { InventoryResponse } from '@/types/inventory';
+import { InventoryResponse, InventoryItem } from '@/types/inventory';
 
 export interface InventoryProduct {
   id: string;
@@ -89,6 +89,19 @@ class InventoryService {
     }
     
     const response = await api.get<PaginatedInventoryResponse>(`/inventory/products?${params.toString()}`);
+    return response;
+  }
+
+  async syncWithPack(inventoryId: string): Promise<{
+    inventory: InventoryItem;
+    pack_sync_success: boolean;
+    pack_sync_error?: string;
+  }> {
+    const response = await api.post<{
+      inventory: InventoryItem;
+      pack_sync_success: boolean;
+      pack_sync_error?: string;
+    }>(`/inventory/${inventoryId}/sync-pack`, {});
     return response;
   }
 }

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { InventoryItem } from "@/types/inventory";
-import { EyeIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, ClockIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { Btn } from "@/components/atoms";
 
 interface InventoryTableProps {
@@ -10,6 +10,7 @@ interface InventoryTableProps {
   currencyCode: string;
   onViewProduct: (item: InventoryItem) => void;
   onViewHistory: (item: InventoryItem) => void;
+  onSyncPack?: (item: InventoryItem) => void;
 }
 
 export default function InventoryTable({
@@ -17,6 +18,7 @@ export default function InventoryTable({
   currencyCode,
   onViewProduct,
   onViewHistory,
+  onSyncPack,
 }: InventoryTableProps) {
   const t = useTranslations('pages.inventory');
 
@@ -122,6 +124,15 @@ export default function InventoryTable({
                     leftIcon={<ClockIcon className="h-4 w-4" />}
                     title={t('actions.viewHistory')}
                   />
+                  {onSyncPack && (
+                    <Btn
+                      onClick={() => onSyncPack(item)}
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<ArrowPathIcon className="h-4 w-4" />}
+                      title={t('actions.syncWithPack')}
+                    />
+                  )}
                 </div>
               </td>
             </tr>

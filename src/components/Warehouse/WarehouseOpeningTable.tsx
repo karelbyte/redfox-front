@@ -51,33 +51,38 @@ export default function WarehouseOpeningTable({
     });
   };
 
+  const thBase = "px-6 py-3 text-left text-xs font-medium uppercase tracking-wider";
+  const tdBase = "px-6 py-4 whitespace-nowrap text-sm text-gray-900";
+  const hiddenMd = "hidden md:table-cell";
+  const hiddenLg = "hidden lg:table-cell";
+
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+    <div className="bg-white rounded-lg shadow overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase}`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.product')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase} ${hiddenMd}`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.sku')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase} ${hiddenMd}`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.brand')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase} ${hiddenMd}`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.category')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase}`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.quantity')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase}`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.price')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase} ${hiddenLg}`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.creationDate')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+            <th className={`${thBase} text-right px-4 md:px-6`} style={{ color: 'rgb(var(--color-primary-600))' }}>
               {t('table.actions')}
             </th>
           </tr>
@@ -85,10 +90,10 @@ export default function WarehouseOpeningTable({
         <tbody className="bg-white divide-y divide-gray-200">
           {openings.map((opening) => (
             <tr key={opening.id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
+              <td className={`${tdBase} px-4 md:px-6`}>
+                <div className="flex items-center min-w-0">
                   {opening.product.images && opening.product.images.length > 0 && (
-                    <div className="flex-shrink-0 h-10 w-10 mr-4">
+                    <div className="flex-shrink-0 h-10 w-10 mr-2 md:mr-4">
                       <img
                         src={`${process.env.NEXT_PUBLIC_URL_API}${opening.product.images[0]}`}
                         alt={opening.product.name}
@@ -98,40 +103,39 @@ export default function WarehouseOpeningTable({
                       />
                     </div>
                   )}
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-gray-900 truncate">
                       {opening.product.name}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500 truncate hidden sm:block">
                       {opening.product.description}
                     </div>
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className={`${tdBase} ${hiddenMd}`}>
                 {opening.product.sku}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {typeof opening.product.brand === 'object' 
+              <td className={`${tdBase} ${hiddenMd}`}>
+                {typeof opening.product.brand === 'object'
                   ? opening.product.brand.description
-                  
                   : opening.product.brand}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {typeof opening.product.category === 'object' 
-                  ? opening.product.category.name 
+              <td className={`${tdBase} ${hiddenMd}`}>
+                {typeof opening.product.category === 'object'
+                  ? opening.product.category.name
                   : opening.product.category}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className={`${tdBase} px-4 md:px-6`}>
                 {opening.quantity}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className={`${tdBase} px-4 md:px-6`}>
                 {formatPrice(opening.price)}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className={`${tdBase} ${hiddenLg}`}>
                 {formatDate(opening.createdAt)}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <td className="px-4 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
                   {can(["warehouse_opening_update"]) && <Btn
                     onClick={() => onEdit(opening)}

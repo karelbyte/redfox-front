@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Product } from '@/types/product';
-import { PencilIcon, TrashIcon, QrCodeIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, QrCodeIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -78,19 +78,9 @@ export default function ProductTable({ products, onEdit, onDelete, onGenerateBar
           {products.map((product) => (
             <tr key={product.id} className="hover:bg-primary-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
-                <span className="inline-flex items-center gap-1.5">
-                  {product.pack_product_id && (
-                    <span title={t('table.inPack')} className="inline-flex">
-                      <CheckCircleIcon
-                        className="h-4 w-4 shrink-0 text-green-600"
-                        aria-label={t('table.inPack')}
-                      />
-                    </span>
-                  )}
-                  <span>
-                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                    <div className="text-sm text-gray-500">{product.description}</div>
-                  </span>
+                <span>
+                  <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                  <div className="text-sm text-gray-500">{product.description}</div>
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.code}</td>

@@ -98,6 +98,7 @@
     "addSale": "Add Sale",
     "pos": "POS",
     "users": "Users",
+    "companySettings": "Company settings",
     "roles": "Roles",
     "emailConfig": "Email Configuration",
     "paymentGateway": "Payment Gateway",
@@ -773,13 +774,16 @@
       },
       "actions": {
         "viewProduct": "View product",
-        "viewHistory": "View history"
+        "viewHistory": "View history",
+        "syncWithPack": "Resync with PAC"
       },
       "messages": {
         "errorLoadingClosedWarehouses": "Error loading closed warehouses",
         "errorLoadingWarehouseDetails": "Error loading warehouse details",
         "errorLoadingInventory": "Error loading inventory",
-        "errorLoadingHistory": "Error loading product history"
+        "errorLoadingHistory": "Error loading product history",
+        "syncWithPackSuccess": "Product resynced with PAC successfully",
+        "syncWithPackError": "Error resyncing with PAC: {error}"
       },
       "history": {
         "title": "Movement History",
@@ -1383,6 +1387,24 @@
         "ticketDownloaded": "Ticket downloaded successfully",
         "ticketDownloadError": "Error downloading ticket"
       },
+      "ticket": {
+        "ticket": "Ticket",
+        "date": "Date",
+        "cashier": "Cashier",
+        "client": "Client",
+        "products": "PRODUCTS:",
+        "subtotal": "Subtotal:",
+        "tax": "Tax:",
+        "total": "TOTAL:",
+        "paymentMethod": "Payment Method:",
+        "cashReceived": "Cash Received:",
+        "change": "Change:",
+        "thanks": "Thank you for your purchase!",
+        "comeBack": "Please come back soon",
+        "powered": "Powered by RedFox POS",
+        "walkIn": "Walk-in Customer",
+        "posSystem": "POS System"
+      },
       "cashBalance": {
         "title": "Cash Balance",
         "status": "Status",
@@ -1557,7 +1579,8 @@
         "summary": "Summary",
         "cfdi": "CFDI",
         "uuid": "UUID",
-        "facturapiId": "FacturaAPI ID"
+        "facturapiId": "FacturaAPI ID",
+        "packInvoiceId": "Pack ID"
       },
       "empty": {
         "title": "No invoices",
@@ -1584,6 +1607,34 @@
         "downloadPDF": "Error downloading PDF",
         "downloadXML": "Error downloading XML",
         "loadInvoiceDetails": "Error loading invoice details"
+      }
+    },
+    "companySettings": {
+      "title": "Company settings",
+      "logo": "Logo",
+      "changeLogo": "Change logo",
+      "name": "Trade name",
+      "namePlaceholder": "Company name",
+      "legalName": "Legal name",
+      "legalNamePlaceholder": "Legal / fiscal name",
+      "taxId": "Tax ID / RFC",
+      "taxIdPlaceholder": "RFC or equivalent",
+      "address": "Address",
+      "addressPlaceholder": "Fiscal address",
+      "phone": "Phone",
+      "phonePlaceholder": "Contact phone",
+      "email": "Email",
+      "emailPlaceholder": "email@company.com",
+      "website": "Website",
+      "websitePlaceholder": "https://...",
+      "messages": {
+        "saved": "Data saved successfully",
+        "logoUpdated": "Logo updated",
+        "errorLoading": "Error loading data",
+        "errorSaving": "Error saving",
+        "errorUploadingLogo": "Error uploading logo",
+        "invalidImage": "Only image files are allowed",
+        "imageTooBig": "Image must not exceed 5 MB"
       }
     },
     "roles": {

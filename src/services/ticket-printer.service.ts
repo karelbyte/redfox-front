@@ -1,5 +1,7 @@
 import { Sale, SaleDetail } from '@/types/sale';
 import { Client } from '@/types/client';
+import { companySettingsService } from '@/services/company-settings.service';
+import type { CompanySettings } from '@/types/company-settings';
 
 export interface TicketData {
   sale: Sale;
@@ -9,39 +11,145 @@ export interface TicketData {
   paymentMethod: 'cash' | 'card';
   cashAmount?: number;
   change?: number;
+  locale?: string;
+  labels?: {
+    ticket: string;
+    date: string;
+    cashier: string;
+    client: string;
+    products: string;
+    subtotal: string;
+    tax: string;
+    total: string;
+    paymentMethod: string;
+    cashReceived: string;
+    change: string;
+    thanks: string;
+    comeBack: string;
+    powered: string;
+    walkIn: string;
+    posSystem: string;
+  };
 }
 
 export class TicketPrinterService {
-  private readonly LINE_WIDTH = 32; // Ancho típico para impresoras de 70mm
-  private readonly BUSINESS_NAME = 'NITRO STORE';
-  private readonly BUSINESS_ADDRESS = 'Av. Principal #123';
-  private readonly BUSINESS_PHONE = '+1 234 567 8900';
-  private readonly BUSINESS_TAX_ID = 'TAX-123456789';
+  private readonly LINE_WIDTH = 32;
 
-  /**
-   * Genera el contenido del ticket en formato texto
-   */
-  generateTicketContent(data: TicketData): string {
+  private companySettingsCache: {
+    value: CompanySettings | null;
+    fetchedAt: number;
+    pending?: Promise<CompanySettings | null>;
+  } | null = null;
+
+  private readonly COMPANY_SETTINGS_TTL_MS = 5 * 60 * 1000; // 5 min
+
+  private async getCompanySettingsCached(): Promise<CompanySettings | null> {
+    const now = Date.now();
+
+    if (
+      this.companySettingsCache?.value &&
+      now - this.companySettingsCache.fetchedAt < this.COMPANY_SETTINGS_TTL_MS
+    ) {
+      return this.companySettingsCache.value;
+    }
+
+    if (this.companySettingsCache?.pending) {
+      return this.companySettingsCache.pending;
+    }
+
+    const pending = (async () => {
+      try {
+        const settings = await companySettingsService.get();
+        this.companySettingsCache = { value: settings, fetchedAt: Date.now() };
+        return settings;
+      } catch {
+        // No bloquear impresión si falla el fetch
+        this.companySettingsCache = { value: null, fetchedAt: Date.now() };
+        return null;
+      } finally {
+        if (this.companySettingsCache) {
+          delete this.companySettingsCache.pending;
+        }
+      }
+    })();
+
+    this.companySettingsCache = {
+      value: this.companySettingsCache?.value ?? null,
+      fetchedAt: this.companySettingsCache?.fetchedAt ?? 0,
+      pending,
+    };
+
+    return pending;
+  }
+
+  private buildBusinessHeaderLines(
+    settings: CompanySettings | null,
+    locale: string,
+  ): string[] {
+    const lines: string[] = [];
+    const name = settings?.name || settings?.legalName || '';
+    const address = settings?.address || '';
+    const phone = settings?.phone || '';
+    const taxId = settings?.taxId || '';
+
+    if (name) lines.push(this.centerText(name));
+    if (address) lines.push(this.centerText(address));
+    if (phone) lines.push(this.centerText(phone));
+
+    if (taxId) {
+      const taxLabel = locale.startsWith('es') ? 'RFC' : 'Tax ID';
+      lines.push(this.centerText(`${taxLabel}: ${taxId}`));
+    }
+
+    return lines;
+  }
+
+  async generateTicketContent(data: TicketData): Promise<string> {
+    const locale = data.locale || 'en';
+    const companySettings = await this.getCompanySettingsCached();
+
+    const labels =
+      data.labels ??
+      {
+        ticket: 'Ticket',
+        date: 'Date',
+        cashier: 'Cashier',
+        client: 'Client',
+        products: 'PRODUCTS:',
+        subtotal: 'Subtotal:',
+        tax: 'Tax:',
+        total: 'TOTAL:',
+        paymentMethod: 'Payment Method:',
+        cashReceived: 'Cash Received:',
+        change: 'Change:',
+        thanks: 'Thank you for your purchase!',
+        comeBack: 'Please come back soon',
+        powered: 'Powered by RedFox POS',
+        walkIn: 'Walk-in Customer',
+        posSystem: 'POS System',
+      };
+
     const lines: string[] = [];
     
-    // Encabezado
-    lines.push(this.centerText(this.BUSINESS_NAME));
-    lines.push(this.centerText(this.BUSINESS_ADDRESS));
-    lines.push(this.centerText(this.BUSINESS_PHONE));
-    lines.push(this.centerText(`Tax ID: ${this.BUSINESS_TAX_ID}`));
+    const headerLines = this.buildBusinessHeaderLines(companySettings, locale);
+    lines.push(...headerLines);
     lines.push('');
     lines.push(this.repeatChar('-', this.LINE_WIDTH));
     
-    // Información de la venta
-    lines.push(`Ticket: ${data.sale.code}`);
-    lines.push(`Date: ${new Date(data.sale.created_at).toLocaleString()}`);
-    lines.push(`Cashier: ${data.cashierName || 'POS System'}`);
-    lines.push(`Client: ${data.client?.name || 'Walk-in Customer'}`);
+    lines.push(`${labels.ticket}: ${data.sale.code}`);
+    lines.push(
+      `${labels.date}: ${new Date(data.sale.created_at).toLocaleString(locale)}`
+    );
+    lines.push(
+      `${labels.cashier}: ${data.cashierName || labels.posSystem}`
+    );
+    lines.push(
+      `${labels.client}: ${data.client?.name || labels.walkIn}`
+    );
     lines.push('');
     lines.push(this.repeatChar('-', this.LINE_WIDTH));
     
-    // Productos
-    lines.push('PRODUCTS:');
+    lines.push(labels.products);
     lines.push('');
     
     let subtotal = 0;
@@ -57,11 +165,9 @@ export class TicketPrinterService {
       subtotal += itemTotal;
       totalTax += itemTax;
       
-      // Nombre del producto (truncado si es muy largo)
       const nameLine = this.truncateText(productName, this.LINE_WIDTH - 15);
       lines.push(nameLine);
       
-      // Cantidad y precio
       const quantityPriceLine = `${quantity} x $${price.toFixed(2)} = $${itemTotal.toFixed(2)}`;
       lines.push(this.padLeft(quantityPriceLine, this.LINE_WIDTH));
       lines.push('');
@@ -69,34 +175,31 @@ export class TicketPrinterService {
     
     lines.push(this.repeatChar('-', this.LINE_WIDTH));
     
-    // Totales
     const total = subtotal + totalTax;
     
-    lines.push(this.formatLine('Subtotal:', `$${subtotal.toFixed(2)}`));
-    lines.push(this.formatLine('Tax:', `$${totalTax.toFixed(2)}`));
-    lines.push(this.formatLine('TOTAL:', `$${total.toFixed(2)}`));
+    lines.push(this.formatLine(labels.subtotal, `$${subtotal.toFixed(2)}`));
+    lines.push(this.formatLine(labels.tax, `$${totalTax.toFixed(2)}`));
+    lines.push(this.formatLine(labels.total, `$${total.toFixed(2)}`));
     lines.push('');
     
-    // Información de pago
-    lines.push(`Payment Method: ${data.paymentMethod.toUpperCase()}`);
+    lines.push(`${labels.paymentMethod} ${data.paymentMethod.toUpperCase()}`);
     if (data.paymentMethod === 'cash' && data.cashAmount) {
-      lines.push(this.formatLine('Cash Received:', `$${data.cashAmount.toFixed(2)}`));
+      lines.push(this.formatLine(labels.cashReceived, `$${data.cashAmount.toFixed(2)}`));
       if (data.change !== undefined) {
-        lines.push(this.formatLine('Change:', `$${data.change.toFixed(2)}`));
+        lines.push(this.formatLine(labels.change, `$${data.change.toFixed(2)}`));
       }
     }
     lines.push('');
     
-    // Pie de página
     lines.push(this.repeatChar('-', this.LINE_WIDTH));
-    lines.push(this.centerText('Thank you for your purchase!'));
-    lines.push(this.centerText('Please come back soon'));
+    lines.push(this.centerText(labels.thanks));
+    lines.push(this.centerText(labels.comeBack));
     lines.push('');
-    lines.push(this.centerText('Powered by RedFox POS'));
+    lines.push(this.centerText(labels.powered));
     lines.push('');
-    lines.push(this.centerText(new Date().toLocaleDateString()));
+    lines.push(this.centerText(new Date().toLocaleDateString(locale)));
     lines.push('');
-    lines.push(''); // Espacio extra para cortar el ticket
+    lines.push('');
     
     return lines.join('\n');
   }
@@ -106,12 +209,12 @@ export class TicketPrinterService {
    */
   async printTicket(data: TicketData): Promise<void> {
     try {
-      const ticketContent = this.generateTicketContent(data);
-      
-      // Crear una ventana de impresión
+      const ticketContent = await this.generateTicketContent(data);
+
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
-        throw new Error('No se pudo abrir la ventana de impresión');
+        // Código de error genérico; el mensaje visible lo maneja el i18n del caller
+        throw new Error('TICKET_PRINT_WINDOW_ERROR');
       }
 
       // Crear el contenido HTML para imprimir
@@ -179,15 +282,16 @@ export class TicketPrinterService {
 
     } catch (error) {
       console.error('Error printing ticket:', error);
-      throw new Error('No se pudo imprimir el ticket');
+      // Código de error genérico; el mensaje visible lo maneja el i18n del caller
+      throw new Error('TICKET_PRINT_ERROR');
     }
   }
 
   /**
    * Descarga el ticket como archivo de texto
    */
-  downloadTicket(data: TicketData): void {
-    const ticketContent = this.generateTicketContent(data);
+  async downloadTicket(data: TicketData): Promise<void> {
+    const ticketContent = await this.generateTicketContent(data);
     const blob = new Blob([ticketContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

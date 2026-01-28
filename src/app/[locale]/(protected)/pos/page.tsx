@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { saleService } from '@/services/sales.service';
 import { clientsService } from '@/services/clients.service';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
@@ -24,6 +24,7 @@ import { useCart } from '@/context/CartContext';
 
 export default function POSPage() {
   const t = useTranslations('pages.pos');
+  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [clients, setClients] = useState<Client[]>([]);
@@ -279,10 +280,29 @@ export default function POSPage() {
         cashierName: 'POS System',
         paymentMethod: paymentMethod,
         cashAmount: paymentMethod === 'cash' ? cashAmount : undefined,
-        change: paymentMethod === 'cash' ? getChange() : undefined
+        change: paymentMethod === 'cash' ? getChange() : undefined,
+        locale,
+        labels: {
+          ticket: t('ticket.ticket', { default: 'Ticket' }),
+          date: t('ticket.date', { default: 'Date' }),
+          cashier: t('ticket.cashier', { default: 'Cashier' }),
+          client: t('ticket.client', { default: 'Client' }),
+          products: t('ticket.products', { default: 'PRODUCTS:' }),
+          subtotal: t('ticket.subtotal', { default: 'Subtotal:' }),
+          tax: t('ticket.tax', { default: 'Tax:' }),
+          total: t('ticket.total', { default: 'TOTAL:' }),
+          paymentMethod: t('ticket.paymentMethod', { default: 'Payment Method:' }),
+          cashReceived: t('ticket.cashReceived', { default: 'Cash Received:' }),
+          change: t('ticket.change', { default: 'Change:' }),
+          thanks: t('ticket.thanks', { default: 'Thank you for your purchase!' }),
+          comeBack: t('ticket.comeBack', { default: 'Please come back soon' }),
+          powered: t('ticket.powered', { default: 'Powered by RedFox POS' }),
+          walkIn: t('ticket.walkIn', { default: 'Walk-in Customer' }),
+          posSystem: t('ticket.posSystem', { default: 'POS System' }),
+        },
       };
       
-      ticketPrinterService.downloadTicket(ticketData);
+      await ticketPrinterService.downloadTicket(ticketData);
       toastService.success(t('messages.ticketDownloaded'));
 
       // Eliminar la venta temporal
@@ -349,7 +369,26 @@ export default function POSPage() {
           cashierName: 'POS System', // Se puede obtener del contexto de usuario
           paymentMethod: paymentMethod,
           cashAmount: paymentMethod === 'cash' ? cashAmount : undefined,
-          change: paymentMethod === 'cash' ? getChange() : undefined
+          change: paymentMethod === 'cash' ? getChange() : undefined,
+          locale,
+          labels: {
+            ticket: t('ticket.ticket', { default: 'Ticket' }),
+            date: t('ticket.date', { default: 'Date' }),
+            cashier: t('ticket.cashier', { default: 'Cashier' }),
+            client: t('ticket.client', { default: 'Client' }),
+            products: t('ticket.products', { default: 'PRODUCTS:' }),
+            subtotal: t('ticket.subtotal', { default: 'Subtotal:' }),
+            tax: t('ticket.tax', { default: 'Tax:' }),
+            total: t('ticket.total', { default: 'TOTAL:' }),
+            paymentMethod: t('ticket.paymentMethod', { default: 'Payment Method:' }),
+            cashReceived: t('ticket.cashReceived', { default: 'Cash Received:' }),
+            change: t('ticket.change', { default: 'Change:' }),
+            thanks: t('ticket.thanks', { default: 'Thank you for your purchase!' }),
+            comeBack: t('ticket.comeBack', { default: 'Please come back soon' }),
+            powered: t('ticket.powered', { default: 'Powered by RedFox POS' }),
+            walkIn: t('ticket.walkIn', { default: 'Walk-in Customer' }),
+            posSystem: t('ticket.posSystem', { default: 'POS System' }),
+          },
         };
         
         await ticketPrinterService.printTicket(ticketData);

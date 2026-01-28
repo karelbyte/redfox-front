@@ -248,10 +248,10 @@ export default function InvoiceDetailsPage() {
                   <label className="block text-sm font-medium text-gray-500">{t('details.uuid')}</label>
                   <p className="mt-1 text-sm text-gray-900 font-mono">{invoice.cfdi_uuid}</p>
                 </div>
-                {invoice.facturapi_id && (
+                {invoice.pack_invoice_id && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-500">{t('details.facturapiId')}</label>
-                    <p className="mt-1 text-sm text-gray-900">{invoice.facturapi_id}</p>
+                    <label className="block text-sm font-medium text-gray-500">{t('details.packInvoiceId')}</label>
+                    <p className="mt-1 text-sm text-gray-900 font-mono">{invoice.pack_invoice_id}</p>
                   </div>
                 )}
               </div>

@@ -26,4 +26,5 @@ export { purchaseOrdersService } from './purchase-orders.service';
 export { PDFService } from './pdf.service';
 export { ticketPrinterService } from './ticket-printer.service';
 export { invoiceService } from './invoices.service';
-export { certificationPackService } from './certification-packs.service'; 
+export { certificationPackService } from './certification-packs.service';
+export { companySettingsService } from './company-settings.service'; 

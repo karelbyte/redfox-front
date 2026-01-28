@@ -24,14 +24,6 @@ export interface Product {
   type: ProductType;
   images: string[];
   created_at: string;
-  /** ID del producto en el pack de facturación (ej. Facturapi). Indica que está registrado en el pack. */
-  pack_product_id?: string | null;
-}
-
-export interface ProductWithPackStatus {
-  product: Product;
-  pack_sync_success: boolean;
-  pack_sync_error?: string;
 }
 
 export interface ProductFormData {

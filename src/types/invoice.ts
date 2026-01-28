@@ -11,7 +11,9 @@ export interface Invoice {
   total_amount: number;
   status: InvoiceStatus;
   cfdi_uuid?: string | null;
-  facturapi_id?: string | null;
+  /** ID interno del comprobante en el PAC activo. Escalable para cualquier pack. */
+  pack_invoice_id?: string | null;
+  pack_invoice_response?: Record<string, unknown> | null;
   payment_method: PaymentMethod;
   payment_conditions?: string | null;
   notes?: string | null;

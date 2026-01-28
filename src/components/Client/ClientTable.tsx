@@ -80,7 +80,7 @@ export default function ClientTable({ clients, onEdit, onDelete }: ClientTablePr
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 <span className="inline-flex items-center gap-1.5">
-                  {client.pack_product_id && (
+                  {client.pack_client_id && (
                     <span title={t('table.inPack')} className="inline-flex">
                       <CheckCircleIcon
                         className="h-4 w-4 shrink-0 text-green-600"

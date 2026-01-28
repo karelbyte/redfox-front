@@ -88,9 +88,16 @@ export default function CurrenciesPage() {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteSuccess = () => {
-    handleDeleteModalClose();
-    fetchCurrencies(currentPage, searchTerm);
+  const handleConfirmDelete = async () => {
+    if (!selectedCurrency) return;
+    try {
+      await currenciesService.deleteCurrency(selectedCurrency.id);
+      handleDeleteModalClose();
+      fetchCurrencies(currentPage, searchTerm);
+      toastService.success(t('messages.currencyDeleted'));
+    } catch (error) {
+      toastService.error(error instanceof Error ? error.message : t('messages.errorDeleting'));
+    }
   };
 
   const handleSave = () => {
@@ -191,7 +198,7 @@ export default function CurrenciesPage() {
         <DeleteCurrencyModal
           currency={selectedCurrency}
           onClose={handleDeleteModalClose}
-          onConfirm={handleDeleteSuccess}
+          onConfirm={handleConfirmDelete}
         />
       )}
     </div>

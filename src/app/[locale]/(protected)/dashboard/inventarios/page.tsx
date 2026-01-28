@@ -120,6 +120,27 @@ export default function InventariosPage() {
     router.push(`/${locale}/dashboard/inventarios/historial/${item.product.id}/${selectedWarehouseId}`);
   };
 
+  const handleSyncPack = useCallback(
+    async (item: InventoryItem) => {
+      try {
+        const result = await inventoryService.syncWithPack(item.id);
+        if (result.pack_sync_success) {
+          toastService.success(t('messages.syncWithPackSuccess'));
+          fetchInventory(currentPage);
+        } else {
+          toastService.error(
+            t('messages.syncWithPackError', {
+              error: result.pack_sync_error ?? 'Unknown error',
+            }),
+          );
+        }
+      } catch {
+        toastService.error(t('messages.syncWithPackError', { error: 'Network or server error' }));
+      }
+    },
+    [currentPage, fetchInventory, t],
+  );
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedItem(null);
@@ -264,6 +285,7 @@ export default function InventariosPage() {
                       currencyCode={selectedWarehouse?.currency?.code || "N/A"}
                       onViewProduct={handleViewProduct}
                       onViewHistory={handleViewHistory}
+                      onSyncPack={handleSyncPack}
                     />
                   </div>
                 )}
