@@ -25,4 +25,14 @@ export const clientsService = {
   deleteClient: async (id: string): Promise<void> => {
     return api.delete(`/clients/${id}`);
   },
+
+  importFromPack: async (): Promise<{
+    totalFromPack: number;
+    created: number;
+    updated: number;
+    linked: number;
+    skipped: number;
+  }> => {
+    return api.post(`/clients/import-from-pack`, {});
+  },
 }; 

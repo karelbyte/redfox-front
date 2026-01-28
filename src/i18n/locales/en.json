@@ -653,6 +653,8 @@
     "clients": {
       "title": "Clients",
       "newClient": "New Client",
+      "importFromPack": "Import from pack",
+      "importingFromPack": "Importing...",
       "editClient": "Edit Client",
       "deleteClient": "Delete Client",
       "clientInfo": "Client Information",
@@ -729,6 +731,8 @@
         "errorCreating": "Error creating client",
         "errorUpdating": "Error updating client",
         "errorDeleting": "Error deleting client",
+        "importFromPackSuccess": "Import completed. Total: {total}, created: {created}, updated: {updated}, linked: {linked}, skipped: {skipped}.",
+        "importFromPackError": "Could not import from pack",
         "packSyncFailedCreate": "Client saved in Redfox. Attention: it was not registered in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
         "packSyncFailedUpdate": "Client saved in Redfox. Attention: it was not updated in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
         "confirmDelete": "Are you sure you want to delete the client \"{name}\"? This action cannot be undone."

@@ -8,7 +8,7 @@ import { toastService } from "@/services/toast.service";
 import ClientTable from "@/components/Client/ClientTable";
 import ClientForm from "@/components/Client/ClientForm";
 import DeleteClientModal from "@/components/Client/DeleteClientModal";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ClientFormRef } from "@/components/Client/ClientForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
@@ -25,6 +25,7 @@ export default function ClientsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [hasInitialData, setHasInitialData] = useState(false);
@@ -98,6 +99,27 @@ export default function ClientsPage() {
     formRef.current?.submit();
   };
 
+  const handleImportFromPack = async () => {
+    try {
+      setIsImporting(true);
+      const result = await clientsService.importFromPack();
+      toastService.success(
+        t("messages.importFromPackSuccess", {
+          created: result.created,
+          updated: result.updated,
+          linked: result.linked,
+          skipped: result.skipped,
+          total: result.totalFromPack,
+        }),
+      );
+      fetchClients(1, searchTerm);
+    } catch (error) {
+      toastService.error(error instanceof Error ? error.message : t("messages.importFromPackError"));
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     fetchClients(page, searchTerm);
@@ -116,17 +138,29 @@ export default function ClientsPage() {
         >
           {t("title")}
         </h1>
-        {can(["client_create"]) && (
-          <Btn
-            onClick={() => {
-              setSelectedClient(null);
-              setShowDrawer(true);
-            }}
-            leftIcon={<PlusIcon className="h-5 w-5" />}
-          >
-            {t("newClient")}
-          </Btn>
-        )}
+        <div className="flex items-center gap-2">
+          {can(["client_create"]) && (
+            <Btn
+              variant="secondary"
+              onClick={handleImportFromPack}
+              disabled={isImporting}
+              leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
+            >
+              {isImporting ? t("importingFromPack") : t("importFromPack")}
+            </Btn>
+          )}
+          {can(["client_create"]) && (
+            <Btn
+              onClick={() => {
+                setSelectedClient(null);
+                setShowDrawer(true);
+              }}
+              leftIcon={<PlusIcon className="h-5 w-5" />}
+            >
+              {t("newClient")}
+            </Btn>
+          )}
+        </div>
       </div>
       {/* Filtro de búsqueda */}
       <div className="mt-6">
