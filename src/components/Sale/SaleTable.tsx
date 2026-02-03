@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Sale } from '@/types/sale';
 import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentArrowDownIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 
 interface SaleTableProps {
   sales: Sale[];
@@ -11,11 +11,11 @@ interface SaleTableProps {
   onDelete: (sale: Sale) => void;
   onDetails: (sale: Sale) => void;
   onClose: (sale: Sale) => void;
-  onGeneratePDF: (sale: Sale) => void;
+  onPrintTicket: (sale: Sale) => void;
   onInvoice?: (sale: Sale) => void;
 }
 
-export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onGeneratePDF, onInvoice }: SaleTableProps) {
+export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onPrintTicket, onInvoice }: SaleTableProps) {
   const t = useTranslations('pages.sales');
 
   const formatCurrency = (amount: string) => {
@@ -84,6 +84,12 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
               {t('table.status')}
             </th>
             <th 
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              style={{ color: `rgb(var(--color-primary-600))` }}
+            >
+              {t('table.fiscalStatus')}
+            </th>
+            <th 
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
@@ -120,6 +126,23 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                   {sale.status ? t('status.completed') : t('status.pending')}
                 </span>
               </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {sale.pack_fiscal_status ? (
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      sale.pack_fiscal_status === 'INVOICED_DIRECT'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : sale.pack_fiscal_status === 'INVOICED_GLOBAL'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    {t(`fiscalStatus.${sale.pack_fiscal_status}`)}
+                  </span>
+                ) : (
+                  <span className="text-gray-400">—</span>
+                )}
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div className="flex justify-end space-x-2">
                   <Btn
@@ -132,9 +155,9 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                   <Btn
                     variant="ghost"
                     size="sm"
-                    onClick={() => onGeneratePDF(sale)}
-                    leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
-                    title={t('actions.generatePDF')}
+                    onClick={() => onPrintTicket(sale)}
+                    leftIcon={<DocumentTextIcon className="h-4 w-4" />}
+                    title={t('actions.printTicket')}
                   />
                   {sale.status && onInvoice && (
                     <Btn

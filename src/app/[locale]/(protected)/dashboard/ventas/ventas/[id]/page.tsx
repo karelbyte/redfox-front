@@ -328,6 +328,33 @@ export default function SaleDetailsPage() {
               <span className="text-sm font-medium text-gray-500">{t('details.labels.totalAmount')}:</span>
               <p className="text-sm font-semibold text-gray-900">{formatCurrency(sale.amount)}</p>
             </div>
+            {sale.pack_fiscal_status && (
+              <div className="col-span-2">
+                <span className="text-sm font-medium text-gray-500">{t('details.labels.fiscalStatus')}:</span>
+                <span
+                  className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    sale.pack_fiscal_status === 'INVOICED_DIRECT'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : sale.pack_fiscal_status === 'INVOICED_GLOBAL'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  {t(`fiscalStatus.${sale.pack_fiscal_status}`)}
+                </span>
+                {sale.invoice_id && (
+                  <span className="ml-2">
+                    <a
+                      href={`/${locale}/dashboard/facturas/${sale.invoice_id}`}
+                      className="text-sm font-medium"
+                      style={{ color: `rgb(var(--color-primary-600))` }}
+                    >
+                      {t('details.labels.invoice')}: {sale.invoice_code ?? sale.invoice_id.slice(0, 8)}…
+                    </a>
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

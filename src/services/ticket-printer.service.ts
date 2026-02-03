@@ -43,6 +43,18 @@ export class TicketPrinterService {
 
   private readonly COMPANY_SETTINGS_TTL_MS = 5 * 60 * 1000; // 5 min
 
+  /** URL absoluta del logo para que cargue en la ventana de impresión (about:blank). */
+  private getLogoFullUrl(logoUrl: string | null): string | null {
+    if (!logoUrl) return null;
+    if (logoUrl.startsWith('http')) return logoUrl;
+    const base =
+      (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_URL_API) ||
+      'https://nitro-api-app-production.up.railway.app';
+    const baseClean = base.replace(/\/$/, '');
+    const path = logoUrl.startsWith('/') ? logoUrl : `/${logoUrl}`;
+    return `${baseClean}${path}`;
+  }
+
   private async getCompanySettingsCached(): Promise<CompanySettings | null> {
     const now = Date.now();
 
@@ -210,12 +222,19 @@ export class TicketPrinterService {
   async printTicket(data: TicketData): Promise<void> {
     try {
       const ticketContent = await this.generateTicketContent(data);
+      const companySettings = await this.getCompanySettingsCached();
 
       const printWindow = window.open('', '_blank');
       if (!printWindow) {
         // Código de error genérico; el mensaje visible lo maneja el i18n del caller
         throw new Error('TICKET_PRINT_WINDOW_ERROR');
       }
+
+      const logoFullUrl = this.getLogoFullUrl(companySettings?.logoUrl ?? null);
+      const logoHtml =
+        logoFullUrl
+          ? `<div style="display:block;margin-bottom:8px;position:relative;width:100%;height:20mm;"><img src="${logoFullUrl}" style="display:block;position:absolute;right:25mm;width:30mm;height:20mm;object-fit:contain;object-position:center;" alt="" /></div>`
+          : '';
 
       // Crear el contenido HTML para imprimir
       const htmlContent = `
@@ -259,7 +278,7 @@ export class TicketPrinterService {
           </style>
         </head>
         <body>
-          <div class="ticket-content">${ticketContent}</div>
+          <div class="ticket-content">${logoHtml}<pre>${ticketContent}</pre></div>
         </body>
         </html>
       `;
@@ -267,12 +286,15 @@ export class TicketPrinterService {
       printWindow.document.write(htmlContent);
       printWindow.document.close();
 
-      // Esperar a que se cargue el contenido
-      await new Promise(resolve => {
-        printWindow.onload = resolve;
+      await new Promise<void>(resolve => {
+        printWindow.onload = () => resolve();
       });
 
-      // Imprimir
+      // Dar tiempo a que el logo (img) termine de cargar antes de imprimir
+      if (logoFullUrl) {
+        await new Promise(resolve => setTimeout(resolve, 400));
+      }
+
       printWindow.print();
       
       // Cerrar la ventana después de un breve delay

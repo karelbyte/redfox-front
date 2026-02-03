@@ -13,6 +13,8 @@ export interface Client {
   deleted_at: string | null;
 }
 
+export type PackFiscalStatus = 'RECEIPT_ONLY' | 'INVOICED_DIRECT' | 'INVOICED_GLOBAL';
+
 export interface Sale {
   id: string;
   code: string;
@@ -21,6 +23,11 @@ export interface Sale {
   amount: string;
   status: boolean;
   created_at: string;
+  /** Estado fiscal: solo nota, facturada directa o facturada global */
+  invoice_id?: string | null;
+  pack_fiscal_status?: PackFiscalStatus;
+  invoice_code?: string | null;
+  cfdi_uuid?: string | null;
 }
 
 export interface SaleFormData {

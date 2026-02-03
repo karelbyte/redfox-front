@@ -23,7 +23,7 @@ export default function DeleteCertificationPackModal({
       onClose={onCancel}
       onConfirm={onConfirm}
       title={t('deleteModal.title')}
-      message={pack ? t('deleteModal.message', { name: pack.name }) : ''}
+      message={pack ? t('deleteModal.message', { type: pack.type }) : ''}
       confirmText={t('actions.delete')}
       cancelText={t('actions.cancel')}
     />

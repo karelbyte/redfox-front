@@ -126,13 +126,13 @@ export default function GeneralesEmpresaPage() {
     ? `${logoFullUrl}?t=${new Date(settings.updatedAt).getTime()}`
     : logoFullUrl;
 
-  if (loading) {
-    return (
-      <div className="p-6 flex justify-center items-center h-64">
-        <Loading size="lg" />
-      </div>
-    );
-  }
+    if (loading) {
+      return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <Loading size="lg" />
+        </div>
+      );
+    }
 
   return (
     <div className="p-6">
@@ -238,13 +238,6 @@ export default function GeneralesEmpresaPage() {
         <div className="flex gap-3 pt-2">
           <Btn type="submit" variant="primary" disabled={saving}>
             {saving ? tCommon('actions.saving') : tCommon('actions.save')}
-          </Btn>
-          <Btn
-            type="button"
-            variant="ghost"
-            onClick={() => router.push(`/${locale}/dashboard/configuracion`)}
-          >
-            {tCommon('actions.cancel')}
           </Btn>
         </div>
       </form>

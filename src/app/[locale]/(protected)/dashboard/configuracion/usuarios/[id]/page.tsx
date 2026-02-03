@@ -71,10 +71,8 @@ export default function UserDetailsPage() {
 
   if (loading) {
     return (
-      <div className="p-6">
-        <div className="flex justify-center items-center h-64">
-          <Loading size="lg" />
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loading size="lg" />
       </div>
     );
   }

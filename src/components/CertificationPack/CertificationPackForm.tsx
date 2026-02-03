@@ -1,28 +1,34 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { CertificationPack, CertificationPackType, CertificationPackFormData } from '@/types/certification-pack';
-import { Btn } from '@/components/atoms';
+import { certificationPackService } from '@/services/certification-packs.service';
+import { toastService } from '@/services/toast.service';
+
+export interface CertificationPackFormRef {
+  submit: () => void;
+}
 
 interface CertificationPackFormProps {
   pack?: CertificationPack | null;
-  onSubmit: (data: CertificationPackFormData) => void;
-  onCancel: () => void;
-  isSaving?: boolean;
+  onSuccess: () => void;
+  onSavingChange: (isSaving: boolean) => void;
+  onValidChange?: (isValid: boolean) => void;
 }
 
-export default function CertificationPackForm({
-  pack,
-  onSubmit,
-  onCancel,
-  isSaving = false,
-}: CertificationPackFormProps) {
+function CertificationPackFormInner(
+  {
+    pack,
+    onSuccess,
+    onSavingChange,
+    onValidChange,
+  }: CertificationPackFormProps,
+  ref: React.ForwardedRef<CertificationPackFormRef>,
+) {
   const t = useTranslations('pages.certificationPacks');
   const [formData, setFormData] = useState<CertificationPackFormData>({
     type: CertificationPackType.FACTURAAPI,
-    name: '',
-    description: '',
     config: {},
     is_active: true,
     is_default: false,
@@ -32,19 +38,75 @@ export default function CertificationPackForm({
     if (pack) {
       setFormData({
         type: pack.type,
-        name: pack.name,
-        description: pack.description || '',
         config: pack.config || {},
         is_active: pack.is_active,
         is_default: pack.is_default,
       });
+    } else {
+      setFormData({
+        type: CertificationPackType.FACTURAAPI,
+        config: {},
+        is_active: true,
+        is_default: false,
+      });
     }
   }, [pack]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
+  const validateForm = useMemo(() => {
+    const cfg = formData.config || {};
+
+    if (formData.type === CertificationPackType.FACTURAAPI) {
+      return !!String(cfg.api_key || '').trim();
+    }
+
+    if (formData.type === CertificationPackType.SAT) {
+      return (
+        !!String(cfg.certificate || '').trim() &&
+        !!String(cfg.key || '').trim() &&
+        !!String(cfg.password || '').trim()
+      );
+    }
+
+    return true;
+  }, [formData.config, formData.type]);
+
+  useEffect(() => {
+    onValidChange?.(validateForm);
+  }, [onValidChange, validateForm]);
+
+  const handleSubmit = async () => {
+    if (!validateForm) return;
+
+    try {
+      onSavingChange(true);
+
+      const payload: CertificationPackFormData = {
+        type: formData.type,
+        config: formData.config || {},
+        is_active: !!formData.is_active,
+        is_default: !!formData.is_default,
+      };
+
+      if (pack) {
+        await certificationPackService.update(pack.id, payload);
+        toastService.success(t('messages.successUpdated'));
+      } else {
+        await certificationPackService.create(payload);
+        toastService.success(t('messages.successCreated'));
+      }
+
+      onSuccess();
+    } catch (error) {
+      console.error('Error saving pack:', error);
+      toastService.error(t('messages.errorSaving'));
+    } finally {
+      onSavingChange(false);
+    }
   };
+
+  useImperativeHandle(ref, () => ({
+    submit: handleSubmit,
+  }));
 
   const updateConfig = (key: string, value: any) => {
     setFormData(prev => ({
@@ -123,7 +185,7 @@ export default function CertificationPackForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           {t('form.type')} *
@@ -138,31 +200,6 @@ export default function CertificationPackForm({
           <option value={CertificationPackType.FACTURAAPI}>FacturaAPI</option>
           <option value={CertificationPackType.SAT}>SAT</option>
         </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {t('form.name')} *
-        </label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {t('form.description')}
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          rows={3}
-        />
       </div>
 
       <div className="border-t pt-4">
@@ -191,15 +228,14 @@ export default function CertificationPackForm({
           <span className="ml-2 text-sm text-gray-700">{t('form.isDefault')}</span>
         </label>
       </div>
-
-      <div className="flex justify-end gap-3 pt-4 border-t">
-        <Btn type="button" variant="secondary" onClick={onCancel} disabled={isSaving}>
-          {t('actions.cancel')}
-        </Btn>
-        <Btn type="submit" disabled={isSaving}>
-          {isSaving ? t('actions.saving') : (pack ? t('actions.update') : t('actions.create'))}
-        </Btn>
-      </div>
     </form>
   );
 }
+
+const CertificationPackForm = forwardRef<CertificationPackFormRef, CertificationPackFormProps>(
+  CertificationPackFormInner,
+);
+
+CertificationPackForm.displayName = 'CertificationPackForm';
+
+export default CertificationPackForm;

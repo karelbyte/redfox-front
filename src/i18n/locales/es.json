@@ -1176,11 +1176,17 @@
         "client": "Cliente",
         "amount": "Monto",
         "status": "Estado",
+        "fiscalStatus": "Estado fiscal",
         "actions": "Acciones"
       },
       "status": {
         "pending": "Pendiente",
         "completed": "Completada"
+      },
+      "fiscalStatus": {
+        "RECEIPT_ONLY": "Solo nota",
+        "INVOICED_DIRECT": "Facturada directa",
+        "INVOICED_GLOBAL": "Facturada global"
       },
       "actions": {
         "viewDetails": "Ver Detalles",
@@ -1194,7 +1200,8 @@
         "createNewClient": "Crear nuevo cliente",
         "generatePDF": "Generar PDF",
         "generatingPDF": "Generando PDF...",
-        "invoice": "Facturar"
+        "invoice": "Facturar",
+        "printTicket": "Imprimir Ticket"
       },
       "messages": {
         "saleCreated": "Venta creada correctamente",
@@ -1331,7 +1338,9 @@
           "destination": "Destino",
           "status": "Estado",
           "name": "Nombre",
-          "totalAmount": "Monto Total"
+          "totalAmount": "Monto Total",
+          "fiscalStatus": "Estado fiscal",
+          "invoice": "Factura"
         }
       }
     },
@@ -1573,6 +1582,7 @@
         "title": "Detalles de Factura",
         "subtitle": "Información detallada de la factura {code}",
         "notFound": "Factura no encontrada",
+        "back": "Volver",
         "invoiceInfo": "Información de la Factura",
         "code": "Código",
         "date": "Fecha",
@@ -1842,7 +1852,7 @@
       },
       "deleteModal": {
         "title": "Eliminar Pack",
-        "message": "¿Estás seguro de que deseas eliminar el pack \"{name}\"? Esta acción no se puede deshacer."
+        "message": "¿Estás seguro de que deseas eliminar el pack \"{type}\"? Esta acción no se puede deshacer."
       }
     },
     "returns": {

@@ -8,7 +8,7 @@ import { Sale, SaleCloseResponse } from '@/types/sale';
 import { saleService } from '@/services/sales.service';
 import { invoiceService } from '@/services';
 import { toastService } from '@/services/toast.service';
-import { PDFService } from '@/services/pdf.service';
+import { ticketPrinterService } from '@/services/ticket-printer.service';
 import SaleTable from '@/components/Sale/SaleTable';
 import SaleForm from '@/components/Sale/SaleForm';
 import DeleteSaleModal from '@/components/Sale/DeleteSaleModal';
@@ -25,6 +25,7 @@ export default function VentasPage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('pages.sales');
+  const tPos = useTranslations('pages.pos');
   const [sales, setSales] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,7 +39,7 @@ export default function VentasPage() {
   const [isClosingSale, setIsClosingSale] = useState(false);
   const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isPrintingTicket, setIsPrintingTicket] = useState(false);
   const formRef = useRef<SaleFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -103,29 +104,47 @@ export default function VentasPage() {
     }
   };
 
-  const handleGeneratePDF = async (sale: Sale) => {
+  const handlePrintTicket = async (sale: Sale) => {
     try {
-      setIsGeneratingPDF(true);
-      
-      // Obtener los detalles de la venta
+      setIsPrintingTicket(true);
+
       const detailsResponse = await saleService.getSaleDetails(sale.id);
       const details = detailsResponse.data || [];
-      
-      // Generar el PDF usando la venta completa y los detalles
-      const pdfService = new PDFService({orientation: 'landscape'});
-      pdfService.generateSalePDF(sale, details, {
-        filename: `sale-${sale.code}.pdf`
-      });
-      
-      toastService.success(t('messages.pdfGenerated'));
+
+      const ticketData = {
+        sale,
+        saleDetails: details,
+        client: sale.client,
+        cashierName: 'POS System',
+        paymentMethod: 'cash' as const,
+        locale,
+        labels: {
+          ticket: tPos('ticket.ticket', { default: 'Ticket' }),
+          date: tPos('ticket.date', { default: 'Date' }),
+          cashier: tPos('ticket.cashier', { default: 'Cashier' }),
+          client: tPos('ticket.client', { default: 'Client' }),
+          products: tPos('ticket.products', { default: 'PRODUCTS:' }),
+          subtotal: tPos('ticket.subtotal', { default: 'Subtotal:' }),
+          tax: tPos('ticket.tax', { default: 'Tax:' }),
+          total: tPos('ticket.total', { default: 'TOTAL:' }),
+          paymentMethod: tPos('ticket.paymentMethod', { default: 'Payment Method:' }),
+          cashReceived: tPos('ticket.cashReceived', { default: 'Cash Received:' }),
+          change: tPos('ticket.change', { default: 'Change:' }),
+          thanks: tPos('ticket.thanks', { default: 'Thank you for your purchase!' }),
+          comeBack: tPos('ticket.comeBack', { default: 'Please come back soon' }),
+          powered: tPos('ticket.powered', { default: 'Powered by RedFox POS' }),
+          walkIn: tPos('ticket.walkIn', { default: 'Walk-in Customer' }),
+          posSystem: tPos('ticket.posSystem', { default: 'POS System' }),
+        },
+      };
+
+      await ticketPrinterService.printTicket(ticketData);
+      toastService.success(tPos('messages.ticketPrinted'));
     } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('messages.errorGeneratingPDF'));
-      }
+      console.error('Error printing ticket from sales list:', error);
+      toastService.error(tPos('messages.ticketPrintError'));
     } finally {
-      setIsGeneratingPDF(false);
+      setIsPrintingTicket(false);
     }
   };
 
@@ -247,7 +266,7 @@ export default function VentasPage() {
               onDelete={openDeleteModal}
               onDetails={handleDetails}
               onClose={openCloseModal}
-              onGeneratePDF={handleGeneratePDF}
+              onPrintTicket={handlePrintTicket}
               onInvoice={handleInvoice}
             />
           </div>

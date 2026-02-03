@@ -2,14 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Invoice, InvoiceDetail } from '@/types/invoice';
 import { invoiceService } from '@/services';
 import { toastService } from '@/services/toast.service';
 import Loading from "@/components/Loading/Loading";
+import { Btn } from '@/components/atoms';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export default function InvoiceDetailsPage() {
   const t = useTranslations('pages.invoices');
+  const router = useRouter();
   const params = useParams();
   const invoiceId = params.id as string;
   
@@ -83,23 +86,48 @@ export default function InvoiceDetailsPage() {
   };
 
   if (loading) {
-    return <Loading size="lg" />;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loading size="lg" />
+      </div>
+    );
   }
 
   if (!invoice) {
     return (
-      <div className="text-center py-12">
-        <h3 className="mt-2 text-sm font-medium text-gray-900">{t('details.notFound')}</h3>
+      <div className="p-6">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            {t('details.notFound')}
+          </h2>
+          <Btn
+            onClick={() => router.push('/es/dashboard/facturas')}
+            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+          >
+            {t('details.back')}
+          </Btn>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('details.title')}</h1>
-          <p className="mt-1 text-sm text-gray-500">{t('details.subtitle', { code: invoice.code })}</p>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center space-x-4">
+          <Btn
+            variant="ghost"
+            onClick={() => router.push('/es/dashboard/facturas')}
+            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+          >
+            {t('details.back')}
+          </Btn>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{t('details.title')}</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              {t('details.subtitle', { code: invoice.code })}
+            </p>
+          </div>
         </div>
         <span
           className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full ${getStatusColor(invoice.status)}`}

@@ -173,15 +173,10 @@ export default function InventariosPage() {
 
       <div className="mt-6">
         {closedWarehouses.length === 0 ? (
-          <div 
-            className="rounded-lg shadow p-6"
-            style={{ backgroundColor: `rgb(var(--color-surface))` }}
-          >
-            <EmptyState
-              title={t('noClosedWarehouses')}
-              description={t('noClosedWarehousesDesc')}
-            />
-          </div>
+           <EmptyState
+           title={t('noClosedWarehouses')}
+           description={t('noClosedWarehousesDesc')}
+         />
         ) : (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

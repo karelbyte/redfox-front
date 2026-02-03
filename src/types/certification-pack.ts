@@ -6,8 +6,6 @@ export enum CertificationPackType {
 export interface CertificationPack {
   id: string;
   type: CertificationPackType;
-  name: string;
-  description?: string | null;
   config: Record<string, any>;
   is_active: boolean;
   is_default: boolean;
@@ -18,8 +16,6 @@ export interface CertificationPack {
 
 export interface CertificationPackFormData {
   type: CertificationPackType;
-  name: string;
-  description?: string;
   config: Record<string, any>;
   is_active?: boolean;
   is_default?: boolean;

@@ -1169,11 +1169,17 @@
         "client": "Client",
         "amount": "Amount",
         "status": "Status",
+        "fiscalStatus": "Fiscal status",
         "actions": "Actions"
       },
       "status": {
         "pending": "Pending",
         "completed": "Completed"
+      },
+      "fiscalStatus": {
+        "RECEIPT_ONLY": "Receipt only",
+        "INVOICED_DIRECT": "Invoiced direct",
+        "INVOICED_GLOBAL": "Invoiced global"
       },
       "actions": {
         "viewDetails": "View Details",
@@ -1187,7 +1193,8 @@
         "createNewClient": "Create new client",
         "generatePDF": "Generate PDF",
         "generatingPDF": "Generating PDF...",
-        "invoice": "Invoice"
+        "invoice": "Invoice",
+        "printTicket": "Print Ticket"
       },
       "messages": {
         "saleCreated": "Sale created successfully",
@@ -1324,7 +1331,9 @@
           "destination": "Destination",
           "status": "Status",
           "name": "Name",
-          "totalAmount": "Total Amount"
+          "totalAmount": "Total Amount",
+          "fiscalStatus": "Fiscal status",
+          "invoice": "Invoice"
         }
       }
     },
@@ -1566,6 +1575,7 @@
         "title": "Invoice Details",
         "subtitle": "Detailed information for invoice {code}",
         "notFound": "Invoice not found",
+        "back": "Back",
         "invoiceInfo": "Invoice Information",
         "code": "Code",
         "date": "Date",
@@ -1835,7 +1845,7 @@
       },
       "deleteModal": {
         "title": "Delete Pack",
-        "message": "Are you sure you want to delete pack \"{name}\"? This action cannot be undone."
+        "message": "Are you sure you want to delete pack \"{type}\"? This action cannot be undone."
       }
     },
     "returns": {
