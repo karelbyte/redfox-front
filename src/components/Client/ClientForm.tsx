@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
-import { Input, TextArea, Checkbox } from "@/components/atoms";
+import { Input, TextArea, Checkbox, SurrogateInput } from "@/components/atoms";
 
 export interface ClientFormRef {
   submit: () => void;
@@ -231,33 +231,29 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
     return (
       <form className="space-y-2 grid grid-cols-2 gap-4">
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              type="text"
-              id="code"
-              label={t('form.code')}
-              required
-              value={formData.code}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, code: e.target.value }))
-              }
-              placeholder={t('form.placeholders.code')}
-              error={errors.code}
-            />
+          <SurrogateInput
+            label={t('form.code')}
+            value={formData.code}
+            onChange={(value) => setFormData((prev) => ({ ...prev, code: value }))}
+            surrogateCode="client"
+            placeholder={t('form.placeholders.code')}
+            required
+            error={errors.code}
+            autoSuggest={!client} // Solo auto-sugerir para clientes nuevos
+          />
 
-            <Input
-              type="text"
-              id="tax_document"
-              label={t('form.taxDocument')}
-              required
-              value={formData.tax_document}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, tax_document: e.target.value }))
-              }
-              placeholder={t('form.placeholders.taxDocument')}
-              error={errors.tax_document}
-            />
-          </div>
+          <Input
+            type="text"
+            id="tax_document"
+            label={t('form.taxDocument')}
+            required
+            value={formData.tax_document}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, tax_document: e.target.value }))
+            }
+            placeholder={t('form.placeholders.taxDocument')}
+            error={errors.tax_document}
+          />
 
           <Input
             type="text"
@@ -340,8 +336,6 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
             }
           />
         </div>
-
-
 
         <div>
           <h3 className="text-sm font-medium mb-[11px]" style={{ color: `rgb(var(--color-primary-500))` }}>
@@ -442,8 +436,6 @@ const ClientForm = forwardRef<ClientFormRef, ClientFormProps>(
             </div>
           </div>
         </div>
-
-
       </form>
     );
   }

@@ -28,4 +28,5 @@ export { ticketPrinterService } from './ticket-printer.service';
 export { invoiceService } from './invoices.service';
 export { certificationPackService } from './certification-packs.service';
 export { companySettingsService } from './company-settings.service';
-export { backupService } from './backup.service'; 
+export { backupService } from './backup.service';
+export { surrogateService } from './surrogate.service'; 

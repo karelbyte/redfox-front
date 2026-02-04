@@ -101,6 +101,7 @@
     "salesList": "Sales List",
     "addSale": "Add Sale",
     "pos": "POS",
+    "cashRegister": "Cash Register",
     "users": "Users",
     "companySettings": "Company settings",
     "roles": "Roles",
@@ -1133,6 +1134,7 @@
     },
     "sales": {
       "title": "Sales",
+      "globalInvoice": "Global Invoice",
       "newSale": "New Sale",
       "editSale": "Edit Sale",
       "deleteSale": "Delete Sale",
@@ -1178,7 +1180,8 @@
       },
       "status": {
         "pending": "Pending",
-        "completed": "Completed"
+        "completed": "Completed",
+        "returned": "Returned"
       },
       "fiscalStatus": {
         "RECEIPT_ONLY": "Receipt only",
@@ -1198,7 +1201,9 @@
         "generatePDF": "Generate PDF",
         "generatingPDF": "Generating PDF...",
         "invoice": "Invoice",
-        "printTicket": "Print Ticket"
+        "printTicket": "Print Ticket",
+        "refund": "Refund",
+        "refunded": "Refunding..."
       },
       "messages": {
         "saleCreated": "Sale created successfully",
@@ -1214,8 +1219,14 @@
         "errorGeneratingPDF": "Error generating PDF",
         "confirmDelete": "Are you sure you want to delete the sale \"{code}\"? This action cannot be undone.",
         "confirmClose": "Are you sure you want to complete the sale \"{code}\"? This action cannot be undone.",
+        "confirmRefund": "Are you sure you want to refund the sale \"{code}\"? This action cannot be undone and will affect inventory and cash register.",
+        "saleRefunded": "Sale refunded successfully",
+        "errorRefunded": "Error refunding sale",
         "invoiceCreated": "Invoice created successfully",
-        "errorCreatingInvoice": "Error creating invoice"
+        "errorCreatingInvoice": "Error creating invoice",
+        "globalInvoiceCreated": "Global invoice created successfully",
+        "errorCreatingGlobalInvoice": "Error creating global invoice",
+        "noEligibleSales": "No sales with receipt without invoice in the selected period"
       },
       "modals": {
         "delete": {
@@ -1236,6 +1247,27 @@
           },
           "actions": {
             "continue": "Continue"
+          }
+        },
+        "globalInvoice": {
+          "title": "Create Global Invoice",
+          "description": "Select the date range to generate a global invoice for all sales with receipt that have not been invoiced",
+          "from": "From",
+          "to": "To",
+          "periodicity": "Periodicity",
+          "periodicities": {
+            "day": "Daily",
+            "week": "Weekly",
+            "fortnight": "Biweekly",
+            "month": "Monthly",
+            "two_months": "Bimonthly"
+          },
+          "create": "Create",
+          "cancel": "Cancel",
+          "errors": {
+            "fromRequired": "Start date is required",
+            "toRequired": "End date is required",
+            "toMustBeAfterFrom": "End date must be greater than or equal to start date"
           }
         }
       },
@@ -1490,6 +1522,51 @@
         "adjust": "Adjust"
       }
     },
+    "cashRegister": {
+      "title": "Cash Register",
+      "subtitle": "Cash register management and control",
+      "status": {
+        "title": "Cash Register Status",
+        "label": "Status",
+        "open": "Open",
+        "closed": "Closed"
+      },
+      "balance": {
+        "total": "Total Balance",
+        "cash": "Cash in Register"
+      },
+      "actions": {
+        "updateBalance": "Update Balance",
+        "cashDrawer": "Cash Drawer",
+        "initializeCash": "Initialize Cash Register"
+      },
+      "transactions": {
+        "title": "Transactions",
+        "subtitle": "Cash register transaction history",
+        "refresh": "Refresh",
+        "loading": "Loading transactions...",
+        "empty": "No transactions",
+        "emptyDescription": "Transactions will appear here when sales are made",
+        "types": {
+          "sale": "Sale",
+          "refund": "Refund",
+          "adjustment": "Adjustment",
+          "closing": "Closing"
+        },
+        "paymentMethods": {
+          "cash": "Cash",
+          "card": "Card"
+        }
+      },
+      "noCashRegister": {
+        "title": "No active cash register",
+        "description": "To start managing the cash register, you need to initialize a cash register with an initial amount."
+      },
+      "messages": {
+        "noCashRegisterActive": "No active cash register. Initialize a cash register to get started.",
+        "errorFetchingInfo": "Error fetching cash register information"
+      }
+    },
     "invoices": {
       "title": "Invoices",
       "subtitle": "Invoice and CFDI management",
@@ -1544,6 +1621,11 @@
           "card": "Card",
           "transfer": "Transfer",
           "check": "Check"
+        },
+        "errors": {
+          "codeRequired": "Code is required",
+          "dateRequired": "Date is required",
+          "clientRequired": "Client is required"
         },
         "save": "Save",
         "cancel": "Cancel",
@@ -1612,7 +1694,8 @@
         "cfdiGenerated": "CFDI generated successfully",
         "cfdiCancelled": "CFDI cancelled successfully",
         "pdfDownloaded": "PDF downloaded successfully",
-        "xmlDownloaded": "XML downloaded successfully"
+        "xmlDownloaded": "XML downloaded successfully",
+        "errorLoadingClients": "Error loading clients"
       },
       "errors": {
         "loadInvoices": "Error loading invoices",
@@ -1629,6 +1712,8 @@
     },
     "companySettings": {
       "title": "Company settings",
+      "basicInfo": "Basic Information",
+      "contactInfo": "Contact Information",
       "logo": "Logo",
       "changeLogo": "Change logo",
       "name": "Trade name",
@@ -2286,6 +2371,15 @@
           "expectedDeliveryDate": "Select delivery date"
         },
         "validation": {
+          "codeRequired": "Code is required",
+          "dateRequired": "Date is required",
+          "providerRequired": "Provider is required",
+          "warehouseRequired": "Warehouse is required",
+          "documentRequired": "Document is required",
+          "amountRequired": "Amount is required",
+          "expectedDeliveryDateRequired": "Expected delivery date is required"
+        },
+        "errors": {
           "codeRequired": "Code is required",
           "dateRequired": "Date is required",
           "providerRequired": "Provider is required",

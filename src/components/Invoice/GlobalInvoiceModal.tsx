@@ -32,15 +32,15 @@ export default function GlobalInvoiceModal({
         const newErrors: { from?: string; to?: string } = {};
 
         if (!formData.from) {
-            newErrors.from = 'La fecha inicial es requerida';
+            newErrors.from = t('errors.fromRequired');
         }
 
         if (!formData.to) {
-            newErrors.to = 'La fecha final es requerida';
+            newErrors.to = t('errors.toRequired');
         }
 
         if (formData.from && formData.to && formData.from > formData.to) {
-            newErrors.to = 'La fecha final debe ser mayor o igual a la fecha inicial';
+            newErrors.to = t('errors.toMustBeAfterFrom');
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -165,7 +165,7 @@ export default function GlobalInvoiceModal({
                             loading={isLoading}
                             className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
                         >
-                            {t('create', { default: 'Crear' })}
+                            {t('create')}
                         </Btn>
                         <Btn
                             variant="outline"
@@ -173,7 +173,7 @@ export default function GlobalInvoiceModal({
                             disabled={isLoading}
                             className="mt-3 inline-flex w-full justify-center text-sm sm:mt-0 sm:w-auto"
                         >
-                            {t('cancel', { default: 'Cancelar' })}
+                            {t('cancel')}
                         </Btn>
                     </div>
                 </div>

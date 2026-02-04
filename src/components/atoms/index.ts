@@ -33,6 +33,9 @@ export { default as EmptyState } from './EmptyState'
 // Componente SearchSelect
 export { default as SearchSelect } from './SearchSelect'
 
+// Componente SurrogateInput
+export { SurrogateInput } from './SurrogateInput'
+
 // Aquí se pueden agregar más componentes atoms en el futuro
 // export { default as Badge } from './Badge'
 // export { default as Avatar } from './Avatar' 

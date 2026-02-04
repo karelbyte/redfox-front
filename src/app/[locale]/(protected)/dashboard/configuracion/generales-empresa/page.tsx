@@ -2,9 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
-import { ArrowLeftIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon } from '@heroicons/react/24/outline';
 import { Btn, Input } from '@/components/atoms';
 import { CompanySettings } from '@/types/company-settings';
 import { companySettingsService } from '@/services/company-settings.service';
@@ -26,8 +24,6 @@ const getLogoFullUrl = (logoUrl: string | null): string | null => {
 export default function GeneralesEmpresaPage() {
   const t = useTranslations('pages.companySettings');
   const tCommon = useTranslations('common');
-  const router = useRouter();
-  const locale = useLocale();
 
   const [settings, setSettings] = useState<CompanySettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -137,105 +133,119 @@ export default function GeneralesEmpresaPage() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-4">
-          <Btn
-            variant="ghost"
-            onClick={() => router.push(`/${locale}/dashboard/configuracion`)}
-            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
-          >
-            {tCommon('actions.back')}
-          </Btn>
-          <h1
-            className="text-xl font-semibold"
-            style={{ color: 'rgb(var(--color-primary-800))' }}
-          >
-            {t('title')}
-          </h1>
-        </div>
+        <h1
+          className="text-xl font-semibold"
+          style={{ color: 'rgb(var(--color-primary-800))' }}
+        >
+          {t('title')}
+        </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
-        {/* Logo */}
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: 'rgb(var(--color-primary-500))' }}>
-            {t('logo')}
-          </label>
-          <div className="flex items-center gap-4">
-            <div
-              className="w-24 h-24 rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden bg-gray-50"
-              style={{ borderColor: 'rgb(var(--color-secondary-300))' }}
-            >
-              {logoWithCacheBust ? (
-                <img src={logoWithCacheBust} alt="Logo" className="w-full h-full object-contain" />
-              ) : (
-                <PhotoIcon className="w-10 h-10 text-gray-400" />
-              )}
-            </div>
+      <form onSubmit={handleSubmit} className="max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Columna 1: Información básica y logo */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'rgb(var(--color-primary-700))' }}>
+              {t('basicInfo')}
+            </h3>
+            
+            {/* Logo */}
             <div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleLogoChange}
-              />
-              <Btn
-                type="button"
-                variant="secondary"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadingLogo}
-              >
-                {uploadingLogo ? tCommon('actions.loading') : t('changeLogo')}
-              </Btn>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'rgb(var(--color-primary-500))' }}>
+                {t('logo')}
+              </label>
+              <div className="flex items-center gap-4">
+                <div
+                  className="w-24 h-24 rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden bg-gray-50"
+                  style={{ borderColor: 'rgb(var(--color-secondary-300))' }}
+                >
+                  {logoWithCacheBust ? (
+                    <img src={logoWithCacheBust} alt="Logo" className="w-full h-full object-contain" />
+                  ) : (
+                    <PhotoIcon className="w-10 h-10 text-gray-400" />
+                  )}
+                </div>
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleLogoChange}
+                  />
+                  <Btn
+                    type="button"
+                    variant="secondary"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingLogo}
+                  >
+                    {uploadingLogo ? tCommon('actions.loading') : t('changeLogo')}
+                  </Btn>
+                </div>
+              </div>
             </div>
+
+            <Input
+              label={t('name')}
+              value={form.name}
+              onChange={handleChange('name')}
+              placeholder={t('namePlaceholder')}
+            />
+            
+            <Input
+              label={t('legalName')}
+              value={form.legalName}
+              onChange={handleChange('legalName')}
+              placeholder={t('legalNamePlaceholder')}
+            />
+            
+            <Input
+              label={t('taxId')}
+              value={form.taxId}
+              onChange={handleChange('taxId')}
+              placeholder={t('taxIdPlaceholder')}
+            />
+          </div>
+
+          {/* Columna 2: Información de contacto */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'rgb(var(--color-primary-700))' }}>
+              {t('contactInfo')}
+            </h3>
+            
+            <Input
+              label={t('address')}
+              value={form.address}
+              onChange={handleChange('address')}
+              placeholder={t('addressPlaceholder')}
+            />
+            
+            <Input
+              label={t('phone')}
+              value={form.phone}
+              onChange={handleChange('phone')}
+              placeholder={t('phonePlaceholder')}
+            />
+            
+            <Input
+              label={t('email')}
+              type="email"
+              value={form.email}
+              onChange={handleChange('email')}
+              placeholder={t('emailPlaceholder')}
+            />
+            
+            <Input
+              label={t('website')}
+              value={form.website}
+              onChange={handleChange('website')}
+              placeholder={t('websitePlaceholder')}
+            />
           </div>
         </div>
 
-        <Input
-          label={t('name')}
-          value={form.name}
-          onChange={handleChange('name')}
-          placeholder={t('namePlaceholder')}
-        />
-        <Input
-          label={t('legalName')}
-          value={form.legalName}
-          onChange={handleChange('legalName')}
-          placeholder={t('legalNamePlaceholder')}
-        />
-        <Input
-          label={t('taxId')}
-          value={form.taxId}
-          onChange={handleChange('taxId')}
-          placeholder={t('taxIdPlaceholder')}
-        />
-        <Input
-          label={t('address')}
-          value={form.address}
-          onChange={handleChange('address')}
-          placeholder={t('addressPlaceholder')}
-        />
-        <Input
-          label={t('phone')}
-          value={form.phone}
-          onChange={handleChange('phone')}
-          placeholder={t('phonePlaceholder')}
-        />
-        <Input
-          label={t('email')}
-          type="email"
-          value={form.email}
-          onChange={handleChange('email')}
-          placeholder={t('emailPlaceholder')}
-        />
-        <Input
-          label={t('website')}
-          value={form.website}
-          onChange={handleChange('website')}
-          placeholder={t('websitePlaceholder')}
-        />
-
-        <div className="flex gap-3 pt-2">
+        {/* Botones de acción */}
+        <div className="flex gap-3 pt-6 justify-end">
           <Btn type="submit" variant="primary" disabled={saving}>
             {saving ? tCommon('actions.saving') : tCommon('actions.save')}
           </Btn>

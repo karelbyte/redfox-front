@@ -2,84 +2,120 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import Loading from "@/components/Loading/Loading";
-import { InvoiceFormData, Client,} from '@/types/invoice';
-import { invoiceService } from '@/services';
+import { Client } from '@/types/invoice';
+import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
-import Drawer from "@/components/Drawer/Drawer";
-import InvoiceForm from '@/components/Invoice/InvoiceForm';
+import InvoiceForm, { InvoiceFormRef } from '@/components/Invoice/InvoiceForm';
+import { Btn } from '@/components/atoms';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function CreateInvoicePage() {
   const t = useTranslations('pages.invoices');
+  const tCommon = useTranslations('common');
+  const router = useRouter();
+  const locale = useLocale();
+  const { can } = usePermissions();
   
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isFormLoading, setIsFormLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
   
-  const drawerRef = useRef<{ openDrawer: () => void; closeDrawer: () => void }>(null);
+  const formRef = useRef<InvoiceFormRef>(null);
 
   useEffect(() => {
     loadClients();
-    drawerRef.current?.openDrawer();
   }, []);
 
   const loadClients = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/clients');
-      const data = await response.json();
-      setClients(data.data || []);
+      const response = await clientsService.getClients();
+      setClients(response.data || []);
     } catch (error) {
       console.error('Error loading clients:', error);
-      toastService.error(t('errors.loadClients'));
+      toastService.error(t('messages.errorLoadingClients'));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFormSubmit = async (formData: InvoiceFormData) => {
-    try {
-      setIsFormLoading(true);
-      await invoiceService.createInvoice(formData);
-      toastService.success(t('messages.invoiceCreated'));
-      drawerRef.current?.closeDrawer();
-    } catch (error) {
-      console.error('Error creating invoice:', error);
-      toastService.error(t('errors.createInvoice'));
-    } finally {
-      setIsFormLoading(false);
+  const handleSave = () => {
+    if (formRef.current) {
+      formRef.current.submit();
     }
   };
 
-  const handleFormCancel = () => {
-    window.history.back();
+  const handleSuccess = () => {
+    toastService.success(t('messages.invoiceCreated'));
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+    // Opcional: redirigir a la lista de facturas
+    // router.push(`/${locale}/dashboard/facturas`);
   };
 
+  const handleBack = () => {
+    router.push(`/${locale}/dashboard/facturas`);
+  };
+
+  if (!can(["invoice_create"])) {
+    return <div>{t('noPermissionDesc')}</div>;
+  }
+
   if (loading) {
-    return <Loading size="lg" />;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loading size="lg" />
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('create.title')}</h1>
-          <p className="mt-1 text-sm text-gray-500">{t('create.subtitle')}</p>
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <Btn
+            variant="ghost"
+            onClick={handleBack}
+            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+          >
+            {tCommon('actions.back')}
+          </Btn>
+          <div>
+            <h1
+              className="text-2xl font-bold"
+              style={{ color: `rgb(var(--color-primary-800))` }}
+            >
+              {t('create.title')}
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">
+              {t('create.subtitle')}
+            </p>
+          </div>
         </div>
+        <Btn
+          onClick={handleSave}
+          disabled={!isFormValid}
+          loading={isSaving}
+        >
+          {tCommon('actions.save')}
+        </Btn>
       </div>
 
-      <Drawer
-        ref={drawerRef}
-        title={t('drawer.createTitle')}
-        onClose={() => window.history.back()}
-      >
+      <div className="max-w-4xl">
         <InvoiceForm
+          ref={formRef}
           clients={clients}
-          onSubmit={handleFormSubmit}
-          onCancel={handleFormCancel}
-          isLoading={isFormLoading}
+          onSuccess={handleSuccess}
+          onSavingChange={setIsSaving}
+          onValidChange={setIsFormValid}
         />
-      </Drawer>
+      </div>
     </div>
   );
 }

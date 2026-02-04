@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { PurchaseOrder } from '@/types/purchase-order';
 import { Btn } from '@/components/atoms';
 import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon, XMarkIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
@@ -14,6 +14,7 @@ interface PurchaseOrderTableProps {
   onReject: (purchaseOrder: PurchaseOrder) => void;
   onCancel: (purchaseOrder: PurchaseOrder) => void;
   onGeneratePDF: (purchaseOrder: PurchaseOrder) => void;
+  visibleColumns?: string[];
 }
 
 export default function PurchaseOrderTable({ 
@@ -24,12 +25,19 @@ export default function PurchaseOrderTable({
   onApprove, 
   onReject, 
   onCancel,
-  onGeneratePDF 
+  onGeneratePDF,
+  visibleColumns 
 }: PurchaseOrderTableProps) {
   const t = useTranslations('pages.purchaseOrders');
+  const locale = useLocale();
+
+  const isVisible = (key: string) => {
+    if (!visibleColumns) return true;
+    return visibleColumns.includes(key);
+  };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat(locale === 'es' ? 'es-ES' : 'en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
@@ -37,7 +45,7 @@ export default function PurchaseOrderTable({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('es-ES', {
+    return new Intl.DateTimeFormat(locale === 'es' ? 'es-ES' : 'en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit'
@@ -108,151 +116,183 @@ export default function PurchaseOrderTable({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.code')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.date')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.provider')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.warehouse')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.document')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.amount')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.status')}
-            </th>
-            <th 
-              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.actions')}
-            </th>
+            {isVisible('code') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.code')}
+              </th>
+            )}
+            {isVisible('date') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.date')}
+              </th>
+            )}
+            {isVisible('provider') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.provider')}
+              </th>
+            )}
+            {isVisible('warehouse') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.warehouse')}
+              </th>
+            )}
+            {isVisible('document') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.document')}
+              </th>
+            )}
+            {isVisible('amount') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.amount')}
+              </th>
+            )}
+            {isVisible('status') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.status')}
+              </th>
+            )}
+            {isVisible('actions') && (
+              <th 
+                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.actions')}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {purchaseOrders.map((purchaseOrder) => (
             <tr key={purchaseOrder.id} className="hover:bg-primary-50 transition-colors">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {purchaseOrder.code}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatDate(purchaseOrder.date)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {purchaseOrder.provider.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {purchaseOrder.warehouse.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {purchaseOrder.document}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatCurrency(purchaseOrder.amount)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(purchaseOrder.status)}`}
-                >
-                  {getStatusText(purchaseOrder.status)}
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <div className="flex justify-end gap-2">
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDetails(purchaseOrder)}
-                    leftIcon={<EyeIcon className="h-4 w-4" />}
-                    title={t('actions.viewDetails')}
-                  />
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onGeneratePDF(purchaseOrder)}
-                    leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
-                    title={t('actions.generatePDF')}
-                  />
-                  {canApprove(purchaseOrder.status) && (
+              {isVisible('code') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {purchaseOrder.code}
+                </td>
+              )}
+              {isVisible('date') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatDate(purchaseOrder.date)}
+                </td>
+              )}
+              {isVisible('provider') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {purchaseOrder.provider.name}
+                </td>
+              )}
+              {isVisible('warehouse') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {purchaseOrder.warehouse.name}
+                </td>
+              )}
+              {isVisible('document') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {purchaseOrder.document}
+                </td>
+              )}
+              {isVisible('amount') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatCurrency(purchaseOrder.amount)}
+                </td>
+              )}
+              {isVisible('status') && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(purchaseOrder.status)}`}
+                  >
+                    {getStatusText(purchaseOrder.status)}
+                  </span>
+                </td>
+              )}
+              {isVisible('actions') && (
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div className="flex justify-end gap-2">
                     <Btn
                       variant="ghost"
                       size="sm"
-                      onClick={() => onApprove(purchaseOrder)}
-                      leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                      title={t('actions.approve')}
-                      style={{ color: '#059669' }}
+                      onClick={() => onDetails(purchaseOrder)}
+                      leftIcon={<EyeIcon className="h-4 w-4" />}
+                      title={t('actions.viewDetails')}
                     />
-                  )}
-                  {canReject(purchaseOrder.status) && (
                     <Btn
                       variant="ghost"
                       size="sm"
-                      onClick={() => onReject(purchaseOrder)}
-                      leftIcon={<XCircleIcon className="h-4 w-4" />}
-                      title={t('actions.reject')}
-                      style={{ color: '#dc2626' }}
+                      onClick={() => onGeneratePDF(purchaseOrder)}
+                      leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
+                      title={t('actions.generatePDF')}
                     />
-                  )}
-                  {canCancel(purchaseOrder.status) && (
+                    {canApprove(purchaseOrder.status) && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onApprove(purchaseOrder)}
+                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
+                        title={t('actions.approve')}
+                        style={{ color: '#059669' }}
+                      />
+                    )}
+                    {canReject(purchaseOrder.status) && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onReject(purchaseOrder)}
+                        leftIcon={<XCircleIcon className="h-4 w-4" />}
+                        title={t('actions.reject')}
+                        style={{ color: '#dc2626' }}
+                      />
+                    )}
+                    {canCancel(purchaseOrder.status) && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onCancel(purchaseOrder)}
+                        leftIcon={<XMarkIcon className="h-4 w-4" />}
+                        title={t('actions.cancel')}
+                        style={{ color: '#f59e0b' }}
+                      />
+                    )}
                     <Btn
                       variant="ghost"
                       size="sm"
-                      onClick={() => onCancel(purchaseOrder)}
-                      leftIcon={<XMarkIcon className="h-4 w-4" />}
-                      title={t('actions.cancel')}
-                      style={{ color: '#f59e0b' }}
+                      onClick={() => onEdit(purchaseOrder)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={canEdit(purchaseOrder.status) ? t('actions.edit') : t(`actions.cannotEdit${purchaseOrder.status.charAt(0) + purchaseOrder.status.slice(1).toLowerCase()}`)}
+                      disabled={!canEdit(purchaseOrder.status)}
+                      className={!canEdit(purchaseOrder.status) ? 'opacity-50 cursor-not-allowed' : ''}
                     />
-                  )}
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(purchaseOrder)}
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={canEdit(purchaseOrder.status) ? t('actions.edit') : t(`actions.cannotEdit${purchaseOrder.status.charAt(0) + purchaseOrder.status.slice(1).toLowerCase()}`)}
-                    disabled={!canEdit(purchaseOrder.status)}
-                    className={!canEdit(purchaseOrder.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                  />
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(purchaseOrder)}
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={canDelete(purchaseOrder.status) ? t('actions.delete') : t(`actions.cannotDelete${purchaseOrder.status.charAt(0) + purchaseOrder.status.slice(1).toLowerCase()}`)}
-                    disabled={!canDelete(purchaseOrder.status)}
-                    className={!canDelete(purchaseOrder.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                    style={{ color: canDelete(purchaseOrder.status) ? '#dc2626' : '#9ca3af' }}
-                  />
-                </div>
-              </td>
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(purchaseOrder)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={canDelete(purchaseOrder.status) ? t('actions.delete') : t(`actions.cannotDelete${purchaseOrder.status.charAt(0) + purchaseOrder.status.slice(1).toLowerCase()}`)}
+                      disabled={!canDelete(purchaseOrder.status)}
+                      className={!canDelete(purchaseOrder.status) ? 'opacity-50 cursor-not-allowed' : ''}
+                      style={{ color: canDelete(purchaseOrder.status) ? '#dc2626' : '#9ca3af' }}
+                    />
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

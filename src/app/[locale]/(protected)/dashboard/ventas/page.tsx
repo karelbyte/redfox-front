@@ -23,6 +23,8 @@ import { Btn } from '@/components/atoms';
 import { PlusIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import { GlobalInvoiceFormData } from '@/types/invoice';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 export default function VentasPage() {
   const router = useRouter();
@@ -49,6 +51,22 @@ export default function VentasPage() {
   const [isCreatingGlobalInvoice, setIsCreatingGlobalInvoice] = useState(false);
   const formRef = useRef<SaleFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const availableColumns = [
+    { key: 'code', label: t('table.code') },
+    { key: 'date', label: t('table.date') },
+    { key: 'destination', label: t('table.destination') },
+    { key: 'client', label: t('table.client') },
+    { key: 'amount', label: t('table.amount') },
+    { key: 'status', label: t('table.status') },
+    { key: 'fiscalStatus', label: t('table.fiscalStatus') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'sales_table',
+    availableColumns.map(c => c.key)
+  );
 
   const fetchSales = async (page: number) => {
     try {
@@ -280,6 +298,15 @@ export default function VentasPage() {
         </div>
       </div>
 
+      {/* Segunda fila con el selector de columnas */}
+      <div className="mt-6 flex justify-end">
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
@@ -318,7 +345,7 @@ export default function VentasPage() {
         </div>
       ) : (
         <>
-          <div className="mt-6">
+          <div className="mt-4">
             <SaleTable
               sales={sales}
               onEdit={handleEdit}
@@ -328,6 +355,7 @@ export default function VentasPage() {
               onRefund={openRefundModal}
               onPrintTicket={handlePrintTicket}
               onInvoice={handleInvoice}
+              visibleColumns={visibleColumns}
             />
           </div>
 

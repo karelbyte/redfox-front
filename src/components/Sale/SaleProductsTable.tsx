@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { SaleDetail } from '@/types/sale';
 import { Btn } from '@/components/atoms';
@@ -23,11 +23,12 @@ export default function SaleProductsTable({
   const t = useTranslations('pages.sales.productsTable');
   const deleteT = useTranslations('pages.sales.deleteProduct');
   const commonT = useTranslations('common');
+  const locale = useLocale();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<SaleDetail | null>(null);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat(locale === 'es' ? 'es-ES' : 'en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);

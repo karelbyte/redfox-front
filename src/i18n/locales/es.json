@@ -1274,7 +1274,12 @@
             "two_months": "Bimestral"
           },
           "create": "Crear",
-          "cancel": "Cancelar"
+          "cancel": "Cancelar",
+          "errors": {
+            "fromRequired": "La fecha inicial es requerida",
+            "toRequired": "La fecha final es requerida",
+            "toMustBeAfterFrom": "La fecha final debe ser mayor o igual a la fecha inicial"
+          }
         }
       },
       "closeSale": {
@@ -1528,6 +1533,51 @@
         "adjust": "Ajustar"
       }
     },
+    "cashRegister": {
+      "title": "Caja Registradora",
+      "subtitle": "Gestión y control de caja registradora",
+      "status": {
+        "title": "Estado de Caja",
+        "label": "Estado",
+        "open": "Abierta",
+        "closed": "Cerrada"
+      },
+      "balance": {
+        "total": "Balance Total",
+        "cash": "Efectivo en Caja"
+      },
+      "actions": {
+        "updateBalance": "Actualizar Balance",
+        "cashDrawer": "Corte de Caja",
+        "initializeCash": "Inicializar Caja"
+      },
+      "transactions": {
+        "title": "Transacciones",
+        "subtitle": "Historial de movimientos de caja",
+        "refresh": "Actualizar",
+        "loading": "Cargando transacciones...",
+        "empty": "No hay transacciones",
+        "emptyDescription": "Las transacciones aparecerán aquí cuando se realicen ventas",
+        "types": {
+          "sale": "Venta",
+          "refund": "Reembolso",
+          "adjustment": "Ajuste",
+          "closing": "Cierre"
+        },
+        "paymentMethods": {
+          "cash": "Efectivo",
+          "card": "Tarjeta"
+        }
+      },
+      "noCashRegister": {
+        "title": "No hay caja activa",
+        "description": "Para comenzar a gestionar la caja registradora, necesitas inicializar una caja con un monto inicial."
+      },
+      "messages": {
+        "noCashRegisterActive": "No hay caja registradora activa. Inicializa una caja para comenzar.",
+        "errorFetchingInfo": "Error al obtener información de la caja registradora"
+      }
+    },
     "invoices": {
       "title": "Facturas",
       "subtitle": "Gestión de facturas y CFDI",
@@ -1582,6 +1632,11 @@
           "card": "Tarjeta",
           "transfer": "Transferencia",
           "check": "Cheque"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "dateRequired": "La fecha es requerida",
+          "clientRequired": "El cliente es requerido"
         },
         "save": "Guardar",
         "cancel": "Cancelar",
@@ -1650,7 +1705,8 @@
         "cfdiGenerated": "CFDI generado exitosamente",
         "cfdiCancelled": "CFDI cancelado exitosamente",
         "pdfDownloaded": "PDF descargado exitosamente",
-        "xmlDownloaded": "XML descargado exitosamente"
+        "xmlDownloaded": "XML descargado exitosamente",
+        "errorLoadingClients": "Error al cargar los clientes"
       },
       "errors": {
         "loadInvoices": "Error al cargar las facturas",
@@ -1667,6 +1723,8 @@
     },
     "companySettings": {
       "title": "Generales de empresa",
+      "basicInfo": "Información Básica",
+      "contactInfo": "Información de Contacto",
       "logo": "Logo",
       "changeLogo": "Cambiar logo",
       "name": "Nombre comercial",

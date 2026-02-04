@@ -148,7 +148,7 @@ export default function WarehousesPage() {
         )}
       </div>
 
-      <div className="mt-6 flex justify-end">
+      <div className="my-6 flex justify-end ">
         <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}

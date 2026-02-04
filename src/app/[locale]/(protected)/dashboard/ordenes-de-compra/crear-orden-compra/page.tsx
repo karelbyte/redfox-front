@@ -73,7 +73,7 @@ export default function CreatePurchaseOrderPage() {
       const response = await providersService.getProviders();
       setProviders(response.data || []);
     } catch  {
-      toastService.error('Error al cargar proveedores');
+      toastService.error(t('messages.errorLoadingProviders'));
     } finally {
       setLoadingProviders(false);
     }
@@ -85,7 +85,7 @@ export default function CreatePurchaseOrderPage() {
       const response = await warehousesService.getWarehouses({ isClosed: true });
       setWarehouses(response.data || []);
     } catch  {
-      toastService.error('Error al cargar almacenes');
+      toastService.error(t('messages.errorLoadingWarehouses'));
     } finally {
       setLoadingWarehouses(false);
     }
@@ -352,7 +352,7 @@ export default function CreatePurchaseOrderPage() {
         id="provider-drawer"
         isOpen={showProviderDrawer}
         onClose={handleProviderDrawerClose}
-        title="Nuevo Proveedor"
+        title={t('actions.createNewProvider')}
         onSave={handleProviderSave}
         isSaving={isSavingProvider}
         isFormValid={isProviderFormValid}

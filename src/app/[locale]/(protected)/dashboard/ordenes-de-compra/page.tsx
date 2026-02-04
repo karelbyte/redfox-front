@@ -24,6 +24,8 @@ import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 export default function PurchaseOrdersPage() {
   const router = useRouter();
@@ -49,6 +51,22 @@ export default function PurchaseOrdersPage() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef<PurchaseOrderFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const availableColumns = [
+    { key: 'code', label: t('table.code') },
+    { key: 'date', label: t('table.date') },
+    { key: 'provider', label: t('table.provider') },
+    { key: 'warehouse', label: t('table.warehouse') },
+    { key: 'document', label: t('table.document') },
+    { key: 'amount', label: t('table.amount') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'purchase_orders_table',
+    availableColumns.map(c => c.key)
+  );
 
   const fetchPurchaseOrders = async (page: number) => {
     try {
@@ -261,6 +279,15 @@ export default function PurchaseOrdersPage() {
         )}
       </div>
 
+      {/* Segunda fila con el selector de columnas */}
+      <div className="mt-6 flex justify-end">
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
@@ -299,7 +326,7 @@ export default function PurchaseOrdersPage() {
         </div>
       ) : (
         <>
-          <div className="mt-6">
+          <div className="mt-4">
             <PurchaseOrderTable
               purchaseOrders={purchaseOrders}
               onEdit={handleEdit}
@@ -309,6 +336,7 @@ export default function PurchaseOrdersPage() {
               onReject={openRejectModal}
               onCancel={openCancelModal}
               onGeneratePDF={handleGeneratePDF}
+              visibleColumns={visibleColumns}
             />
           </div>
 
