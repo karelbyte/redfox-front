@@ -15,6 +15,8 @@ import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 
 export default function BrandsPage() {
@@ -32,6 +34,19 @@ export default function BrandsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const formRef = useRef<BrandFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const availableColumns = [
+    { key: 'code', label: t('form.code') },
+    { key: 'description', label: t('form.description') },
+    { key: 'image', label: t('form.image') },
+    { key: 'status', label: t('form.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'brands_table',
+    availableColumns.map(c => c.key)
+  );
 
   const fetchBrands = async (page: number, term?: string) => {
     try {
@@ -55,7 +70,7 @@ export default function BrandsPage() {
       initialFetchDone.current = true;
       fetchBrands(currentPage);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async () => {
@@ -130,19 +145,26 @@ export default function BrandsPage() {
         )}
       </div>
 
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t('searchBrands')}
-          onSearch={(term: string) => {
-            setSearchTerm(term);
-            fetchBrands(1, term);
-          }}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t('searchBrands')}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              fetchBrands(1, term);
+            }}
+          />
+        </div>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-           <Loading size="lg" />
+          <Loading size="lg" />
         </div>
       ) : brands && brands.length === 0 ? (
         <EmptyState
@@ -158,6 +180,7 @@ export default function BrandsPage() {
               brands={brands}
               onEdit={handleEdit}
               onDelete={openDeleteModal}
+              visibleColumns={visibleColumns}
             />
           </div>
 

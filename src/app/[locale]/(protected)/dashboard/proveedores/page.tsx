@@ -15,6 +15,8 @@ import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import Loading from '@/components/Loading/Loading';
 import Pagination from "@/components/Pagination/Pagination";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useColumnPersistence } from "@/hooks/useColumnPersistence";
+import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function ProvidersPage() {
   const t = useTranslations('pages.providers');
@@ -33,6 +35,20 @@ export default function ProvidersPage() {
   const formRef = useRef<ProviderFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  const availableColumns = [
+    { key: 'code', label: t('table.code') },
+    { key: 'name', label: t('table.name') },
+    { key: 'description', label: t('table.description') },
+    { key: 'email', label: t('table.email') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'providers_table',
+    availableColumns.map(c => c.key)
+  );
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchProviders = async (page: number = 1, term?: string) => {
     try {
@@ -41,7 +57,7 @@ export default function ProvidersPage() {
       setProviders(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
-      
+
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
       if (!hasInitialData && !term) {
         setHasInitialData(true);
@@ -60,7 +76,7 @@ export default function ProvidersPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-    fetchProviders(1);
+      fetchProviders(1);
     }
   }, [fetchProviders]);
 
@@ -127,13 +143,20 @@ export default function ProvidersPage() {
       </div>
 
       {/* Filtro de búsqueda */}
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t('searchProviders')}
-          onSearch={(term: string) => {
-            setSearchTerm(term);
-            fetchProviders(1, term);
-          }}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t('searchProviders')}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              fetchProviders(1, term);
+            }}
+          />
+        </div>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
       </div>
 
@@ -155,6 +178,7 @@ export default function ProvidersPage() {
               providers={providers}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              visibleColumns={visibleColumns}
             />
           </div>
 

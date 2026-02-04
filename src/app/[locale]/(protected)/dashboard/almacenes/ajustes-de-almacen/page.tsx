@@ -18,6 +18,8 @@ import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { warehousesService } from '@/services/warehouses.service';
 import { Warehouse } from '@/types/warehouse';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 export default function WarehouseAdjustmentsPage() {
   const t = useTranslations('pages.warehouseAdjustments');
@@ -25,7 +27,7 @@ export default function WarehouseAdjustmentsPage() {
   const router = useRouter();
   const locale = useLocale();
   const { can } = usePermissions();
-  
+
   const [adjustments, setAdjustments] = useState<WarehouseAdjustment[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,12 +42,27 @@ export default function WarehouseAdjustmentsPage() {
   const formRef = useRef<WarehouseAdjustmentFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  const availableColumns = [
+    { key: "code", label: t("table.code") },
+    { key: "sourceWarehouse", label: t("table.sourceWarehouse") },
+    { key: "targetWarehouse", label: t("table.targetWarehouse") },
+    { key: "date", label: t("table.date") },
+    { key: "description", label: t("table.description") },
+    { key: "status", label: t("table.status") },
+    { key: "actions", label: t("table.actions") },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    "warehouse_adjustments_table",
+    availableColumns.map((c) => c.key)
+  );
+
   useEffect(() => {
     if (!initialFetchDone.current && can(['warehouse_adjustment_module_view'])) {
       initialFetchDone.current = true;
       loadAdjustments();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadAdjustments = async (page?: number) => {
@@ -183,12 +200,20 @@ export default function WarehouseAdjustmentsPage() {
         </Btn>
       </div>
 
+      <div className="mt-6 flex justify-end">
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
         </div>
       ) : adjustments && adjustments.length === 0 ? (
-        <div 
+        <div
           className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
           style={{ borderColor: `rgb(var(--color-primary-200))` }}
         >
@@ -206,13 +231,13 @@ export default function WarehouseAdjustmentsPage() {
               d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
             />
           </svg>
-          <p 
+          <p
             className="text-lg font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-400))` }}
           >
             {t('noAdjustments')}
           </p>
-          <p 
+          <p
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-300))` }}
           >
@@ -228,6 +253,7 @@ export default function WarehouseAdjustmentsPage() {
               onDelete={openDeleteModal}
               onDetails={handleDetails}
               onClose={openCloseModal}
+              visibleColumns={visibleColumns}
             />
           </div>
 

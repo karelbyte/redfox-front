@@ -14,6 +14,8 @@ import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 export default function TaxesPage() {
   const t = useTranslations('pages.taxes');
@@ -32,6 +34,20 @@ export default function TaxesPage() {
   const formRef = useRef<TaxFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  const availableColumns = [
+    { key: 'code', label: t('form.code') },
+    { key: 'name', label: t('form.name') },
+    { key: 'rate', label: t('table.rate') },
+    { key: 'type', label: t('taxType') },
+    { key: 'status', label: t('form.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'taxes_table',
+    availableColumns.map(c => c.key)
+  );
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTaxes = async (page: number = 1, term?: string) => {
     try {
@@ -40,7 +56,7 @@ export default function TaxesPage() {
       setTaxes(response.data);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
-      
+
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
       if (!hasInitialData && !term) {
         setHasInitialData(true);
@@ -59,7 +75,7 @@ export default function TaxesPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-    fetchTaxes(1);
+      fetchTaxes(1);
     }
   }, [fetchTaxes]);
 
@@ -126,13 +142,20 @@ export default function TaxesPage() {
       </div>
 
       {/* Filtro de búsqueda */}
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t('searchTaxes')}
-          onSearch={(term: string) => {
-            setSearchTerm(term);
-            fetchTaxes(1, term);
-          }}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t('searchTaxes')}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              fetchTaxes(1, term);
+            }}
+          />
+        </div>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
       </div>
 
@@ -154,6 +177,7 @@ export default function TaxesPage() {
               taxes={taxes}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              visibleColumns={visibleColumns}
             />
           </div>
 

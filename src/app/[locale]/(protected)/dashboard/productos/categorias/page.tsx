@@ -16,6 +16,8 @@ import Loading from "@/components/Loading/Loading";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useColumnPersistence } from "@/hooks/useColumnPersistence";
+import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function CategoriesPage() {
   const t = useTranslations('pages.categories');
@@ -34,6 +36,20 @@ export default function CategoriesPage() {
   const formRef = useRef<CategoryFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  const availableColumns = [
+    { key: 'name', label: t('form.name') },
+    { key: 'slug', label: t('form.slug') },
+    { key: 'image', label: t('form.image') },
+    { key: 'description', label: t('form.description') },
+    { key: 'status', label: t('form.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'categories_table',
+    availableColumns.map(c => c.key)
+  );
+
   const fetchCategories = async (page: number, term?: string) => {
     try {
       setLoading(true);
@@ -41,7 +57,7 @@ export default function CategoriesPage() {
       setCategories(response.data);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
-      
+
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
       if (!hasInitialData && !term) {
         setHasInitialData(true);
@@ -128,13 +144,20 @@ export default function CategoriesPage() {
       </div>
 
       {/* Filtro de búsqueda */}
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t('searchCategories')}
-          onSearch={(term: string) => {
-            setSearchTerm(term);
-            fetchCategories(1, term);
-          }}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t('searchCategories')}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              fetchCategories(1, term);
+            }}
+          />
+        </div>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
       </div>
 
@@ -156,6 +179,7 @@ export default function CategoriesPage() {
               categories={categories}
               onEdit={handleEdit}
               onDelete={openDeleteModal}
+              visibleColumns={visibleColumns}
             />
           </div>
 

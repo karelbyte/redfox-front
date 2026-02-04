@@ -15,6 +15,8 @@ import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useColumnPersistence } from "@/hooks/useColumnPersistence";
+import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function ClientsPage() {
   const t = useTranslations("pages.clients");
@@ -33,6 +35,21 @@ export default function ClientsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<ClientFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const availableColumns = [
+    { key: 'code', label: t('table.code') },
+    { key: 'name', label: t('table.name') },
+    { key: 'description', label: t('table.description') },
+    { key: 'email', label: t('table.email') },
+    { key: 'tax_document', label: t('table.taxDocument') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'clients_table',
+    availableColumns.map(c => c.key)
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchClients = async (page: number = 1, term?: string) => {
@@ -61,7 +78,7 @@ export default function ClientsPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-    fetchClients(1);
+      fetchClients(1);
     }
   }, [fetchClients]);
 
@@ -163,13 +180,20 @@ export default function ClientsPage() {
         </div>
       </div>
       {/* Filtro de búsqueda */}
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t("searchClients")}
-          onSearch={(term: string) => {
-            setSearchTerm(term);
-            fetchClients(1, term);
-          }}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t("searchClients")}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              fetchClients(1, term);
+            }}
+          />
+        </div>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
       </div>
       {isLoading ? (
@@ -190,6 +214,7 @@ export default function ClientsPage() {
               clients={clients}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              visibleColumns={visibleColumns}
             />
           </div>
           {totalPages > 1 && (

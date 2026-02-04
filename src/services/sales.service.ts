@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Sale, SaleFormData, SaleDetailFormData, SaleDetail, PaginatedSaleResponse, PaginatedSaleDetailsResponse, SaleCloseResponse } from '@/types/sale';
+import { Sale, SaleFormData, SaleDetailFormData, SaleDetail, PaginatedSaleResponse, PaginatedSaleDetailsResponse, SaleCloseResponse, SaleStatus } from '@/types/sale';
 
 class SaleService {
   async getSales(page?: number): Promise<PaginatedSaleResponse> {
@@ -15,7 +15,7 @@ class SaleService {
       destination: data.destination,
       client_id: data.client_id,
       type: data.type,
-      status: true // Por defecto true según la especificación
+      status: SaleStatus.OPEN
     };
     const response = await api.post<Sale>('/withdrawals', createData);
     return response;
@@ -38,6 +38,11 @@ class SaleService {
 
   async closeSale(id: string): Promise<SaleCloseResponse> {
     const response = await api.post<SaleCloseResponse>(`/withdrawals/${id}/close`, {});
+    return response;
+  }
+
+  async refundSale(id: string): Promise<Sale> {
+    const response = await api.post<Sale>(`/withdrawals/${id}/refund`, {});
     return response;
   }
 

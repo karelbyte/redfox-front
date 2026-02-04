@@ -56,6 +56,12 @@ export interface ConvertWithdrawalData {
   status: InvoiceStatus;
 }
 
+export interface GlobalInvoiceFormData {
+  from: string;  // ISO date (YYYY-MM-DD)
+  to: string;    // ISO date (YYYY-MM-DD)
+  periodicity: 'day' | 'week' | 'fortnight' | 'month' | 'two_months';
+}
+
 export interface PaginatedInvoiceResponse {
   data: Invoice[];
   meta: {

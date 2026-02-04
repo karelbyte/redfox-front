@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Sale, SaleCloseResponse } from '@/types/sale';
+import { Sale, SaleCloseResponse, SaleStatus } from '@/types/sale';
 import { saleService } from '@/services/sales.service';
 import { invoiceService } from '@/services';
 import { toastService } from '@/services/toast.service';
@@ -13,13 +13,16 @@ import SaleTable from '@/components/Sale/SaleTable';
 import SaleForm from '@/components/Sale/SaleForm';
 import DeleteSaleModal from '@/components/Sale/DeleteSaleModal';
 import CloseSaleModal from '@/components/Sale/CloseSaleModal';
+import RefundSaleModal from '@/components/Sale/RefundSaleModal';
 import SaleCloseResultModal from '@/components/Sale/SaleCloseResultModal';
+import GlobalInvoiceModal from '@/components/Invoice/GlobalInvoiceModal';
 import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { SaleFormRef } from '@/components/Sale/SaleForm';
 import { Btn } from '@/components/atoms';
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
+import { GlobalInvoiceFormData } from '@/types/invoice';
 
 export default function VentasPage() {
   const router = useRouter();
@@ -36,10 +39,14 @@ export default function VentasPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<Sale | null>(null);
   const [saleToClose, setSaleToClose] = useState<Sale | null>(null);
+  const [saleToRefund, setSaleToRefund] = useState<Sale | null>(null);
   const [isClosingSale, setIsClosingSale] = useState(false);
+  const [isRefundingSale, setIsRefundingSale] = useState(false);
   const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPrintingTicket, setIsPrintingTicket] = useState(false);
+  const [showGlobalInvoiceModal, setShowGlobalInvoiceModal] = useState(false);
+  const [isCreatingGlobalInvoice, setIsCreatingGlobalInvoice] = useState(false);
   const formRef = useRef<SaleFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -104,6 +111,26 @@ export default function VentasPage() {
     }
   };
 
+  const handleRefund = async () => {
+    if (!saleToRefund) return;
+
+    try {
+      setIsRefundingSale(true);
+      await saleService.refundSale(saleToRefund.id);
+      toastService.success(t('messages.saleRefunded'));
+      fetchSales(currentPage);
+      setSaleToRefund(null);
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorRefunded'));
+      }
+    } finally {
+      setIsRefundingSale(false);
+    }
+  };
+
   const handlePrintTicket = async (sale: Sale) => {
     try {
       setIsPrintingTicket(true);
@@ -156,7 +183,7 @@ export default function VentasPage() {
         invoice_code: invoiceCode,
         status: 'DRAFT' as any
       });
-      
+
       toastService.success(t('messages.invoiceCreated'));
       router.push(`/${locale}/dashboard/facturas/facturas/${invoice.id}`);
     } catch (error) {
@@ -199,9 +226,32 @@ export default function VentasPage() {
     setSaleToClose(sale);
   };
 
+  const openRefundModal = (sale: Sale) => {
+    setSaleToRefund(sale);
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     fetchSales(page);
+  };
+
+  const handleCreateGlobalInvoice = async (data: GlobalInvoiceFormData) => {
+    try {
+      setIsCreatingGlobalInvoice(true);
+      const invoice = await invoiceService.createGlobalInvoice(data);
+      toastService.success(t('messages.globalInvoiceCreated'));
+      setShowGlobalInvoiceModal(false);
+      router.push(`/${locale}/dashboard/facturas/facturas/${invoice.id}`);
+    } catch (error) {
+      console.error('Error creating global invoice:', error);
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorCreatingGlobalInvoice'));
+      }
+    } finally {
+      setIsCreatingGlobalInvoice(false);
+    }
   };
 
   return (
@@ -210,15 +260,24 @@ export default function VentasPage() {
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={() => {
-            setEditingSale(null);
-            setShowDrawer(true);
-          }}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('newSale')}
-        </Btn>
+        <div className="flex gap-2">
+          <Btn
+            onClick={() => setShowGlobalInvoiceModal(true)}
+            leftIcon={<DocumentTextIcon className="h-5 w-5" />}
+            variant="outline"
+          >
+            {t('globalInvoice')}
+          </Btn>
+          <Btn
+            onClick={() => {
+              setEditingSale(null);
+              setShowDrawer(true);
+            }}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('newSale')}
+          </Btn>
+        </div>
       </div>
 
       {loading ? (
@@ -226,7 +285,7 @@ export default function VentasPage() {
           <Loading size="lg" />
         </div>
       ) : sales && sales.length === 0 ? (
-        <div 
+        <div
           className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
           style={{ borderColor: `rgb(var(--color-primary-200))` }}
         >
@@ -244,13 +303,13 @@ export default function VentasPage() {
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <p 
+          <p
             className="text-lg font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-400))` }}
           >
             {t('noSales')}
           </p>
-          <p 
+          <p
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-300))` }}
           >
@@ -266,6 +325,7 @@ export default function VentasPage() {
               onDelete={openDeleteModal}
               onDetails={handleDetails}
               onClose={openCloseModal}
+              onRefund={openRefundModal}
               onPrintTicket={handlePrintTicket}
               onInvoice={handleInvoice}
             />
@@ -319,6 +379,23 @@ export default function VentasPage() {
         isLoading={isClosingSale}
       />
 
+      {/* Modal para devolver venta */}
+      <RefundSaleModal
+        isOpen={!!saleToRefund}
+        sale={saleToRefund}
+        onClose={() => setSaleToRefund(null)}
+        onConfirm={handleRefund}
+        isLoading={isRefundingSale}
+      />
+
+      {/* Modal para crear factura global */}
+      <GlobalInvoiceModal
+        isOpen={showGlobalInvoiceModal}
+        onClose={() => setShowGlobalInvoiceModal(false)}
+        onConfirm={handleCreateGlobalInvoice}
+        isLoading={isCreatingGlobalInvoice}
+      />
+
       {/* Modal para mostrar resultado del cierre */}
       {closeResult && (
         <SaleCloseResultModal
@@ -328,4 +405,4 @@ export default function VentasPage() {
       )}
     </div>
   );
-} 
+}

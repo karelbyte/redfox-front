@@ -17,7 +17,8 @@
       "loading": "Loading...",
       "saving": "Saving...",
       "deleting": "Deleting...",
-      "logout": "Logout"
+      "logout": "Logout",
+      "viewColumns": "View columns"
     },
     "status": {
       "active": "Active",
@@ -62,6 +63,9 @@
     "languages": {
       "es": "Spanish",
       "en": "English"
+    },
+    "table": {
+      "columns": "Columns"
     }
   },
   "navigation": {
@@ -1651,6 +1655,54 @@
         "imageTooBig": "Image must not exceed 5 MB"
       }
     },
+    "backup": {
+      "title": "Database Backups",
+      "subtitle": "Manage database backups and automated tasks",
+      "configuration": "Backup Configuration",
+      "autoBackup": "Automatic Backup",
+      "autoBackupDesc": "Enable or disable scheduled backup tasks",
+      "frequency": "Frequency",
+      "scheduledTime": "Scheduled Time",
+      "retentionCount": "Backups to Kept",
+      "manualBackup": "Manual Backup",
+      "manualBackupDesc": "Create an immediate backup of the entire database. The SQL file will be saved on the server and you can download it from history.",
+      "runNow": "Run Backup Now",
+      "running": "Running backup...",
+      "history": "Backup History",
+      "refresh": "Refresh",
+      "noLogs": "No backup logs found",
+      "download": "Download",
+      "table": {
+        "date": "Date",
+        "filename": "Filename",
+        "size": "Size",
+        "type": "Type",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "types": {
+        "manual": "Manual",
+        "automatic": "Automatic"
+      },
+      "status": {
+        "success": "Success",
+        "failure": "Failure"
+      },
+      "frequencies": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      },
+      "messages": {
+        "configLoaded": "Configuration loaded",
+        "configSaved": "Configuration saved successfully",
+        "backupStarted": "Backup started",
+        "backupSuccess": "Backup completed successfully",
+        "backupError": "Error performing backup",
+        "errorLoadingHistory": "Error loading backup history",
+        "errorDownloading": "Error downloading file"
+      }
+    },
     "roles": {
       "title": "Roles",
       "subtitle": "User role management",
@@ -1939,7 +1991,7 @@
         "noProductsClosedDesc": "This return has no registered products.",
         "headers": {
           "product": "Product",
-          "sku": "SKU", 
+          "sku": "SKU",
           "code": "Code",
           "brand": "Brand",
           "category": "Category",
@@ -2453,4 +2505,4 @@
     "showing": "Showing {from} to {to} of {total} results",
     "page": "Page {page} of {total}"
   }
-} 
+}

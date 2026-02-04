@@ -17,7 +17,8 @@
       "loading": "Cargando...",
       "saving": "Guardando...",
       "deleting": "Eliminando...",
-      "logout": "Cerrar sesión"
+      "logout": "Cerrar sesión",
+      "viewColumns": "Ver columnas"
     },
     "status": {
       "active": "Activo",
@@ -62,6 +63,9 @@
     "languages": {
       "es": "Español",
       "en": "Inglés"
+    },
+    "table": {
+      "columns": "Columnas"
     }
   },
   "navigation": {
@@ -97,6 +101,7 @@
     "salesList": "Lista de Ventas",
     "addSale": "Añadir Venta",
     "pos": "POS",
+    "cashRegister": "Caja",
     "users": "Usuarios",
     "companySettings": "Generales de empresa",
     "roles": "Roles",
@@ -1137,6 +1142,7 @@
     "sales": {
       "title": "Ventas",
       "newSale": "Nueva Venta",
+      "globalInvoice": "Factura Global",
       "editSale": "Editar Venta",
       "deleteSale": "Eliminar Venta",
       "saleDetails": "Detalles de la Venta",
@@ -1181,7 +1187,8 @@
       },
       "status": {
         "pending": "Pendiente",
-        "completed": "Completada"
+        "completed": "Completada",
+        "returned": "Devuelta"
       },
       "fiscalStatus": {
         "RECEIPT_ONLY": "Solo nota",
@@ -1201,7 +1208,9 @@
         "generatePDF": "Generar PDF",
         "generatingPDF": "Generando PDF...",
         "invoice": "Facturar",
-        "printTicket": "Imprimir Ticket"
+        "printTicket": "Imprimir Ticket",
+        "refund": "Devolver",
+        "refunded": "Devolviendo..."
       },
       "messages": {
         "saleCreated": "Venta creada correctamente",
@@ -1217,8 +1226,14 @@
         "errorGeneratingPDF": "Error al generar el PDF",
         "confirmDelete": "¿Estás seguro de que deseas eliminar la venta \"{code}\"? Esta acción no se puede deshacer.",
         "confirmClose": "¿Estás seguro de que deseas completar la venta \"{code}\"? Esta acción no se puede deshacer.",
+        "confirmRefund": "¿Estás seguro de que deseas devolver la venta \"{code}\"? Esta acción no se puede deshacer y afectará al inventario y a la caja.",
+        "saleRefunded": "Venta devuelta exitosamente",
+        "errorRefunded": "Error al devolver la venta",
         "invoiceCreated": "Factura creada exitosamente",
-        "errorCreatingInvoice": "Error al crear la factura"
+        "errorCreatingInvoice": "Error al crear la factura",
+        "globalInvoiceCreated": "Factura global creada exitosamente",
+        "errorCreatingGlobalInvoice": "Error al crear la factura global",
+        "noEligibleSales": "No hay ventas con recibo sin facturar en el periodo seleccionado"
       },
       "modals": {
         "delete": {
@@ -1228,6 +1243,10 @@
         "close": {
           "title": "Completar Venta",
           "message": "¿Estás seguro de que deseas completar la venta \"{code}\"? Esta acción no se puede deshacer."
+        },
+        "refund": {
+          "title": "Devolver Venta",
+          "message": "¿Estás seguro de que deseas devolver la venta \"{code}\"? Esta acción no se puede deshacer, se reintegrará el stock y se descontará el efectivo de la caja."
         },
         "closeResult": {
           "title": "Venta Completada Exitosamente",
@@ -1240,6 +1259,22 @@
           "actions": {
             "continue": "Continuar"
           }
+        },
+        "globalInvoice": {
+          "title": "Crear Factura Global",
+          "description": "Selecciona el rango de fechas para generar una factura global de todas las ventas con recibo que no han sido facturadas",
+          "from": "Desde",
+          "to": "Hasta",
+          "periodicity": "Periodicidad",
+          "periodicities": {
+            "day": "Diaria",
+            "week": "Semanal",
+            "fortnight": "Quincenal",
+            "month": "Mensual",
+            "two_months": "Bimestral"
+          },
+          "create": "Crear",
+          "cancel": "Cancelar"
         }
       },
       "closeSale": {
@@ -1289,7 +1324,7 @@
         "inventoryInfo": {
           "title": "Información del Producto en Inventario",
           "product": "Producto",
-          "sku": "SKU", 
+          "sku": "SKU",
           "code": "Código",
           "stockAvailable": "Stock Disponible",
           "inventoryPrice": "Precio en Inventario",
@@ -1656,6 +1691,54 @@
         "errorUploadingLogo": "Error al subir el logo",
         "invalidImage": "Solo se permiten imágenes",
         "imageTooBig": "La imagen no debe superar 5 MB"
+      }
+    },
+    "backup": {
+      "title": "Copias de Seguridad",
+      "subtitle": "Gestión de respaldos de la base de datos",
+      "configuration": "Configuración de Respaldo",
+      "autoBackup": "Respaldo Automático",
+      "autoBackupDesc": "Activa o desactiva las tareas programadas",
+      "frequency": "Frecuencia",
+      "scheduledTime": "Hora Programada",
+      "retentionCount": "Backups a Mantener",
+      "manualBackup": "Respaldo Manual",
+      "manualBackupDesc": "Crea un respaldo inmediato de toda la base de datos. El archivo SQL se guardará en el servidor y podrás descargarlo desde el historial.",
+      "runNow": "Realizar Respaldo Ahora",
+      "running": "Realizando respaldo...",
+      "history": "Historial de Respaldos",
+      "refresh": "Refrescar",
+      "noLogs": "No hay registros de respaldo",
+      "download": "Descargar",
+      "table": {
+        "date": "Fecha",
+        "filename": "Archivo",
+        "size": "Tamaño",
+        "type": "Tipo",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "types": {
+        "manual": "Manual",
+        "automatic": "Automático"
+      },
+      "status": {
+        "success": "Éxito",
+        "failure": "Error"
+      },
+      "frequencies": {
+        "daily": "Diario",
+        "weekly": "Semanal",
+        "monthly": "Mensual"
+      },
+      "messages": {
+        "configLoaded": "Configuración cargada",
+        "configSaved": "Configuración guardada correctamente",
+        "backupStarted": "Respaldo iniciado",
+        "backupSuccess": "Respaldo completado exitosamente",
+        "backupError": "Error al realizar el respaldo",
+        "errorLoadingHistory": "Error al cargar el historial",
+        "errorDownloading": "Error al descargar el archivo"
       }
     },
     "roles": {
@@ -2042,21 +2125,21 @@
         "open": "Abierto",
         "closed": "Cerrado"
       },
-              "actions": {
-          "create": "Crear Ajuste",
-          "save": "Guardar",
-          "saving": "Guardando...",
-          "cancel": "Cancelar",
-          "delete": "Eliminar",
-          "close": "Cerrar",
-          "viewDetails": "Ver Detalles",
-          "back": "Volver",
-          "edit": "Editar",
-          "add": "Agregar",
-          "cannotEditClosed": "No se puede editar un ajuste cerrado",
-          "cannotDeleteClosed": "No se puede eliminar un ajuste cerrado",
-          "continue": "Continuar"
-        },
+      "actions": {
+        "create": "Crear Ajuste",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "close": "Cerrar",
+        "viewDetails": "Ver Detalles",
+        "back": "Volver",
+        "edit": "Editar",
+        "add": "Agregar",
+        "cannotEditClosed": "No se puede editar un ajuste cerrado",
+        "cannotDeleteClosed": "No se puede eliminar un ajuste cerrado",
+        "continue": "Continuar"
+      },
       "form": {
         "code": "Código",
         "sourceWarehouse": "Almacén Fuente",
@@ -2482,4 +2565,4 @@
     "showing": "Mostrando {from} a {to} de {total} resultados",
     "page": "Página {page} de {total}"
   }
-} 
+}

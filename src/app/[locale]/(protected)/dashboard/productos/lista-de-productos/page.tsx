@@ -17,6 +17,8 @@ import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import { PlusIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 import Loading from "@/components/Loading/Loading";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useColumnPersistence } from "@/hooks/useColumnPersistence";
+import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function ListProductsPage() {
   const t = useTranslations("pages.products");
@@ -38,6 +40,21 @@ export default function ListProductsPage() {
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const formRef = useRef<ProductFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const availableColumns = [
+    { key: 'name', label: t('table.name') },
+    { key: 'code', label: t('table.code') },
+    { key: 'sku', label: t('table.sku') },
+    { key: 'brand', label: t('table.brand') },
+    { key: 'category', label: t('table.category') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'products_table',
+    availableColumns.map(c => c.key)
+  );
 
   const fetchProducts = async (page: number, term?: string) => {
     try {
@@ -94,10 +111,10 @@ export default function ListProductsPage() {
   const handleGeneratePDF = async () => {
     try {
       setGeneratingPDF(true);
-      
+
       // Obtener todos los productos sin paginación
       const response = await productService.getProducts(undefined, searchTerm);
-      
+
       if (response.data.length === 0) {
         toastService.error(t("messages.noProductsToExport"));
         return;
@@ -130,9 +147,9 @@ export default function ListProductsPage() {
       // Generar PDF
       const pdfService = new PDFService();
       const now = new Date();
-      const timestamp = now.toISOString().replace(/[:.]/g, '-').split('T')[0] + '_' + 
-                       now.toTimeString().split(' ')[0].replace(/:/g, '-');
-      
+      const timestamp = now.toISOString().replace(/[:.]/g, '-').split('T')[0] + '_' +
+        now.toTimeString().split(' ')[0].replace(/:/g, '-');
+
       pdfService.generateTablePDF(pdfData, {
         title: t("pdf.title"),
         subtitle: `${t("pdf.subtitle")} - ${now.toLocaleDateString()}`,
@@ -221,6 +238,11 @@ export default function ListProductsPage() {
         >
           {generatingPDF ? t("pdf.generating") : t("pdf.export")}
         </Btn>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
+        />
       </div>
 
       {loading ? (
@@ -242,6 +264,7 @@ export default function ListProductsPage() {
               onEdit={handleEdit}
               onDelete={setProductToDelete}
               onGenerateBarcode={handleGenerateBarcode}
+              visibleColumns={visibleColumns}
             />
           </div>
 

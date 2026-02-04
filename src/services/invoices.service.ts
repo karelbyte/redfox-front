@@ -1,9 +1,10 @@
 import { api } from './api';
-import { 
-  Invoice, 
-  InvoiceFormData, 
-  ConvertWithdrawalData, 
-  PaginatedInvoiceResponse, 
+import {
+  Invoice,
+  InvoiceFormData,
+  ConvertWithdrawalData,
+  GlobalInvoiceFormData,
+  PaginatedInvoiceResponse,
   PaginatedInvoiceDetailsResponse,
   InvoiceDetailFormData,
   InvoiceDetail
@@ -15,7 +16,7 @@ class InvoiceService {
     if (page) queryParams.append('page', page.toString());
     if (limit) queryParams.append('limit', limit.toString());
     if (term) queryParams.append('term', term);
-    
+
     const queryString = queryParams.toString();
     const response = await api.get<PaginatedInvoiceResponse>(`/invoices${queryString ? `?${queryString}` : ''}`);
     return response;
@@ -45,6 +46,11 @@ class InvoiceService {
     return response;
   }
 
+  async createGlobalInvoice(data: GlobalInvoiceFormData): Promise<Invoice> {
+    const response = await api.post<Invoice>('/invoices/global', data);
+    return response;
+  }
+
   async generateCFDI(id: string): Promise<Invoice> {
     const response = await api.post<Invoice>(`/invoices/${id}/generate-cfdi`);
     return response;
@@ -58,7 +64,7 @@ class InvoiceService {
   async getInvoiceDetails(id: string, productId?: string): Promise<PaginatedInvoiceDetailsResponse> {
     const queryParams = new URLSearchParams();
     if (productId) queryParams.append('product_id', productId);
-    
+
     const queryString = queryParams.toString();
     const response = await api.get<PaginatedInvoiceDetailsResponse>(`/invoices/${id}/details${queryString ? `?${queryString}` : ''}`);
     return response;

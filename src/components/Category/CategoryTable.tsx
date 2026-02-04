@@ -11,9 +11,10 @@ interface CategoryTableProps {
   categories: Category[];
   onEdit: (category: Category) => void;
   onDelete: (category: Category) => void;
+  visibleColumns?: string[];
 }
 
-export default function CategoryTable({ categories, onEdit, onDelete }: CategoryTableProps) {
+export default function CategoryTable({ categories, onEdit, onDelete, visibleColumns }: CategoryTableProps) {
   const t = useTranslations('pages.categories');
   const commonT = useTranslations('common');
   const { can } = usePermissions();
@@ -22,6 +23,11 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
   if (!Array.isArray(categories)) {
     return null;
   }
+
+  const isVisible = (key: string) => {
+    if (!visibleColumns) return true;
+    return visibleColumns.includes(key);
+  };
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategories(prev => {
@@ -42,78 +48,88 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
     return (
       <React.Fragment key={category.id}>
         <tr className={`${isChild ? 'bg-gray-50' : ''} hover:bg-gray-50 transition-colors`}>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            <div className="flex items-center">
-              {hasChildren && (
-                <Btn
-                  onClick={() => toggleCategory(category.id)}
-                  variant="ghost"
-                  size="sm"
-                  leftIcon={
-                    <ChevronDownIcon
-                      className={`h-4 w-4 transform transition-transform ${
-                        isExpanded ? 'rotate-180' : ''
-                      }`}
-                    />
-                  }
-                  className="mr-2"
-                />
-              )}
-              <span className={hasChildren ? 'font-medium' : ''}>
-                {category.name}
-                {hasChildren && category.children && (
-                  <span className="ml-2 text-xs text-gray-500">
-                    ({category.children.length} subcategorías)
-                  </span>
+          {isVisible('name') && (
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <div className="flex items-center">
+                {hasChildren && (
+                  <Btn
+                    onClick={() => toggleCategory(category.id)}
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={
+                      <ChevronDownIcon
+                        className={`h-4 w-4 transform transition-transform ${isExpanded ? 'rotate-180' : ''
+                          }`}
+                      />
+                    }
+                    className="mr-2"
+                  />
                 )}
+                <span className={hasChildren ? 'font-medium' : ''}>
+                  {category.name}
+                  {hasChildren && category.children && (
+                    <span className="ml-2 text-xs text-gray-500">
+                      ({category.children.length} subcategorías)
+                    </span>
+                  )}
+                </span>
+              </div>
+            </td>
+          )}
+          {isVisible('slug') && (
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{category.slug}</td>
+          )}
+          {isVisible('image') && (
+            <td className="px-6 py-4 whitespace-nowrap">
+              {category.image && (
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_URL_API}${category.image}`}
+                  alt={category.name}
+                  width={80}
+                  height={80}
+                  className="object-contain rounded-lg border border-gray-200"
+                />
+              )}
+            </td>
+          )}
+          {isVisible('description') && (
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{category.description}</td>
+          )}
+          {isVisible('status') && (
+            <td className="px-6 py-4 whitespace-nowrap">
+              <span
+                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}
+              >
+                {category.isActive ? commonT('status.active') : commonT('status.inactive')}
               </span>
-            </div>
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{category.slug}</td>
-          <td className="px-6 py-4 whitespace-nowrap">
-            {category.image && (
-              <Image 
-                src={`${process.env.NEXT_PUBLIC_URL_API}${category.image}`}
-                alt={category.name}
-                width={80}
-                height={80}
-                className="object-contain rounded-lg border border-gray-200"
-              />
-            )}
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{category.description}</td>
-          <td className="px-6 py-4 whitespace-nowrap">
-            <span
-              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}
-            >
-              {category.isActive ? commonT('status.active') : commonT('status.inactive')}
-            </span>
-          </td>
-          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <div className="flex justify-end space-x-2">
-              {can(['category_update']) && (
-                <Btn
-                  onClick={() => onEdit(category)}
-                  variant="ghost"
-                  size="sm"
-                  leftIcon={<PencilIcon className="h-4 w-4" />}
-                  title={commonT('actions.edit')}
-                />
-              )}
-              {can(['category_delete']) && (
-                <Btn
-                  onClick={() => onDelete(category)}
-                  variant="ghost"
-                  size="sm"
-                  leftIcon={<TrashIcon className="h-4 w-4" />}
-                  title={commonT('actions.delete')}
-                  style={{ color: '#dc2626' }}
-                />
-              )}
-            </div>
-          </td>
+            </td>
+          )}
+          {isVisible('actions') && (
+            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <div className="flex justify-end space-x-2">
+                {can(['category_update']) && (
+                  <Btn
+                    onClick={() => onEdit(category)}
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<PencilIcon className="h-4 w-4" />}
+                    title={commonT('actions.edit')}
+                  />
+                )}
+                {can(['category_delete']) && (
+                  <Btn
+                    onClick={() => onDelete(category)}
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<TrashIcon className="h-4 w-4" />}
+                    title={commonT('actions.delete')}
+                    style={{ color: '#dc2626' }}
+                  />
+                )}
+              </div>
+            </td>
+          )}
         </tr>
         {hasChildren && isExpanded && category.children && (
           <>
@@ -129,24 +145,36 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('form.name')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('form.slug')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('form.image')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('form.description')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('form.status')}
-            </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.actions')}
-            </th>
+            {isVisible('name') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('form.name')}
+              </th>
+            )}
+            {isVisible('slug') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('form.slug')}
+              </th>
+            )}
+            {isVisible('image') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('form.image')}
+              </th>
+            )}
+            {isVisible('description') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('form.description')}
+              </th>
+            )}
+            {isVisible('status') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('form.status')}
+              </th>
+            )}
+            {isVisible('actions') && (
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.actions')}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -155,4 +183,4 @@ export default function CategoryTable({ categories, onEdit, onDelete }: Category
       </table>
     </div>
   );
-} 
+}

@@ -44,7 +44,7 @@ export default function CertificationPackTable({
               {t('table.status')}
             </th>
             <th
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+              className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.default')}

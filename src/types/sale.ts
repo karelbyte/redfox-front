@@ -15,13 +15,19 @@ export interface Client {
 
 export type PackFiscalStatus = 'RECEIPT_ONLY' | 'INVOICED_DIRECT' | 'INVOICED_GLOBAL';
 
+export enum SaleStatus {
+  OPEN = 'OPEN',
+  CLOSED = 'CLOSED',
+  RETURNED = 'RETURNED',
+}
+
 export interface Sale {
   id: string;
   code: string;
   destination: string;
   client: Client;
   amount: string;
-  status: boolean;
+  status: SaleStatus;
   created_at: string;
   /** Estado fiscal: solo nota, facturada directa o facturada global */
   invoice_id?: string | null;
@@ -35,7 +41,7 @@ export interface SaleFormData {
   code: string;
   destination: string;
   client_id: string;
-  status?: boolean;
+  status?: SaleStatus;
   type: string;
 }
 

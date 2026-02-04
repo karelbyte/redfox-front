@@ -15,6 +15,8 @@ import Loading from "@/components/Loading/Loading";
 import { Btn, EmptyState } from "@/components/atoms";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useColumnPersistence } from "@/hooks/useColumnPersistence";
+import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function WarehousesPage() {
   const t = useTranslations("pages.warehouses");
@@ -34,6 +36,22 @@ export default function WarehousesPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<WarehouseFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const availableColumns = [
+    { key: "code", label: t("table.code") },
+    { key: "name", label: t("table.name") },
+    { key: "address", label: t("table.address") },
+    { key: "phone", label: t("table.phone") },
+    { key: "currency", label: t("table.currency") },
+    { key: "status", label: t("table.status") },
+    { key: "opening", label: t("table.opening") },
+    { key: "actions", label: t("table.actions") },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    "warehouses_table",
+    availableColumns.map((c) => c.key)
+  );
 
   const fetchWarehouses = async (page: number) => {
     try {
@@ -130,6 +148,14 @@ export default function WarehousesPage() {
         )}
       </div>
 
+      <div className="mt-6 flex justify-end">
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
@@ -146,6 +172,7 @@ export default function WarehousesPage() {
             onEdit={handleEdit}
             onDelete={openDeleteModal}
             onReload={handleReload}
+            visibleColumns={visibleColumns}
           />
           <div className="mt-4">
             <Pagination

@@ -11,6 +11,7 @@ interface InventoryTableProps {
   onViewProduct: (item: InventoryItem) => void;
   onViewHistory: (item: InventoryItem) => void;
   onSyncPack?: (item: InventoryItem) => void;
+  visibleColumns?: string[];
 }
 
 export default function InventoryTable({
@@ -19,6 +20,7 @@ export default function InventoryTable({
   onViewProduct,
   onViewHistory,
   onSyncPack,
+  visibleColumns,
 }: InventoryTableProps) {
   const t = useTranslations('pages.inventory');
 
@@ -39,6 +41,11 @@ export default function InventoryTable({
     });
   };
 
+  const isVisible = (key: string) => {
+    if (!visibleColumns) return true;
+    return visibleColumns.includes(key);
+  };
+
   if (!Array.isArray(inventoryItems)) {
     return null;
   }
@@ -48,93 +55,125 @@ export default function InventoryTable({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.product')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.sku')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.brand')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.category')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.quantity')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.price')} ({currencyCode})
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.date')}
-            </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('table.actions')}
-            </th>
+            {isVisible('product') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.product')}
+              </th>
+            )}
+            {isVisible('sku') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.sku')}
+              </th>
+            )}
+            {isVisible('brand') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.brand')}
+              </th>
+            )}
+            {isVisible('category') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.category')}
+              </th>
+            )}
+            {isVisible('quantity') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.quantity')}
+              </th>
+            )}
+            {isVisible('price') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.price')} ({currencyCode})
+              </th>
+            )}
+            {isVisible('date') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.date')}
+              </th>
+            )}
+            {isVisible('actions') && (
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.actions')}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {inventoryItems.map((item) => (
             <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{item.product.name}</div>
-                <div className="text-sm text-gray-500">{item.product.description}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {item.product.sku}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {typeof item.product.brand === "object"
-                  ? item.product.brand.description
-                  : item.product.brand}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {typeof item.product.category === "object"
-                  ? item.product.category.name
-                  : item.product.category}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <span className="font-medium">{item.quantity}</span>
-                <span className="text-gray-500 ml-1">
-                  {typeof item.product.measurement_unit === "object"
-                    ? item.product.measurement_unit.code
-                    : "pz"}
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                {formatPrice(item.price)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {formatDate(item.createdAt)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <div className="flex justify-end space-x-2">
-                  <Btn
-                    onClick={() => onViewProduct(item)}
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={<EyeIcon className="h-4 w-4" />}
-                    title={t('actions.viewProduct')}
-                  />
-                  <Btn
-                    onClick={() => onViewHistory(item)}
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={<ClockIcon className="h-4 w-4" />}
-                    title={t('actions.viewHistory')}
-                  />
-                  {onSyncPack && (
+              {isVisible('product') && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">{item.product.name}</div>
+                  <div className="text-sm text-gray-500">{item.product.description}</div>
+                </td>
+              )}
+              {isVisible('sku') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {item.product.sku}
+                </td>
+              )}
+              {isVisible('brand') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {typeof item.product.brand === "object"
+                    ? item.product.brand.description
+                    : item.product.brand}
+                </td>
+              )}
+              {isVisible('category') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {typeof item.product.category === "object"
+                    ? item.product.category.name
+                    : item.product.category}
+                </td>
+              )}
+              {isVisible('quantity') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <span className="font-medium">{item.quantity}</span>
+                  <span className="text-gray-500 ml-1">
+                    {typeof item.product.measurement_unit === "object"
+                      ? item.product.measurement_unit.code
+                      : "pz"}
+                  </span>
+                </td>
+              )}
+              {isVisible('price') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                  {formatPrice(item.price)}
+                </td>
+              )}
+              {isVisible('date') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {formatDate(item.createdAt)}
+                </td>
+              )}
+              {isVisible('actions') && (
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div className="flex justify-end space-x-2">
                     <Btn
-                      onClick={() => onSyncPack(item)}
+                      onClick={() => onViewProduct(item)}
                       variant="ghost"
                       size="sm"
-                      leftIcon={<ArrowPathIcon className="h-4 w-4" />}
-                      title={t('actions.syncWithPack')}
+                      leftIcon={<EyeIcon className="h-4 w-4" />}
+                      title={t('actions.viewProduct')}
                     />
-                  )}
-                </div>
-              </td>
+                    <Btn
+                      onClick={() => onViewHistory(item)}
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<ClockIcon className="h-4 w-4" />}
+                      title={t('actions.viewHistory')}
+                    />
+                    {onSyncPack && (
+                      <Btn
+                        onClick={() => onSyncPack(item)}
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={<ArrowPathIcon className="h-4 w-4" />}
+                        title={t('actions.syncWithPack')}
+                      />
+                    )}
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

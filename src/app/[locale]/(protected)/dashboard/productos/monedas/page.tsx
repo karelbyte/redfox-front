@@ -14,6 +14,8 @@ import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 export default function CurrenciesPage() {
   const t = useTranslations('pages.currencies');
@@ -32,6 +34,17 @@ export default function CurrenciesPage() {
   const formRef = useRef<CurrencyFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  const availableColumns = [
+    { key: 'code', label: t('form.code') },
+    { key: 'name', label: t('form.name') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'currencies_table',
+    availableColumns.map(c => c.key)
+  );
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchCurrencies = async (page: number = 1, term?: string) => {
     try {
@@ -40,7 +53,7 @@ export default function CurrenciesPage() {
       setCurrencies(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
-      
+
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
       if (!hasInitialData && !term) {
         setHasInitialData(true);
@@ -59,7 +72,7 @@ export default function CurrenciesPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-    fetchCurrencies(1);
+      fetchCurrencies(1);
     }
   }, [fetchCurrencies]);
 
@@ -133,13 +146,20 @@ export default function CurrenciesPage() {
       </div>
 
       {/* Filtro de búsqueda */}
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t('searchCurrencies')}
-          onSearch={(term: string) => {
-            setSearchTerm(term);
-            fetchCurrencies(1, term);
-          }}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t('searchCurrencies')}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              fetchCurrencies(1, term);
+            }}
+          />
+        </div>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
       </div>
 
@@ -161,6 +181,7 @@ export default function CurrenciesPage() {
               currencies={currencies}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              visibleColumns={visibleColumns}
             />
           </div>
 

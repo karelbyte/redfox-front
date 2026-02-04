@@ -18,6 +18,8 @@ import CloseReturnModal from '@/components/Return/CloseReturnModal';
 import DeleteReturnModal from '@/components/Return/DeleteReturnModal';
 import { warehousesService } from '@/services';
 import { toastService } from '@/services/toast.service';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 export default function ReturnsPage() {
   const t = useTranslations('pages.returns');
@@ -25,7 +27,7 @@ export default function ReturnsPage() {
   const router = useRouter();
   const locale = useLocale();
   const { can } = usePermissions();
-  
+
   const [returns, setReturns] = useState<Return[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,6 +42,21 @@ export default function ReturnsPage() {
   const formRef = useRef<{ submit: () => void } | null>(null);
   const initialFetchDone = useRef(false);
 
+  const availableColumns = [
+    { key: "code", label: t("table.code") },
+    { key: "sourceWarehouse", label: t("table.sourceWarehouse") },
+    { key: "targetProvider", label: t("table.targetProvider") },
+    { key: "date", label: t("table.date") },
+    { key: "description", label: t("table.description") },
+    { key: "status", label: t("table.status") },
+    { key: "actions", label: t("table.actions") },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    "returns_table",
+    availableColumns.map((c) => c.key)
+  );
+
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
@@ -48,7 +65,7 @@ export default function ReturnsPage() {
         loadWarehouses();
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadReturns = async (page: number = 1) => {
@@ -172,7 +189,6 @@ export default function ReturnsPage() {
             {t('subtitle')}
           </p>
         </div>
-        
         {can(['return_create']) && (
           <Btn
             leftIcon={<PlusIcon className="h-5 w-5" />}
@@ -183,39 +199,50 @@ export default function ReturnsPage() {
         )}
       </div>
 
-      {/* Content */}
-      {returns.length === 0 && !loading ? (
-        <EmptyState
-          title={t('noReturns')}
-          description={t('noReturnsDesc')}
-          actionButton={can(['return_module_create']) ? (
-            <Btn
-              leftIcon={<PlusIcon className="h-5 w-5" />}
-              onClick={() => setShowDrawer(true)}
-            >
-              {t('actions.create')}
-            </Btn>
-          ) : undefined}
+      <div className="flex justify-end mb-6">
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
-      ) : (
-        <>
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <ReturnTable
-              returns={returns}
-              onEdit={handleEdit}
-              onDelete={openDeleteModal}
-              onDetails={handleDetails}
-              onClose={openCloseModal}
-            />
-          </div>
+      </div>
 
-          {totalPages > 1 && (
-            <div className="mt-6 flex justify-center">
-              {/* Pagination component would go here */}
+      {/* Content */}
+      {
+        returns.length === 0 && !loading ? (
+          <EmptyState
+            title={t('noReturns')}
+            description={t('noReturnsDesc')}
+            actionButton={can(['return_module_create']) ? (
+              <Btn
+                leftIcon={<PlusIcon className="h-5 w-5" />}
+                onClick={() => setShowDrawer(true)}
+              >
+                {t('actions.create')}
+              </Btn>
+            ) : undefined}
+          />
+        ) : (
+          <>
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <ReturnTable
+                returns={returns}
+                onEdit={handleEdit}
+                onDelete={openDeleteModal}
+                onDetails={handleDetails}
+                onClose={openCloseModal}
+                visibleColumns={visibleColumns}
+              />
             </div>
-          )}
-        </>
-      )}
+
+            {totalPages > 1 && (
+              <div className="mt-6 flex justify-center">
+                {/* Pagination component would go here */}
+              </div>
+            )}
+          </>
+        )
+      }
 
       {/* Drawer para crear/editar devolución */}
       <Drawer
@@ -245,24 +272,28 @@ export default function ReturnsPage() {
       </Drawer>
 
       {/* Modal para eliminar devolución */}
-      {returnToDelete && (
-        <DeleteReturnModal
-          isOpen={!!returnToDelete}
-          return={returnToDelete}
-          onClose={() => setReturnToDelete(null)}
-          onConfirm={handleDelete}
-        />
-      )}
+      {
+        returnToDelete && (
+          <DeleteReturnModal
+            isOpen={!!returnToDelete}
+            return={returnToDelete}
+            onClose={() => setReturnToDelete(null)}
+            onConfirm={handleDelete}
+          />
+        )
+      }
 
       {/* Modal para cerrar devolución */}
-      {returnToClose && (
-        <CloseReturnModal
-          isOpen={!!returnToClose}
-          return={returnToClose}
-          onClose={() => setReturnToClose(null)}
-          onConfirm={handleClose}
-        />
-      )}
-    </div>
+      {
+        returnToClose && (
+          <CloseReturnModal
+            isOpen={!!returnToClose}
+            return={returnToClose}
+            onClose={() => setReturnToClose(null)}
+            onConfirm={handleClose}
+          />
+        )
+      }
+    </div >
   );
 } 

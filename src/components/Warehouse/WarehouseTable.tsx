@@ -22,6 +22,7 @@ interface WarehouseTableProps {
   onEdit: (warehouse: Warehouse) => void;
   onDelete: (warehouse: Warehouse) => void;
   onReload: () => void;
+  visibleColumns?: string[];
 }
 
 export default function WarehouseTable({
@@ -29,6 +30,7 @@ export default function WarehouseTable({
   onEdit,
   onDelete,
   onReload,
+  visibleColumns,
 }: WarehouseTableProps) {
   const t = useTranslations("pages.warehouses");
   const { can } = usePermissions();
@@ -50,8 +52,7 @@ export default function WarehouseTable({
 
   const handleOpenAperturas = (warehouse: Warehouse) => {
     router.push(
-      `/${locale}/dashboard/almacenes/aperturas?warehouse_id=${
-        warehouse.id
+      `/${locale}/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id
       }&warehouse_name=${encodeURIComponent(warehouse.name)}`
     );
   };
@@ -89,60 +90,81 @@ export default function WarehouseTable({
     return null;
   }
 
+  const isVisible = (key: string) => {
+    if (!visibleColumns) return true;
+    return visibleColumns.includes(key);
+  };
+
   return (
     <>
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.code")}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.name")}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.address")}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.phone")}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.currency")}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.status")}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.opening")}
-              </th>
-              <th
-                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
-                style={{ color: "rgb(var(--color-primary-600))" }}
-              >
-                {t("table.actions")}
-              </th>
+              {isVisible("code") && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.code")}
+                </th>
+              )}
+              {isVisible("name") && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.name")}
+                </th>
+              )}
+              {isVisible("address") && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.address")}
+                </th>
+              )}
+              {isVisible("phone") && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.phone")}
+                </th>
+              )}
+              {isVisible("currency") && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.currency")}
+                </th>
+              )}
+              {isVisible("status") && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.status")}
+                </th>
+              )}
+              {isVisible("opening") && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.opening")}
+                </th>
+              )}
+              {isVisible("actions") && (
+                <th
+                  className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "rgb(var(--color-primary-600))" }}
+                >
+                  {t("table.actions")}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -151,101 +173,115 @@ export default function WarehouseTable({
                 key={warehouse.id}
                 className="hover:bg-gray-50 transition-colors"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {warehouse.code}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {warehouse.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {warehouse.address}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {warehouse.phone}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {warehouse.currency?.code} - {warehouse.currency?.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      warehouse.status
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {warehouse.status
-                      ? t("status.active")
-                      : t("status.inactive")}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      warehouse.is_open
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {warehouse.is_open ? t("status.open") : t("status.closed")}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end gap-2">
-                    {warehouse.is_open &&
-                      can([
-                        "warehouse_opening_module_view",
-                        "warehouse_opening_create",
-                      ]) && (
+                {isVisible("code") && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {warehouse.code}
+                  </td>
+                )}
+                {isVisible("name") && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {warehouse.name}
+                  </td>
+                )}
+                {isVisible("address") && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {warehouse.address}
+                  </td>
+                )}
+                {isVisible("phone") && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {warehouse.phone}
+                  </td>
+                )}
+                {isVisible("currency") && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {warehouse.currency?.code} - {warehouse.currency?.name}
+                  </td>
+                )}
+                {isVisible("status") && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${warehouse.status
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                        }`}
+                    >
+                      {warehouse.status
+                        ? t("status.active")
+                        : t("status.inactive")}
+                    </span>
+                  </td>
+                )}
+                {isVisible("opening") && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${warehouse.is_open
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                        }`}
+                    >
+                      {warehouse.is_open ? t("status.open") : t("status.closed")}
+                    </span>
+                  </td>
+                )}
+                {isVisible("actions") && (
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end gap-2">
+                      {warehouse.is_open &&
+                        can([
+                          "warehouse_opening_module_view",
+                          "warehouse_opening_create",
+                        ]) && (
+                          <Btn
+                            onClick={() => handleOpenAperturas(warehouse)}
+                            variant="ghost"
+                            size="sm"
+                            leftIcon={<EyeIcon className="h-4 w-4" />}
+                            title={t("actions.open")}
+                            style={{ color: "#059669" }}
+                          />
+                        )}
+                      {warehouse.is_open && can(["warehouse_close"]) && (
                         <Btn
-                          onClick={() => handleOpenAperturas(warehouse)}
+                          onClick={() => handleCloseWarehouse(warehouse)}
                           variant="ghost"
                           size="sm"
-                          leftIcon={<EyeIcon className="h-4 w-4" />}
-                          title={t("actions.open")}
-                          style={{ color: "#059669" }}
+                          leftIcon={<CheckCircleIcon className="h-4 w-4" />}
+                          title={t("actions.close")}
+                          style={{ color: "#dc2626" }}
                         />
                       )}
-                    {warehouse.is_open && can(["warehouse_close"]) && (
-                      <Btn
-                        onClick={() => handleCloseWarehouse(warehouse)}
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                        title={t("actions.close")}
-                        style={{ color: "#dc2626" }}
-                      />
-                    )}
-                    {can(["warehouse_update"]) && (
-                      <Btn
-                        onClick={() => onEdit(warehouse)}
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={t("actions.edit")}
-                      />
-                    )}
-                    {can(["warehouse_delete"]) && (
-                      <Btn
-                        onClick={() => warehouse.is_open && onDelete(warehouse)}
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        title={
-                          !warehouse.is_open
-                            ? t("actions.cannotDeleteClosed")
-                            : t("actions.delete")
-                        }
-                        disabled={!warehouse.is_open}
-                        style={
-                          !warehouse.is_open
-                            ? { color: "#9ca3af" }
-                            : { color: "#dc2626" }
-                        }
-                      />
-                    )}
-                  </div>
-                </td>
+                      {can(["warehouse_update"]) && (
+                        <Btn
+                          onClick={() => onEdit(warehouse)}
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                          title={t("actions.edit")}
+                        />
+                      )}
+                      {can(["warehouse_delete"]) && (
+                        <Btn
+                          onClick={() => warehouse.is_open && onDelete(warehouse)}
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          title={
+                            !warehouse.is_open
+                              ? t("actions.cannotDeleteClosed")
+                              : t("actions.delete")
+                          }
+                          disabled={!warehouse.is_open}
+                          style={
+                            !warehouse.is_open
+                              ? { color: "#9ca3af" }
+                              : { color: "#dc2626" }
+                          }
+                        />
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

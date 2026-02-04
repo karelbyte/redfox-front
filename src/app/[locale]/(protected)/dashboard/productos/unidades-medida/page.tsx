@@ -15,6 +15,8 @@ import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 
 export default function MeasurementUnitsPage() {
   const t = useTranslations('pages.measurementUnits');
@@ -32,6 +34,18 @@ export default function MeasurementUnitsPage() {
   const formRef = useRef<MeasurementUnitFormRef>(null);
   const initialFetchDone = useRef(false);
 
+  const availableColumns = [
+    { key: 'code', label: t('table.code') },
+    { key: 'description', label: t('table.description') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'measurement_units_table',
+    availableColumns.map(c => c.key)
+  );
+
   const fetchUnits = async (page: number, term?: string) => {
     try {
       setLoading(true);
@@ -39,7 +53,7 @@ export default function MeasurementUnitsPage() {
       setUnits(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
-      
+
       // Si es la primera carga y no hay término de búsqueda, marcamos que ya tenemos datos iniciales
       if (!hasInitialData && !term) {
         setHasInitialData(true);
@@ -56,7 +70,7 @@ export default function MeasurementUnitsPage() {
       initialFetchDone.current = true;
       fetchUnits(1);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDelete = async () => {
@@ -67,7 +81,7 @@ export default function MeasurementUnitsPage() {
       toastService.success(t('messages.unitDeleted'));
       fetchUnits(currentPage, searchTerm);
       setUnitToDelete(null);
-    } catch(error) {
+    } catch (error) {
       setUnitToDelete(null);
       toastService.error(error as string);
     }
@@ -127,13 +141,20 @@ export default function MeasurementUnitsPage() {
       </div>
 
       {/* Filtro de búsqueda */}
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t('searchUnits')}
-          onSearch={(term: string) => {
-            setSearchTerm(term);
-            fetchUnits(1, term);
-          }}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t('searchUnits')}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              fetchUnits(1, term);
+            }}
+          />
+        </div>
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
         />
       </div>
 
@@ -155,6 +176,7 @@ export default function MeasurementUnitsPage() {
               units={units}
               onEdit={handleEdit}
               onDelete={openDeleteModal}
+              visibleColumns={visibleColumns}
             />
           </div>
 

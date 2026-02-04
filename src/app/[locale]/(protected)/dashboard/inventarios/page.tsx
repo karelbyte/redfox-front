@@ -15,6 +15,8 @@ import Pagination from "@/components/Pagination/Pagination";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading/Loading";
 import EmptyState from "@/components/atoms/EmptyState";
+import { useColumnPersistence } from "@/hooks/useColumnPersistence";
+import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function InventariosPage() {
   const router = useRouter();
@@ -35,6 +37,22 @@ export default function InventariosPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
+
+  const availableColumns = [
+    { key: "product", label: t("table.product") },
+    { key: "sku", label: t("table.sku") },
+    { key: "brand", label: t("table.brand") },
+    { key: "category", label: t("table.category") },
+    { key: "quantity", label: t("table.quantity") },
+    { key: "price", label: t("table.price") },
+    { key: "date", label: t("table.date") },
+    { key: "actions", label: t("table.actions") },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    "inventory_table",
+    availableColumns.map((c) => c.key)
+  );
 
   const fetchClosedWarehouses = useCallback(async () => {
     try {
@@ -102,7 +120,7 @@ export default function InventariosPage() {
     if (selectedWarehouseId) {
       fetchInventory(currentPage);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, fetchInventory]);
 
   const handleWarehouseChange = (warehouseId: string) => {
@@ -163,7 +181,7 @@ export default function InventariosPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 
+        <h1
           className="text-xl font-semibold"
           style={{ color: `rgb(var(--color-primary-700))` }}
         >
@@ -173,15 +191,15 @@ export default function InventariosPage() {
 
       <div className="mt-6">
         {closedWarehouses.length === 0 ? (
-           <EmptyState
-           title={t('noClosedWarehouses')}
-           description={t('noClosedWarehousesDesc')}
-         />
+          <EmptyState
+            title={t('noClosedWarehouses')}
+            description={t('noClosedWarehousesDesc')}
+          />
         ) : (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               {/* Card de Selección */}
-              <div 
+              <div
                 className="rounded-lg shadow p-6"
                 style={{ backgroundColor: `rgb(var(--color-surface))` }}
               >
@@ -216,18 +234,18 @@ export default function InventariosPage() {
 
               {/* Card de Información */}
               {selectedWarehouseId && (
-                <div 
+                <div
                   className="rounded-lg shadow p-6"
                   style={{ backgroundColor: `rgb(var(--color-surface))` }}
                 >
-                  <h2 
+                  <h2
                     className="text-lg font-medium"
                     style={{ color: `rgb(var(--color-text-primary))` }}
                   >
                     {t('warehouseInventory')}
                   </h2>
                   {total > 0 && (
-                    <p 
+                    <p
                       className="text-sm mt-1"
                       style={{ color: `rgb(var(--color-text-secondary))` }}
                     >
@@ -235,7 +253,7 @@ export default function InventariosPage() {
                     </p>
                   )}
                   {total === 0 && !loadingInventory && (
-                    <p 
+                    <p
                       className="text-sm mt-1"
                       style={{ color: `rgb(var(--color-text-secondary))` }}
                     >
@@ -247,22 +265,32 @@ export default function InventariosPage() {
             </div>
 
             {selectedWarehouseId && (
+              <div className="flex justify-end mb-6">
+                <ColumnSelector
+                  columns={availableColumns}
+                  visibleColumns={visibleColumns}
+                  onChange={toggleColumn}
+                />
+              </div>
+            )}
+
+            {selectedWarehouseId && (
               <>
                 {loadingInventory ? (
-                  <div 
+                  <div
                     className="rounded-lg shadow mb-6 p-8"
                     style={{ backgroundColor: `rgb(var(--color-surface))` }}
                   >
                     <div className="animate-pulse space-y-4">
-                      <div 
+                      <div
                         className="h-4 rounded w-3/4"
                         style={{ backgroundColor: `rgb(var(--color-border))` }}
                       ></div>
-                      <div 
+                      <div
                         className="h-4 rounded w-1/2"
                         style={{ backgroundColor: `rgb(var(--color-border))` }}
                       ></div>
-                      <div 
+                      <div
                         className="h-4 rounded w-5/6"
                         style={{ backgroundColor: `rgb(var(--color-border))` }}
                       ></div>
@@ -281,12 +309,13 @@ export default function InventariosPage() {
                       onViewProduct={handleViewProduct}
                       onViewHistory={handleViewHistory}
                       onSyncPack={handleSyncPack}
+                      visibleColumns={visibleColumns}
                     />
                   </div>
                 )}
 
                 {!loadingInventory && totalPages > 1 && (
-                  <div 
+                  <div
                     className="rounded-lg shadow p-4"
                     style={{ backgroundColor: `rgb(var(--color-surface))` }}
                   >

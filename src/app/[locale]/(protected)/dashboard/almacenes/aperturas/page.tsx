@@ -26,6 +26,8 @@ import {
   ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useColumnPersistence } from "@/hooks/useColumnPersistence";
+import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function OpeningsPage() {
   const t = useTranslations("pages.warehouseOpenings");
@@ -61,6 +63,22 @@ export default function OpeningsPage() {
   const createFormRef = useRef<WarehouseOpeningFormRef>(null);
   const detailsFormRef = useRef<ProductDetailsFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const availableColumns = [
+    { key: "product", label: t("table.product") },
+    { key: "sku", label: t("table.sku") },
+    { key: "brand", label: t("table.brand") },
+    { key: "category", label: t("table.category") },
+    { key: "quantity", label: t("table.quantity") },
+    { key: "price", label: t("table.price") },
+    { key: "creationDate", label: t("table.creationDate") },
+    { key: "actions", label: t("table.actions") },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    "warehouse_openings_table",
+    availableColumns.map((c) => c.key)
+  );
 
   const fetchWarehouse = async () => {
     if (!warehouseId) {
@@ -292,7 +310,7 @@ export default function OpeningsPage() {
             leftIcon={<PlusIcon className="h-5 w-5" />}
           >
             {t("newOpening")}
-          </Btn> }
+          </Btn>}
           {warehouse?.is_open && can(["warehouse_close"]) && (
             <Btn
               variant="danger"
@@ -304,6 +322,14 @@ export default function OpeningsPage() {
             </Btn>
           )}
         </div>
+      </div>
+
+      <div className="flex justify-end mb-6">
+        <ColumnSelector
+          columns={availableColumns}
+          visibleColumns={visibleColumns}
+          onChange={toggleColumn}
+        />
       </div>
 
       {loading ? (
@@ -321,6 +347,7 @@ export default function OpeningsPage() {
               onViewDetails={handleViewDetails}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              visibleColumns={visibleColumns}
             />
           </div>
 
@@ -344,8 +371,8 @@ export default function OpeningsPage() {
           drawerMode === "create"
             ? t("newOpening")
             : drawerMode === "edit"
-            ? t("editOpening")
-            : t("productDetailsName")
+              ? t("editOpening")
+              : t("productDetailsName")
         }
         onSave={drawerMode === "details" ? undefined : handleSave}
         isSaving={isSaving}

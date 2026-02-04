@@ -3,7 +3,8 @@
 import { useTranslations } from 'next-intl';
 import { Sale } from '@/types/sale';
 import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentTextIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
+import { SaleStatus } from '@/types/sale';
 
 interface SaleTableProps {
   sales: Sale[];
@@ -11,11 +12,12 @@ interface SaleTableProps {
   onDelete: (sale: Sale) => void;
   onDetails: (sale: Sale) => void;
   onClose: (sale: Sale) => void;
+  onRefund: (sale: Sale) => void;
   onPrintTicket: (sale: Sale) => void;
   onInvoice?: (sale: Sale) => void;
 }
 
-export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onPrintTicket, onInvoice }: SaleTableProps) {
+export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onRefund, onPrintTicket, onInvoice }: SaleTableProps) {
   const t = useTranslations('pages.sales');
 
   const formatCurrency = (amount: string) => {
@@ -38,58 +40,58 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
   };
 
   return (
-    <div 
+    <div
       className="bg-white rounded-lg overflow-hidden"
-      style={{ 
-        boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+      style={{
+        boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
       }}
     >
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th 
+            <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.code')}
             </th>
-            <th 
+            <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.date')}
             </th>
-            <th 
+            <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.destination')}
             </th>
-            <th 
+            <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.client')}
             </th>
-            <th 
+            <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.amount')}
             </th>
-            <th 
+            <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.status')}
             </th>
-            <th 
+            <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
               {t('table.fiscalStatus')}
             </th>
-            <th 
+            <th
               className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
               style={{ color: `rgb(var(--color-primary-600))` }}
             >
@@ -117,25 +119,29 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    sale.status
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${sale.status === SaleStatus.CLOSED
                       ? 'bg-green-100 text-green-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
+                      : sale.status === SaleStatus.RETURNED
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}
                 >
-                  {sale.status ? t('status.completed') : t('status.pending')}
+                  {sale.status === SaleStatus.CLOSED
+                    ? t('status.completed')
+                    : sale.status === SaleStatus.RETURNED
+                      ? t('status.returned')
+                      : t('status.pending')}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {sale.pack_fiscal_status ? (
                   <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      sale.pack_fiscal_status === 'INVOICED_DIRECT'
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${sale.pack_fiscal_status === 'INVOICED_DIRECT'
                         ? 'bg-emerald-100 text-emerald-800'
                         : sale.pack_fiscal_status === 'INVOICED_GLOBAL'
                           ? 'bg-blue-100 text-blue-800'
                           : 'bg-gray-100 text-gray-700'
-                    }`}
+                      }`}
                   >
                     {t(`fiscalStatus.${sale.pack_fiscal_status}`)}
                   </span>
@@ -159,7 +165,7 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                     leftIcon={<DocumentTextIcon className="h-4 w-4" />}
                     title={t('actions.printTicket')}
                   />
-                  {sale.status && onInvoice && (
+                  {sale.status === SaleStatus.CLOSED && onInvoice && (
                     <Btn
                       variant="ghost"
                       size="sm"
@@ -169,13 +175,23 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                       style={{ color: '#059669' }}
                     />
                   )}
-                  {!sale.status && (
+                  {sale.status === SaleStatus.OPEN && (
                     <Btn
                       variant="ghost"
                       size="sm"
                       onClick={() => onClose(sale)}
                       leftIcon={<CheckCircleIcon className="h-4 w-4" />}
                       title={t('actions.closeSale')}
+                      style={{ color: '#059669' }}
+                    />
+                  )}
+                  {sale.status === SaleStatus.CLOSED && (
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onRefund(sale)}
+                      leftIcon={<ArrowUturnLeftIcon className="h-4 w-4" />}
+                      title={t('actions.refund')}
                       style={{ color: '#dc2626' }}
                     />
                   )}
@@ -184,19 +200,19 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                     size="sm"
                     onClick={() => onEdit(sale)}
                     leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={sale.status ? t('actions.cannotEditCompleted') : t('actions.edit')}
-                    disabled={sale.status}
-                    className={sale.status ? 'opacity-50 cursor-not-allowed' : ''}
+                    title={sale.status !== SaleStatus.OPEN ? t('actions.cannotEditCompleted') : t('actions.edit')}
+                    disabled={sale.status !== SaleStatus.OPEN}
+                    className={sale.status !== SaleStatus.OPEN ? 'opacity-50 cursor-not-allowed' : ''}
                   />
                   <Btn
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(sale)}
                     leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={sale.status ? t('actions.cannotDeleteCompleted') : t('actions.delete')}
-                    disabled={sale.status}
-                    className={sale.status ? 'opacity-50 cursor-not-allowed' : ''}
-                    style={{ color: sale.status ? '#9ca3af' : '#dc2626' }}
+                    title={sale.status !== SaleStatus.OPEN ? t('actions.cannotDeleteCompleted') : t('actions.delete')}
+                    disabled={sale.status !== SaleStatus.OPEN}
+                    className={sale.status !== SaleStatus.OPEN ? 'opacity-50 cursor-not-allowed' : ''}
+                    style={{ color: sale.status !== SaleStatus.OPEN ? '#9ca3af' : '#dc2626' }}
                   />
                 </div>
               </td>
