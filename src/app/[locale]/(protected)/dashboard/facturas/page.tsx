@@ -15,6 +15,8 @@ import DeleteInvoiceModal from '@/components/Invoice/DeleteInvoiceModal';
 import GenerateCFDIModal from '@/components/Invoice/GenerateCFDIModal';
 import CancelCFDIModal from '@/components/Invoice/CancelCFDIModal';
 import Drawer from "@/components/Drawer/Drawer";
+import ColumnSelector from '@/components/Table/ColumnSelector';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 export default function InvoicesPage() {
   const t = useTranslations('pages.invoices');
   
@@ -28,6 +30,10 @@ export default function InvoicesPage() {
   const [generateCFDIModal, setGenerateCFDIModal] = useState<Invoice | null>(null);
   const [cancelCFDIModal, setCancelCFDIModal] = useState<Invoice | null>(null);
   const [isCFDILoading, setIsCFDILoading] = useState(false);
+
+  // Column visibility management
+  const defaultColumns = ['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status', 'actions'];
+  const { visibleColumns, toggleColumn } = useColumnPersistence('invoices-table', defaultColumns);
   
   useEffect(() => {
     loadInvoices();
@@ -77,32 +83,6 @@ export default function InvoicesPage() {
 
   const handleCancelCFDI = (invoice: Invoice) => {
     setCancelCFDIModal(invoice);
-  };
-
-  const handleFormSubmit = async (formData: any) => {
-    try {
-      setIsFormLoading(true);
-      
-      if (editingInvoice) {
-        await invoiceService.updateInvoice(editingInvoice.id, formData);
-        toastService.success(t('messages.invoiceUpdated'));
-      } else {
-        await invoiceService.createInvoice(formData);
-        toastService.success(t('messages.invoiceCreated'));
-      }
-      
-      setIsDrawerOpen(false);
-      loadInvoices();
-    } catch (error) {
-      console.error('Error saving invoice:', error);
-      toastService.error(t('errors.saveInvoice'));
-    } finally {
-      setIsFormLoading(false);
-    }
-  };
-
-  const handleFormCancel = () => {
-    setIsDrawerOpen(false);
   };
 
   const handleConfirmDelete = async () => {
@@ -211,28 +191,61 @@ export default function InvoicesPage() {
         </div>
       ) : (
         <div className="mt-6">
-        <InvoiceTable
-          invoices={invoices}
-          onEdit={handleEditInvoice}
-          onDelete={handleDeleteInvoice}
-          onDetails={() => {}}
-          onGenerateCFDI={handleGenerateCFDI}
-          onCancelCFDI={handleCancelCFDI}
-        />
+          <div className="mb-4 flex justify-end">
+            <ColumnSelector
+              columns={[
+                { key: 'code', label: t('table.code') },
+                { key: 'date', label: t('table.date') },
+                { key: 'client', label: t('table.client') },
+                { key: 'subtotal', label: t('table.subtotal') },
+                { key: 'tax', label: t('table.tax') },
+                { key: 'total', label: t('table.total') },
+                { key: 'status', label: t('table.status') },
+                { key: 'actions', label: t('table.actions') },
+              ]}
+              visibleColumns={visibleColumns}
+              onChange={toggleColumn}
+            />
+          </div>
+          <InvoiceTable
+            invoices={invoices}
+            onEdit={handleEditInvoice}
+            onDelete={handleDeleteInvoice}
+            onDetails={() => {}}
+            onGenerateCFDI={handleGenerateCFDI}
+            onCancelCFDI={handleCancelCFDI}
+            visibleColumns={visibleColumns}
+          />
         </div>
       )}
 
       <Drawer
+        id="invoice-drawer"
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         title={editingInvoice ? t('drawer.editTitle') : t('drawer.createTitle')}
       >
         <InvoiceForm
-          initialData={editingInvoice}
+          initialData={editingInvoice ? {
+            code: editingInvoice.code,
+            date: editingInvoice.date,
+            client_id: editingInvoice.client.id,
+            payment_method: editingInvoice.payment_method,
+            payment_conditions: editingInvoice.payment_conditions || '',
+            notes: editingInvoice.notes || '',
+            details: editingInvoice.details.map(detail => ({
+              product_id: detail.product.id,
+              quantity: detail.quantity,
+              price: detail.price,
+              tax_rate: detail.tax_rate
+            }))
+          } : undefined}
           clients={clients}
-          onSubmit={handleFormSubmit}
-          onCancel={handleFormCancel}
-          isLoading={isFormLoading}
+          onSuccess={() => {
+            setIsDrawerOpen(false);
+            loadInvoices();
+          }}
+          onSavingChange={setIsFormLoading}
         />
       </Drawer>
 

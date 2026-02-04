@@ -6,6 +6,7 @@ import { PurchaseOrder, PurchaseOrderFormData } from '@/types/purchase-order';
 import { providersService, warehousesService } from '@/services';
 import { toastService } from '@/services';
 import { Input, SearchSelect, TextArea } from '@/components/atoms';
+import { SurrogateInput } from '@/components/atoms/SurrogateInput';
 
 export interface PurchaseOrderFormProps {
   purchaseOrder?: PurchaseOrder | null;
@@ -131,27 +132,27 @@ const PurchaseOrderForm = forwardRef<PurchaseOrderFormRef, PurchaseOrderFormProp
       const newErrors: FormErrors = {};
 
       if (!formData.code.trim()) {
-        newErrors.code = t('form.validation.codeRequired');
+        newErrors.code = t('form.errors.codeRequired');
       }
 
       if (!formData.date) {
-        newErrors.date = t('form.validation.dateRequired');
+        newErrors.date = t('form.errors.dateRequired');
       }
 
       if (!formData.provider_id) {
-        newErrors.provider_id = t('form.validation.providerRequired');
+        newErrors.provider_id = t('form.errors.providerRequired');
       }
 
       if (!formData.warehouse_id) {
-        newErrors.warehouse_id = t('form.validation.warehouseRequired');
+        newErrors.warehouse_id = t('form.errors.warehouseRequired');
       }
 
       if (!formData.document.trim()) {
-        newErrors.document = t('form.validation.documentRequired');
+        newErrors.document = t('form.errors.documentRequired');
       }
 
       if (!formData.expected_delivery_date) {
-        newErrors.expected_delivery_date = t('form.validation.expectedDeliveryDateRequired');
+        newErrors.expected_delivery_date = t('form.errors.expectedDeliveryDateRequired');
       }
 
       setErrors(newErrors);
@@ -205,11 +206,12 @@ const PurchaseOrderForm = forwardRef<PurchaseOrderFormRef, PurchaseOrderFormProp
         <div className="space-y-6">
           {/* Código */}
           <div>
-            <Input
+            <SurrogateInput
               label={t('form.code')}
               placeholder={t('form.placeholders.code')}
               value={formData.code}
-              onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+              onChange={(value) => setFormData(prev => ({ ...prev, code: value }))}
+              surrogateCode="purchase_order"
               error={errors.code}
               required
             />

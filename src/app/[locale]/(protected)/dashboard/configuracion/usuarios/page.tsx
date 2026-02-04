@@ -15,6 +15,8 @@ import UserForm, { UserFormRef } from '@/components/User/UserForm';
 import UserTable from '@/components/User/UserTable';
 import DeleteUserModal from '@/components/User/DeleteUserModal';
 import Pagination from '@/components/Pagination/Pagination';
+import ColumnSelector from '@/components/Table/ColumnSelector';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 
 export default function UsersPage() {
   const t = useTranslations('pages.users');
@@ -32,6 +34,10 @@ export default function UsersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<UserFormRef>(null);
+
+  // Column visibility management
+  const defaultColumns = ['name', 'email', 'roles', 'status', 'createdAt', 'actions'];
+  const { visibleColumns, toggleColumn } = useColumnPersistence('users-table', defaultColumns);
 
   const fetchUsers = async (page: number = 1, term?: string) => {
     try {
@@ -146,11 +152,26 @@ export default function UsersPage() {
       ) : (
         <>
           <div className="mt-6">
+            <div className="mb-4 flex justify-end">
+              <ColumnSelector
+                columns={[
+                  { key: 'name', label: t('table.name') },
+                  { key: 'email', label: t('table.email') },
+                  { key: 'roles', label: t('table.roles') },
+                  { key: 'status', label: t('table.status') },
+                  { key: 'createdAt', label: t('table.createdAt') },
+                  { key: 'actions', label: t('table.actions') },
+                ]}
+                visibleColumns={visibleColumns}
+                onChange={toggleColumn}
+              />
+            </div>
             <UserTable
               users={users}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onViewDetails={handleViewDetails}
+              visibleColumns={visibleColumns}
             />
           </div>
           {totalPages > 1 && (

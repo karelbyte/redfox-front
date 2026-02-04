@@ -1203,7 +1203,8 @@
         "invoice": "Invoice",
         "printTicket": "Print Ticket",
         "refund": "Refund",
-        "refunded": "Refunding..."
+        "refunded": "Refunding...",
+        "cannotRefundInvoiced": "Cannot refund an invoiced sale with CFDI"
       },
       "messages": {
         "saleCreated": "Sale created successfully",

@@ -12,6 +12,7 @@ interface InvoiceTableProps {
   onDetails: (invoice: Invoice) => void;
   onGenerateCFDI: (invoice: Invoice) => void;
   onCancelCFDI: (invoice: Invoice) => void;
+  visibleColumns?: string[];
 }
 
 export default function InvoiceTable({ 
@@ -20,7 +21,8 @@ export default function InvoiceTable({
   onDelete, 
   onDetails, 
   onGenerateCFDI,
-  onCancelCFDI
+  onCancelCFDI,
+  visibleColumns = ['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status', 'actions']
 }: InvoiceTableProps) {
   const t = useTranslations('pages.invoices');
   
@@ -85,149 +87,181 @@ export default function InvoiceTable({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.code')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.date')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.client')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.subtotal')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.tax')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.total')}
-            </th>
-            <th 
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.status')}
-            </th>
-            <th 
-              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
-              style={{ color: `rgb(var(--color-primary-600))` }}
-            >
-              {t('table.actions')}
-            </th>
+            {visibleColumns.includes('code') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.code')}
+              </th>
+            )}
+            {visibleColumns.includes('date') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.date')}
+              </th>
+            )}
+            {visibleColumns.includes('client') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.client')}
+              </th>
+            )}
+            {visibleColumns.includes('subtotal') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.subtotal')}
+              </th>
+            )}
+            {visibleColumns.includes('tax') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.tax')}
+              </th>
+            )}
+            {visibleColumns.includes('total') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.total')}
+              </th>
+            )}
+            {visibleColumns.includes('status') && (
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.status')}
+              </th>
+            )}
+            {visibleColumns.includes('actions') && (
+              <th 
+                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.actions')}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {invoices.map((invoice) => (
             <tr key={invoice.id} className="hover:bg-primary-50 transition-colors">
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{invoice.code}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatDate(invoice.date)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {invoice.client.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatCurrency(invoice.subtotal)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatCurrency(invoice.tax_amount)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatCurrency(invoice.total_amount)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(invoice.status)}`}
-                >
-                  {getStatusText(invoice.status)}
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <div className="flex justify-end space-x-2">
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDetails(invoice)}
-                    leftIcon={<EyeIcon className="h-4 w-4" />}
-                    title={t('actions.viewDetails')}
-                  />
-                  
-                  {canDownload(invoice.status) && (
-                    <>
-                      <InvoicePDFButton 
-                        invoiceId={invoice.id} 
-                        invoiceCode={invoice.code} 
-                      />
-                      <InvoiceXMLButton 
-                        invoiceId={invoice.id} 
-                        invoiceCode={invoice.code} 
-                      />
-                    </>
-                  )}
-                  
-                  {canGenerateCFDI(invoice.status) && (
+              {visibleColumns.includes('code') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{invoice.code}</td>
+              )}
+              {visibleColumns.includes('date') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatDate(invoice.date)}
+                </td>
+              )}
+              {visibleColumns.includes('client') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {invoice.client.name}
+                </td>
+              )}
+              {visibleColumns.includes('subtotal') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatCurrency(invoice.subtotal)}
+                </td>
+              )}
+              {visibleColumns.includes('tax') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatCurrency(invoice.tax_amount)}
+                </td>
+              )}
+              {visibleColumns.includes('total') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatCurrency(invoice.total_amount)}
+                </td>
+              )}
+              {visibleColumns.includes('status') && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(invoice.status)}`}
+                  >
+                    {getStatusText(invoice.status)}
+                  </span>
+                </td>
+              )}
+              {visibleColumns.includes('actions') && (
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div className="flex justify-end space-x-2">
                     <Btn
                       variant="ghost"
                       size="sm"
-                      onClick={() => onGenerateCFDI(invoice)}
-                      leftIcon={<FileCheck2 className="h-4 w-4" />}
-                      title={t('actions.generateCFDI')}
-                      style={{ color: '#059669' }}
+                      onClick={() => onDetails(invoice)}
+                      leftIcon={<EyeIcon className="h-4 w-4" />}
+                      title={t('actions.viewDetails')}
                     />
-                  )}
-                  
-                  {canCancelCFDI(invoice.status) && (
+                    
+                    {canDownload(invoice.status) && (
+                      <>
+                        <InvoicePDFButton 
+                          invoiceId={invoice.id} 
+                          invoiceCode={invoice.code} 
+                        />
+                        <InvoiceXMLButton 
+                          invoiceId={invoice.id} 
+                          invoiceCode={invoice.code} 
+                        />
+                      </>
+                    )}
+                    
+                    {canGenerateCFDI(invoice.status) && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onGenerateCFDI(invoice)}
+                        leftIcon={<FileCheck2 className="h-4 w-4" />}
+                        title={t('actions.generateCFDI')}
+                        style={{ color: '#059669' }}
+                      />
+                    )}
+                    
+                    {canCancelCFDI(invoice.status) && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onCancelCFDI(invoice)}
+                        leftIcon={<XMarkIcon className="h-4 w-4" />}
+                        title={t('actions.cancelCFDI')}
+                        style={{ color: '#dc2626' }}
+                      />
+                    )}
+                    
                     <Btn
                       variant="ghost"
                       size="sm"
-                      onClick={() => onCancelCFDI(invoice)}
-                      leftIcon={<XMarkIcon className="h-4 w-4" />}
-                      title={t('actions.cancelCFDI')}
-                      style={{ color: '#dc2626' }}
+                      onClick={() => onEdit(invoice)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={canEdit(invoice.status) ? t('actions.edit') : t('actions.cannotEdit')}
+                      disabled={!canEdit(invoice.status)}
+                      className={!canEdit(invoice.status) ? 'opacity-50 cursor-not-allowed' : ''}
                     />
-                  )}
-                  
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(invoice)}
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={canEdit(invoice.status) ? t('actions.edit') : t('actions.cannotEdit')}
-                    disabled={!canEdit(invoice.status)}
-                    className={!canEdit(invoice.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                  />
-                  
-                  <Btn
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(invoice)}
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={canDelete(invoice.status) ? t('actions.delete') : t('actions.cannotDelete')}
-                    disabled={!canDelete(invoice.status)}
-                    className={!canDelete(invoice.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                    style={{ color: canDelete(invoice.status) ? '#dc2626' : '#9ca3af' }}
-                  />
-                </div>
-              </td>
+                    
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(invoice)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={canDelete(invoice.status) ? t('actions.delete') : t('actions.cannotDelete')}
+                      disabled={!canDelete(invoice.status)}
+                      className={!canDelete(invoice.status) ? 'opacity-50 cursor-not-allowed' : ''}
+                      style={{ color: canDelete(invoice.status) ? '#dc2626' : '#9ca3af' }}
+                    />
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

@@ -223,7 +223,7 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                         style={{ color: '#059669' }}
                       />
                     )}
-                    {sale.status === SaleStatus.CLOSED && (
+                    {sale.status === SaleStatus.CLOSED && !sale.pack_fiscal_status && (
                       <Btn
                         variant="ghost"
                         size="sm"
@@ -231,6 +231,30 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                         leftIcon={<ArrowUturnLeftIcon className="h-4 w-4" />}
                         title={t('actions.refund')}
                         style={{ color: '#dc2626' }}
+                      />
+                    )}
+                    {sale.status === SaleStatus.CLOSED && sale.pack_fiscal_status && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onRefund(sale)}
+                        leftIcon={<ArrowUturnLeftIcon className="h-4 w-4" />}
+                        title={
+                          sale.pack_fiscal_status === 'INVOICED_DIRECT' || sale.cfdi_uuid
+                            ? t('actions.cannotRefundInvoiced')
+                            : t('actions.refund')
+                        }
+                        disabled={sale.pack_fiscal_status === 'INVOICED_DIRECT' || !!sale.cfdi_uuid}
+                        className={
+                          sale.pack_fiscal_status === 'INVOICED_DIRECT' || sale.cfdi_uuid
+                            ? 'opacity-50 cursor-not-allowed'
+                            : ''
+                        }
+                        style={{ 
+                          color: sale.pack_fiscal_status === 'INVOICED_DIRECT' || sale.cfdi_uuid 
+                            ? '#9ca3af' 
+                            : '#dc2626' 
+                        }}
                       />
                     )}
                     <Btn

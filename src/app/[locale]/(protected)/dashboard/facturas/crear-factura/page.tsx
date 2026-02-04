@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import Loading from "@/components/Loading/Loading";
-import { Client } from '@/types/invoice';
+import { Client } from '@/types/client';
 import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
 import InvoiceForm, { InvoiceFormRef } from '@/components/Invoice/InvoiceForm';

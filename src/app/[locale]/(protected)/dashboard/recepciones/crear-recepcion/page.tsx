@@ -12,6 +12,7 @@ import { ReceptionFormData } from '@/types/reception';
 import { Provider } from '@/types/provider';
 import { Warehouse } from '@/types/warehouse';
 import { Btn, Input, Select, SelectWithAdd } from '@/components/atoms';
+import { SurrogateInput } from '@/components/atoms/SurrogateInput';
 import Loading from '@/components/Loading/Loading';
 import Drawer from '@/components/Drawer/Drawer';
 import ProviderForm from '@/components/Provider/ProviderForm';
@@ -229,11 +230,12 @@ export default function CreateReceptionPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Código */}
               <div>
-                <Input
+                <SurrogateInput
                   label={t('form.code')}
                   placeholder={t('form.placeholders.code')}
                   value={formData.code}
-                  onChange={(e) => handleInputChange('code', e.target.value)}
+                  onChange={(value) => handleInputChange('code', value)}
+                  surrogateCode="reception"
                   error={errors.code}
                   required
                 />

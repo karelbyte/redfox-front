@@ -1210,7 +1210,8 @@
         "invoice": "Facturar",
         "printTicket": "Imprimir Ticket",
         "refund": "Devolver",
-        "refunded": "Devolviendo..."
+        "refunded": "Devolviendo...",
+        "cannotRefundInvoiced": "No se puede devolver una venta facturada con CFDI"
       },
       "messages": {
         "saleCreated": "Venta creada correctamente",

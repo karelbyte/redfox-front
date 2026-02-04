@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
-import { InvoiceFormData, Client, PaymentMethod } from '@/types/invoice';
+import { InvoiceFormData, PaymentMethod } from '@/types/invoice';
+import { Client } from '@/types/client';
 import { Input } from '@/components/atoms';
 import { SelectWithAdd } from '@/components/atoms';
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
@@ -163,6 +164,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
 
       <div>
         <SelectWithAdd
+          id="client-select"
           label={t('form.client')}
           value={formData.client_id}
           onChange={(value) => handleInputChange('client_id', value)}
@@ -179,6 +181,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
 
       <div>
         <SelectWithAdd
+          id="payment-method-select"
           label={t('form.paymentMethod')}
           value={formData.payment_method}
           onChange={(value) => handleInputChange('payment_method', value)}

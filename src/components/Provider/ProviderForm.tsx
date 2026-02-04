@@ -4,6 +4,7 @@ import { Provider } from "@/types/provider";
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
 import { Input, TextArea, Checkbox } from "@/components/atoms";
+import { SurrogateInput } from "@/components/atoms/SurrogateInput";
 
 export interface ProviderFormRef {
   submit: () => void;
@@ -159,14 +160,13 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
 
     return (
       <form className="space-y-6">
-        <Input
-          type="text"
-          id="code"
+        <SurrogateInput
           label={t('form.code')}
-          required
           value={formData.code}
-          onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+          onChange={(value) => setFormData(prev => ({ ...prev, code: value }))}
+          surrogateCode="provider"
           placeholder={t('form.placeholders.code')}
+          required
           error={errors.code}
         />
 

@@ -28,12 +28,12 @@ class InvoiceService {
   }
 
   async createInvoice(data: InvoiceFormData): Promise<Invoice> {
-    const response = await api.post<Invoice>('/invoices', data);
+    const response = await api.post<Invoice>('/invoices', data as unknown as Record<string, unknown>);
     return response;
   }
 
   async updateInvoice(id: string, data: Partial<InvoiceFormData>): Promise<Invoice> {
-    const response = await api.put<Invoice>(`/invoices/${id}`, data);
+    const response = await api.put<Invoice>(`/invoices/${id}`, data as unknown as Record<string, unknown>);
     return response;
   }
 
@@ -42,17 +42,17 @@ class InvoiceService {
   }
 
   async convertWithdrawalToInvoice(data: ConvertWithdrawalData): Promise<Invoice> {
-    const response = await api.post<Invoice>('/invoices/convert-withdrawal', data);
+    const response = await api.post<Invoice>('/invoices/convert-withdrawal', data as unknown as Record<string, unknown>);
     return response;
   }
 
   async createGlobalInvoice(data: GlobalInvoiceFormData): Promise<Invoice> {
-    const response = await api.post<Invoice>('/invoices/global', data);
+    const response = await api.post<Invoice>('/invoices/global', data as unknown as Record<string, unknown>);
     return response;
   }
 
   async generateCFDI(id: string): Promise<Invoice> {
-    const response = await api.post<Invoice>(`/invoices/${id}/generate-cfdi`);
+    const response = await api.post<Invoice>(`/invoices/${id}/generate-cfdi`, {});
     return response;
   }
 
@@ -71,7 +71,7 @@ class InvoiceService {
   }
 
   async addInvoiceDetail(id: string, data: InvoiceDetailFormData): Promise<InvoiceDetail> {
-    const response = await api.post<InvoiceDetail>(`/invoices/${id}/details`, data);
+    const response = await api.post<InvoiceDetail>(`/invoices/${id}/details`, data as unknown as Record<string, unknown>);
     return response;
   }
 
@@ -88,14 +88,14 @@ class InvoiceService {
     const response = await api.get(`/invoices/${id}/pdf`, {
       responseType: 'blob'
     });
-    return response;
+    return response as Blob;
   }
 
   async downloadInvoiceXML(id: string): Promise<Blob> {
     const response = await api.get(`/invoices/${id}/xml`, {
       responseType: 'blob'
     });
-    return response;
+    return response as Blob;
   }
 }
 

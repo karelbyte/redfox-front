@@ -10,6 +10,7 @@ import { Reception, ReceptionFormData } from '@/types/reception';
 import { Provider } from '@/types/provider';
 import { Warehouse } from '@/types/warehouse';
 import { Input, Select, SelectWithAdd } from '@/components/atoms';
+import { SurrogateInput } from '@/components/atoms/SurrogateInput';
 import Drawer from '@/components/Drawer/Drawer';
 import ProviderForm from '@/components/Provider/ProviderForm';
 import { ProviderFormRef } from '@/components/Provider/ProviderForm';
@@ -187,14 +188,13 @@ const ReceptionForm = forwardRef<ReceptionFormRef, ReceptionFormProps>(
     return (
       <>
         <form className="space-y-6">
-          <Input
-            type="text"
-            id="code"
+          <SurrogateInput
             label={t('form.code')}
-            required
             value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+            onChange={(value) => setFormData(prev => ({ ...prev, code: value }))}
+            surrogateCode="reception"
             placeholder={t('form.placeholders.code')}
+            required
             error={errors.code}
           />
 

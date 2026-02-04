@@ -18,12 +18,12 @@ class CertificationPackService {
   }
 
   async create(data: CertificationPackFormData): Promise<CertificationPack> {
-    const response = await api.post<CertificationPack>('/certification-packs', data);
+    const response = await api.post<CertificationPack>('/certification-packs', data as unknown as Record<string, unknown>);
     return response;
   }
 
   async update(id: string, data: Partial<CertificationPackFormData>): Promise<CertificationPack> {
-    const response = await api.patch<CertificationPack>(`/certification-packs/${id}`, data);
+    const response = await api.patch<CertificationPack>(`/certification-packs/${id}`, data as unknown as Record<string, unknown>);
     return response;
   }
 

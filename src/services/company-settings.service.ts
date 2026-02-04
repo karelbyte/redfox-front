@@ -9,7 +9,7 @@ export const companySettingsService = {
   },
 
   async update(data: UpdateCompanySettingsData): Promise<CompanySettings> {
-    return api.put<CompanySettings>('/company-settings', data);
+    return api.put<CompanySettings>('/company-settings', data as unknown as Record<string, unknown>);
   },
 
   async uploadLogo(file: File): Promise<CompanySettings> {

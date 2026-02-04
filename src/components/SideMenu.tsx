@@ -1023,9 +1023,10 @@ export function SideMenu() {
       <nav className="h-full flex flex-col pt-10 pb-4 px-4">
         <div className={`space-y-1 flex-1 min-h-0 ${collapsed ? "overflow-visible" : "overflow-y-auto"}`}>
           {filteredMenuItems.map((item) => {
-            const isActive =
+            const isActive = Boolean(
               pathname === item.path ||
-              item.subItems?.some((subItem) => pathname === subItem.path);
+              item.subItems?.some((subItem) => pathname === subItem.path)
+            );
             const isExpanded = expandedMenu === item.path;
 
             // Filtrar subelementos basándose en permisos
