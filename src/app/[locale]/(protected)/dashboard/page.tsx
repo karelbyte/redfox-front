@@ -5,128 +5,43 @@ import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from 'next-intl';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useTheme } from '@/context/ThemeContext';
-import { saleService } from '@/services/sales.service';
-import { inventoryService } from '@/services/inventory.service';
-import { warehousesService } from '@/services/warehouses.service';
-import { productService } from '@/services/products.service';
-import { receptionService } from '@/services/receptions.service';
+import { useLocaleUtils } from '@/hooks/useLocale';
+import { analyticsService, DashboardAnalytics } from '@/services/analytics.service';
 import Loading from '@/components/Loading/Loading';
-import { Sale } from '@/types/sale';
-import { Reception } from '@/types/reception';
-import { Warehouse } from '@/types/warehouse';
-import { InventoryProduct } from '@/services/inventory.service';
-
-interface DashboardStats {
-  totalSales: number;
-  totalSalesToday: number;
-  totalProducts: number;
-  totalWarehouses: number;
-  activeWarehouses: number;
-  lowStockProducts: number;
-  pendingReceptions: number;
-  totalRevenue: number;
-  revenueToday: number;
-}
-
-interface WarehouseSummary {
-  id: string;
-  name: string;
-  status: boolean;
-  totalProducts: number;
-  lowStockCount: number;
-}
+import AnalyticsCard from '@/components/Analytics/AnalyticsCard';
+import SalesChart from '@/components/Analytics/SalesChart';
+import InventoryChart from '@/components/Analytics/InventoryChart';
+import RevenueChart from '@/components/Analytics/RevenueChart';
+import TopProductsChart from '@/components/Analytics/TopProductsChart';
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
   const t = useTranslations('pages.dashboard');
   const { can } = usePermissions();
   const { currentTheme } = useTheme();
+  const { formatCurrency } = useLocaleUtils();
   
-  const [stats, setStats] = useState<DashboardStats>({
-    totalSales: 0,
-    totalSalesToday: 0,
-    totalProducts: 0,
-    totalWarehouses: 0,
-    activeWarehouses: 0,
-    lowStockProducts: 0,
-    pendingReceptions: 0,
-    totalRevenue: 0,
-    revenueToday: 0,
-  });
-  
-  const [warehouseSummaries, setWarehouseSummaries] = useState<WarehouseSummary[]>([]);
+  const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState<{
+    startDate?: string;
+    endDate?: string;
+  }>({});
 
   useEffect(() => {
-    loadDashboardData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    loadAnalyticsData();
+  }, [dateRange]);
 
-  const loadDashboardData = async () => {
+  const loadAnalyticsData = async () => {
     try {
       setLoading(true);
-      
-      const [
-        salesData,
-        warehousesData,
-        productsData,
-        receptionsData,
-        inventoryData
-      ] = await Promise.all([
-        can(['sale_module_view']) ? saleService.getSales() : Promise.resolve({ data: [], meta: { total: 0 } }),
-        can(['warehouse_module_view']) ? warehousesService.getWarehouses({}) : Promise.resolve({ data: [], meta: { total: 0 } }),
-        can(['product_module_view']) ? productService.getProducts() : Promise.resolve({ data: [], meta: { total: 0 } }),
-        can(['reception_module_view']) ? receptionService.getReceptions() : Promise.resolve({ data: [], meta: { total: 0 } }),
-        can(['inventory_module_view']) ? inventoryService.getInventoryProducts(1) : Promise.resolve({ data: [], meta: { total: 0 } })
-      ]);
-
-      const today = new Date().toISOString().split('T')[0];
-      const salesToday = salesData.data.filter((sale: Sale) => 
-        sale.created_at?.startsWith(today)
+      const data = await analyticsService.getDashboardAnalytics(
+        dateRange.startDate,
+        dateRange.endDate
       );
-      
-      const totalRevenue = salesData.data.reduce((sum: number, sale: Sale) => 
-        sum + parseFloat(sale.amount || '0'), 0
-      );
-      
-      const revenueToday = salesToday.reduce((sum: number, sale: Sale) => 
-        sum + parseFloat(sale.amount || '0'), 0
-      );
-
-      const activeWarehouses = warehousesData.data.filter((w: Warehouse) => w.status);
-      const pendingReceptions = receptionsData.data.filter((r: Reception) => !r.status);
-      const lowStockProducts = inventoryData.data.filter((item: InventoryProduct) => 
-        item.quantity < 10
-      ).length;
-
-      setStats({
-        totalSales: salesData.meta.total,
-        totalSalesToday: salesToday.length,
-        totalProducts: productsData.meta.total,
-        totalWarehouses: warehousesData.meta.total,
-        activeWarehouses: activeWarehouses.length,
-        lowStockProducts,
-        pendingReceptions: pendingReceptions.length,
-        totalRevenue,
-        revenueToday,
-      });
-
-      const warehouseSummariesData = warehousesData.data.map((warehouse: Warehouse) => ({
-        id: warehouse.id,
-        name: warehouse.name,
-        status: warehouse.status,
-        totalProducts: inventoryData.data.filter((item: InventoryProduct) => 
-          item.warehouse.id === warehouse.id
-        ).length,
-        lowStockCount: inventoryData.data.filter((item: InventoryProduct) => 
-          item.warehouse.id === warehouse.id && item.quantity < 10
-        ).length,
-      }));
-
-      setWarehouseSummaries(warehouseSummariesData);
-
+      setAnalytics(data);
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('Error loading analytics data:', error);
     } finally {
       setLoading(false);
     }
@@ -175,47 +90,21 @@ export default function DashboardPage() {
 
   const themeColors = getThemeColors();
 
-  const StatCard = ({ title, value, subtitle, icon }: {
-    title: string;
-    value: string | number;
-    subtitle?: string;
-    icon: React.ReactNode;
-  }) => (
-    <div 
-      className="p-6 rounded-lg"
-      style={{
-        backgroundColor: themeColors.veryLight,
-        border: `1px solid ${themeColors.border}`
-      }}
-    >
-      <div className="flex items-center">
-        <div 
-          className="w-12 h-12 rounded-lg flex items-center justify-center mr-4"
-          style={{
-            backgroundColor: themeColors.light,
-            color: themeColors.primary
-          }}
-        >
-          <div className="w-6 h-6">
-            {icon}
-          </div>
-        </div>
-        <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mb-1">{value}</p>
-          {subtitle && (
-            <p className="text-sm text-gray-500">{subtitle}</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-
   if (loading) {
     return (
       <div className="h-full bg-white p-8">
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!analytics) {
+    return (
+      <div className="h-full bg-white p-8">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500">{t('analytics.noData')}</p>
         </div>
       </div>
     );
@@ -239,90 +128,271 @@ export default function DashboardPage() {
               </h1>
               <p className="text-gray-600 text-lg">{t('welcome')}, {user?.name}</p>
             </div>
-            <button
-              onClick={() => logout()}
-              className="px-6 py-3 rounded-lg font-medium"
-              style={{
-                backgroundColor: themeColors.primary,
-                color: 'white'
-              }}
-            >
-              {t('logout')}
-            </button>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => logout()}
+                className="px-6 py-3 rounded-lg font-medium"
+                style={{
+                  backgroundColor: themeColors.primary,
+                  color: 'white'
+                }}
+              >
+                {t('logout')}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Estadísticas Principales */}
+        {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {can(['sale_module_view']) && (
+          {can(['analytics_module_view']) && (
             <>
-              <StatCard
-                title={t('stats.totalSales')}
-                value={stats.totalSales}
-                subtitle={`${stats.totalSalesToday} ${t('stats.salesToday')}`}
+              <AnalyticsCard
+                title={t('analytics.totalSales')}
+                value={analytics.sales.totalSales}
+                subtitle={`${t('analytics.averageTicket')}: ${formatCurrency(analytics.sales.averageTicket)}`}
+                trend={{
+                  value: analytics.sales.salesGrowth,
+                  isPositive: analytics.sales.salesGrowth >= 0
+                }}
+                themeColors={themeColors}
                 icon={
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 }
               />
-              <StatCard
-                title={t('stats.totalRevenue')}
-                value={`$${stats.totalRevenue.toLocaleString()}`}
-                subtitle={`$${stats.revenueToday.toLocaleString()} ${t('stats.revenueToday')}`}
+              <AnalyticsCard
+                title={t('analytics.totalRevenue')}
+                value={formatCurrency(analytics.sales.totalRevenue)}
+                themeColors={themeColors}
                 icon={
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m-2.599-3.801C9.08 13.598 8 13.198 8 12.5v-.5" />
                   </svg>
                 }
               />
+              <AnalyticsCard
+                title={t('analytics.totalProducts')}
+                value={analytics.inventory.totalProducts}
+                subtitle={`${analytics.inventory.lowStockProducts} ${t('analytics.lowStock')}`}
+                themeColors={themeColors}
+                icon={
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                }
+              />
+              <AnalyticsCard
+                title={t('analytics.inventoryValue')}
+                value={formatCurrency(analytics.inventory.totalInventoryValue)}
+                subtitle={`${analytics.inventory.outOfStockProducts} ${t('analytics.outOfStock')}`}
+                themeColors={themeColors}
+                icon={
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                }
+              />
             </>
-          )}
-          
-          {can(['warehouse_module_view']) && (
-            <StatCard
-              title={t('stats.activeWarehouses')}
-              value={`${stats.activeWarehouses}/${stats.totalWarehouses}`}
-              subtitle={t('stats.operationalWarehouses')}
-              icon={
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              }
-            />
-          )}
-          
-          {can(['product_module_view']) && (
-            <StatCard
-              title={t('stats.products')}
-              value={stats.totalProducts}
-              subtitle={`${stats.lowStockProducts} ${t('stats.lowStock')}`}
-              icon={
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              }
-            />
-          )}
-          
-          {can(['reception_module_view']) && (
-            <StatCard
-              title={t('stats.pendingReceptions')}
-              value={stats.pendingReceptions}
-              subtitle={t('stats.toProcess')}
-              icon={
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              }
-            />
           )}
         </div>
 
-        {/* Información de Almacenes */}
-        {can(['warehouse_module_view']) && warehouseSummaries.length > 0 && (
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Sales Trend */}
+          {can(['analytics_module_view']) && (
+            <div 
+              className="overflow-hidden"
+              style={{
+                backgroundColor: 'white',
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '8px'
+              }}
+            >
+              <div 
+                className="px-6 py-4"
+                style={{ 
+                  backgroundColor: themeColors.light,
+                  borderBottom: `1px solid ${themeColors.border}`,
+                  borderTopLeftRadius: '8px',
+                  borderTopRightRadius: '8px'
+                }}
+              >
+                <h3 
+                  className="text-lg font-semibold"
+                  style={{ color: themeColors.primary }}
+                >
+                  {t('analytics.salesTrend')}
+                </h3>
+              </div>
+              <div className="p-6">
+                {analytics.sales.salesByDay.length > 0 ? (
+                  <SalesChart 
+                    data={analytics.sales.salesByDay}
+                    type="daily"
+                    themeColors={themeColors}
+                  />
+                ) : (
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      <p className="text-gray-500 text-sm">{t('analytics.noSalesData')}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Inventory by Category */}
+          {can(['analytics_module_view']) && (
+            <div 
+              className="overflow-hidden"
+              style={{
+                backgroundColor: 'white',
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '8px'
+              }}
+            >
+              <div 
+                className="px-6 py-4"
+                style={{ 
+                  backgroundColor: themeColors.light,
+                  borderBottom: `1px solid ${themeColors.border}`,
+                  borderTopLeftRadius: '8px',
+                  borderTopRightRadius: '8px'
+                }}
+              >
+                <h3 
+                  className="text-lg font-semibold"
+                  style={{ color: themeColors.primary }}
+                >
+                  {t('analytics.inventoryByCategory')}
+                </h3>
+              </div>
+              <div className="p-6">
+                {analytics.inventory.productsByCategory.length > 0 ? (
+                  <InventoryChart 
+                    data={analytics.inventory.productsByCategory}
+                    themeColors={themeColors}
+                  />
+                ) : (
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      <p className="text-gray-500 text-sm">{t('analytics.noInventoryData')}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Revenue and Top Products */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Monthly Revenue */}
+          {can(['analytics_module_view']) && (
+            <div 
+              className="overflow-hidden"
+              style={{
+                backgroundColor: 'white',
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '8px'
+              }}
+            >
+              <div 
+                className="px-6 py-4"
+                style={{ 
+                  backgroundColor: themeColors.light,
+                  borderBottom: `1px solid ${themeColors.border}`,
+                  borderTopLeftRadius: '8px',
+                  borderTopRightRadius: '8px'
+                }}
+              >
+                <h3 
+                  className="text-lg font-semibold"
+                  style={{ color: themeColors.primary }}
+                >
+                  {t('analytics.monthlyRevenue')}
+                </h3>
+              </div>
+              <div className="p-6">
+                {analytics.financial.monthlyRevenue.length > 0 ? (
+                  <RevenueChart 
+                    data={analytics.financial.monthlyRevenue}
+                    themeColors={themeColors}
+                  />
+                ) : (
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m-2.599-3.801C9.08 13.598 8 13.198 8 12.5v-.5" />
+                      </svg>
+                      <p className="text-gray-500 text-sm">{t('analytics.noRevenueData')}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Top Products */}
+          {can(['analytics_module_view']) && (
+            <div 
+              className="overflow-hidden"
+              style={{
+                backgroundColor: 'white',
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '8px'
+              }}
+            >
+              <div 
+                className="px-6 py-4"
+                style={{ 
+                  backgroundColor: themeColors.light,
+                  borderBottom: `1px solid ${themeColors.border}`,
+                  borderTopLeftRadius: '8px',
+                  borderTopRightRadius: '8px'
+                }}
+              >
+                <h3 
+                  className="text-lg font-semibold"
+                  style={{ color: themeColors.primary }}
+                >
+                  {t('analytics.topProducts')}
+                </h3>
+              </div>
+              <div className="p-6">
+                {analytics.sales.topProducts.length > 0 ? (
+                  <TopProductsChart 
+                    data={analytics.sales.topProducts}
+                    themeColors={themeColors}
+                  />
+                ) : (
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      <p className="text-gray-500 text-sm">{t('analytics.noProductsData')}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Low Stock Alert */}
+        {can(['analytics_module_view']) && analytics.inventory.lowStockItems.length > 0 && (
           <div 
-            className="mb-8 overflow-hidden"
+            className="overflow-hidden"
             style={{
               backgroundColor: 'white',
               border: `1px solid ${themeColors.border}`,
@@ -338,102 +408,38 @@ export default function DashboardPage() {
                 borderTopRightRadius: '8px'
               }}
             >
-              <h2 
+              <h3 
                 className="text-lg font-semibold"
                 style={{ color: themeColors.primary }}
               >
-                {t('warehouses.status')}
-              </h2>
+                {t('analytics.lowStockAlert')}
+              </h3>
             </div>
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {warehouseSummaries.map((warehouse) => (
+                {analytics.inventory.lowStockItems.map((item, index) => (
                   <div
-                    key={warehouse.id}
-                    className="p-4 rounded-lg"
+                    key={index}
+                    className="p-4 rounded-lg border-l-4"
                     style={{
                       backgroundColor: themeColors.veryLight,
-                      border: `1px solid ${themeColors.border}`
+                      borderLeftColor: '#f59e0b'
                     }}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-gray-900">{warehouse.name}</h3>
-                      <span
-                        className="px-3 py-1 text-xs rounded-full font-medium"
-                        style={{
-                          backgroundColor: themeColors.light,
-                          color: themeColors.primary
-                        }}
-                      >
-                        {warehouse.status ? t('warehouses.active') : t('warehouses.inactive')}
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <p className="flex items-center">
-                        <span 
-                          className="w-2 h-2 rounded-full mr-2"
-                          style={{ backgroundColor: themeColors.primary }}
-                        ></span>
-                        {t('warehouses.products')}: <span className="font-semibold ml-1">{warehouse.totalProducts}</span>
-                      </p>
-                      <p className="flex items-center">
-                        <span 
-                          className="w-2 h-2 rounded-full mr-2"
-                          style={{ backgroundColor: themeColors.dark }}
-                        ></span>
-                        {t('warehouses.lowStock')}: <span className="font-semibold ml-1">{warehouse.lowStockCount}</span>
-                      </p>
-                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-1">{item.productName}</h4>
+                    <p className="text-sm text-gray-600 mb-1">
+                      {t('analytics.warehouse')}: {item.warehouseName}
+                    </p>
+                    <p className="text-sm font-medium text-orange-600">
+                      {t('analytics.stock')}: {item.currentStock}
+                    </p>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         )}
-
-        {/* Información del Usuario */}
-        <div 
-          className="overflow-hidden"
-          style={{
-            backgroundColor: 'white',
-            border: `1px solid ${themeColors.border}`,
-            borderRadius: '8px'
-          }}
-        >
-          <div 
-            className="px-6 py-4"
-            style={{ 
-              backgroundColor: themeColors.light,
-              borderBottom: `1px solid ${themeColors.border}`,
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px'
-            }}
-          >
-            <h2 
-              className="text-lg font-semibold"
-              style={{ color: themeColors.primary }}
-            >
-              {t('userInfo')}
-            </h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-4 rounded-lg" style={{ backgroundColor: themeColors.veryLight }}>
-                <label className="block text-sm font-medium text-gray-500 mb-2">{t('userName')}</label>
-                <p className="text-lg font-semibold text-gray-900">{user?.name}</p>
-              </div>
-              <div className="text-center p-4 rounded-lg" style={{ backgroundColor: themeColors.veryLight }}>
-                <label className="block text-sm font-medium text-gray-500 mb-2">{t('userEmail')}</label>
-                <p className="text-lg font-semibold text-gray-900">{user?.email}</p>
-              </div>
-              <div className="text-center p-4 rounded-lg" style={{ backgroundColor: themeColors.veryLight }}>
-                <label className="block text-sm font-medium text-gray-500 mb-2">{t('userRole')}</label>
-                <p className="text-lg font-semibold text-gray-900">{user?.roles[0]?.description}</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
-} 
+}

@@ -23,13 +23,20 @@ export function useLocaleUtils() {
     });
   };
 
-  const formatCurrency = (amount: number, currencyCode: string = 'USD') => {
-    return new Intl.NumberFormat(locale, {
+  const formatCurrency = (amount: number, compact: boolean = false, currencyCode: string = 'USD') => {
+    const options: Intl.NumberFormatOptions = {
       style: 'currency',
       currency: currencyCode,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amount);
+    };
+
+    if (compact) {
+      options.notation = 'compact';
+      options.compactDisplay = 'short';
+    }
+
+    return new Intl.NumberFormat(locale, options).format(amount);
   };
 
   const formatNumber = (number: number, options?: Intl.NumberFormatOptions) => {
