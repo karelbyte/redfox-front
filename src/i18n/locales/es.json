@@ -82,6 +82,7 @@
     "inventory": "Inventarios",
     "purchases": "Compras",
     "receptions": "Recepciones",
+    "quotations": "Cotizaciones",
     "warehouseOpenings": "Aperturas de Almacén",
     "entities": "Entidades",
     "purchaseOrders": "Órdenes de Compra",
@@ -96,6 +97,8 @@
     "purchaseList": "Lista de Compras",
     "createReception": "Crear Recepción",
     "receptionList": "Lista de Recepciones",
+    "createQuotation": "Crear Cotización",
+    "quotationList": "Lista de Cotizaciones",
     "createPurchaseOrder": "Crear Orden de Compra",
     "purchaseOrderList": "Lista de Órdenes de Compra",
     "salesList": "Lista de Ventas",
@@ -1150,6 +1153,126 @@
           "name": "Nombre",
           "document": "Documento",
           "totalAmount": "Monto Total"
+        }
+      }
+    },
+    "quotations": {
+      "title": "Cotizaciones",
+      "subtitle": "Gestiona las cotizaciones de tu negocio",
+      "newQuotation": "Nueva Cotización",
+      "editQuotation": "Editar Cotización",
+      "deleteQuotation": "Eliminar Cotización",
+      "quotationDetails": "Detalles de la Cotización",
+      "quotationInfo": "Información de la Cotización",
+      "noQuotations": "No hay cotizaciones",
+      "noQuotationsDesc": "Haz clic en \"Nueva Cotización\" para agregar una.",
+      "searchQuotations": "Buscar cotizaciones...",
+      "table": {
+        "code": "Código",
+        "date": "Fecha",
+        "validUntil": "Válida Hasta",
+        "client": "Cliente",
+        "warehouse": "Almacén",
+        "total": "Total",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "draft": "Borrador",
+        "sent": "Enviada",
+        "accepted": "Aceptada",
+        "rejected": "Rechazada",
+        "expired": "Expirada",
+        "converted": "Convertida"
+      },
+      "form": {
+        "code": "Código",
+        "date": "Fecha",
+        "validUntil": "Válida Hasta",
+        "client": "Cliente",
+        "warehouse": "Almacén",
+        "notes": "Notas",
+        "product": "Producto",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "discountPercentage": "Descuento (%)",
+        "discountAmount": "Descuento (Monto)",
+        "placeholders": {
+          "code": "Ej: COT-2026-001",
+          "selectClient": "Seleccionar cliente",
+          "selectWarehouse": "Seleccionar almacén",
+          "selectProduct": "Seleccionar producto",
+          "notes": "Notas adicionales sobre la cotización"
+        },
+        "errors": {
+          "codeRequired": "El código es requerido",
+          "dateRequired": "La fecha es requerida",
+          "clientRequired": "El cliente es requerido",
+          "warehouseRequired": "El almacén es requerido",
+          "validUntilMustBeAfterDate": "La fecha de validez debe ser posterior a la fecha de cotización",
+          "productRequired": "El producto es requerido",
+          "quantityRequired": "La cantidad es requerida y debe ser mayor a 0",
+          "priceRequired": "El precio es requerido y debe ser mayor o igual a 0",
+          "invalidDiscountPercentage": "El descuento porcentual debe estar entre 0 y 100",
+          "invalidDiscountAmount": "El descuento en monto debe ser mayor o igual a 0"
+        }
+      },
+      "actions": {
+        "create": "Crear Cotización",
+        "edit": "Editar",
+        "view": "Ver",
+        "delete": "Eliminar",
+        "convertToSale": "Convertir a Venta",
+        "addProduct": "Añadir Producto",
+        "editProduct": "Editar Producto",
+        "newClient": "Nuevo Cliente",
+        "createNewClient": "Crear nuevo cliente"
+      },
+      "search": {
+        "placeholder": "Buscar por código, cliente..."
+      },
+      "messages": {
+        "createSuccess": "Cotización creada exitosamente",
+        "updateSuccess": "Cotización actualizada exitosamente",
+        "deleteSuccess": "Cotización eliminada exitosamente",
+        "convertSuccess": "Cotización convertida a venta exitosamente",
+        "productAdded": "Producto agregado exitosamente",
+        "productUpdated": "Producto actualizado exitosamente",
+        "productDeleted": "Producto eliminado exitosamente",
+        "errorLoading": "Error al cargar las cotizaciones",
+        "errorLoadingQuotation": "Error al cargar la cotización",
+        "errorLoadingDetails": "Error al cargar los detalles",
+        "errorCreating": "Error al crear la cotización",
+        "errorUpdating": "Error al actualizar la cotización",
+        "errorDeleting": "Error al eliminar la cotización",
+        "errorConverting": "Error al convertir la cotización",
+        "errorSavingProduct": "Error al guardar el producto",
+        "errorDeletingProduct": "Error al eliminar el producto",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la cotización \"{code}\"? Esta acción no se puede deshacer.",
+        "confirmConvertToSale": "¿Estás seguro de que deseas convertir la cotización \"{code}\" a venta? Esta acción no se puede deshacer.",
+        "confirmDeleteProduct": "¿Estás seguro de que deseas eliminar el producto \"{name}\" de esta cotización? Esta acción no se puede deshacer."
+      },
+      "details": {
+        "title": "Cotización {code}",
+        "subtitle": "Detalles de la cotización",
+        "client": "Cliente",
+        "warehouse": "Almacén",
+        "date": "Fecha",
+        "validUntil": "Válida Hasta",
+        "status": "Estado",
+        "subtotal": "Subtotal",
+        "tax": "Impuestos",
+        "total": "Total",
+        "notes": "Notas",
+        "products": "Productos",
+        "noProducts": "No hay productos en esta cotización",
+        "table": {
+          "product": "Producto",
+          "quantity": "Cantidad",
+          "price": "Precio",
+          "discount": "Descuento",
+          "subtotal": "Subtotal",
+          "actions": "Acciones"
         }
       }
     },
