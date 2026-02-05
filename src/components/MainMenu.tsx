@@ -2,6 +2,7 @@
 
 import { useTheme } from "@/context/ThemeContext";
 import { UserMenu } from "@/components/UserMenu";
+import NotificationBell from "@/components/Notifications/NotificationBell";
 
 export function MainMenu() {
   const { currentTheme } = useTheme();
@@ -36,8 +37,11 @@ export function MainMenu() {
             </div>
           </div>
 
-          {/* Menú de usuario */}
-          <UserMenu />
+          {/* Notifications and User Menu */}
+          <div className="flex items-center space-x-4">
+            <NotificationBell />
+            <UserMenu />
+          </div>
         </div>
       </div>
     </nav>

@@ -2750,5 +2750,40 @@
     "next": "Next",
     "showing": "Showing {from} to {to} of {total} results",
     "page": "Page {page} of {total}"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications",
+    "close": "Close",
+    "filtersLabel": "Filters",
+    "viewAll": "View all notifications",
+    "filters": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "types": {
+      "info": "Information",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error",
+      "system": "System",
+      "order": "Orders",
+      "inventory": "Inventory",
+      "sale": "Sales",
+      "quotation": "Quotations",
+      "invoice": "Invoices"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "actions": {
+      "markAsRead": "Mark as read",
+      "markAllRead": "Mark all as read",
+      "delete": "Delete",
+      "deleteAllRead": "Delete all read"
+    }
   }
 }

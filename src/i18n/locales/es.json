@@ -2774,5 +2774,40 @@
     "next": "Siguiente",
     "showing": "Mostrando {from} a {to} de {total} resultados",
     "page": "Página {page} de {total}"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty": "No hay notificaciones",
+    "close": "Cerrar",
+    "filtersLabel": "Filtros",
+    "viewAll": "Ver todas las notificaciones",
+    "filters": {
+      "all": "Todas",
+      "unread": "No leídas"
+    },
+    "types": {
+      "info": "Información",
+      "success": "Éxito",
+      "warning": "Advertencia",
+      "error": "Error",
+      "system": "Sistema",
+      "order": "Pedidos",
+      "inventory": "Inventario",
+      "sale": "Ventas",
+      "quotation": "Cotizaciones",
+      "invoice": "Facturas"
+    },
+    "priority": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "urgent": "Urgente"
+    },
+    "actions": {
+      "markAsRead": "Marcar como leída",
+      "markAllRead": "Marcar todas como leídas",
+      "delete": "Eliminar",
+      "deleteAllRead": "Eliminar todas las leídas"
+    }
   }
 }
