@@ -3147,6 +3147,7 @@
       "sent": "Alerta enviada",
       "error": "Error al enviar la alerta",
       "emailRequired": "Por favor ingresa un email válido",
+      "noConfig": "Configuración de correo no establecida. Por favor configura tus datos de correo primero.",
       "note": "Nota",
       "noteText": "Las alertas se enviarán cuando el flujo de caja sea negativo o el saldo proyectado sea crítico"
     },
@@ -3173,6 +3174,46 @@
     },
     "messages": {
       "errorLoading": "Error al cargar el flujo de caja"
+    }
+  },
+  "emailConfig": {
+    "title": "Configuración de Correo",
+    "back": "Volver",
+    "form": {
+      "host": "Servidor SMTP",
+      "port": "Puerto",
+      "user": "Usuario",
+      "password": "Contraseña",
+      "fromEmail": "Email de Remitente",
+      "fromName": "Nombre del Remitente",
+      "secure": "Usar conexión segura (TLS/SSL)",
+      "test": "Probar Conexión",
+      "testing": "Probando...",
+      "testSuccess": "¡Conexión Exitosa!",
+      "testFailed": "Error en la Conexión",
+      "placeholders": {
+        "host": "ej: smtp.gmail.com",
+        "user": "ej: tu@email.com",
+        "password": "Tu contraseña de aplicación",
+        "fromEmail": "ej: noreply@tuempresa.com",
+        "fromName": "ej: Mi Empresa"
+      },
+      "errors": {
+        "requiredFields": "Por favor completa todos los campos requeridos"
+      }
+    },
+    "messages": {
+      "createSuccess": "Configuración de correo creada exitosamente",
+      "updateSuccess": "Configuración de correo actualizada exitosamente",
+      "error": "Error al guardar la configuración",
+      "testError": "Error al probar la conexión"
+    },
+    "info": {
+      "title": "Información Importante",
+      "item1": "Usa un servidor SMTP válido (Gmail, Outlook, SendGrid, etc.)",
+      "item2": "Para Gmail, usa contraseña de aplicación, no tu contraseña normal",
+      "item3": "El puerto 587 es para TLS, 465 para SSL",
+      "item4": "Prueba la conexión antes de guardar para asegurar que funciona"
     }
   }
 }

@@ -3123,6 +3123,7 @@
       "sent": "Alert sent",
       "error": "Error sending alert",
       "emailRequired": "Please enter a valid email",
+      "noConfig": "Email configuration not set. Please configure your email settings first.",
       "note": "Note",
       "noteText": "Alerts will be sent when cash flow is negative or projected balance is critical"
     },
@@ -3149,6 +3150,46 @@
     },
     "messages": {
       "errorLoading": "Error loading cash flow"
+    }
+  },
+  "emailConfig": {
+    "title": "Email Configuration",
+    "back": "Back",
+    "form": {
+      "host": "SMTP Server",
+      "port": "Port",
+      "user": "Username",
+      "password": "Password",
+      "fromEmail": "Sender Email",
+      "fromName": "Sender Name",
+      "secure": "Use secure connection (TLS/SSL)",
+      "test": "Test Connection",
+      "testing": "Testing...",
+      "testSuccess": "Connection Successful!",
+      "testFailed": "Connection Failed",
+      "placeholders": {
+        "host": "e.g: smtp.gmail.com",
+        "user": "e.g: your@email.com",
+        "password": "Your app password",
+        "fromEmail": "e.g: noreply@yourcompany.com",
+        "fromName": "e.g: My Company"
+      },
+      "errors": {
+        "requiredFields": "Please fill in all required fields"
+      }
+    },
+    "messages": {
+      "createSuccess": "Email configuration created successfully",
+      "updateSuccess": "Email configuration updated successfully",
+      "error": "Error saving configuration",
+      "testError": "Error testing connection"
+    },
+    "info": {
+      "title": "Important Information",
+      "item1": "Use a valid SMTP server (Gmail, Outlook, SendGrid, etc.)",
+      "item2": "For Gmail, use app password, not your regular password",
+      "item3": "Port 587 is for TLS, 465 for SSL",
+      "item4": "Test the connection before saving to ensure it works"
     }
   }
 }
