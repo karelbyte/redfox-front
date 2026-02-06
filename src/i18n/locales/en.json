@@ -122,7 +122,9 @@
     "expenses": "Expenses",
     "accountsReceivable": "Accounts Receivable",
     "accountsPayable": "Accounts Payable",
+    "accountsPayableDescription": "Manage your accounts payable and supplier payments",
     "cashFlow": "Cash Flow",
+    "cashFlowDescription": "Monitor your cash flow, income, expenses and financial projections",
     "collapseMenu": "Collapse menu (icons only)",
     "expandMenu": "Expand menu"
   },
@@ -2944,6 +2946,209 @@
       "accountUpdated": "Account receivable updated successfully",
       "errorCreating": "Error creating account receivable",
       "errorUpdating": "Error updating account receivable"
+    }
+  },
+  "accountsPayable": {
+    "title": "Accounts Payable",
+    "subtitle": "Manage your accounts payable ({count} accounts)",
+    "addAccount": "New Account Payable",
+    "editAccount": "Edit Account Payable",
+    "confirmDelete": "Are you sure you want to delete this account payable?",
+    "drawer": {
+      "createTitle": "New Account Payable",
+      "editTitle": "Edit Account Payable"
+    },
+    "empty": {
+      "title": "No accounts payable",
+      "description": "Start by creating a new account payable"
+    },
+    "table": {
+      "referenceNumber": "Reference Number",
+      "provider": "Provider",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "actions": "Actions",
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "form": {
+      "referenceNumber": "Reference Number",
+      "provider": "Provider",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "issueDate": "Issue Date",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "notes": "Notes",
+      "placeholders": {
+        "referenceNumber": "E.g.: AP-001",
+        "selectProvider": "Select provider...",
+        "notes": "Additional notes..."
+      },
+      "errors": {
+        "referenceRequired": "Reference number is required",
+        "providerRequired": "Provider is required",
+        "totalAmountRequired": "Total amount is required",
+        "remainingAmountRequired": "Remaining amount is required",
+        "invalidAmount": "Amount must be a valid number greater than or equal to 0",
+        "remainingGreaterThanTotal": "Remaining amount cannot be greater than total amount",
+        "issueDateRequired": "Issue date is required",
+        "dueDateRequired": "Due date is required"
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "partial": "Partial",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "cancelled": "Cancelled"
+    },
+    "filters": {
+      "title": "Filters",
+      "search": "Search",
+      "searchPlaceholder": "Search by reference or provider...",
+      "status": "Status",
+      "provider": "Provider",
+      "startDate": "From date",
+      "endDate": "To date",
+      "allStatuses": "All statuses",
+      "allProviders": "All providers"
+    },
+    "actions": {
+      "create": "Create Account Payable"
+    },
+    "messages": {
+      "accountCreated": "Account payable created successfully",
+      "accountUpdated": "Account payable updated successfully",
+      "accountDeleted": "Account payable deleted successfully",
+      "errorLoading": "Error loading accounts payable",
+      "errorCreating": "Error creating account payable",
+      "errorUpdating": "Error updating account payable",
+      "errorDeleting": "Error deleting account payable",
+      "confirmDelete": "Are you sure you want to delete this account payable?"
+    }
+  },
+  "cashFlow": {
+    "title": "Cash Flow",
+    "summary": {
+      "totalIncome": "Total Income",
+      "totalExpenses": "Total Expenses",
+      "netCashFlow": "Net Cash Flow",
+      "projectedBalance": "Projected Balance"
+    },
+    "table": {
+      "date": "Date",
+      "type": "Type",
+      "description": "Description",
+      "amount": "Amount",
+      "balance": "Balance"
+    },
+    "movements": {
+      "type": {
+        "income": "Income",
+        "expense": "Expense",
+        "receivable": "Account Receivable",
+        "payable": "Account Payable"
+      }
+    },
+    "projection": {
+      "title": "Future Projections",
+      "income": "Projected Income",
+      "expenses": "Projected Expenses"
+    },
+    "filters": {
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "apply": "Apply",
+      "clear": "Clear"
+    },
+    "empty": {
+      "noMovements": "No movements in this period",
+      "noProjections": "No projections available"
+    },
+    "chart": {
+      "balanceTrend": "Balance Trend",
+      "incomeVsExpense": "Income vs Expenses",
+      "movementsByType": "Movements by Type",
+      "cumulativeFlow": "Cumulative Flow",
+      "balance": "Balance",
+      "income": "Income",
+      "expense": "Expenses"
+    },
+    "alerts": {
+      "negativeFlow": {
+        "title": "Negative Cash Flow",
+        "message": "Your expenses exceed your income in this period. Consider reviewing your expenses."
+      },
+      "negativeBalance": {
+        "title": "Negative Projected Balance",
+        "message": "Your projected balance is negative. This indicates a possible liquidity crisis."
+      },
+      "positiveFlow": {
+        "title": "Positive Cash Flow",
+        "message": "Excellent! Your cash flow is positive. Your business is generating profits."
+      }
+    },
+    "trends": {
+      "trend": "Trend",
+      "improving": "Improving",
+      "declining": "Declining",
+      "stable": "Stable",
+      "averageDaily": "Daily Average",
+      "perDay": "per day",
+      "volatility": "Volatility",
+      "variability": "movement variability"
+    },
+    "comparison": {
+      "title": "Period vs Period Comparison",
+      "loadPrevious": "Load Previous Period",
+      "loading": "Loading...",
+      "noPreviousData": "No data from previous period"
+    },
+    "export": {
+      "generatedOn": "Generated on",
+      "success": "File exported successfully",
+      "error": "Error exporting file"
+    },
+    "emailAlert": {
+      "title": "Email Alerts",
+      "description": "Receive negative cash flow alerts directly to your email",
+      "placeholder": "your@email.com",
+      "send": "Send Alert",
+      "sending": "Sending...",
+      "sent": "Alert sent",
+      "error": "Error sending alert",
+      "emailRequired": "Please enter a valid email",
+      "note": "Note",
+      "noteText": "Alerts will be sent when cash flow is negative or projected balance is critical"
+    },
+    "prediction": {
+      "title": "Cash Flow Prediction",
+      "predictedBalance": "Predicted Balance",
+      "insufficientData": "Insufficient data to make predictions",
+      "insights": "Smart Insights",
+      "positiveOutlook": "Positive Outlook",
+      "positiveMessage": "Based on the last 7 days, your cash flow tends to be positive",
+      "warningOutlook": "Warning Outlook",
+      "warningMessage": "Based on the last 7 days, your cash flow tends to be negative",
+      "moreIncome": "More Income than Expenses",
+      "moreIncomeMessage": "You have more income movements than expense movements, which is positive"
+    },
+    "yearComparison": {
+      "title": "Annual Comparison",
+      "load": "Load Year Data",
+      "loading": "Loading...",
+      "noData": "No data available",
+      "yearTrend": "Annual Trend",
+      "totalIncome": "Total Year Income",
+      "totalExpense": "Total Year Expenses"
+    },
+    "messages": {
+      "errorLoading": "Error loading cash flow"
     }
   }
 }

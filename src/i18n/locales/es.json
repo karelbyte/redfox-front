@@ -122,7 +122,9 @@
     "expenses": "Gastos",
     "accountsReceivable": "Cuentas por Cobrar",
     "accountsPayable": "Cuentas por Pagar",
+    "accountsPayableDescription": "Gestiona tus cuentas por pagar y pagos a proveedores",
     "cashFlow": "Flujo de Caja",
+    "cashFlowDescription": "Monitorea tu flujo de caja, ingresos, egresos y proyecciones financieras",
     "collapseMenu": "Minimizar menú (solo iconos)",
     "expandMenu": "Expandir menú"
   },
@@ -2968,6 +2970,209 @@
       "accountUpdated": "Cuenta por cobrar actualizada exitosamente",
       "errorCreating": "Error al crear la cuenta por cobrar",
       "errorUpdating": "Error al actualizar la cuenta por cobrar"
+    }
+  },
+  "accountsPayable": {
+    "title": "Cuentas por Pagar",
+    "subtitle": "Gestiona las cuentas por pagar ({count} cuentas)",
+    "addAccount": "Nueva Cuenta por Pagar",
+    "editAccount": "Editar Cuenta por Pagar",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar esta cuenta por pagar?",
+    "drawer": {
+      "createTitle": "Nueva Cuenta por Pagar",
+      "editTitle": "Editar Cuenta por Pagar"
+    },
+    "empty": {
+      "title": "No hay cuentas por pagar",
+      "description": "Comienza creando una nueva cuenta por pagar"
+    },
+    "table": {
+      "referenceNumber": "Número de Referencia",
+      "provider": "Proveedor",
+      "totalAmount": "Monto Total",
+      "remainingAmount": "Monto Pendiente",
+      "dueDate": "Fecha de Vencimiento",
+      "status": "Estado",
+      "actions": "Acciones",
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      }
+    },
+    "form": {
+      "referenceNumber": "Número de Referencia",
+      "provider": "Proveedor",
+      "totalAmount": "Monto Total",
+      "remainingAmount": "Monto Pendiente",
+      "issueDate": "Fecha de Emisión",
+      "dueDate": "Fecha de Vencimiento",
+      "status": "Estado",
+      "notes": "Notas",
+      "placeholders": {
+        "referenceNumber": "Ej: CXP-001",
+        "selectProvider": "Seleccionar proveedor...",
+        "notes": "Notas adicionales..."
+      },
+      "errors": {
+        "referenceRequired": "El número de referencia es requerido",
+        "providerRequired": "El proveedor es requerido",
+        "totalAmountRequired": "El monto total es requerido",
+        "remainingAmountRequired": "El monto pendiente es requerido",
+        "invalidAmount": "El monto debe ser un número válido mayor o igual a 0",
+        "remainingGreaterThanTotal": "El monto pendiente no puede ser mayor al monto total",
+        "issueDateRequired": "La fecha de emisión es requerida",
+        "dueDateRequired": "La fecha de vencimiento es requerida"
+      }
+    },
+    "status": {
+      "pending": "Pendiente",
+      "partial": "Parcial",
+      "paid": "Pagado",
+      "overdue": "Vencido",
+      "cancelled": "Cancelado"
+    },
+    "filters": {
+      "title": "Filtros",
+      "search": "Buscar",
+      "searchPlaceholder": "Buscar por referencia o proveedor...",
+      "status": "Estado",
+      "provider": "Proveedor",
+      "startDate": "Fecha desde",
+      "endDate": "Fecha hasta",
+      "allStatuses": "Todos los estados",
+      "allProviders": "Todos los proveedores"
+    },
+    "actions": {
+      "create": "Crear Cuenta por Pagar"
+    },
+    "messages": {
+      "accountCreated": "Cuenta por pagar creada exitosamente",
+      "accountUpdated": "Cuenta por pagar actualizada exitosamente",
+      "accountDeleted": "Cuenta por pagar eliminada exitosamente",
+      "errorLoading": "Error al cargar las cuentas por pagar",
+      "errorCreating": "Error al crear la cuenta por pagar",
+      "errorUpdating": "Error al actualizar la cuenta por pagar",
+      "errorDeleting": "Error al eliminar la cuenta por pagar",
+      "confirmDelete": "¿Estás seguro de que deseas eliminar esta cuenta por pagar?"
+    }
+  },
+  "cashFlow": {
+    "title": "Flujo de Caja",
+    "summary": {
+      "totalIncome": "Ingresos Totales",
+      "totalExpenses": "Gastos Totales",
+      "netCashFlow": "Flujo Neto",
+      "projectedBalance": "Saldo Proyectado"
+    },
+    "table": {
+      "date": "Fecha",
+      "type": "Tipo",
+      "description": "Descripción",
+      "amount": "Monto",
+      "balance": "Saldo"
+    },
+    "movements": {
+      "type": {
+        "income": "Ingreso",
+        "expense": "Gasto",
+        "receivable": "Cuenta por Cobrar",
+        "payable": "Cuenta por Pagar"
+      }
+    },
+    "projection": {
+      "title": "Proyecciones Futuras",
+      "income": "Ingresos Proyectados",
+      "expenses": "Egresos Proyectados"
+    },
+    "filters": {
+      "startDate": "Fecha Inicio",
+      "endDate": "Fecha Fin",
+      "apply": "Aplicar",
+      "clear": "Limpiar"
+    },
+    "empty": {
+      "noMovements": "No hay movimientos en este período",
+      "noProjections": "No hay proyecciones disponibles"
+    },
+    "chart": {
+      "balanceTrend": "Tendencia del Saldo",
+      "incomeVsExpense": "Ingresos vs Egresos",
+      "movementsByType": "Movimientos por Tipo",
+      "cumulativeFlow": "Flujo Acumulado",
+      "balance": "Saldo",
+      "income": "Ingresos",
+      "expense": "Egresos"
+    },
+    "alerts": {
+      "negativeFlow": {
+        "title": "Flujo de Caja Negativo",
+        "message": "Tus egresos superan tus ingresos en este período. Considera revisar tus gastos."
+      },
+      "negativeBalance": {
+        "title": "Saldo Proyectado Negativo",
+        "message": "Tu saldo proyectado es negativo. Esto indica una posible crisis de liquidez."
+      },
+      "positiveFlow": {
+        "title": "Flujo de Caja Positivo",
+        "message": "¡Excelente! Tu flujo de caja es positivo. Tu negocio está generando ganancias."
+      }
+    },
+    "trends": {
+      "trend": "Tendencia",
+      "improving": "Mejorando",
+      "declining": "Declinando",
+      "stable": "Estable",
+      "averageDaily": "Promedio Diario",
+      "perDay": "por día",
+      "volatility": "Volatilidad",
+      "variability": "variabilidad de movimientos"
+    },
+    "comparison": {
+      "title": "Comparativa Período vs Período",
+      "loadPrevious": "Cargar Período Anterior",
+      "loading": "Cargando...",
+      "noPreviousData": "No hay datos del período anterior"
+    },
+    "export": {
+      "generatedOn": "Generado el",
+      "success": "Archivo exportado exitosamente",
+      "error": "Error al exportar el archivo"
+    },
+    "emailAlert": {
+      "title": "Alertas por Email",
+      "description": "Recibe alertas de flujo de caja negativo directamente en tu email",
+      "placeholder": "tu@email.com",
+      "send": "Enviar Alerta",
+      "sending": "Enviando...",
+      "sent": "Alerta enviada",
+      "error": "Error al enviar la alerta",
+      "emailRequired": "Por favor ingresa un email válido",
+      "note": "Nota",
+      "noteText": "Las alertas se enviarán cuando el flujo de caja sea negativo o el saldo proyectado sea crítico"
+    },
+    "prediction": {
+      "title": "Predicción de Flujo de Caja",
+      "predictedBalance": "Saldo Predicho",
+      "insufficientData": "Datos insuficientes para hacer predicciones",
+      "insights": "Insights Inteligentes",
+      "positiveOutlook": "Perspectiva Positiva",
+      "positiveMessage": "Basado en los últimos 7 días, tu flujo de caja tiende a ser positivo",
+      "warningOutlook": "Perspectiva de Alerta",
+      "warningMessage": "Basado en los últimos 7 días, tu flujo de caja tiende a ser negativo",
+      "moreIncome": "Más Ingresos que Egresos",
+      "moreIncomeMessage": "Tienes más movimientos de ingresos que de egresos, lo cual es positivo"
+    },
+    "yearComparison": {
+      "title": "Comparativa Anual",
+      "load": "Cargar Datos del Año",
+      "loading": "Cargando...",
+      "noData": "No hay datos disponibles",
+      "yearTrend": "Tendencia Anual",
+      "totalIncome": "Ingresos Totales del Año",
+      "totalExpense": "Egresos Totales del Año"
+    },
+    "messages": {
+      "errorLoading": "Error al cargar el flujo de caja"
     }
   }
 }
