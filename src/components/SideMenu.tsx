@@ -849,6 +849,108 @@ export function SideMenu() {
         ],
       },
       {
+        name: t("finance"),
+        path: getLocalizedPath("/dashboard/finanzas"),
+        howCan: ["expense_module_view", "account_receivable_module_view"],
+        icon: (
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m-2.599-3.801C9.08 13.598 8 13.198 8 12.5v-.5"
+            />
+          </svg>
+        ),
+        subItems: [
+          {
+            name: t("expenses"),
+            path: getLocalizedPath("/dashboard/finanzas/gastos"),
+            howCan: ["expense_module_view"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            ),
+          },
+          {
+            name: t("accountsReceivable"),
+            path: getLocalizedPath("/dashboard/finanzas/cuentas-por-cobrar"),
+            howCan: ["account_receivable_module_view"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                />
+              </svg>
+            ),
+          },
+          {
+            name: t("accountsPayable"),
+            path: getLocalizedPath("/dashboard/finanzas/cuentas-por-pagar"),
+            howCan: ["account_payable_module_view"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+            ),
+          },
+          {
+            name: t("cashFlow"),
+            path: getLocalizedPath("/dashboard/finanzas/flujo-de-caja"),
+            howCan: ["cash_flow_module_view"],
+            icon: (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                />
+              </svg>
+            ),
+          },
+        ],
+      },
+      {
         name: t("settings"),
         path: getLocalizedPath("/dashboard/configuracion"),
         howCan: ["role_module_view", "user_module_view", "system_module_view"],

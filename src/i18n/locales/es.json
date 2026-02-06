@@ -13,6 +13,8 @@
       "view": "Ver",
       "search": "Buscar",
       "clear": "Limpiar",
+      "apply": "Aplicar",
+      "filters": "Filtros",
       "confirm": "Confirmar",
       "loading": "Cargando...",
       "saving": "Guardando...",
@@ -116,6 +118,11 @@
     "createInvoice": "Crear Factura",
     "invoiceList": "Lista de Facturas",
     "certificationPacks": "Packs SAT",
+    "finance": "Finanzas",
+    "expenses": "Gastos",
+    "accountsReceivable": "Cuentas por Cobrar",
+    "accountsPayable": "Cuentas por Pagar",
+    "cashFlow": "Flujo de Caja",
     "collapseMenu": "Minimizar menú (solo iconos)",
     "expandMenu": "Expandir menú"
   },
@@ -2772,8 +2779,10 @@
   "pagination": {
     "previous": "Anterior",
     "next": "Siguiente",
-    "showing": "Mostrando {from} a {to} de {total} resultados",
-    "page": "Página {page} de {total}"
+    "showing": "Mostrando",
+    "of": "de",
+    "pages": "páginas",
+    "results": "resultados"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -2808,6 +2817,157 @@
       "markAllRead": "Marcar todas como leídas",
       "delete": "Eliminar",
       "deleteAllRead": "Eliminar todas las leídas"
+    }
+  },
+  "globalSearch": {
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar productos, clientes, facturas...",
+    "placeholder": "Buscar productos, clientes, facturas...",
+    "searching": "Buscando...",
+    "noResults": "Sin resultados",
+    "noResultsDescription": "No se encontraron resultados para tu búsqueda.",
+    "startTyping": "Comienza a escribir",
+    "startTypingDescription": "Escribe al menos 2 caracteres para buscar.",
+    "navigate": "navegar",
+    "select": "seleccionar",
+    "close": "cerrar",
+    "results": "resultados",
+    "types": {
+      "product": "Producto",
+      "client": "Cliente",
+      "provider": "Proveedor",
+      "invoice": "Factura",
+      "purchaseOrder": "Orden de Compra",
+      "expense": "Gasto",
+      "accountReceivable": "Cuenta por Cobrar"
+    }
+  },
+  "expenses": {
+    "title": "Gastos",
+    "subtitle": "Gestiona los gastos de tu empresa ({count} gastos)",
+    "addExpense": "Nuevo Gasto",
+    "editExpense": "Editar Gasto",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar este gasto?",
+    "table": {
+      "description": "Descripción",
+      "category": "Categoría",
+      "provider": "Proveedor",
+      "amount": "Monto",
+      "date": "Fecha",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "form": {
+      "description": "Descripción",
+      "amount": "Monto",
+      "category": "Categoría",
+      "provider": "Proveedor",
+      "reference": "Referencia",
+      "expenseDate": "Fecha del Gasto",
+      "status": "Estado",
+      "notes": "Notas",
+      "placeholders": {
+        "description": "Ej: Compra de materiales de oficina",
+        "selectProvider": "Seleccionar proveedor...",
+        "reference": "Ej: Factura #123",
+        "selectCategory": "Seleccionar categoría...",
+        "notes": "Notas adicionales..."
+      },
+      "errors": {
+        "descriptionRequired": "La descripción es requerida",
+        "amountRequired": "El monto es requerido",
+        "invalidAmount": "El monto debe ser un número válido mayor a 0",
+        "categoryRequired": "La categoría es requerida",
+        "dateRequired": "La fecha es requerida"
+      }
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "rejected": "Rechazado",
+      "paid": "Pagado"
+    },
+    "filters": {
+      "title": "Filtros",
+      "search": "Buscar",
+      "searchPlaceholder": "Buscar por descripción, proveedor o referencia...",
+      "status": "Estado",
+      "category": "Categoría",
+      "startDate": "Fecha desde",
+      "endDate": "Fecha hasta",
+      "allStatuses": "Todos los estados",
+      "allCategories": "Todas las categorías"
+    },
+    "messages": {
+      "expenseCreated": "Gasto creado exitosamente",
+      "expenseUpdated": "Gasto actualizado exitosamente",
+      "errorCreating": "Error al crear el gasto",
+      "errorUpdating": "Error al actualizar el gasto"
+    }
+  },
+  "accountsReceivable": {
+    "title": "Cuentas por Cobrar",
+    "subtitle": "Gestiona las cuentas por cobrar ({count} cuentas)",
+    "addAccount": "Nueva Cuenta por Cobrar",
+    "editAccount": "Editar Cuenta por Cobrar",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar esta cuenta por cobrar?",
+    "table": {
+      "reference": "Referencia",
+      "client": "Cliente",
+      "totalAmount": "Monto Total",
+      "remainingAmount": "Monto Pendiente",
+      "dueDate": "Fecha de Vencimiento",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "form": {
+      "referenceNumber": "Número de Referencia",
+      "client": "Cliente",
+      "totalAmount": "Monto Total",
+      "remainingAmount": "Monto Pendiente",
+      "dueDate": "Fecha de Vencimiento",
+      "status": "Estado",
+      "description": "Descripción",
+      "notes": "Notas",
+      "placeholders": {
+        "referenceNumber": "Ej: CXC-001",
+        "selectClient": "Seleccionar cliente...",
+        "description": "Ej: Factura por servicios",
+        "notes": "Notas adicionales..."
+      },
+      "errors": {
+        "referenceRequired": "El número de referencia es requerido",
+        "clientRequired": "El cliente es requerido",
+        "totalAmountRequired": "El monto total es requerido",
+        "remainingAmountRequired": "El monto pendiente es requerido",
+        "invalidAmount": "El monto debe ser un número válido mayor o igual a 0",
+        "remainingGreaterThanTotal": "El monto pendiente no puede ser mayor al monto total",
+        "dueDateRequired": "La fecha de vencimiento es requerida"
+      }
+    },
+    "status": {
+      "pending": "Pendiente",
+      "partial": "Parcial",
+      "paid": "Pagado",
+      "overdue": "Vencido",
+      "cancelled": "Cancelado"
+    },
+    "filters": {
+      "title": "Filtros",
+      "search": "Buscar",
+      "searchPlaceholder": "Buscar por referencia o cliente...",
+      "status": "Estado",
+      "client": "Cliente",
+      "startDate": "Fecha desde",
+      "endDate": "Fecha hasta",
+      "allStatuses": "Todos los estados",
+      "allClients": "Todos los clientes"
+    },
+    "messages": {
+      "accountCreated": "Cuenta por cobrar creada exitosamente",
+      "accountUpdated": "Cuenta por cobrar actualizada exitosamente",
+      "errorCreating": "Error al crear la cuenta por cobrar",
+      "errorUpdating": "Error al actualizar la cuenta por cobrar"
     }
   }
 }

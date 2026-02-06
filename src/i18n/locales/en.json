@@ -13,6 +13,8 @@
       "view": "View",
       "search": "Search",
       "clear": "Clear",
+      "apply": "Apply",
+      "filters": "Filters",
       "confirm": "Confirm",
       "loading": "Loading...",
       "saving": "Saving...",
@@ -116,6 +118,11 @@
     "createInvoice": "Create Invoice",
     "invoiceList": "Invoice List",
     "certificationPacks": "SAT Packs",
+    "finance": "Finance",
+    "expenses": "Expenses",
+    "accountsReceivable": "Accounts Receivable",
+    "accountsPayable": "Accounts Payable",
+    "cashFlow": "Cash Flow",
     "collapseMenu": "Collapse menu (icons only)",
     "expandMenu": "Expand menu"
   },
@@ -2748,8 +2755,10 @@
   "pagination": {
     "previous": "Previous",
     "next": "Next",
-    "showing": "Showing {from} to {to} of {total} results",
-    "page": "Page {page} of {total}"
+    "showing": "Showing",
+    "of": "of",
+    "pages": "pages",
+    "results": "results"
   },
   "notifications": {
     "title": "Notifications",
@@ -2784,6 +2793,157 @@
       "markAllRead": "Mark all as read",
       "delete": "Delete",
       "deleteAllRead": "Delete all read"
+    }
+  },
+  "globalSearch": {
+    "search": "Search",
+    "searchPlaceholder": "Search products, clients, invoices...",
+    "placeholder": "Search products, clients, invoices...",
+    "searching": "Searching...",
+    "noResults": "No results",
+    "noResultsDescription": "No results found for your search.",
+    "startTyping": "Start typing",
+    "startTypingDescription": "Type at least 2 characters to search.",
+    "navigate": "navigate",
+    "select": "select",
+    "close": "close",
+    "results": "results",
+    "types": {
+      "product": "Product",
+      "client": "Client",
+      "provider": "Provider",
+      "invoice": "Invoice",
+      "purchaseOrder": "Purchase Order",
+      "expense": "Expense",
+      "accountReceivable": "Account Receivable"
+    }
+  },
+  "expenses": {
+    "title": "Expenses",
+    "subtitle": "Manage your company expenses ({count} expenses)",
+    "addExpense": "New Expense",
+    "editExpense": "Edit Expense",
+    "confirmDelete": "Are you sure you want to delete this expense?",
+    "table": {
+      "description": "Description",
+      "category": "Category",
+      "provider": "Provider",
+      "amount": "Amount",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "description": "Description",
+      "amount": "Amount",
+      "category": "Category",
+      "provider": "Provider",
+      "reference": "Reference",
+      "expenseDate": "Expense Date",
+      "status": "Status",
+      "notes": "Notes",
+      "placeholders": {
+        "description": "E.g.: Office supplies purchase",
+        "selectProvider": "Select provider...",
+        "reference": "E.g.: Invoice #123",
+        "selectCategory": "Select category...",
+        "notes": "Additional notes..."
+      },
+      "errors": {
+        "descriptionRequired": "Description is required",
+        "amountRequired": "Amount is required",
+        "invalidAmount": "Amount must be a valid number greater than 0",
+        "categoryRequired": "Category is required",
+        "dateRequired": "Date is required"
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "paid": "Paid"
+    },
+    "filters": {
+      "title": "Filters",
+      "search": "Search",
+      "searchPlaceholder": "Search by description, provider or reference...",
+      "status": "Status",
+      "category": "Category",
+      "startDate": "From date",
+      "endDate": "To date",
+      "allStatuses": "All statuses",
+      "allCategories": "All categories"
+    },
+    "messages": {
+      "expenseCreated": "Expense created successfully",
+      "expenseUpdated": "Expense updated successfully",
+      "errorCreating": "Error creating expense",
+      "errorUpdating": "Error updating expense"
+    }
+  },
+  "accountsReceivable": {
+    "title": "Accounts Receivable",
+    "subtitle": "Manage accounts receivable ({count} accounts)",
+    "addAccount": "New Account Receivable",
+    "editAccount": "Edit Account Receivable",
+    "confirmDelete": "Are you sure you want to delete this account receivable?",
+    "table": {
+      "reference": "Reference",
+      "client": "Client",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "referenceNumber": "Reference Number",
+      "client": "Client",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "description": "Description",
+      "notes": "Notes",
+      "placeholders": {
+        "referenceNumber": "E.g.: AR-001",
+        "selectClient": "Select client...",
+        "description": "E.g.: Invoice for services",
+        "notes": "Additional notes..."
+      },
+      "errors": {
+        "referenceRequired": "Reference number is required",
+        "clientRequired": "Client is required",
+        "totalAmountRequired": "Total amount is required",
+        "remainingAmountRequired": "Remaining amount is required",
+        "invalidAmount": "Amount must be a valid number greater than or equal to 0",
+        "remainingGreaterThanTotal": "Remaining amount cannot be greater than total amount",
+        "dueDateRequired": "Due date is required"
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "partial": "Partial",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "cancelled": "Cancelled"
+    },
+    "filters": {
+      "title": "Filters",
+      "search": "Search",
+      "searchPlaceholder": "Search by reference or client...",
+      "status": "Status",
+      "client": "Client",
+      "startDate": "From date",
+      "endDate": "To date",
+      "allStatuses": "All statuses",
+      "allClients": "All clients"
+    },
+    "messages": {
+      "accountCreated": "Account receivable created successfully",
+      "accountUpdated": "Account receivable updated successfully",
+      "errorCreating": "Error creating account receivable",
+      "errorUpdating": "Error updating account receivable"
     }
   }
 }

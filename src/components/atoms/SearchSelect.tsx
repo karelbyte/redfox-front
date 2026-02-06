@@ -91,13 +91,13 @@ const SearchSelect = ({
     };
   }, [searchTerm, searchOptions, disabled]);
 
-  // Cargar opciones iniciales cuando se abre el dropdown
+  // Cargar opciones iniciales cuando se abre el dropdown o cuando hay un valor
   useEffect(() => {
-    if (isOpen && options.length === 0 && !searchTerm && !disabled) {
-      // Cargar opciones iniciales cuando se abre el dropdown por primera vez
+    if ((isOpen || value) && options.length === 0 && !searchTerm && !disabled) {
+      // Cargar opciones iniciales cuando se abre el dropdown o cuando hay un valor seleccionado
       searchOptions('');
     }
-  }, [isOpen, options.length, searchTerm, searchOptions, disabled]);
+  }, [isOpen, value, options.length, searchTerm, searchOptions, disabled]);
 
   // Cargar la opción seleccionada cuando cambia el value
   useEffect(() => {
