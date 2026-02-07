@@ -32,7 +32,7 @@ export default function AccountsReceivableTable({
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
 
-  const getClientName = (clientId: number) => {
+  const getClientName = (clientId: string) => {
     const client = clients.find(c => c.id === clientId);
     return client?.name || '';
   };
@@ -137,9 +137,6 @@ export default function AccountsReceivableTable({
               <tr key={account.id} className="hover:bg-primary-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{account.referenceNumber}</div>
-                  {account.description && (
-                    <div className="text-sm text-gray-500">{account.description}</div>
-                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {getClientName(account.clientId)}

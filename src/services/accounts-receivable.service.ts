@@ -30,22 +30,22 @@ export const accountsReceivableService = {
     if (overdue) params.append('overdue', 'true');
 
     const response = await api.get(`/accounts-receivable?${params.toString()}`);
-    return response.data;
+    return response as PaginatedResponse<AccountReceivable>;
   },
 
   async getAccountReceivable(id: number): Promise<AccountReceivable> {
     const response = await api.get(`/accounts-receivable/${id}`);
-    return response.data;
+    return response as AccountReceivable;
   },
 
   async createAccountReceivable(account: CreateAccountReceivableDto): Promise<AccountReceivable> {
-    const response = await api.post('/accounts-receivable', account);
-    return response.data;
+    const response = await api.post('/accounts-receivable', account as any);
+    return response as AccountReceivable;
   },
 
   async updateAccountReceivable(id: number, account: UpdateAccountReceivableDto): Promise<AccountReceivable> {
-    const response = await api.patch(`/accounts-receivable/${id}`, account);
-    return response.data;
+    const response = await api.patch(`/accounts-receivable/${id}`, account as any);
+    return response as AccountReceivable;
   },
 
   async deleteAccountReceivable(id: number): Promise<void> {
@@ -53,21 +53,21 @@ export const accountsReceivableService = {
   },
 
   async addPayment(accountId: number, payment: Omit<CreateAccountReceivablePaymentDto, 'accountReceivableId'>): Promise<AccountReceivablePayment> {
-    const response = await api.post(`/accounts-receivable/${accountId}/payments`, payment);
-    return response.data;
+    const response = await api.post(`/accounts-receivable/${accountId}/payments`, payment as any);
+    return response as AccountReceivablePayment;
   },
 
   async getAccountsReceivableSummary(): Promise<AccountsReceivableSummary> {
     const response = await api.get('/accounts-receivable/summary');
-    return response.data;
+    return response as AccountsReceivableSummary;
   },
 
   async getOverdueAccounts(): Promise<AccountReceivable[]> {
     const response = await api.get('/accounts-receivable/overdue');
-    return response.data;
+    return response as AccountReceivable[];
   },
 
   async updateOverdueStatus(): Promise<void> {
-    await api.post('/accounts-receivable/update-overdue-status');
+    await api.post('/accounts-receivable/update-overdue-status', {});
   },
 };

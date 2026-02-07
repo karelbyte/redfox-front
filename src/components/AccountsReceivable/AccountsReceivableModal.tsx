@@ -21,9 +21,9 @@ interface FormData {
   clientId: string;
   totalAmount: string;
   remainingAmount: string;
+  issueDate: string;
   dueDate: string;
   status: AccountReceivableStatus;
-  description: string;
   notes: string;
 }
 
@@ -44,9 +44,9 @@ export default function AccountsReceivableModal({ account, clients, onClose, onS
     clientId: account?.clientId?.toString() || '',
     totalAmount: account?.totalAmount?.toString() || '',
     remainingAmount: account?.remainingAmount?.toString() || '',
+    issueDate: account?.issueDate ? account.issueDate.split('T')[0] : new Date().toISOString().split('T')[0],
     dueDate: account?.dueDate ? account.dueDate.split('T')[0] : '',
     status: account?.status || AccountReceivableStatus.PENDING,
-    description: account?.description || '',
     notes: account?.notes || '',
   });
 
@@ -60,9 +60,9 @@ export default function AccountsReceivableModal({ account, clients, onClose, onS
         clientId: account.clientId.toString(),
         totalAmount: account.totalAmount.toString(),
         remainingAmount: account.remainingAmount.toString(),
+        issueDate: account.issueDate.split('T')[0],
         dueDate: account.dueDate.split('T')[0],
         status: account.status,
-        description: account.description || '',
         notes: account.notes || '',
       });
     }
@@ -121,12 +121,12 @@ export default function AccountsReceivableModal({ account, clients, onClose, onS
       setIsLoading(true);
       const data = {
         referenceNumber: formData.referenceNumber.trim(),
-        clientId: Number(formData.clientId),
+        clientId: formData.clientId,
         totalAmount: Number(formData.totalAmount),
         remainingAmount: Number(formData.remainingAmount),
+        issueDate: formData.issueDate,
         dueDate: formData.dueDate,
         status: formData.status,
-        description: formData.description.trim() || undefined,
         notes: formData.notes.trim() || undefined,
       };
 
@@ -249,6 +249,17 @@ export default function AccountsReceivableModal({ account, clients, onClose, onS
                   <div>
                     <Input
                       type="date"
+                      id="issueDate"
+                      label={t('form.issueDate')}
+                      required
+                      value={formData.issueDate}
+                      onChange={(e) => setFormData(prev => ({ ...prev, issueDate: e.target.value }))}
+                    />
+                  </div>
+
+                  <div>
+                    <Input
+                      type="date"
                       id="dueDate"
                       label={t('form.dueDate')}
                       required
@@ -265,17 +276,6 @@ export default function AccountsReceivableModal({ account, clients, onClose, onS
                       value={formData.status}
                       onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as AccountReceivableStatus }))}
                       options={statusOptions}
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <Input
-                      type="text"
-                      id="description"
-                      label={t('form.description')}
-                      value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder={t('form.placeholders.description')}
                     />
                   </div>
 

@@ -12,6 +12,8 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ProviderFormRef } from "@/components/Provider/ProviderForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
+import ExportButton from "@/components/atoms/ExportButton";
+import AdvancedFilters, { FilterField } from "@/components/atoms/AdvancedFilters";
 import Loading from '@/components/Loading/Loading';
 import Pagination from "@/components/Pagination/Pagination";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -129,17 +131,45 @@ export default function ProvidersPage() {
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        {can(["provider_create"]) && (
-          <Btn
-            onClick={() => {
-              setSelectedProvider(null);
-              setShowDrawer(true);
-            }}
-            leftIcon={<PlusIcon className="h-5 w-5" />}
-          >
-            {t('newProvider')}
-          </Btn>
-        )}
+        <div className="flex items-center gap-2">
+          {providers.length > 0 && (
+            <>
+              <ExportButton
+                data={providers}
+                filename="providers"
+                columns={['code', 'name', 'email', 'phone', 'status']}
+              />
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'ACTIVE', label: 'Active' },
+                      { value: 'INACTIVE', label: 'Inactive' },
+                    ],
+                  },
+                ]}
+                onApply={(filters) => {
+                  // Apply filters
+                }}
+                storageKey="provider-advanced-filters"
+              />
+            </>
+          )}
+          {can(["provider_create"]) && (
+            <Btn
+              onClick={() => {
+                setSelectedProvider(null);
+                setShowDrawer(true);
+              }}
+              leftIcon={<PlusIcon className="h-5 w-5" />}
+            >
+              {t('newProvider')}
+            </Btn>
+          )}
+        </div>
       </div>
 
       {/* Filtro de búsqueda */}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { CashFlowSummary as CashFlowSummaryType, CashFlowMovement, CashFlowProjection } from '@/types/cash-flow';
+import { CashFlowSummary as CashFlowSummaryType, CashFlowMovement, CashFlowProjection as CashFlowProjectionType } from '@/types/cash-flow';
 import { cashFlowService } from '@/services/cash-flow.service';
 import { toastService } from '@/services/toast.service';
 import CashFlowSummary from './CashFlowSummary';
@@ -24,7 +24,7 @@ export default function CashFlowDashboard() {
   const t = useTranslations('cashFlow');
   const [summary, setSummary] = useState<CashFlowSummaryType | null>(null);
   const [movements, setMovements] = useState<CashFlowMovement[]>([]);
-  const [projections, setProjections] = useState<CashFlowProjection[]>([]);
+  const [projections, setProjections] = useState<CashFlowProjectionType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');

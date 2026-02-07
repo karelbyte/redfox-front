@@ -3,8 +3,16 @@
 import { useTranslations } from 'next-intl';
 import { CashFlowSummary as CashFlowSummaryType, CashFlowMovement } from '@/types/cash-flow';
 import { jsPDF } from 'jspdf';
+import type { jsPDF as jsPDFType } from 'jspdf';
+import 'jspdf-autotable';
 import { DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { toastService } from '@/services/toast.service';
+
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDFType;
+  }
+}
 
 interface CashFlowExportProps {
   summary: CashFlowSummaryType;

@@ -7,6 +7,9 @@ import { expensesService } from '@/services/expenses.service';
 import { providersService } from '@/services/providers.service';
 import { toastService } from '@/services/toast.service';
 import { Input, TextArea, Select, SearchSelect } from '@/components/atoms';
+import TagSelector from '@/components/atoms/TagSelector';
+import TemplateSelector from '@/components/atoms/TemplateSelector';
+import { Tag } from '@/services/tags.service';
 
 export interface ExpenseFormProps {
   expense: Expense | null;
@@ -46,6 +49,7 @@ const ExpenseForm = forwardRef<ExpenseFormRef, ExpenseFormProps>(
     const locale = useLocale();
     const [providers, setProviders] = useState<Provider[]>([]);
     const [localCategories, setLocalCategories] = useState<ExpenseCategory[]>([]);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
     const [formData, setFormData] = useState<FormData>({
       description: expense?.description || '',
@@ -290,7 +294,6 @@ const ExpenseForm = forwardRef<ExpenseFormRef, ExpenseFormProps>(
 
           <div>
             <SearchSelect
-              id="providerId"
               label={t('form.provider')}
               value={formData.providerId}
               onChange={(value) => setFormData(prev => ({ ...prev, providerId: value }))}
@@ -342,6 +345,33 @@ const ExpenseForm = forwardRef<ExpenseFormRef, ExpenseFormProps>(
               placeholder={t('form.placeholders.notes')}
             />
           </div>
+
+          {expense && (
+            <>
+              <div className="md:col-span-2">
+                <TagSelector
+                  entityType="expense"
+                  selectedTags={selectedTags}
+                  onTagsChange={setSelectedTags}
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <TemplateSelector
+                  entityType="expense"
+                  onSelectTemplate={(template) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      ...template.data,
+                    }));
+                  }}
+                  onSaveAsTemplate={(name, data) => {
+                    // Template data will be saved with current form data
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
       </form>
     );

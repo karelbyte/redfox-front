@@ -2826,6 +2826,15 @@
     "addExpense": "New Expense",
     "editExpense": "Edit Expense",
     "confirmDelete": "Are you sure you want to delete this expense?",
+    "bulkDelete": "Delete selected",
+    "bulkDeleteSuccess": "Expenses deleted successfully",
+    "bulkDeleteError": "Error deleting expenses",
+    "statusLabel": "Status",
+    "startDate": "From date",
+    "endDate": "To date",
+    "statusPending": "Pending",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
     "table": {
       "description": "Description",
       "category": "Category",
@@ -2881,7 +2890,9 @@
       "expenseUpdated": "Expense updated successfully",
       "errorCreating": "Error creating expense",
       "errorUpdating": "Error updating expense"
-    }
+    },
+    "details": "Expense Details",
+    "notFound": "Expense not found"
   },
   "accountsReceivable": {
     "title": "Accounts Receivable",

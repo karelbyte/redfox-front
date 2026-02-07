@@ -226,7 +226,6 @@ const AccountsPayableForm = forwardRef<AccountsPayableFormRef, AccountsPayableFo
 
           <div>
             <SearchSelect
-              id="providerId"
               label={t('form.provider')}
               required
               value={formData.providerId}

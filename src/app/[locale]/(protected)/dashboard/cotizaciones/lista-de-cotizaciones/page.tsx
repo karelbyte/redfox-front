@@ -11,6 +11,8 @@ import QuotationForm, { QuotationFormRef } from '@/components/Quotation/Quotatio
 import Drawer from '@/components/Drawer/Drawer';
 import Pagination from '@/components/Pagination/Pagination';
 import ColumnSelector from '@/components/Table/ColumnSelector';
+import ExportButton from '@/components/atoms/ExportButton';
+import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
 import { useRouter } from 'next/navigation';
 import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -120,12 +122,47 @@ const QuotationListPage = () => {
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <Btn
-          onClick={handleCreate}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('actions.create')}
-        </Btn>
+        <div className="flex gap-3">
+          {quotations.length > 0 && (
+            <>
+              <ExportButton
+                data={quotations}
+                filename="quotations"
+                columns={['code', 'date', 'validUntil', 'client', 'total', 'status']}
+              />
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'DRAFT', label: 'Draft' },
+                      { value: 'SENT', label: 'Sent' },
+                      { value: 'ACCEPTED', label: 'Accepted' },
+                      { value: 'REJECTED', label: 'Rejected' },
+                    ],
+                  },
+                  {
+                    key: 'date',
+                    label: t('table.date'),
+                    type: 'date',
+                  },
+                ]}
+                onApply={(filters) => {
+                  // Apply filters
+                }}
+                storageKey="quotation-advanced-filters"
+              />
+            </>
+          )}
+          <Btn
+            onClick={handleCreate}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('actions.create')}
+          </Btn>
+        </div>
       </div>
 
       {loading ? (

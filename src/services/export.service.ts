@@ -96,7 +96,7 @@ class ExportService {
     formatters?: Record<string, (value: any) => string>
   ): T[] {
     return data.map(row => {
-      const newRow = { ...row };
+      const newRow = { ...row } as any;
       if (formatters) {
         Object.entries(formatters).forEach(([key, formatter]) => {
           if (key in newRow) {

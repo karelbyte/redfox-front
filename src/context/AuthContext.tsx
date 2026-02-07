@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.login(email, password);
       const currentUser = await authService.getCurrentUser();
       setUser(currentUser);
-      router.replace(`/${locale}/dashboard`);
+      router.push('/dashboard');
     } catch (error) {
       throw error;
     } finally {
@@ -90,7 +90,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       authService.logout();
       setUser(null);
-      router.replace(`/${locale}/login`);
+      // Usar router.push sin locale - el middleware lo agregará automáticamente
+      router.push('/login');
     } catch (error) {
       console.error('Error during logout:', error);
     } finally {

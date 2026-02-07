@@ -28,9 +28,9 @@ interface FormData {
   clientId: string;
   totalAmount: string;
   remainingAmount: string;
+  issueDate: string;
   dueDate: string;
   status: AccountReceivableStatus;
-  description: string;
   notes: string;
 }
 
@@ -52,9 +52,9 @@ const AccountsReceivableForm = forwardRef<AccountsReceivableFormRef, AccountsRec
       clientId: account?.clientId?.toString() || '',
       totalAmount: account?.totalAmount?.toString() || '',
       remainingAmount: account?.remainingAmount?.toString() || '',
+      issueDate: account?.issueDate ? account.issueDate.split('T')[0] : new Date().toISOString().split('T')[0],
       dueDate: account?.dueDate ? account.dueDate.split('T')[0] : '',
       status: account?.status || AccountReceivableStatus.PENDING,
-      description: account?.description || '',
       notes: account?.notes || '',
     });
 
@@ -73,9 +73,9 @@ const AccountsReceivableForm = forwardRef<AccountsReceivableFormRef, AccountsRec
           clientId: account.clientId.toString(),
           totalAmount: account.totalAmount.toString(),
           remainingAmount: account.remainingAmount.toString(),
+          issueDate: account.issueDate.split('T')[0],
           dueDate: account.dueDate.split('T')[0],
           status: account.status,
-          description: account.description || '',
           notes: account.notes || '',
         });
       }
@@ -139,12 +139,12 @@ const AccountsReceivableForm = forwardRef<AccountsReceivableFormRef, AccountsRec
         onSavingChange?.(true);
         const data = {
           referenceNumber: formData.referenceNumber.trim(),
-          clientId: Number(formData.clientId),
+          clientId: formData.clientId,
           totalAmount: Number(formData.totalAmount),
           remainingAmount: Number(formData.remainingAmount),
+          issueDate: formData.issueDate,
           dueDate: formData.dueDate,
           status: formData.status,
-          description: formData.description.trim() || undefined,
           notes: formData.notes.trim() || undefined,
         };
 
@@ -176,9 +176,9 @@ const AccountsReceivableForm = forwardRef<AccountsReceivableFormRef, AccountsRec
         clientId: '',
         totalAmount: '',
         remainingAmount: '',
+        issueDate: new Date().toISOString().split('T')[0],
         dueDate: '',
         status: AccountReceivableStatus.PENDING,
-        description: '',
         notes: '',
       });
       setErrors({});
@@ -234,7 +234,6 @@ const AccountsReceivableForm = forwardRef<AccountsReceivableFormRef, AccountsRec
 
           <div>
             <SearchSelect
-              id="clientId"
               label={t('form.client')}
               required
               value={formData.clientId}
@@ -278,6 +277,17 @@ const AccountsReceivableForm = forwardRef<AccountsReceivableFormRef, AccountsRec
           <div>
             <Input
               type="date"
+              id="issueDate"
+              label={t('form.issueDate')}
+              required
+              value={formData.issueDate}
+              onChange={(e) => setFormData(prev => ({ ...prev, issueDate: e.target.value }))}
+            />
+          </div>
+
+          <div>
+            <Input
+              type="date"
               id="dueDate"
               label={t('form.dueDate')}
               required
@@ -294,17 +304,6 @@ const AccountsReceivableForm = forwardRef<AccountsReceivableFormRef, AccountsRec
               value={formData.status}
               onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as AccountReceivableStatus }))}
               options={statusOptions}
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <Input
-              type="text"
-              id="description"
-              label={t('form.description')}
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder={t('form.placeholders.description')}
             />
           </div>
 

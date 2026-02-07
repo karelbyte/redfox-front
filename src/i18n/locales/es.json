@@ -20,7 +20,8 @@
       "saving": "Guardando...",
       "deleting": "Eliminando...",
       "logout": "Cerrar sesión",
-      "viewColumns": "Ver columnas"
+      "viewColumns": "Ver columnas",
+      "export": "Exportar"
     },
     "status": {
       "active": "Activo",
@@ -2850,6 +2851,12 @@
     "addExpense": "Nuevo Gasto",
     "editExpense": "Editar Gasto",
     "confirmDelete": "¿Estás seguro de que deseas eliminar este gasto?",
+    "bulkDelete": "Eliminar seleccionados",
+    "bulkDeleteSuccess": "Gastos eliminados exitosamente",
+    "bulkDeleteError": "Error al eliminar los gastos",
+    "statusLabel": "Estado",
+    "startDate": "Fecha desde",
+    "endDate": "Fecha hasta",
     "table": {
       "description": "Descripción",
       "category": "Categoría",
@@ -2889,6 +2896,9 @@
       "rejected": "Rechazado",
       "paid": "Pagado"
     },
+    "statusPending": "Pendiente",
+    "statusApproved": "Aprobado",
+    "statusRejected": "Rechazado",
     "filters": {
       "title": "Filtros",
       "search": "Buscar",
@@ -2905,7 +2915,9 @@
       "expenseUpdated": "Gasto actualizado exitosamente",
       "errorCreating": "Error al crear el gasto",
       "errorUpdating": "Error al actualizar el gasto"
-    }
+    },
+    "details": "Detalles del Gasto",
+    "notFound": "Gasto no encontrado"
   },
   "accountsReceivable": {
     "title": "Cuentas por Cobrar",

@@ -3,21 +3,19 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { useLocale } from 'next-intl';
 import Loading from '@/components/Loading/Loading';
 
 export default function Home() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
-  const locale = useLocale();
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.replace(`/${locale}/dashboard`);
+      router.push('/dashboard');
     } else if (!isLoading && !isAuthenticated) {
-      router.replace(`/${locale}/login`);
+      router.push('/login');
     }
-  }, [isAuthenticated, isLoading, router, locale]);
+  }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
     return (

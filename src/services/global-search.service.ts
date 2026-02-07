@@ -13,7 +13,7 @@ export const globalSearchService = {
     });
 
     const response = await api.get(`/search?${params.toString()}`);
-    return response.data;
+    return response as SearchResult[];
   },
 
   async searchByBarcode(barcode: string): Promise<SearchResult[]> {
@@ -26,6 +26,6 @@ export const globalSearchService = {
     });
 
     const response = await api.get(`/search/barcode?${params.toString()}`);
-    return response.data;
+    return response as SearchResult[];
   },
 };

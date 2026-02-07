@@ -52,13 +52,11 @@ export default function AccountsReceivableList() {
         10,
         filters.search || undefined,
         filters.status,
-        filters.clientId,
-        filters.startDate || undefined,
-        filters.endDate || undefined
+        filters.clientId
       );
       setAccounts(response.data);
-      setTotalPages(response.totalPages);
-      setTotal(response.total);
+      setTotalPages(response.meta.totalPages);
+      setTotal(response.meta.total);
     } catch (error) {
       console.error('Error loading accounts receivable:', error);
     } finally {

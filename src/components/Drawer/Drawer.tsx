@@ -84,6 +84,7 @@ interface DrawerProps {
   isFormValid?: boolean;
   width?: string;
   parentId?: string;
+  headerButton?: React.ReactNode;
 }
 
 export default function Drawer({
@@ -97,6 +98,7 @@ export default function Drawer({
   isFormValid = true,
   width = "max-w-md",
   parentId,
+  headerButton,
 }: DrawerProps) {
   const { openDrawer, closeDrawer, getDrawerStack, getParentId } = useDrawerContext();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -193,7 +195,7 @@ export default function Drawer({
           {/* Header */}
           <div
             className={`flex items-center p-2 border-b ${
-              onSave ? "justify-between" : "justify-start"
+              onSave || headerButton ? "justify-between" : "justify-start"
             }`}
             style={{ 
               borderColor: `rgb(var(--color-primary-100))`,
@@ -219,16 +221,19 @@ export default function Drawer({
             >
               {title}
             </h2>
-            {onSave && (
-              <Btn
-                onClick={onSave}
-                disabled={isSaving || !isFormValid}
-                loading={isSaving}
-                size="sm"
-              >
-                Guardar
-              </Btn>
-            )}
+            <div className="flex items-center gap-2">
+              {headerButton}
+              {onSave && (
+                <Btn
+                  onClick={onSave}
+                  disabled={isSaving || !isFormValid}
+                  loading={isSaving}
+                  size="sm"
+                >
+                  Guardar
+                </Btn>
+              )}
+            </div>
           </div>
 
           {/* Content */}

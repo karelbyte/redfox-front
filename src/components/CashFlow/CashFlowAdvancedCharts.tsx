@@ -91,7 +91,7 @@ export default function CashFlowAdvancedCharts({ movements, isLoading }: CashFlo
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ type, value }) => `${type}: ${formatCurrency(value)}`}
+              label={({ value, payload }) => `${payload?.type}: ${formatCurrency(value)}`}
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"

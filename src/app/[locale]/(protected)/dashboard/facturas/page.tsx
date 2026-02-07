@@ -8,6 +8,8 @@ import { Client } from '@/types/client';
 import { invoiceService, clientsService } from '@/services';
 import { toastService } from '@/services/toast.service';
 import { Btn } from '@/components/atoms';
+import ExportButton from '@/components/atoms/ExportButton';
+import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
 import Loading from "@/components/Loading/Loading";
 import InvoiceTable from '@/components/Invoice/InvoiceTable';
 import InvoiceForm from '@/components/Invoice/InvoiceForm';
@@ -149,12 +151,47 @@ export default function InvoicesPage() {
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-       <Btn
-          onClick={handleCreateInvoice}
-          leftIcon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t('actions.createInvoice')}
-        </Btn>
+        <div className="flex gap-3">
+          {invoices.length > 0 && (
+            <>
+              <ExportButton
+                data={invoices}
+                filename="invoices"
+                columns={['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status']}
+              />
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'DRAFT', label: 'Draft' },
+                      { value: 'SENT', label: 'Sent' },
+                      { value: 'PAID', label: 'Paid' },
+                      { value: 'CANCELLED', label: 'Cancelled' },
+                    ],
+                  },
+                  {
+                    key: 'date',
+                    label: t('table.date'),
+                    type: 'date',
+                  },
+                ]}
+                onApply={(filters) => {
+                  // Apply filters
+                }}
+                storageKey="invoice-advanced-filters"
+              />
+            </>
+          )}
+          <Btn
+            onClick={handleCreateInvoice}
+            leftIcon={<PlusIcon className="h-5 w-5" />}
+          >
+            {t('actions.createInvoice')}
+          </Btn>
+        </div>
       </div>
 
       {invoices.length === 0 ? (

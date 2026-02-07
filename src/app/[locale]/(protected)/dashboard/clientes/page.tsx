@@ -12,6 +12,8 @@ import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ClientFormRef } from "@/components/Client/ClientForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
+import ExportButton from "@/components/atoms/ExportButton";
+import AdvancedFilters, { FilterField } from "@/components/atoms/AdvancedFilters";
 import Pagination from "@/components/Pagination/Pagination";
 import Loading from "@/components/Loading/Loading";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -156,6 +158,32 @@ export default function ClientsPage() {
           {t("title")}
         </h1>
         <div className="flex items-center gap-2">
+          {clients.length > 0 && (
+            <>
+              <ExportButton
+                data={clients}
+                filename="clients"
+                columns={['code', 'name', 'email', 'tax_document', 'status']}
+              />
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'ACTIVE', label: 'Active' },
+                      { value: 'INACTIVE', label: 'Inactive' },
+                    ],
+                  },
+                ]}
+                onApply={(filters) => {
+                  // Apply filters
+                }}
+                storageKey="client-advanced-filters"
+              />
+            </>
+          )}
           {can(["client_create"]) && (
             <Btn
               variant="secondary"

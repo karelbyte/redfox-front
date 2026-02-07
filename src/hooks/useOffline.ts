@@ -14,10 +14,13 @@ export function useOffline() {
       setIsOnline(true);
       if (wasOffline) {
         // Trigger sync when coming back online
-        if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
-          navigator.serviceWorker.ready.then((registration) => {
-            return registration.sync.register('background-sync');
-          });
+        if ('serviceWorker' in navigator) {
+          const swReg = window.ServiceWorkerRegistration as any;
+          if ('sync' in swReg.prototype) {
+            navigator.serviceWorker.ready.then((registration: any) => {
+              return registration.sync.register('background-sync');
+            });
+          }
         }
         setWasOffline(false);
       }

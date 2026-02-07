@@ -3,13 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { useLocale } from 'next-intl';
 import Loading from '@/components/Loading/Loading';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-  const locale = useLocale();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -18,10 +16,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isClient && !isLoading && !isAuthenticated) {
-      // Usar replace en lugar de push para evitar que se pueda volver atrás
-      router.replace(`/${locale}/login`);
+      router.push('/login');
     }
-  }, [isAuthenticated, isLoading, router, locale, isClient]);
+  }, [isAuthenticated, isLoading, router, isClient]);
 
   if (!isClient || isLoading) {
     return (

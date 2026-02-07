@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Expense, ExpenseCategory, ExpenseStatus } from '@/types/expense';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -12,9 +12,13 @@ interface ExpenseTableProps {
   isLoading: boolean;
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
+  onView?: (expenseId: number) => void;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  selectedIds?: string[];
+  onSelectChange?: (id: string) => void;
+  onSelectAllChange?: () => void;
 }
 
 export default function ExpenseTable({ 
@@ -22,10 +26,14 @@ export default function ExpenseTable({
   categories, 
   isLoading, 
   onEdit, 
-  onDelete, 
+  onDelete,
+  onView,
   currentPage, 
   totalPages, 
-  onPageChange 
+  onPageChange,
+  selectedIds = [],
+  onSelectChange,
+  onSelectAllChange,
 }: ExpenseTableProps) {
   const t = useTranslations('expenses');
   const tCommon = useTranslations('common');
@@ -85,6 +93,16 @@ export default function ExpenseTable({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              {onSelectChange && (
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.length === expenses.length && expenses.length > 0}
+                    onChange={onSelectAllChange}
+                    className="rounded"
+                  />
+                </th>
+              )}
               <th
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                 style={{ color: `rgb(var(--color-primary-600))` }}
@@ -132,6 +150,16 @@ export default function ExpenseTable({
           <tbody className="bg-white divide-y divide-gray-200">
             {expenses && expenses.length > 0 ? expenses.map((expense) => (
               <tr key={expense.id} className="hover:bg-primary-50 transition-colors">
+                {onSelectChange && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(expense.id.toString())}
+                      onChange={() => onSelectChange(expense.id.toString())}
+                      className="rounded"
+                    />
+                  </td>
+                )}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{expense.description}</div>
                 </td>
@@ -156,6 +184,13 @@ export default function ExpenseTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onView?.(expense.id)}
+                      leftIcon={<EyeIcon className="h-4 w-4" />}
+                      title="Ver detalle"
+                    />
                     {can(["expense_update"]) && (
                       <Btn
                         variant="ghost"

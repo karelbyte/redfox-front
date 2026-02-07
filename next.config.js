@@ -4,16 +4,23 @@ const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuraciones para evitar caché
   generateEtags: false,
   poweredByHeader: false,
   compress: true,
   
-  // Headers para evitar caché
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/public/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/:path*',
         headers: [
           {
             key: 'Cache-Control',
@@ -33,20 +40,38 @@ const nextConfig = {
   },
 
   images: {
-    remotePatterns: [
-      {
-        protocol: 'http', // Use 'http' since your URL is http://localhost
-        hostname: 'localhost',
-        port: '5500', // Specify the port your image server is running on
-        pathname: '/uploads/categories/**', // Use a wildcard if images are in subdirectories
-      },
-      {
-        protocol: 'http', // Use 'http' since your URL is http://localhost
-        hostname: 'localhost',
-        port: '5500', // Specify the port your image server is running on
-        pathname: '/uploads/brands/**', // Use a wildcard if images are in subdirectories
-      },
-    ],
+    unoptimized: true,
+  },
+
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/:locale/nitro:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          destination: '/nitro:ext',
+        },
+        {
+          source: '/:locale/nitrob:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          destination: '/nitrob:ext',
+        },
+        {
+          source: '/:locale/nitrog:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          destination: '/nitrog:ext',
+        },
+        {
+          source: '/:locale/nitrogy:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          destination: '/nitrogy:ext',
+        },
+        {
+          source: '/:locale/nitrobw:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          destination: '/nitrobw:ext',
+        },
+        {
+          source: '/:locale/nitro-s:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          destination: '/nitro-s:ext',
+        },
+      ],
+    };
   },
 };
 

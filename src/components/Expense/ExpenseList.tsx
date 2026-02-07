@@ -2,11 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { PlusIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import { Expense, ExpenseStatus, ExpenseCategory } from '@/types/expense';
 import { expensesService } from '@/services/expenses.service';
 import { Btn } from '@/components/atoms';
 import { EmptyState } from '@/components/atoms';
+import ExportButton from '@/components/atoms/ExportButton';
+import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
+import BulkActionsBar from '@/components/atoms/BulkActionsBar';
+import { useBulkSelection, BulkAction } from '@/hooks/useBulkSelection';
+import { toastService } from '@/services/toast.service';
 import Drawer from '@/components/Drawer/Drawer';
 import ExpenseTable from './ExpenseTable';
 import ExpenseForm from './ExpenseForm';
@@ -14,6 +20,7 @@ import { ExpenseFormRef } from './ExpenseForm';
 import ExpenseFilters from './ExpenseFilters';
 
 export default function ExpenseList() {
+  const router = useRouter();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<ExpenseCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,6 +33,14 @@ export default function ExpenseList() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<ExpenseFormRef>(null);
+  
+  const {
+    selectedIds,
+    toggleSelect,
+    toggleSelectAll,
+    clearSelection,
+    hasSelection,
+  } = useBulkSelection(expenses.map(e => ({ ...e, id: e.id.toString() })));
   
   const [filters, setFilters] = useState({
     search: '',
@@ -127,6 +142,68 @@ export default function ExpenseList() {
     setCurrentPage(page);
   };
 
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'delete',
+      label: t('bulkDelete'),
+      color: 'danger',
+      requiresConfirm: true,
+      onClick: async () => {
+        try {
+          await Promise.all(
+            selectedIds.map(id => expensesService.deleteExpense(Number(id)))
+          );
+          toastService.success(t('bulkDeleteSuccess'));
+          clearSelection();
+          loadExpenses();
+        } catch (error) {
+          console.error('Error deleting expenses:', error);
+          toastService.error(t('bulkDeleteError'));
+        }
+      },
+    },
+    {
+      id: 'export',
+      label: tCommon('actions.export'),
+      onClick: async () => {
+        // Export handled by ExportButton
+      },
+    },
+  ];
+
+  const advancedFilterFields: FilterField[] = [
+    {
+      key: 'status',
+      label: t('statusLabel'),
+      type: 'select',
+      options: [
+        { value: 'PENDING', label: t('statusPending') },
+        { value: 'APPROVED', label: t('statusApproved') },
+        { value: 'REJECTED', label: t('statusRejected') },
+      ],
+    },
+    {
+      key: 'startDate',
+      label: t('startDate'),
+      type: 'date',
+    },
+    {
+      key: 'endDate',
+      label: t('endDate'),
+      type: 'date',
+    },
+  ];
+
+  const handleAdvancedFilters = (advFilters: any) => {
+    setFilters(prev => ({
+      ...prev,
+      status: advFilters.status as ExpenseStatus | undefined,
+      startDate: advFilters.startDate || '',
+      endDate: advFilters.endDate || '',
+    }));
+    setCurrentPage(1);
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -138,14 +215,18 @@ export default function ExpenseList() {
         </div>
         <div className="flex items-center space-x-3">
           {total > 0 && (
-            <Btn
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center"
-            >
-              <FunnelIcon className="h-4 w-4 mr-2" />
-              {tCommon('actions.filters')}
-            </Btn>
+            <>
+              <ExportButton
+                data={expenses}
+                filename="expenses"
+                columns={['id', 'description', 'amount', 'date', 'status']}
+              />
+              <AdvancedFilters
+                fields={advancedFilterFields}
+                onApply={handleAdvancedFilters}
+                storageKey="expense-advanced-filters"
+              />
+            </>
           )}
           <Btn onClick={handleCreateExpense} className="flex items-center">
             <PlusIcon className="h-4 w-4 mr-2" />
@@ -184,11 +265,23 @@ export default function ExpenseList() {
             isLoading={isLoading}
             onEdit={handleEditExpense}
             onDelete={handleDeleteExpense}
+            onView={(expenseId) => router.push(`/es/dashboard/finanzas/gastos/${expenseId}`)}
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
+            selectedIds={selectedIds}
+            onSelectChange={(id) => toggleSelect(id)}
+            onSelectAllChange={toggleSelectAll}
           />
         </div>
+      )}
+
+      {hasSelection && (
+        <BulkActionsBar
+          selectedCount={selectedIds.length}
+          actions={bulkActions}
+          onClose={clearSelection}
+        />
       )}
 
       <Drawer

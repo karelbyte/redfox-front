@@ -27,18 +27,20 @@ export default function LoginPage() {
     }
   };
 
-  const getImageUrl = () => {
-    if (currentTheme === "blue") {
-      return "/nitrob.png";
-    } else if (currentTheme === "red") {
-      return "/nitro.png";
-    } else if (currentTheme === "green-gray") {
-      return "/nitrog.png";
-    }
-    else if (currentTheme === "gray") {
-      return "/nitrogy.png";
-    } else if (currentTheme === "brown") {
-      return "/nitrobw.png";
+  const getImageUrl = (): string => {
+    switch (currentTheme) {
+      case "blue":
+        return "/nitrob.png";
+      case "red":
+        return "/nitro.png";
+      case "green-gray":
+        return "/nitrog.png";
+      case "gray":
+        return "/nitrogy.png";
+      case "brown":
+        return "/nitrobw.png";
+      default:
+        return "/nitro.png";
     }
   };
 
