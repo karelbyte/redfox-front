@@ -1,11 +1,11 @@
 import { Provider } from './provider';
 
 export enum AccountPayableStatus {
-  PENDING = 'PENDING',
-  PARTIAL = 'PARTIAL',
-  PAID = 'PAID',
-  OVERDUE = 'OVERDUE',
-  CANCELLED = 'CANCELLED',
+  PENDING = 'pending',
+  PARTIAL = 'partial',
+  PAID = 'paid',
+  OVERDUE = 'overdue',
+  CANCELLED = 'cancelled',
 }
 
 export interface AccountPayable {

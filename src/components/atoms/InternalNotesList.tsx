@@ -84,7 +84,7 @@ export default function InternalNotesList({
               <p className="text-sm text-gray-900">{note.content}</p>
               <div className="mt-2 flex justify-between items-center">
                 <p className="text-xs text-gray-500">
-                  {note.user?.name || 'Usuario'} • {formatDate(note.createdAt)}
+                  {note.user?.name || 'Usuario'} • {formatDate(note.created_at)}
                 </p>
               </div>
             </div>

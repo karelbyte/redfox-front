@@ -2980,7 +2980,7 @@
       "remainingAmount": "Remaining Amount",
       "dueDate": "Due Date",
       "status": "Status",
-      "actions": "Actions",
+      "actions_title": "Actions",
       "actions": {
         "edit": "Edit",
         "delete": "Delete"
@@ -3018,6 +3018,20 @@
       "overdue": "Overdue",
       "cancelled": "Cancelled"
     },
+    "messages": {
+      "errorLoading": "Error loading accounts payable",
+      "errorDeleting": "Error deleting account payable",
+      "accountDeleted": "Account payable deleted successfully",
+      "confirmDelete": "Are you sure you want to delete this account payable?",
+      "accountCreated": "Account payable created successfully",
+      "accountUpdated": "Account payable updated successfully",
+      "errorCreating": "Error creating account payable",
+      "errorUpdating": "Error updating account payable"
+    },
+    "actions": {
+      "create": "New Account Payable",
+      "export": "Export"
+    },
     "filters": {
       "title": "Filters",
       "search": "Search",
@@ -3028,19 +3042,6 @@
       "endDate": "To date",
       "allStatuses": "All statuses",
       "allProviders": "All providers"
-    },
-    "actions": {
-      "create": "Create Account Payable"
-    },
-    "messages": {
-      "accountCreated": "Account payable created successfully",
-      "accountUpdated": "Account payable updated successfully",
-      "accountDeleted": "Account payable deleted successfully",
-      "errorLoading": "Error loading accounts payable",
-      "errorCreating": "Error creating account payable",
-      "errorUpdating": "Error updating account payable",
-      "errorDeleting": "Error deleting account payable",
-      "confirmDelete": "Are you sure you want to delete this account payable?"
     }
   },
   "cashFlow": {

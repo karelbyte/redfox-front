@@ -4,8 +4,8 @@ export interface InternalNote {
   id: string;
   content: string;
   color?: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   user?: {
     name: string;
     email: string;

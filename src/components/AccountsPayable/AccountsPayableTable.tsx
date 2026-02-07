@@ -4,12 +4,16 @@ import { useTranslations } from 'next-intl';
 import { AccountPayable, AccountPayableStatus } from '@/types/account-payable';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
+import { usePermissions } from '@/hooks/usePermissions';
 
 interface AccountsPayableTableProps {
   accounts: AccountPayable[];
   isLoading?: boolean;
   onEdit: (account: AccountPayable) => void;
   onDelete: (account: AccountPayable) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 export default function AccountsPayableTable({
@@ -17,8 +21,13 @@ export default function AccountsPayableTable({
   isLoading,
   onEdit,
   onDelete,
+  currentPage,
+  totalPages,
+  onPageChange,
 }: AccountsPayableTableProps) {
   const t = useTranslations('accountsPayable');
+  const tCommon = useTranslations('common');
+  const { can } = usePermissions();
 
   const getStatusColor = (status: AccountPayableStatus) => {
     switch (status) {
@@ -115,7 +124,7 @@ export default function AccountsPayableTable({
                 className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
                 style={{ color: `rgb(var(--color-primary-600))` }}
               >
-                {t('table.actions')}
+                {t('table.actions_title')}
               </th>
             </tr>
           </thead>
@@ -142,25 +151,24 @@ export default function AccountsPayableTable({
                     {getStatusLabel(account.status)}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                  <Btn
-                    onClick={() => onEdit(account)}
-                    variant="ghost"
-                    size="sm"
-                    className="inline-flex items-center gap-1"
-                  >
-                    <PencilIcon className="w-4 h-4" />
-                    {t('table.actions.edit')}
-                  </Btn>
-                  <Btn
-                    onClick={() => onDelete(account)}
-                    variant="ghost"
-                    size="sm"
-                    className="inline-flex items-center gap-1 text-red-600 hover:text-red-700"
-                  >
-                    <TrashIcon className="w-4 h-4" />
-                    {t('table.actions.delete')}
-                  </Btn>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div className="flex justify-end space-x-2">
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(account)}
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                      title={tCommon('actions.edit')}
+                    />
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(account)}
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      title={tCommon('actions.delete')}
+                      style={{ color: '#dc2626' }}
+                    />
+                  </div>
                 </td>
               </tr>
             )) : (
@@ -173,6 +181,68 @@ export default function AccountsPayableTable({
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="flex-1 flex justify-between sm:hidden">
+            <Btn
+              variant="outline"
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              {tCommon('pagination.previous')}
+            </Btn>
+            <Btn
+              variant="outline"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              {tCommon('pagination.next')}
+            </Btn>
+          </div>
+          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                {tCommon('pagination.showing')} <span className="font-medium">{currentPage}</span> {tCommon('pagination.of')} <span className="font-medium">{totalPages}</span> {tCommon('pagination.pages')}
+              </p>
+            </div>
+            <div>
+              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                  onClick={() => onPageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {tCommon('pagination.previous')}
+                </button>
+                {[...Array(totalPages)].map((_, i) => {
+                  const page = i + 1;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => onPageChange(page)}
+                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                        page === currentPage
+                          ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
+                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => onPageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {tCommon('pagination.next')}
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -130,7 +130,7 @@ export default function NotesPanel({
               <div className="flex-1">
                 <p className="text-sm text-gray-800">{note.content}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {note.user?.name} • {new Date(note.createdAt).toLocaleDateString()}
+                  {note.user?.name} • {new Date(note.created_at).toLocaleDateString()}
                 </p>
               </div>
               <button

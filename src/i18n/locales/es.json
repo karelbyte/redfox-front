@@ -3005,11 +3005,11 @@
       "remainingAmount": "Monto Pendiente",
       "dueDate": "Fecha de Vencimiento",
       "status": "Estado",
-      "actions": "Acciones",
       "actions": {
         "edit": "Editar",
         "delete": "Eliminar"
-      }
+      },
+      "actions_title": "Acciones"
     },
     "form": {
       "referenceNumber": "Número de Referencia",
@@ -3043,6 +3043,20 @@
       "overdue": "Vencido",
       "cancelled": "Cancelado"
     },
+    "messages": {
+      "errorLoading": "Error al cargar las cuentas por pagar",
+      "errorDeleting": "Error al eliminar la cuenta por pagar",
+      "accountDeleted": "Cuenta por pagar eliminada exitosamente",
+      "confirmDelete": "¿Estás seguro de que deseas eliminar esta cuenta por pagar?",
+      "accountCreated": "Cuenta por pagar creada exitosamente",
+      "accountUpdated": "Cuenta por pagar actualizada exitosamente",
+      "errorCreating": "Error al crear la cuenta por pagar",
+      "errorUpdating": "Error al actualizar la cuenta por pagar"
+    },
+    "actions": {
+      "create": "Nueva Cuenta por Pagar",
+      "export": "Exportar"
+    },
     "filters": {
       "title": "Filtros",
       "search": "Buscar",
@@ -3053,19 +3067,6 @@
       "endDate": "Fecha hasta",
       "allStatuses": "Todos los estados",
       "allProviders": "Todos los proveedores"
-    },
-    "actions": {
-      "create": "Crear Cuenta por Pagar"
-    },
-    "messages": {
-      "accountCreated": "Cuenta por pagar creada exitosamente",
-      "accountUpdated": "Cuenta por pagar actualizada exitosamente",
-      "accountDeleted": "Cuenta por pagar eliminada exitosamente",
-      "errorLoading": "Error al cargar las cuentas por pagar",
-      "errorCreating": "Error al crear la cuenta por pagar",
-      "errorUpdating": "Error al actualizar la cuenta por pagar",
-      "errorDeleting": "Error al eliminar la cuenta por pagar",
-      "confirmDelete": "¿Estás seguro de que deseas eliminar esta cuenta por pagar?"
     }
   },
   "cashFlow": {
