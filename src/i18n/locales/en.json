@@ -1,5 +1,22 @@
 {
   "common": {
+    "components": {
+      "exportButton": {
+        "export": "Export",
+        "excel": "Export to Excel",
+        "csv": "Export to CSV",
+        "json": "Export to JSON"
+      },
+      "advancedFilters": {
+        "title": "Advanced Filters",
+        "filters": "Filters",
+        "apply": "Apply Filters",
+        "clear": "Clear",
+        "min": "Min",
+        "max": "Max",
+        "select": "Select..."
+      }
+    },
     "actions": {
       "save": "Save",
       "cancel": "Cancel",
@@ -129,6 +146,39 @@
     "expandMenu": "Expand menu"
   },
   "pages": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Enter your credentials to access your account",
+      "email": "Email Address",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "loginButton": "Sign In",
+      "loggingIn": "Signing in...",
+      "registerLink": "Don't have an account? Sign up"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Sign up to get started with Nitro",
+      "name": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "registerButton": "Sign Up",
+      "registering": "Signing up...",
+      "loginLink": "Already have an account? Sign in",
+      "success": "Registration successful. Please check your email to activate your account.",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "activate": {
+      "activating": "Activating your account...",
+      "successTitle": "Account Activated!",
+      "successMessage": "Your account has been successfully activated. You can now sign in.",
+      "successToast": "Account activated successfully",
+      "errorTitle": "Activation Error",
+      "errorMessage": "The activation link is invalid or has expired.",
+      "loginButton": "Go to Sign In",
+      "backToLogin": "Back to Login"
+    },
     "dashboard": {
       "title": "Dashboard",
       "description": "Main control panel",

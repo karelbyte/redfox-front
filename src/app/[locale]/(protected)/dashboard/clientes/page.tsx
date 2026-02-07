@@ -158,32 +158,7 @@ export default function ClientsPage() {
           {t("title")}
         </h1>
         <div className="flex items-center gap-2">
-          {clients.length > 0 && (
-            <>
-              <ExportButton
-                data={clients}
-                filename="clients"
-                columns={['code', 'name', 'email', 'tax_document', 'status']}
-              />
-              <AdvancedFilters
-                fields={[
-                  {
-                    key: 'status',
-                    label: t('table.status'),
-                    type: 'select',
-                    options: [
-                      { value: 'ACTIVE', label: 'Active' },
-                      { value: 'INACTIVE', label: 'Inactive' },
-                    ],
-                  },
-                ]}
-                onApply={(filters) => {
-                  // Apply filters
-                }}
-                storageKey="client-advanced-filters"
-              />
-            </>
-          )}
+
           {can(["client_create"]) && (
             <Btn
               variant="secondary"
@@ -218,6 +193,32 @@ export default function ClientsPage() {
             }}
           />
         </div>
+        {clients && clients.length > 0 && (
+          <>
+            <ExportButton
+              data={clients}
+              filename="clients"
+              columns={['code', 'name', 'email', 'tax_document', 'status']}
+            />
+            <AdvancedFilters
+              fields={[
+                {
+                  key: 'status',
+                  label: t('table.status'),
+                  type: 'select',
+                  options: [
+                    { value: 'ACTIVE', label: 'Active' },
+                    { value: 'INACTIVE', label: 'Inactive' },
+                  ],
+                },
+              ]}
+              onApply={(filters) => {
+                // Apply filters
+              }}
+              storageKey="client-advanced-filters"
+            />
+          </>
+        )}
         <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}

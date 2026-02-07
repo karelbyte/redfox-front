@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useExportToExcel } from '@/hooks/useExportToExcel';
+import { useTranslations } from 'next-intl';
+import { useOnClickOutside } from '@/hooks/useOnClickOutside';
 
 interface ExportButtonProps<T extends Record<string, any>> {
   data: T[];
@@ -14,11 +16,15 @@ export default function ExportButton<T extends Record<string, any>>({
   data,
   filename = 'export',
   columns,
-  label = 'Export',
+  label,
   className = '',
 }: ExportButtonProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const { exportExcel, exportCSV, exportJSON } = useExportToExcel<T>();
+  const t = useTranslations('common.components.exportButton');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(containerRef, () => setIsOpen(false));
 
   const handleExportExcel = () => {
     exportExcel(data, { filename: `${filename}.xlsx`, columns });
@@ -36,13 +42,13 @@ export default function ExportButton<T extends Record<string, any>>({
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors ${className}`}
       >
         <ArrowDownTrayIcon className="w-4 h-4" />
-        <span className="text-sm">{label}</span>
+        <span className="text-sm">{label || t('export')}</span>
       </button>
 
       {isOpen && (
@@ -51,19 +57,19 @@ export default function ExportButton<T extends Record<string, any>>({
             onClick={handleExportExcel}
             className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700 border-b border-gray-100"
           >
-            📊 Export to Excel
+            📊 {t('excel')}
           </button>
           <button
             onClick={handleExportCSV}
             className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700 border-b border-gray-100"
           >
-            📄 Export to CSV
+            📄 {t('csv')}
           </button>
           <button
             onClick={handleExportJSON}
             className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700"
           >
-            {} Export to JSON
+            { } {t('json')}
           </button>
         </div>
       )}

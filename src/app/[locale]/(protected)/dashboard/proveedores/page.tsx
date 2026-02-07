@@ -132,32 +132,7 @@ export default function ProvidersPage() {
           {t('title')}
         </h1>
         <div className="flex items-center gap-2">
-          {providers.length > 0 && (
-            <>
-              <ExportButton
-                data={providers}
-                filename="providers"
-                columns={['code', 'name', 'email', 'phone', 'status']}
-              />
-              <AdvancedFilters
-                fields={[
-                  {
-                    key: 'status',
-                    label: t('table.status'),
-                    type: 'select',
-                    options: [
-                      { value: 'ACTIVE', label: 'Active' },
-                      { value: 'INACTIVE', label: 'Inactive' },
-                    ],
-                  },
-                ]}
-                onApply={(filters) => {
-                  // Apply filters
-                }}
-                storageKey="provider-advanced-filters"
-              />
-            </>
-          )}
+
           {can(["provider_create"]) && (
             <Btn
               onClick={() => {
@@ -183,6 +158,32 @@ export default function ProvidersPage() {
             }}
           />
         </div>
+        {providers.length > 0 && (
+          <>
+            <ExportButton
+              data={providers}
+              filename="providers"
+              columns={['code', 'name', 'email', 'phone', 'status']}
+            />
+            <AdvancedFilters
+              fields={[
+                {
+                  key: 'status',
+                  label: t('table.status'),
+                  type: 'select',
+                  options: [
+                    { value: 'ACTIVE', label: 'Active' },
+                    { value: 'INACTIVE', label: 'Inactive' },
+                  ],
+                },
+              ]}
+              onApply={(filters) => {
+                // Apply filters
+              }}
+              storageKey="provider-advanced-filters"
+            />
+          </>
+        )}
         <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}

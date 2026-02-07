@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, ThemeType } from "@/context/ThemeContext";
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@redfox.com");
@@ -199,6 +200,16 @@ export default function LoginPage() {
               >
                 {t('forgotPassword')}
               </a>
+            </div>
+
+            <div className="text-center mt-6">
+              <Link
+                href="/register"
+                className="text-sm font-medium transition-colors hover:underline"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('registerLink')}
+              </Link>
             </div>
           </div>
         </form>

@@ -1,5 +1,22 @@
 {
   "common": {
+    "components": {
+      "exportButton": {
+        "export": "Exportar",
+        "excel": "Exportar a Excel",
+        "csv": "Exportar a CSV",
+        "json": "Exportar a JSON"
+      },
+      "advancedFilters": {
+        "title": "Filtros Avanzados",
+        "filters": "Filtros",
+        "apply": "Aplicar Filtros",
+        "clear": "Limpiar",
+        "min": "Mín",
+        "max": "Máx",
+        "select": "Seleccionar..."
+      }
+    },
     "actions": {
       "save": "Guardar",
       "cancel": "Cancelar",
@@ -130,6 +147,39 @@
     "expandMenu": "Expandir menú"
   },
   "pages": {
+    "login": {
+      "title": "Bienvenido de nuevo",
+      "subtitle": "Ingresa tus credenciales para acceder a tu cuenta",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "loginButton": "Iniciar Sesión",
+      "loggingIn": "Iniciando sesión...",
+      "registerLink": "¿No tienes cuenta? Regístrate"
+    },
+    "register": {
+      "title": "Crear Cuenta",
+      "subtitle": "Regístrate para comenzar a usar Nitro",
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "registerButton": "Registrarse",
+      "registering": "Registrando...",
+      "loginLink": "¿Ya tienes cuenta? Inicia sesión",
+      "success": "Registro exitoso. Por favor revisa tu correo para activar tu cuenta.",
+      "passwordMismatch": "Las contraseñas no coinciden"
+    },
+    "activate": {
+      "activating": "Activando tu cuenta...",
+      "successTitle": "¡Cuenta Activada!",
+      "successMessage": "Tu cuenta ha sido activada correctamente. Ahora puedes iniciar sesión.",
+      "successToast": "Cuenta activada correctamente",
+      "errorTitle": "Error de Activación",
+      "errorMessage": "El enlace de activación es inválido o ha expirado.",
+      "loginButton": "Ir a Iniciar Sesión",
+      "backToLogin": "Volver al Login"
+    },
     "dashboard": {
       "title": "Dashboard",
       "description": "Panel de control principal",

@@ -37,7 +37,7 @@ export const authService = {
 
       if (!response.ok) {
         const error = await response.json();
-        toastService.error(error);
+        toastService.error(error.message || 'Error al iniciar sesión');
         throw new Error(error.message);
       }
 
@@ -55,8 +55,53 @@ export const authService = {
 
     } catch (error) {
       if (error instanceof Error) {
-        toastService.error(error.message);
+        // El toast ya se mostró arriba si era error de respuesta
+        if (!error.message) toastService.error(error.message);
       }
+      throw error;
+    }
+  },
+
+  async register(data: { name: string; email: string; password: string; password_confirmation: string }): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        toastService.error(error.message || 'Error en el registro');
+        throw new Error(error.message);
+      }
+
+      // No login automatically, wait for activation
+    } catch (error) {
+      if (error instanceof Error) {
+        // Toast handled above
+      }
+      throw error;
+    }
+  },
+
+  async activate(token: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/activate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error user activation');
+      }
+    } catch (error) {
       throw error;
     }
   },
@@ -78,7 +123,7 @@ export const authService = {
 
   getToken(): string | null {
     if (typeof window === 'undefined') return null;
-    
+
     // Primero intentar obtener el token de localStorage
     const token = localStorage.getItem('token');
     if (token) {
@@ -100,13 +145,13 @@ export const authService = {
       this.clearAuth();
       return null;
     }
-    
+
     return null;
   },
 
   isAuthenticated(): boolean {
     if (typeof window === 'undefined') return false;
-    
+
     const token = this.getToken();
     if (!token) return false;
 
@@ -128,13 +173,13 @@ export const authService = {
 
   async getCurrentUser(): Promise<LoginResponse['user'] | null> {
     if (typeof window === 'undefined') return null;
-    
+
     // Verificar si hay un token válido
     if (!this.isAuthenticated()) {
       this.clearAuth();
       return null;
     }
-    
+
     // Primero intentar obtener el usuario de localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -201,7 +246,7 @@ export const authService = {
       localStorage.removeItem('token');
       localStorage.removeItem('tokenExpires');
       localStorage.removeItem('user');
-      
+
       // Limpiar cookies relacionadas con la autenticación
       const cookies = document.cookie.split(';');
       cookies.forEach(cookie => {

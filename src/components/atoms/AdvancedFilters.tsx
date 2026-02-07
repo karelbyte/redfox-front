@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Input, Select } from '@/components/atoms';
+import { Input } from '@/components/atoms';
+import { useTranslations } from 'next-intl';
+import { useOnClickOutside } from '@/hooks/useOnClickOutside';
 
 export interface FilterField {
   key: string;
@@ -32,6 +34,10 @@ export default function AdvancedFilters({
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<FilterValues>({});
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
+  const t = useTranslations('common.components.advancedFilters');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(containerRef, () => setIsOpen(false));
 
   // Cargar filtros guardados
   useEffect(() => {
@@ -73,13 +79,13 @@ export default function AdvancedFilters({
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors relative"
       >
         <FunnelIcon className="w-4 h-4" />
-        <span className="text-sm">Filters</span>
+        <span className="text-sm">{t('filters')}</span>
         {activeFiltersCount > 0 && (
           <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {activeFiltersCount}
@@ -90,7 +96,7 @@ export default function AdvancedFilters({
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 p-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">Advanced Filters</h3>
+            <h3 className="font-semibold text-gray-900">{t('title')}</h3>
             <button
               onClick={() => setIsOpen(false)}
               className="text-gray-400 hover:text-gray-600"
@@ -138,7 +144,7 @@ export default function AdvancedFilters({
                     onChange={(e) => handleFilterChange(field.key, e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                   >
-                    <option value="">Select...</option>
+                    <option value="">{t('select')}</option>
                     {field.options.map(opt => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
@@ -151,13 +157,13 @@ export default function AdvancedFilters({
                   <div className="flex gap-2">
                     <Input
                       type="number"
-                      placeholder="Min"
+                      placeholder={t('min')}
                       value={filters[`${field.key}_min`] || ''}
                       onChange={(e) => handleFilterChange(`${field.key}_min`, e.target.value)}
                     />
                     <Input
                       type="number"
-                      placeholder="Max"
+                      placeholder={t('max')}
                       value={filters[`${field.key}_max`] || ''}
                       onChange={(e) => handleFilterChange(`${field.key}_max`, e.target.value)}
                     />
@@ -172,13 +178,13 @@ export default function AdvancedFilters({
               onClick={handleApply}
               className="flex-1 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
             >
-              Apply Filters
+              {t('apply')}
             </button>
             <button
               onClick={handleClear}
               className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
             >
-              Clear
+              {t('clear')}
             </button>
           </div>
         </div>

@@ -9,14 +9,14 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/nitro-s.png",
-      "sizes": "192x192",
+      "src": "/nitrobw.png",
+      "sizes": "212x95",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/nitro.png",
-      "sizes": "512x512",
+      "src": "/nitrobw.png",
+      "sizes": "212x95",
       "type": "image/png",
       "purpose": "any maskable"
     }
@@ -34,8 +34,8 @@
       "url": "/dashboard",
       "icons": [
         {
-          "src": "/nitro-s.png",
-          "sizes": "192x192"
+          "src": "/nitrobw.png",
+        "sizes": "212x95"
         }
       ]
     },
@@ -46,8 +46,8 @@
       "url": "/pos",
       "icons": [
         {
-          "src": "/nitro-s.png",
-          "sizes": "192x192"
+          "src": "/nitrobw.png",
+           "sizes": "212x95"
         }
       ]
     },
@@ -58,8 +58,8 @@
       "url": "/dashboard/productos/lista-de-productos",
       "icons": [
         {
-          "src": "/nitro-s.png",
-          "sizes": "192x192"
+          "src": "/nitrobw.png",
+          "sizes": "212x95"
         }
       ]
     },
@@ -70,8 +70,8 @@
       "url": "/dashboard?search=true",
       "icons": [
         {
-          "src": "/nitro-s.png",
-          "sizes": "192x192"
+          "src": "/nitrobw.png",
+          "sizes": "212x95"
         }
       ]
     }
