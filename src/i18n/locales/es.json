@@ -147,16 +147,6 @@
     "expandMenu": "Expandir menú"
   },
   "pages": {
-    "login": {
-      "title": "Bienvenido de nuevo",
-      "subtitle": "Ingresa tus credenciales para acceder a tu cuenta",
-      "email": "Correo Electrónico",
-      "password": "Contraseña",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
-      "loginButton": "Iniciar Sesión",
-      "loggingIn": "Iniciando sesión...",
-      "registerLink": "¿No tienes cuenta? Regístrate"
-    },
     "register": {
       "title": "Crear Cuenta",
       "subtitle": "Regístrate para comenzar a usar Nitro",
@@ -1343,7 +1333,8 @@
       "password": "Contraseña",
       "loginButton": "Iniciar sesión",
       "loggingIn": "Iniciando sesión...",
-      "forgotPassword": "¿Olvidaste tu contraseña?"
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "registerLink": "¿No tienes cuenta? Regístrate"
     },
     "construction": {
       "title": "En Construcción",
@@ -2129,7 +2120,8 @@
         "create": "Crear Usuario",
         "edit": "Editar",
         "viewDetails": "Ver Detalles",
-        "delete": "Eliminar"
+        "delete": "Eliminar",
+        "deleting": "Eliminando..."
       },
       "messages": {
         "successCreated": "{item} creado exitosamente",
@@ -2141,6 +2133,7 @@
         "errorDeleting": "Error al eliminar el usuario",
         "userCreated": "Usuario creado exitosamente",
         "userUpdated": "Usuario actualizado exitosamente",
+        "userDeleted": "Usuario eliminado exitosamente",
         "errorLoadingRoles": "Error al cargar los roles"
       },
       "deleteModal": {

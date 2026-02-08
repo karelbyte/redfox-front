@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { authService } from '@/services/auth.service';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { useTheme, ThemeType } from "@/context/ThemeContext";
 import Link from 'next/link';
 import { toastService } from '@/services/toast.service';
 
@@ -17,6 +18,24 @@ export default function ActivatePage() {
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
     const t = useTranslations('pages.activate');
     const router = useRouter();
+    const { currentTheme, themes } = useTheme();
+
+    const getImageUrl = (): string => {
+        switch (currentTheme) {
+            case "blue":
+                return "/nitrob.png";
+            case "red":
+                return "/nitro.png";
+            case "green-gray":
+                return "/nitrog.png";
+            case "gray":
+                return "/nitrogy.png";
+            case "brown":
+                return "/nitrobw.png";
+            default:
+                return "/nitro.png";
+        }
+    };
 
     useEffect(() => {
         if (!token) {
@@ -29,9 +48,6 @@ export default function ActivatePage() {
                 await authService.activate(token);
                 setStatus('success');
                 toastService.success(t('successToast'));
-                setTimeout(() => {
-                    router.push('/login');
-                }, 3000);
             } catch (error) {
                 setStatus('error');
             }
@@ -41,23 +57,47 @@ export default function ActivatePage() {
     }, [token, router, t]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="max-w-md w-full p-8 bg-white rounded-xl shadow-lg text-center">
+        <div
+            className="min-h-screen flex items-center justify-center"
+            style={{ backgroundColor: `rgb(var(--color-secondary-50))` }}
+        >
+            <div
+                className="max-w-md w-full p-8 rounded-xl shadow-lg text-center"
+                style={{
+                    backgroundColor: "white",
+                    border: `1px solid rgb(var(--color-secondary-200))`,
+                }}
+            >
                 {status === 'loading' && (
                     <div className="flex flex-col items-center space-y-4">
-                        <div className="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+                        <div className="flex-shrink-0 flex items-center self-center mb-4">
+                            <img src={getImageUrl()} alt="Nitro" className="h-12 w-auto" />
+                        </div>
+                        <div className="animate-spin h-12 w-12 border-4 border-t-transparent rounded-full"
+                            style={{ borderColor: `rgb(var(--color-primary-500))`, borderTopColor: 'transparent' }}
+                        ></div>
                         <h2 className="text-xl font-semibold text-gray-700">{t('activating')}</h2>
                     </div>
                 )}
 
                 {status === 'success' && (
                     <div className="flex flex-col items-center space-y-4">
+                        <div className="flex-shrink-0 flex items-center self-center mb-4">
+                            <img src={getImageUrl()} alt="Nitro" className="h-12 w-auto" />
+                        </div>
                         <CheckCircleIcon className="h-16 w-16 text-green-500" />
                         <h2 className="text-2xl font-bold text-gray-800">{t('successTitle')}</h2>
                         <p className="text-gray-600">{t('successMessage')}</p>
                         <Link
                             href="/login"
-                            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            className="mt-4 px-6 py-2 text-white rounded-lg transition-colors font-medium"
+                            style={{ backgroundColor: `rgb(var(--color-primary-500))` }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
+                            }}
                         >
                             {t('loginButton')}
                         </Link>
@@ -66,12 +106,22 @@ export default function ActivatePage() {
 
                 {status === 'error' && (
                     <div className="flex flex-col items-center space-y-4">
+                        <div className="flex-shrink-0 flex items-center self-center mb-4">
+                            <img src={getImageUrl()} alt="Nitro" className="h-12 w-auto" />
+                        </div>
                         <XCircleIcon className="h-16 w-16 text-red-500" />
                         <h2 className="text-2xl font-bold text-gray-800">{t('errorTitle')}</h2>
                         <p className="text-gray-600">{t('errorMessage')}</p>
                         <Link
                             href="/login"
-                            className="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                            className="mt-4 px-6 py-2 text-white rounded-lg transition-colors font-medium"
+                            style={{ backgroundColor: `rgb(var(--color-primary-500))` }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-600))`;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-500))`;
+                            }}
                         >
                             {t('backToLogin')}
                         </Link>

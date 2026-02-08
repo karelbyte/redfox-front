@@ -146,16 +146,7 @@
     "expandMenu": "Expand menu"
   },
   "pages": {
-    "login": {
-      "title": "Welcome back",
-      "subtitle": "Enter your credentials to access your account",
-      "email": "Email Address",
-      "password": "Password",
-      "forgotPassword": "Forgot your password?",
-      "loginButton": "Sign In",
-      "loggingIn": "Signing in...",
-      "registerLink": "Don't have an account? Sign up"
-    },
+
     "register": {
       "title": "Create Account",
       "subtitle": "Sign up to get started with Nitro",
@@ -1335,7 +1326,8 @@
       "password": "Password",
       "loginButton": "Login",
       "loggingIn": "Logging in...",
-      "forgotPassword": "Forgot your password?"
+      "forgotPassword": "Forgot your password?",
+      "registerLink": "Don't have an account? Sign up"
     },
     "construction": {
       "title": "Under Construction",
@@ -2117,7 +2109,8 @@
         "create": "Create User",
         "edit": "Edit",
         "viewDetails": "View Details",
-        "delete": "Delete"
+        "delete": "Delete",
+        "deleting": "Deleting..."
       },
       "messages": {
         "successCreated": "{item} created successfully",
@@ -2129,6 +2122,7 @@
         "errorDeleting": "Error deleting user",
         "userCreated": "User created successfully",
         "userUpdated": "User updated successfully",
+        "userDeleted": "User deleted successfully",
         "errorLoadingRoles": "Error loading roles"
       },
       "deleteModal": {

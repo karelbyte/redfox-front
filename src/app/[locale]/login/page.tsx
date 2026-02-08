@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useTheme, ThemeType } from "@/context/ThemeContext";
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@redfox.com");
   const [password, setPassword] = useState("admin123");
