@@ -1,9 +1,9 @@
 import { api } from './api';
-import { 
-  Expense, 
-  ExpenseCategory, 
-  CreateExpenseDto, 
-  UpdateExpenseDto, 
+import {
+  Expense,
+  ExpenseCategory,
+  CreateExpenseDto,
+  UpdateExpenseDto,
   ExpensesSummary,
   MonthlyExpense,
   ExpenseByCategory,
@@ -57,6 +57,10 @@ export const expensesService = {
 
   async deleteExpense(id: number): Promise<void> {
     await api.delete(`/expenses/${id}`);
+  },
+
+  async deleteExpenses(ids: number[]): Promise<void> {
+    await api.post('/expenses/bulk-delete', { ids });
   },
 
   async getExpensesSummary(startDate?: string, endDate?: string): Promise<ExpensesSummary> {

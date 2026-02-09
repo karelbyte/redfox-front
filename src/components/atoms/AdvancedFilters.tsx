@@ -55,8 +55,6 @@ export default function AdvancedFilters({
     (key: string, value: any) => {
       const newFilters = { ...filters, [key]: value };
       setFilters(newFilters);
-      setActiveFiltersCount(Object.values(newFilters).filter(v => v).length);
-
       if (storageKey) {
         localStorage.setItem(storageKey, JSON.stringify(newFilters));
       }
@@ -66,16 +64,20 @@ export default function AdvancedFilters({
 
   const handleApply = () => {
     onApply(filters);
+    const count = Object.values(filters).filter(v => v).length;
+    setActiveFiltersCount(count);
     setIsOpen(false);
   };
 
   const handleClear = () => {
     setFilters({});
+    onApply({});
     setActiveFiltersCount(0);
     if (storageKey) {
       localStorage.removeItem(storageKey);
     }
     onClear?.();
+    setIsOpen(false);
   };
 
   return (
@@ -87,7 +89,7 @@ export default function AdvancedFilters({
         <FunnelIcon className="w-4 h-4" />
         <span className="text-sm">{t('filters')}</span>
         {activeFiltersCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {activeFiltersCount}
           </span>
         )}
@@ -174,9 +176,10 @@ export default function AdvancedFilters({
           </div>
 
           <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+
             <button
               onClick={handleApply}
-              className="flex-1 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
+              className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
             >
               {t('apply')}
             </button>

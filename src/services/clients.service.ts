@@ -2,10 +2,11 @@ import { api } from "./api";
 import { Client, ClientsResponse, ClientWithPackStatus } from "@/types/client";
 
 export const clientsService = {
-  getClients: async (page?: number, term?: string): Promise<ClientsResponse> => {
+  getClients: async (page?: number, term?: string, is_active?: boolean): Promise<ClientsResponse> => {
     const params = new URLSearchParams();
     if (page) params.append('page', page.toString());
     if (term) params.append('term', term);
+    if (is_active !== undefined) params.append('is_active', is_active.toString());
 
     const queryString = params.toString();
     const url = `/clients${queryString ? `?${queryString}` : ''}`;

@@ -14,7 +14,7 @@ import { toastService } from "@/services/toast.service";
 import { certificationPackService } from "@/services/certification-packs.service";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import SearchProductCodeModal from './SearchProductCodeModal';
-import { Product, ProductFormData } from "@/types/product";
+import { Product, ProductFormData, ProductType } from "@/types/product";
 import { Brand } from "@/types/brand";
 import { Category } from "@/types/category";
 import { MeasurementUnit } from "@/types/measurement-unit";
@@ -41,11 +41,7 @@ import {
   SelectWithAddScrolled,
 } from "@/components/atoms";
 
-export enum ProductType {
-  DIGITAL = "digital",
-  SERVICE = "service",
-  TANGIBLE = "tangible",
-}
+
 
 export interface ProductFormProps {
   product: Product | null;
@@ -81,7 +77,7 @@ interface FormErrors {
 const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
   ({ product, onSuccess, onSavingChange, onValidChange }, ref) => {
     const t = useTranslations('pages.products');
-    
+
     const [formData, setFormData] = useState<ProductFormData>({
       name: "",
       slug: "",
@@ -182,26 +178,26 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     useEffect(() => {
       if (!initialFetchDone.current) {
         initialFetchDone.current = true;
-      const fetchData = async () => {
-        try {
-          const [brandsData, categoriesData, measurementUnitsData, taxesData] =
-            await Promise.all([
-              brandService.getBrands(),
-              categoriesService.getCategories(),
-              measurementUnitsService.getMeasurementUnits(),
-              taxesService.getTaxes(),
-            ]);
+        const fetchData = async () => {
+          try {
+            const [brandsData, categoriesData, measurementUnitsData, taxesData] =
+              await Promise.all([
+                brandService.getBrands(),
+                categoriesService.getCategories(),
+                measurementUnitsService.getMeasurementUnits(),
+                taxesService.getTaxes(),
+              ]);
 
-          setBrands(brandsData.data);
-          setCategories(categoriesData.data);
-          setMeasurementUnits(measurementUnitsData.data);
-          setTaxes(taxesData.data);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
+            setBrands(brandsData.data);
+            setCategories(categoriesData.data);
+            setMeasurementUnits(measurementUnitsData.data);
+            setTaxes(taxesData.data);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        };
 
-      fetchData();
+        fetchData();
       }
     }, []);
 
@@ -491,8 +487,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             />
 
             <div>
-              <label 
-                htmlFor="code" 
+              <label
+                htmlFor="code"
                 className="block text-sm font-medium mb-2"
                 style={{ color: `rgb(var(--color-primary-500))` }}
               >
@@ -509,8 +505,8 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                   placeholder={t('form.placeholders.code')}
                   className="appearance-none block w-full px-4 py-3 pr-10 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors"
                   style={{
-                    border: errors.code 
-                      ? `1px solid rgb(var(--color-primary-500))` 
+                    border: errors.code
+                      ? `1px solid rgb(var(--color-primary-500))`
                       : `1px solid rgb(var(--color-secondary-300))`,
                     ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
                   }}

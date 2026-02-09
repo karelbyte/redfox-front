@@ -33,7 +33,7 @@ export default function ExpenseList() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<ExpenseFormRef>(null);
-  
+
   const {
     selectedIds,
     toggleSelect,
@@ -41,7 +41,7 @@ export default function ExpenseList() {
     clearSelection,
     hasSelection,
   } = useBulkSelection(expenses.map(e => ({ ...e, id: e.id.toString() })));
-  
+
   const [filters, setFilters] = useState({
     search: '',
     status: undefined as ExpenseStatus | undefined,
@@ -150,9 +150,7 @@ export default function ExpenseList() {
       requiresConfirm: true,
       onClick: async () => {
         try {
-          await Promise.all(
-            selectedIds.map(id => expensesService.deleteExpense(Number(id)))
-          );
+          await expensesService.deleteExpenses(selectedIds.map(Number));
           toastService.success(t('bulkDeleteSuccess'));
           clearSelection();
           loadExpenses();

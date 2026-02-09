@@ -35,6 +35,7 @@ export default function ProvidersPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [hasInitialData, setHasInitialData] = useState(false);
+  const [filters, setFilters] = useState<Record<string, any>>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<ProviderFormRef>(null);
@@ -63,10 +64,13 @@ export default function ProvidersPage() {
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchProviders = async (page: number = 1, term?: string) => {
+  const fetchProviders = async (page: number = 1, term?: string, currentFilters?: Record<string, any>) => {
     try {
       setIsLoading(true);
-      const response = await providersService.getProviders(page, term);
+      const activeFilters = currentFilters || filters;
+      const isActive = activeFilters.status === 'ACTIVE' ? true : activeFilters.status === 'INACTIVE' ? false : undefined;
+
+      const response = await providersService.getProviders(page, term, isActive);
       setProviders(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
@@ -213,8 +217,9 @@ export default function ProvidersPage() {
                     ],
                   },
                 ]}
-                onApply={(filters) => {
-                  // Apply filters
+                onApply={(newFilters) => {
+                  setFilters(newFilters);
+                  fetchProviders(1, searchTerm, newFilters);
                 }}
                 storageKey="provider-advanced-filters"
               />

@@ -38,6 +38,7 @@ export default function ClientsPage() {
   const [hasInitialData, setHasInitialData] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState<Record<string, any>>({});
   const formRef = useRef<ClientFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -89,10 +90,13 @@ export default function ClientsPage() {
   ];
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchClients = async (page: number = 1, term?: string) => {
+  const fetchClients = async (page: number = 1, term?: string, currentFilters?: Record<string, any>) => {
     try {
       setIsLoading(true);
-      const response = await clientsService.getClients(page, term);
+      const activeFilters = currentFilters || filters;
+      const isActive = activeFilters.status === 'ACTIVE' ? true : activeFilters.status === 'INACTIVE' ? false : undefined;
+
+      const response = await clientsService.getClients(page, term, isActive);
       setClients(response.data);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
@@ -249,8 +253,9 @@ export default function ClientsPage() {
                       ],
                     },
                   ]}
-                  onApply={(filters) => {
-                    // Apply filters
+                  onApply={(newFilters) => {
+                    setFilters(newFilters);
+                    fetchClients(1, searchTerm, newFilters);
                   }}
                   storageKey="client-advanced-filters"
                 />

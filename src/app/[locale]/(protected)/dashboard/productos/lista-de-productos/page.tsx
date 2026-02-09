@@ -19,6 +19,11 @@ import Loading from "@/components/Loading/Loading";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
+import BulkActionsBar from "@/components/atoms/BulkActionsBar";
+import { useBulkSelection, BulkAction } from "@/hooks/useBulkSelection";
+import AdvancedFilters, { FilterField } from "@/components/atoms/AdvancedFilters";
+import ExportButton from "@/components/atoms/ExportButton";
+import { ProductType } from "@/types/product";
 
 export default function ListProductsPage() {
   const t = useTranslations("pages.products");
@@ -38,6 +43,7 @@ export default function ListProductsPage() {
   const [showBarcodeModal, setShowBarcodeModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [generatingPDF, setGeneratingPDF] = useState(false);
+  const [filters, setFilters] = useState<Record<string, any>>({});
   const formRef = useRef<ProductFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -56,10 +62,46 @@ export default function ListProductsPage() {
     availableColumns.map(c => c.key)
   );
 
-  const fetchProducts = async (page: number, term?: string) => {
+  const {
+    selectedIds,
+    toggleSelect,
+    toggleSelectAll,
+    clearSelection,
+    hasSelection,
+  } = useBulkSelection(products.map(p => ({ ...p, id: p.id })));
+
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'delete',
+      label: tCommon('actions.delete'),
+      color: 'danger',
+      requiresConfirm: true,
+      onClick: async () => {
+        try {
+          await productService.deleteProducts(selectedIds);
+          toastService.success(t('messages.productDeleted'));
+          clearSelection();
+          fetchProducts(currentPage, searchTerm);
+        } catch (error) {
+          console.error('Error deleting products:', error);
+          if (error instanceof Error) {
+            toastService.error(error.message);
+          } else {
+            toastService.error(t('messages.errorDelete'));
+          }
+        }
+      },
+    },
+  ];
+
+  const fetchProducts = async (page: number, term?: string, currentFilters?: Record<string, any>) => {
     try {
       setLoading(true);
-      const response = await productService.getProducts(page, term);
+      const activeFilters = currentFilters || filters;
+      const isActive = activeFilters.status === 'true' ? true : activeFilters.status === 'false' ? false : undefined;
+      const type = activeFilters.type;
+
+      const response = await productService.getProducts(page, term, isActive, type);
       setProducts(response.data);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
@@ -238,6 +280,42 @@ export default function ListProductsPage() {
         >
           {generatingPDF ? t("pdf.generating") : t("pdf.export")}
         </Btn>
+        {products && products.length > 0 && (
+          <>
+            <ExportButton
+              data={products}
+              filename="products"
+              columns={['name', 'code', 'sku', 'brand', 'category', 'status']}
+            />
+            <AdvancedFilters
+              fields={[
+                {
+                  key: 'status',
+                  label: t('table.status'),
+                  type: 'select',
+                  options: [
+                    { value: 'true', label: tCommon('status.active') },
+                    { value: 'false', label: tCommon('status.inactive') },
+                  ],
+                },
+                {
+                  key: 'type',
+                  label: t('table.type'),
+                  type: 'select',
+                  options: [
+                    { value: ProductType.TANGIBLE, label: t('form.types.tangible') },
+                    { value: ProductType.SERVICE, label: t('form.types.service') },
+                  ],
+                },
+              ]}
+              onApply={(newFilters) => {
+                setFilters(newFilters);
+                fetchProducts(1, searchTerm, newFilters);
+              }}
+              storageKey="product-advanced-filters"
+            />
+          </>
+        )}
         <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}
@@ -265,6 +343,9 @@ export default function ListProductsPage() {
               onDelete={setProductToDelete}
               onGenerateBarcode={handleGenerateBarcode}
               visibleColumns={visibleColumns}
+              selectedIds={selectedIds}
+              onSelectChange={toggleSelect}
+              onSelectAllChange={toggleSelectAll}
             />
           </div>
 
@@ -307,13 +388,20 @@ export default function ListProductsPage() {
         onConfirm={handleDelete}
       />
 
-      {/* Modal para generar códigos de barras */}
       <BarcodeGeneratorModal
         isOpen={showBarcodeModal}
         onClose={handleBarcodeModalClose}
         productCode={selectedProduct?.sku || ''}
         productName={selectedProduct?.name || ''}
       />
+
+      {hasSelection && (
+        <BulkActionsBar
+          selectedCount={selectedIds.length}
+          actions={bulkActions}
+          onClose={clearSelection}
+        />
+      )}
     </div>
   );
 }

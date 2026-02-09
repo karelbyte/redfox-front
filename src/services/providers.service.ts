@@ -2,10 +2,11 @@ import { api } from "./api";
 import { Provider, ProvidersResponse } from "@/types/provider";
 
 export const providersService = {
-  getProviders: async (page?: number, term?: string): Promise<ProvidersResponse> => {
+  getProviders: async (page?: number, term?: string, is_active?: boolean): Promise<ProvidersResponse> => {
     const params = new URLSearchParams();
     if (page) params.append('page', page.toString());
     if (term) params.append('term', term);
+    if (is_active !== undefined) params.append('is_active', is_active.toString());
 
     const queryString = params.toString();
     const url = `/providers${queryString ? `?${queryString}` : ''}`;

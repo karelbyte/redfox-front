@@ -10,9 +10,21 @@ interface ProductTableProps {
   onDelete: (product: Product) => void;
   onGenerateBarcode: (product: Product) => void;
   visibleColumns?: string[];
+  selectedIds?: string[];
+  onSelectChange?: (id: string) => void;
+  onSelectAllChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function ProductTable({ products, onEdit, onDelete, onGenerateBarcode, visibleColumns }: ProductTableProps) {
+export default function ProductTable({
+  products,
+  onEdit,
+  onDelete,
+  onGenerateBarcode,
+  visibleColumns,
+  selectedIds = [],
+  onSelectChange,
+  onSelectAllChange
+}: ProductTableProps) {
   const t = useTranslations('pages.products');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
@@ -36,6 +48,14 @@ export default function ProductTable({ products, onEdit, onDelete, onGenerateBar
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
+            <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8">
+              <input
+                type="checkbox"
+                className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 sm:left-6"
+                checked={products.length > 0 && selectedIds.length === products.length}
+                onChange={onSelectAllChange}
+              />
+            </th>
             {isVisible('name') && (
               <th
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
@@ -96,7 +116,18 @@ export default function ProductTable({ products, onEdit, onDelete, onGenerateBar
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {products.map((product) => (
-            <tr key={product.id} className="hover:bg-primary-50 transition-colors">
+            <tr key={product.id} className={`hover:bg-primary-50 transition-colors ${selectedIds.includes(product.id) ? 'bg-primary-50' : ''}`}>
+              <td className="relative w-12 px-6 sm:w-16 sm:px-8">
+                {selectedIds.includes(product.id) && (
+                  <div className="absolute inset-y-0 left-0 w-0.5 bg-primary-600" />
+                )}
+                <input
+                  type="checkbox"
+                  className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 sm:left-6"
+                  checked={selectedIds.includes(product.id)}
+                  onChange={() => onSelectChange && onSelectChange(product.id)}
+                />
+              </td>
               {isVisible('name') && (
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span>
