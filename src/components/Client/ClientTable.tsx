@@ -9,9 +9,20 @@ interface ClientTableProps {
   onEdit: (client: Client) => void;
   onDelete: (client: Client) => void;
   visibleColumns?: string[];
+  selectedIds?: string[];
+  onSelectChange?: (id: string) => void;
+  onSelectAllChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function ClientTable({ clients, onEdit, onDelete, visibleColumns }: ClientTableProps) {
+export default function ClientTable({
+  clients,
+  onEdit,
+  onDelete,
+  visibleColumns,
+  selectedIds = [],
+  onSelectChange,
+  onSelectAllChange
+}: ClientTableProps) {
   const t = useTranslations('pages.clients');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
@@ -35,6 +46,14 @@ export default function ClientTable({ clients, onEdit, onDelete, visibleColumns 
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
+            <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8">
+              <input
+                type="checkbox"
+                className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 sm:left-6"
+                checked={clients.length > 0 && selectedIds.length === clients.length}
+                onChange={onSelectAllChange}
+              />
+            </th>
             {isVisible('code') && (
               <th
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
@@ -95,7 +114,18 @@ export default function ClientTable({ clients, onEdit, onDelete, visibleColumns 
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {clients.map((client) => (
-            <tr key={client.id} className="hover:bg-primary-50 transition-colors">
+            <tr key={client.id} className={`hover:bg-primary-50 transition-colors ${selectedIds.includes(client.id) ? 'bg-primary-50' : ''}`}>
+              <td className="relative w-12 px-6 sm:w-16 sm:px-8">
+                {selectedIds.includes(client.id) && (
+                  <div className="absolute inset-y-0 left-0 w-0.5 bg-primary-600" />
+                )}
+                <input
+                  type="checkbox"
+                  className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 sm:left-6"
+                  checked={selectedIds.includes(client.id)}
+                  onChange={() => onSelectChange && onSelectChange(client.id)}
+                />
+              </td>
               {isVisible('code') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {client.code}
@@ -135,8 +165,8 @@ export default function ClientTable({ clients, onEdit, onDelete, visibleColumns 
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${client.status
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
                       }`}
                   >
                     {client.status ? tCommon('status.active') : tCommon('status.inactive')}

@@ -17,6 +17,12 @@
         "select": "Seleccionar..."
       }
     },
+    "bulkActions": {
+      "selectedCount": "{count} elemento(s) seleccionado(s)",
+      "confirmTitle": "¿Eliminar {count} elemento(s)?",
+      "confirmMessage": "¿Estás seguro de que quieres eliminar {count} elemento(s)? Esta acción no se puede deshacer.",
+      "processing": "Procesando..."
+    },
     "actions": {
       "save": "Guardar",
       "cancel": "Cancelar",
@@ -749,7 +755,8 @@
         "errorCreating": "Error al crear el proveedor",
         "errorUpdating": "Error al actualizar el proveedor",
         "errorDeleting": "Error al eliminar el proveedor",
-        "confirmDelete": "¿Estás seguro de que deseas eliminar el proveedor \"{name}\"? Esta acción no se puede deshacer."
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el proveedor \"{name}\"? Esta acción no se puede deshacer.",
+        "deleteSuccess": "Proveedores eliminados correctamente"
       }
     },
     "clients": {

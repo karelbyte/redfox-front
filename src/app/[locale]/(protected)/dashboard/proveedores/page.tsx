@@ -13,6 +13,8 @@ import Drawer from "@/components/Drawer/Drawer";
 import { ProviderFormRef } from "@/components/Provider/ProviderForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
 import ExportButton from "@/components/atoms/ExportButton";
+import BulkActionsBar from "@/components/atoms/BulkActionsBar";
+import { useBulkSelection, BulkAction } from "@/hooks/useBulkSelection";
 import AdvancedFilters, { FilterField } from "@/components/atoms/AdvancedFilters";
 import Loading from '@/components/Loading/Loading';
 import Pagination from "@/components/Pagination/Pagination";
@@ -22,6 +24,7 @@ import ColumnSelector from "@/components/Table/ColumnSelector";
 
 export default function ProvidersPage() {
   const t = useTranslations('pages.providers');
+  const tCommon = useTranslations('common');
   const { can } = usePermissions();
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
@@ -36,6 +39,14 @@ export default function ProvidersPage() {
   const [totalPages, setTotalPages] = useState(1);
   const formRef = useRef<ProviderFormRef>(null);
   const initialFetchDone = useRef(false);
+
+  const {
+    selectedIds,
+    toggleSelect,
+    toggleSelectAll,
+    clearSelection,
+    hasSelection,
+  } = useBulkSelection(providers.map(p => ({ ...p, id: p.id })));
 
   const availableColumns = [
     { key: 'code', label: t('table.code') },
@@ -102,6 +113,30 @@ export default function ProvidersPage() {
     fetchProviders(currentPage, searchTerm);
   };
 
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'delete',
+      label: tCommon('actions.delete'),
+      color: 'danger',
+      requiresConfirm: true,
+      onClick: async () => {
+        try {
+          await providersService.deleteProviders(selectedIds);
+          toastService.success(t('messages.deleteSuccess'));
+          clearSelection();
+          fetchProviders(currentPage, searchTerm);
+        } catch (error) {
+          console.error('Error deleting providers:', error);
+          if (error instanceof Error) {
+            toastService.error(error.message);
+          } else {
+            toastService.error(t('messages.errorDelete'));
+          }
+        }
+      },
+    },
+  ];
+
   const handleDeleteModalClose = () => {
     setSelectedProvider(null);
     setIsDeleteModalOpen(false);
@@ -147,49 +182,51 @@ export default function ProvidersPage() {
         </div>
       </div>
 
-      {/* Filtro de búsqueda */}
-      <div className="mt-6 flex justify-between items-center gap-4">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t('searchProviders')}
-            onSearch={(term: string) => {
-              setSearchTerm(term);
-              fetchProviders(1, term);
-            }}
+      {/* Filtro de búsqueda - Solo mostrar si hay proveedores o si se está buscando */}
+      {(providers.length > 0 || searchTerm) && (
+        <div className="mt-6 flex justify-between items-center gap-4">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('searchProviders')}
+              onSearch={(term: string) => {
+                setSearchTerm(term);
+                fetchProviders(1, term);
+              }}
+            />
+          </div>
+          {providers.length > 0 && (
+            <>
+              <ExportButton
+                data={providers}
+                filename="providers"
+                columns={['code', 'name', 'email', 'phone', 'status']}
+              />
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'ACTIVE', label: 'Active' },
+                      { value: 'INACTIVE', label: 'Inactive' },
+                    ],
+                  },
+                ]}
+                onApply={(filters) => {
+                  // Apply filters
+                }}
+                storageKey="provider-advanced-filters"
+              />
+            </>
+          )}
+          <ColumnSelector
+            columns={availableColumns}
+            visibleColumns={visibleColumns}
+            onChange={toggleColumn}
           />
         </div>
-        {providers.length > 0 && (
-          <>
-            <ExportButton
-              data={providers}
-              filename="providers"
-              columns={['code', 'name', 'email', 'phone', 'status']}
-            />
-            <AdvancedFilters
-              fields={[
-                {
-                  key: 'status',
-                  label: t('table.status'),
-                  type: 'select',
-                  options: [
-                    { value: 'ACTIVE', label: 'Active' },
-                    { value: 'INACTIVE', label: 'Inactive' },
-                  ],
-                },
-              ]}
-              onApply={(filters) => {
-                // Apply filters
-              }}
-              storageKey="provider-advanced-filters"
-            />
-          </>
-        )}
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
-      </div>
+      )}
 
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
@@ -210,6 +247,9 @@ export default function ProvidersPage() {
               onEdit={handleEdit}
               onDelete={handleDelete}
               visibleColumns={visibleColumns}
+              selectedIds={selectedIds}
+              onSelectChange={toggleSelect}
+              onSelectAllChange={toggleSelectAll}
             />
           </div>
 
@@ -249,6 +289,14 @@ export default function ProvidersPage() {
           onClose={handleDeleteModalClose}
           onSuccess={handleDeleteSuccess}
           onDeletingChange={setIsSaving}
+        />
+      )}
+
+      {hasSelection && (
+        <BulkActionsBar
+          selectedCount={selectedIds.length}
+          actions={bulkActions}
+          onClose={clearSelection}
         />
       )}
     </div>

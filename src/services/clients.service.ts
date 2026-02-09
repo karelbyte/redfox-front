@@ -6,10 +6,10 @@ export const clientsService = {
     const params = new URLSearchParams();
     if (page) params.append('page', page.toString());
     if (term) params.append('term', term);
-    
+
     const queryString = params.toString();
     const url = `/clients${queryString ? `?${queryString}` : ''}`;
-    
+
     const response = await api.get<ClientsResponse>(url);
     return response;
   },
@@ -24,6 +24,10 @@ export const clientsService = {
 
   deleteClient: async (id: string): Promise<void> => {
     return api.delete(`/clients/${id}`);
+  },
+
+  deleteClients: async (ids: string[]): Promise<void> => {
+    return api.post('/clients/bulk-delete', { ids });
   },
 
   importFromPack: async (): Promise<{

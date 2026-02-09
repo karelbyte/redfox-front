@@ -5,12 +5,12 @@ const handleUnauthorized = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpires');
     localStorage.removeItem('user');
-    
+
     // Obtener el locale actual de la URL
     const pathname = window.location.pathname;
     const localeMatch = pathname.match(/^\/([a-z]{2})(\/|$)/);
     const locale = localeMatch ? localeMatch[1] : 'es';
-    
+
     // Usar window.location.href con el locale correcto
     window.location.href = `/${locale}/login`;
   }
@@ -18,7 +18,7 @@ const handleUnauthorized = () => {
 
 const getHeaders = (isFormData = false) => {
   const headers: Record<string, string> = {};
-  
+
   if (typeof window !== 'undefined') {
     headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
   }
@@ -45,9 +45,19 @@ const handleResponse = async (response: Response) => {
     }
   }
 
+  if (response.status === 204) {
+    return null;
+  }
+
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    return null;
+  }
+
   try {
-    return await response.json();
-  } catch  {
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
+  } catch {
     return Promise.reject(new Error('Error al procesar la respuesta'));
   }
 };

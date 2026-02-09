@@ -6,10 +6,10 @@ export const providersService = {
     const params = new URLSearchParams();
     if (page) params.append('page', page.toString());
     if (term) params.append('term', term);
-    
+
     const queryString = params.toString();
     const url = `/providers${queryString ? `?${queryString}` : ''}`;
-    
+
     const response = await api.get<ProvidersResponse>(url);
     return response;
   },
@@ -25,4 +25,8 @@ export const providersService = {
   deleteProvider: async (id: string): Promise<void> => {
     return api.delete(`/providers/${id}`);
   },
-}; 
+
+  deleteProviders: async (ids: string[]): Promise<void> => {
+    return api.post('/providers/bulk-delete', { ids });
+  },
+};

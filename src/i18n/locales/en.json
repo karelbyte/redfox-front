@@ -146,7 +146,6 @@
     "expandMenu": "Expand menu"
   },
   "pages": {
-
     "register": {
       "title": "Create Account",
       "subtitle": "Sign up to get started with Nitro",
@@ -733,7 +732,8 @@
         "errorCreating": "Error creating provider",
         "errorUpdating": "Error updating provider",
         "errorDeleting": "Error deleting provider",
-        "confirmDelete": "Are you sure you want to delete the provider \"{name}\"? This action cannot be undone."
+        "confirmDelete": "Are you sure you want to delete the provider \"{name}\"? This action cannot be undone.",
+        "deleteSuccess": "Providers deleted successfully"
       }
     },
     "clients": {

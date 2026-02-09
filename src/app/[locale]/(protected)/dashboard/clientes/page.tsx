@@ -19,9 +19,12 @@ import Loading from "@/components/Loading/Loading";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
+import BulkActionsBar from "@/components/atoms/BulkActionsBar";
+import { useBulkSelection, BulkAction } from "@/hooks/useBulkSelection";
 
 export default function ClientsPage() {
   const t = useTranslations("pages.clients");
+  const tCommon = useTranslations('common');
   const { can } = usePermissions();
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
@@ -52,6 +55,38 @@ export default function ClientsPage() {
     'clients_table',
     availableColumns.map(c => c.key)
   );
+
+  const {
+    selectedIds,
+    toggleSelect,
+    toggleSelectAll,
+    clearSelection,
+    hasSelection,
+  } = useBulkSelection(clients.map(c => ({ ...c, id: c.id })));
+
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'delete',
+      label: tCommon('actions.delete'),
+      color: 'danger',
+      requiresConfirm: true,
+      onClick: async () => {
+        try {
+          await clientsService.deleteClients(selectedIds);
+          toastService.success(t('messages.deleteSuccess')); // Verify this key exists or add it
+          clearSelection();
+          fetchClients(currentPage, searchTerm);
+        } catch (error) {
+          console.error('Error deleting clients:', error);
+          if (error instanceof Error) {
+            toastService.error(error.message);
+          } else {
+            toastService.error(t('messages.errorDelete')); // Verify this key exists
+          }
+        }
+      },
+    },
+  ];
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchClients = async (page: number = 1, term?: string) => {
@@ -182,80 +217,89 @@ export default function ClientsPage() {
           )}
         </div>
       </div>
-      {/* Filtro de búsqueda */}
-      <div className="mt-6 flex justify-between items-center gap-4">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t("searchClients")}
-            onSearch={(term: string) => {
-              setSearchTerm(term);
-              fetchClients(1, term);
-            }}
-          />
-        </div>
-        {clients && clients.length > 0 && (
-          <>
-            <ExportButton
-              data={clients}
-              filename="clients"
-              columns={['code', 'name', 'email', 'tax_document', 'status']}
-            />
-            <AdvancedFilters
-              fields={[
-                {
-                  key: 'status',
-                  label: t('table.status'),
-                  type: 'select',
-                  options: [
-                    { value: 'ACTIVE', label: 'Active' },
-                    { value: 'INACTIVE', label: 'Inactive' },
-                  ],
-                },
-              ]}
-              onApply={(filters) => {
-                // Apply filters
-              }}
-              storageKey="client-advanced-filters"
-            />
-          </>
-        )}
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
-      </div>
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loading size="lg" />
-        </div>
-      ) : clients && clients.length === 0 ? (
-        <EmptyState
-          searchTerm={searchTerm}
-          title={t("noClients")}
-          description={t("noClientsDesc")}
-          searchDescription={t("noResultsDesc")}
-        />
-      ) : (
-        <>
-          <div className="mt-6">
-            <ClientTable
-              clients={clients}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
+      {/* Filtro de búsqueda - Solo mostrar si hay clientes o si se está buscando */}
+      {
+        (clients.length > 0 || searchTerm) && (
+          <div className="mt-6 flex justify-between items-center gap-4">
+            <div className="flex-1">
+              <SearchInput
+                placeholder={t("searchClients")}
+                onSearch={(term: string) => {
+                  setSearchTerm(term);
+                  fetchClients(1, term);
+                }}
+              />
+            </div>
+            {clients && clients.length > 0 && (
+              <>
+                <ExportButton
+                  data={clients}
+                  filename="clients"
+                  columns={['code', 'name', 'email', 'tax_document', 'status']}
+                />
+                <AdvancedFilters
+                  fields={[
+                    {
+                      key: 'status',
+                      label: t('table.status'),
+                      type: 'select',
+                      options: [
+                        { value: 'ACTIVE', label: 'Active' },
+                        { value: 'INACTIVE', label: 'Inactive' },
+                      ],
+                    },
+                  ]}
+                  onApply={(filters) => {
+                    // Apply filters
+                  }}
+                  storageKey="client-advanced-filters"
+                />
+              </>
+            )}
+            <ColumnSelector
+              columns={availableColumns}
               visibleColumns={visibleColumns}
+              onChange={toggleColumn}
             />
           </div>
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              className="mt-6"
-            />
-          )}
-        </>
-      )}
+        )
+      }
+      {
+        isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loading size="lg" />
+          </div>
+        ) : clients && clients.length === 0 ? (
+          <EmptyState
+            searchTerm={searchTerm}
+            title={t("noClients")}
+            description={t("noClientsDesc")}
+            searchDescription={t("noResultsDesc")}
+          />
+        ) : (
+          <>
+            <div className="mt-6">
+              <ClientTable
+                clients={clients}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                visibleColumns={visibleColumns}
+                selectedIds={selectedIds}
+                onSelectChange={toggleSelect}
+                onSelectAllChange={toggleSelectAll}
+              />
+            </div>
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                className="mt-6"
+              />
+            )}
+          </>
+        )
+      }
 
       <Drawer
         id="client-drawer"
@@ -277,14 +321,26 @@ export default function ClientsPage() {
         />
       </Drawer>
 
-      {isDeleteModalOpen && selectedClient && (
-        <DeleteClientModal
-          client={selectedClient}
-          onClose={handleDeleteModalClose}
-          onSuccess={handleDeleteSuccess}
-          onDeletingChange={setIsSaving}
-        />
-      )}
-    </div>
+      {
+        isDeleteModalOpen && selectedClient && (
+          <DeleteClientModal
+            client={selectedClient}
+            onClose={handleDeleteModalClose}
+            onSuccess={handleDeleteSuccess}
+            onDeletingChange={setIsSaving}
+          />
+        )
+      }
+
+      {
+        hasSelection && (
+          <BulkActionsBar
+            selectedCount={selectedIds.length}
+            actions={bulkActions}
+            onClose={clearSelection}
+          />
+        )
+      }
+    </div >
   );
 }
