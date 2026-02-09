@@ -1,7 +1,7 @@
 import { api } from './api';
 import { CompanySettings, UpdateCompanySettingsData } from '@/types/company-settings';
 
-const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitro-api-app-production.up.railway.app') + '/api';
+const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitrocore.fly.dev') + '/api';
 
 export const companySettingsService = {
   async get(): Promise<CompanySettings> {

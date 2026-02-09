@@ -49,7 +49,7 @@ export class TicketPrinterService {
     if (logoUrl.startsWith('http')) return logoUrl;
     const base =
       (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_URL_API) ||
-      'https://nitro-api-app-production.up.railway.app';
+      'https://nitrocore.fly.dev';
     const baseClean = base.replace(/\/$/, '');
     const path = logoUrl.startsWith('/') ? logoUrl : `/${logoUrl}`;
     return `${baseClean}${path}`;
