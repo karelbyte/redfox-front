@@ -71,6 +71,7 @@ export default function ProvidersPage() {
       const isActive = activeFilters.status === 'ACTIVE' ? true : activeFilters.status === 'INACTIVE' ? false : undefined;
 
       const response = await providersService.getProviders(page, term, isActive);
+      console.log('📊 Providers fetched:', response);
       setProviders(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
       setCurrentPage(page);
@@ -113,6 +114,7 @@ export default function ProvidersPage() {
   };
 
   const handleFormSuccess = () => {
+    console.log('✅ Form success - refreshing providers');
     handleDrawerClose();
     fetchProviders(currentPage, searchTerm);
   };

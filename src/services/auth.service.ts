@@ -106,6 +106,44 @@ export const authService = {
     }
   },
 
+  async forgotPassword(email: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error requesting password reset');
+      }
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async resetPassword(token: string, password: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token, password }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error resetting password');
+      }
+    } catch (error) {
+      throw error;
+    }
+  },
+
   logout(): void {
     this.clearAuth();
 

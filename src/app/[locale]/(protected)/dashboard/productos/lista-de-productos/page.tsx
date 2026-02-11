@@ -391,7 +391,7 @@ export default function ListProductsPage() {
       <BarcodeGeneratorModal
         isOpen={showBarcodeModal}
         onClose={handleBarcodeModalClose}
-        productCode={selectedProduct?.sku || ''}
+        productCode={selectedProduct?.barcode || selectedProduct?.sku || ''}
         productName={selectedProduct?.name || ''}
       />
 

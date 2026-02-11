@@ -22,10 +22,8 @@ interface FormData {
   code: string;
   name: string;
   description: string;
-  document: string;
   phone: string;
   email: string;
-  address: string;
   status: boolean;
 }
 
@@ -39,15 +37,13 @@ interface FormErrors {
 const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
   ({ provider, onSuccess, onSavingChange, onValidChange }, ref) => {
     const t = useTranslations('pages.providers');
-    
+
     const [formData, setFormData] = useState<FormData>({
       code: provider?.code || "",
       name: provider?.name || "",
       description: provider?.description || "",
-      document: provider?.document || "",
       phone: provider?.phone || "",
       email: provider?.email || "",
-      address: provider?.address || "",
       status: provider?.status ?? true,
     });
 
@@ -59,10 +55,8 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
           code: provider.code,
           name: provider.name,
           description: provider.description,
-          document: provider.document || "",
           phone: provider.phone || "",
           email: provider.email || "",
-          address: provider.address || "",
           status: provider.status,
         });
       } else {
@@ -70,10 +64,8 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
           code: "",
           name: "",
           description: "",
-          document: "",
           phone: "",
           email: "",
-          address: "",
           status: true,
         });
       }
@@ -110,7 +102,7 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async () => {
@@ -124,20 +116,21 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
           code: formData.code.trim(),
           name: formData.name.trim(),
           description: formData.description.trim(),
-          document: formData.document.trim(),
           phone: formData.phone.trim(),
           email: formData.email.trim(),
-          address: formData.address.trim(),
           status: formData.status,
         };
 
         if (provider) {
-          await providersService.updateProvider(provider.id, data);
+          const result = await providersService.updateProvider(provider.id, data);
+          console.log('✏️ Provider updated:', result);
           toastService.success(t('messages.providerUpdated'));
         } else {
-          await providersService.createProvider(data);
+          const result = await providersService.createProvider(data);
+          console.log('➕ Provider created:', result);
           toastService.success(t('messages.providerCreated'));
         }
+        console.log('🎯 Calling onSuccess callback');
         onSuccess();
       } catch (error) {
         if (error instanceof Error) {
@@ -192,16 +185,7 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
           error={errors.description}
         />
 
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            type="text"
-            id="document"
-            label={t('form.document')}
-            value={formData.document}
-            onChange={(e) => setFormData(prev => ({ ...prev, document: e.target.value }))}
-            placeholder={t('form.placeholders.document')}
-          />
-
+        <div className="grid grid-cols-1 gap-4">
           <Input
             type="text"
             id="phone"
@@ -222,14 +206,6 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
           error={errors.email}
         />
 
-        <TextArea
-          id="address"
-          label={t('form.address')}
-          value={formData.address}
-          onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-          rows={3}
-          placeholder={t('form.placeholders.address')}
-        />
 
         <Checkbox
           id="status"

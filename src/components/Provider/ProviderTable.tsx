@@ -1,8 +1,9 @@
 import { useTranslations } from 'next-intl';
 import { Provider } from "@/types/provider";
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, MapPinIcon, IdentificationIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
+import { useRouter, useParams } from 'next/navigation';
 
 interface ProviderTableProps {
   providers: Provider[];
@@ -26,6 +27,9 @@ export default function ProviderTable({
   const t = useTranslations('pages.providers');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale;
 
   if (!Array.isArray(providers)) {
     return null;
@@ -154,13 +158,36 @@ export default function ProviderTable({
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
                     {can(['provider_update']) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(provider)}
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={tCommon('actions.edit')}
-                      />
+                      <>
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/${locale}/dashboard/proveedores/${provider.id}/direcciones`)}
+                          leftIcon={<MapPinIcon className="h-4 w-4" />}
+                          title={t('addresses.title')}
+                        />
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/${locale}/dashboard/proveedores/${provider.id}/datos-fiscales`)}
+                          leftIcon={<IdentificationIcon className="h-4 w-4" />}
+                          title={t('taxData.title')}
+                        />
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/${locale}/dashboard/proveedores/${provider.id}/credito`)}
+                          leftIcon={<BanknotesIcon className="h-4 w-4" />}
+                          title={t('credit.title')}
+                        />
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(provider)}
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                          title={tCommon('actions.edit')}
+                        />
+                      </>
                     )}
                     {can(['provider_delete']) && (
                       <Btn

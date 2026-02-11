@@ -17,17 +17,17 @@ class BrandService {
     const params = new URLSearchParams();
     if (page) params.append('page', page.toString());
     if (term) params.append('term', term);
-    
+
     const queryString = params.toString();
     const url = `/brands${queryString ? `?${queryString}` : ''}`;
-    
+
     const response = await api.get<PaginatedResponse>(url);
     return response;
   }
 
   async createBrand(data: BrandFormData, imageFile?: File): Promise<Brand> {
     const formData = new FormData();
-    
+
     // Agregar campos de texto
     formData.append('code', data.code);
     formData.append('description', data.description);
@@ -40,13 +40,12 @@ class BrandService {
     }
 
     const response = await api.post<Brand>('/brands', formData);
-    toastService.success('Marca creada exitosamente');
     return response;
   }
 
   async updateBrand(id: string, data: BrandFormData, imageFile?: File): Promise<Brand> {
     const formData = new FormData();
-    
+
     // Agregar campos de texto
     formData.append('code', data.code);
     formData.append('description', data.description);
@@ -59,13 +58,11 @@ class BrandService {
     }
 
     const response = await api.put<Brand>(`/brands/${id}`, formData);
-    toastService.success('Marca actualizada exitosamente');
     return response;
   }
 
   async deleteBrand(id: string): Promise<void> {
     await api.delete(`/brands/${id}`);
-    toastService.success('Marca eliminada exitosamente');
   }
 
   async getBrandById(id: string): Promise<Brand> {

@@ -335,7 +335,7 @@
         "slug": "Slug",
         "description": "Descripción",
         "sku": "SKU",
-        "code": "Código",
+        "code": "Código SAT",
         "barcode": "Código de Barras",
         "weight": "Peso",
         "width": "Ancho",
@@ -353,7 +353,7 @@
           "name": "Ej: Producto XYZ",
           "slug": "Ej: producto-xyz",
           "description": "Ej: Descripción del producto",
-          "code": "Ej: COD001",
+          "code": "Ej: 12345678",
           "sku": "Ej: SKU001",
           "barcode": "Ej: 1234567890123",
           "weight": "Ej: 1.5",
@@ -370,7 +370,7 @@
           "nameRequired": "El nombre es requerido",
           "slugRequired": "El slug es requerido",
           "descriptionRequired": "La descripción es requerida",
-          "codeRequired": "El código es requerido",
+          "codeRequired": "El código SAT es requerido",
           "skuRequired": "El SKU es requerido",
           "categoryRequired": "La categoría es requerida",
           "brandRequired": "La marca es requerida",
@@ -394,7 +394,7 @@
       },
       "table": {
         "name": "Nombre",
-        "code": "Código",
+        "code": "Código SAT",
         "sku": "SKU",
         "brand": "Marca",
         "category": "Categoría",
@@ -411,7 +411,7 @@
       "barcodeGenerator": {
         "title": "Generar Códigos de Barras",
         "productInfo": "Información del Producto",
-        "productCode": "Código del Producto",
+        "productCode": "Código de Barras",
         "quantityLabel": "Cantidad de códigos",
         "quantityHelp": "Máximo 100 códigos por generación",
         "generate": "Generar",
@@ -717,20 +717,16 @@
         "code": "Código",
         "name": "Nombre",
         "description": "Descripción",
-        "document": "Documento",
         "phone": "Teléfono",
         "email": "Email",
-        "address": "Dirección",
         "status": "Estado",
         "active": "Activo",
         "placeholders": {
           "code": "Ej: PROV001",
           "name": "Ej: Proveedor XYZ",
           "description": "Ej: Proveedor de materiales de construcción",
-          "document": "Ej: RUC 12345678901",
           "phone": "Ej: +51 987654321",
-          "email": "Ej: contacto@proveedor.com",
-          "address": "Ej: Av. Principal 123, Lima"
+          "email": "Ej: contacto@proveedor.com"
         },
         "errors": {
           "codeRequired": "El código es requerido",
@@ -757,6 +753,107 @@
         "errorDeleting": "Error al eliminar el proveedor",
         "confirmDelete": "¿Estás seguro de que deseas eliminar el proveedor \"{name}\"? Esta acción no se puede deshacer.",
         "deleteSuccess": "Proveedores eliminados correctamente"
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "save": "Guardar",
+        "cancel": "Cancelar"
+      },
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo"
+      },
+      "credit": {
+        "title": "Crédito y Cobranza",
+        "editCredit": "Editar Condiciones de Crédito",
+        "limit": "Límite de Crédito",
+        "days": "Días de Crédito",
+        "daysUnit": "días",
+        "isActive": "Crédito Activo",
+        "currency": "Moneda del Límite",
+        "analysisTitle": "Análisis de Deuda (Próximamente)",
+        "analysisDescription": "Aquí podrás visualizar el saldo por pagar, saldo vencido y la antigüedad de la deuda con el proveedor una vez que se completen los módulos de recepciones y pagos.",
+        "placeholders": {
+          "limit": "Ej: 50000.00",
+          "days": "Ej: 30"
+        },
+        "messages": {
+          "updated": "Condiciones de crédito actualizadas correctamente"
+        }
+      },
+      "addresses": {
+        "title": "Direcciones",
+        "newAddress": "Nueva Dirección",
+        "editAddress": "Editar Dirección",
+        "street": "Calle",
+        "exteriorNumber": "Número Exterior",
+        "interiorNumber": "Número Interior",
+        "neighborhood": "Colonia",
+        "city": "Ciudad",
+        "municipality": "Municipio",
+        "zipCode": "Código Postal",
+        "state": "Estado",
+        "country": "País",
+        "type": "Tipo de Dirección",
+        "isMain": "Dirección Principal",
+        "types": {
+          "FISCAL": "Fiscal",
+          "SHIPPING": "Envío",
+          "BILLING": "Facturación",
+          "OTHER": "Otra"
+        },
+        "placeholders": {
+          "street": "Ej: Blvd. Atardecer",
+          "exteriorNumber": "Ej: 142",
+          "interiorNumber": "Ej: 4",
+          "neighborhood": "Ej: Centro",
+          "city": "Ej: Huatabampo",
+          "municipality": "Ej: Huatabampo",
+          "zipCode": "Ej: 86500",
+          "state": "Ej: Sonora",
+          "country": "Ej: MEX"
+        },
+        "errors": {
+          "streetRequired": "La calle es requerida",
+          "zipCodeRequired": "El código postal es requerido"
+        },
+        "messages": {
+          "created": "Dirección añadida correctamente",
+          "updated": "Dirección actualizada correctamente",
+          "deleted": "Dirección eliminada correctamente"
+        }
+      },
+      "taxData": {
+        "title": "Datos Fiscales",
+        "newTaxData": "Nuevo Perfil Fiscal",
+        "editTaxData": "Editar Perfil Fiscal",
+        "taxDocument": "RFC / Tax ID",
+        "taxName": "Razón Social",
+        "taxSystem": "Régimen Fiscal",
+        "defaultInvoiceUse": "Uso de CFDI",
+        "isMain": "Perfil Principal",
+        "placeholders": {
+          "taxDocument": "Ej: RUC 20123456789",
+          "taxName": "Ej: Empresa S.A. de C.V."
+        },
+        "table": {
+          "taxDocument": "RFC / Tax ID",
+          "taxName": "Razón Social",
+          "taxSystem": "Régimen Fiscal",
+          "defaultInvoiceUse": "Uso de CFDI",
+          "isMain": "Perfil Principal",
+          "actions": "Acciones"
+        },
+        "errors": {
+          "taxDocumentRequired": "El RFC es requerido",
+          "taxNameRequired": "La razón social es requerida"
+        },
+        "messages": {
+          "created": "Datos fiscales añadidos correctamente",
+          "updated": "Datos fiscales actualizados correctamente",
+          "deleted": "Datos fiscales eliminados correctamente"
+        }
       }
     },
     "clients": {
@@ -1457,6 +1554,28 @@
       "loggingIn": "Iniciando sesión...",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "registerLink": "¿No tienes cuenta? Regístrate"
+    },
+    "forgotPassword": {
+      "title": "Recuperar Contraseña",
+      "subtitle": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña",
+      "email": "Correo electrónico",
+      "submit": "Enviar enlace",
+      "sending": "Enviando...",
+      "success": "Se ha enviado un correo electrónico con instrucciones para restablecer tu contraseña.",
+      "error": "Hubo un error al procesar tu solicitud. Por favor intenta de nuevo.",
+      "backToLogin": "Volver al inicio de sesión"
+    },
+    "resetPassword": {
+      "title": "Nueva Contraseña",
+      "subtitle": "Ingresa tu nueva contraseña a continuación",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "submit": "Actualizar contraseña",
+      "updating": "Actualizando...",
+      "success": "Tu contraseña ha sido actualizada exitosamente.",
+      "error": "Hubo un error al restablecer tu contraseña. El enlace puede haber expirado.",
+      "passwordsDontMatch": "Las contraseñas no coinciden",
+      "backToLogin": "Ir al inicio de sesión"
     },
     "construction": {
       "title": "En Construcción",

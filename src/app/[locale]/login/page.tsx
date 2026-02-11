@@ -186,8 +186,8 @@ export default function LoginPage() {
             </button>
 
             <div className="text-center">
-              <a
-                href="#"
+              <Link
+                href="/forgot-password"
                 className="text-sm transition-colors"
                 style={{ color: `rgb(var(--color-primary-500))` }}
                 onMouseEnter={(e) => {
@@ -198,7 +198,7 @@ export default function LoginPage() {
                 }}
               >
                 {t('forgotPassword')}
-              </a>
+              </Link>
             </div>
 
             <div className="text-center mt-6">

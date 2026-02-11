@@ -2,7 +2,8 @@
 
 import { useState, useEffect, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Expense, ExpenseCategory, ExpenseStatus, Provider } from '@/types/expense';
+import { Expense, ExpenseCategory, ExpenseStatus } from '@/types/expense';
+import { Provider } from '@/types/provider';
 import { expensesService } from '@/services/expenses.service';
 import { providersService } from '@/services/providers.service';
 import { toastService } from '@/services/toast.service';
@@ -235,7 +236,7 @@ const ExpenseForm = forwardRef<ExpenseFormRef, ExpenseFormProps>(
       { value: ExpenseStatus.PAID, label: t('status.paid') },
     ];
 
-    const categoryOptions = useMemo(() => 
+    const categoryOptions = useMemo(() =>
       localCategories?.map(category => ({
         value: category.id.toString(),
         label: getCategoryLabel(category),
