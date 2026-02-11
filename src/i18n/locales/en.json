@@ -796,7 +796,8 @@
           "nameRequired": "Name is required",
           "descriptionRequired": "Description is required",
           "taxDocumentRequired": "Tax document is required",
-          "invalidEmail": "Email is not valid"
+          "invalidEmail": "Email is not valid",
+          "emailRequired": "Email is required"
         }
       },
       "table": {
@@ -822,6 +823,147 @@
         "packSyncFailedCreate": "Client saved in Redfox. Attention: it was not registered in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
         "packSyncFailedUpdate": "Client saved in Redfox. Attention: it was not updated in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
         "confirmDelete": "Are you sure you want to delete the client \"{name}\"? This action cannot be undone."
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "credit": {
+        "title": "Credit & Collections",
+        "editCredit": "Edit Credit Conditions",
+        "limit": "Credit Limit",
+        "days": "Credit Days",
+        "daysUnit": "days",
+        "isActive": "Credit Active",
+        "currency": "Limit Currency",
+        "placeholders": {
+          "limit": "Ex: 50000.00",
+          "days": "Ex: 30"
+        },
+        "messages": {
+          "updated": "Credit conditions updated successfully"
+        }
+      },
+      "addresses": {
+        "title": "Addresses",
+        "newAddress": "New Address",
+        "editAddress": "Edit Address",
+        "street": "Street",
+        "exteriorNumber": "Exterior Number",
+        "interiorNumber": "Interior Number",
+        "neighborhood": "Neighborhood",
+        "city": "City",
+        "municipality": "Municipality",
+        "zipCode": "Zip Code",
+        "state": "State",
+        "country": "Country",
+        "type": "Address Type",
+        "isMain": "Primary Address",
+        "types": {
+          "FISCAL": "Fiscal",
+          "SHIPPING": "Shipping",
+          "BILLING": "Billing",
+          "OTHER": "Other"
+        },
+        "placeholders": {
+          "street": "Ex: Blvd. Atardecer",
+          "exteriorNumber": "Ex: 142",
+          "interiorNumber": "Ex: 4",
+          "neighborhood": "Ex: Centro",
+          "city": "Ex: Huatabampo",
+          "municipality": "Ex: Huatabampo",
+          "zipCode": "Ex: 86500",
+          "state": "Ex: Sonora",
+          "country": "Ex: MEX"
+        },
+        "errors": {
+          "streetRequired": "Street is required",
+          "zipCodeRequired": "Zip code is required"
+        },
+        "messages": {
+          "created": "Address added successfully",
+          "updated": "Address updated successfully",
+          "deleted": "Address deleted successfully"
+        }
+      },
+      "taxData": {
+        "title": "Tax Data",
+        "newTaxData": "New Tax Profile",
+        "editTaxData": "Edit Tax Profile",
+        "taxDocument": "RFC / Tax ID",
+        "taxName": "Legal Name",
+        "taxSystem": "Fiscal Regime",
+        "defaultInvoiceUse": "CFDI Use",
+        "isMain": "Primary Profile",
+        "placeholders": {
+          "taxDocument": "Ex: RUC 20123456789",
+          "taxName": "Ex: Empresa S.A. de C.V."
+        },
+        "errors": {
+          "taxDocumentRequired": "Tax document is required",
+          "taxNameRequired": "Legal name is required"
+        },
+        "messages": {
+          "created": "Tax data added successfully",
+          "updated": "Tax data updated successfully",
+          "deleted": "Tax data deleted successfully"
+        },
+        "regimes": {
+          "601": "General de Ley Personas Morales",
+          "603": "Personas Morales con Fines no Lucrativos",
+          "605": "Sueldos y Salarios e Ingresos Asimilados a Salarios",
+          "606": "Arrendamiento",
+          "608": "Demás ingresos",
+          "609": "Consolidación",
+          "610": "Residentes en el Extranjero sin Establecimiento Permanente en México",
+          "611": "Ingresos por Dividendos (socios y accionistas)",
+          "612": "Personas Físicas con Actividades Empresariales y Profesionales",
+          "614": "Ingresos por intereses",
+          "616": "Sin obligaciones fiscales",
+          "620": "Sociedades Cooperativas de Producción que optan por diferir sus ingresos",
+          "621": "Incorporación Fiscal",
+          "622": "Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras",
+          "623": "Opcional para Grupos de Sociedades",
+          "624": "Coordinados",
+          "628": "Hidrocarburos",
+          "607": "Régimen de Enajenación o Adquisición de Bienes",
+          "629": "De los Regímenes Fiscales Preferentes y de las Empresas Multinacionales",
+          "630": "Enajenación de acciones en bolsa de valores",
+          "615": "Régimen de los ingresos por obtención de premios",
+          "625": "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
+          "626": "Régimen Simplificado de Confianza"
+        },
+        "invoiceUses": {
+          "G01": "Acquisition of merchandise",
+          "G02": "Returns, discounts or bonuses",
+          "G03": "General expenses",
+          "I01": "Constructions",
+          "I02": "Office furniture and equipment for investments",
+          "I03": "Transportation equipment",
+          "I04": "Computer equipment and accessories",
+          "I05": "Dies, dies, molds, matrices and tools",
+          "I06": "Telephone communications",
+          "I07": "Satellite communications",
+          "I08": "Other machinery and equipment",
+          "D01": "Medical, dental fees and hospital expenses",
+          "D02": "Medical expenses due to incapacity or disability",
+          "D03": "Funeral expenses",
+          "D04": "Donations",
+          "D05": "Real interest effectively paid on mortgage loans (home habitation)",
+          "D06": "Voluntary contributions to the SAR",
+          "D07": "Medical expense insurance premiums",
+          "D08": "Mandatory school transportation expenses",
+          "D09": "Deposits in savings accounts, premiums based on pension plans",
+          "D10": "Payments for educational services (tuition)",
+          "S01": "No tax effects",
+          "CN01": "Payroll"
+        }
       }
     },
     "inventory": {

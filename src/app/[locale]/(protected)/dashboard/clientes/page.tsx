@@ -7,8 +7,10 @@ import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
 import ClientTable from "@/components/Client/ClientTable";
 import ClientForm from "@/components/Client/ClientForm";
+import ClientAddressForm from "@/components/Client/ClientAddressForm";
+import ClientTaxDataForm from "@/components/Client/ClientTaxDataForm";
 import DeleteClientModal from "@/components/Client/DeleteClientModal";
-import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon, PlusIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ClientFormRef } from "@/components/Client/ClientForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
@@ -36,9 +38,10 @@ export default function ClientsPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [hasInitialData, setHasInitialData] = useState(false);
+  const [filters, setFilters] = useState<Record<string, any>>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [filters, setFilters] = useState<Record<string, any>>({});
+
   const formRef = useRef<ClientFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -314,7 +317,7 @@ export default function ClientsPage() {
         onSave={handleSave}
         isSaving={isSaving}
         isFormValid={isFormValid}
-        width="max-w-4xl"
+        width="max-w-2xl"
       >
         <ClientForm
           ref={formRef}

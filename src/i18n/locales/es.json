@@ -778,20 +778,6 @@
         "description": "Descripción",
         "phone": "Teléfono",
         "email": "Email",
-        "address": "Dirección",
-        "detailedAddress": "Dirección Detallada",
-        "addressStreet": "Calle",
-        "addressExterior": "Número Exterior",
-        "addressInterior": "Número Interior",
-        "addressNeighborhood": "Colonia",
-        "addressCity": "Ciudad",
-        "addressMunicipality": "Municipio",
-        "addressZip": "Código Postal",
-        "addressState": "Estado",
-        "addressCountry": "País",
-        "taxDocument": "Documento Fiscal",
-        "taxSystem": "Régimen Fiscal",
-        "defaultInvoiceUse": "Uso de CFDI",
         "status": "Estado",
         "active": "Activo",
         "placeholders": {
@@ -799,27 +785,14 @@
           "name": "Ej: Cliente XYZ",
           "description": "Ej: Cliente general",
           "phone": "Ej: +51 987654321",
-          "email": "Ej: contacto@cliente.com",
-          "address": "Ej: Av. Principal 123, Lima",
-          "addressStreet": "Ej: Blvd. Atardecer",
-          "addressExterior": "Ej: 142",
-          "addressInterior": "Ej: 4",
-          "addressNeighborhood": "Ej: Centro",
-          "addressCity": "Ej: Huatabampo",
-          "addressMunicipality": "Ej: Huatabampo",
-          "addressZip": "Ej: 86500",
-          "addressState": "Ej: Sonora",
-          "addressCountry": "Ej: MEX",
-          "taxDocument": "Ej: RUC 20123456789",
-          "taxSystem": "Ej: 601",
-          "defaultInvoiceUse": "Ej: G01"
+          "email": "Ej: contacto@cliente.com"
         },
         "errors": {
           "codeRequired": "El código es requerido",
           "nameRequired": "El nombre es requerido",
           "descriptionRequired": "La descripción es requerida",
-          "taxDocumentRequired": "El documento fiscal es requerido",
-          "invalidEmail": "El email no es válido"
+          "invalidEmail": "El email no es válido",
+          "emailRequired": "El email es requerido"
         }
       },
       "table": {
@@ -845,6 +818,148 @@
         "packSyncFailedCreate": "Cliente guardado en Redfox. Atención: no se registró en el PAC. No podrá facturar hasta corregirlo. Detalle: {detail}",
         "packSyncFailedUpdate": "Cliente guardado en Redfox. Atención: no se actualizó en el PAC. No podrá facturar hasta corregirlo. Detalle: {detail}",
         "confirmDelete": "¿Estás seguro de que deseas eliminar el cliente \"{name}\"? Esta acción no se puede deshacer."
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "save": "Guardar",
+        "cancel": "Cancelar"
+      },
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo"
+      },
+      "credit": {
+        "title": "Crédito y Cobranza",
+        "editCredit": "Editar Condiciones de Crédito",
+        "limit": "Límite de Crédito",
+        "days": "Días de Crédito",
+        "daysUnit": "días",
+        "isActive": "Crédito Activo",
+        "currency": "Moneda del Límite",
+        "placeholders": {
+          "limit": "Ej: 50000.00",
+          "days": "Ej: 30"
+        },
+        "messages": {
+          "updated": "Condiciones de crédito actualizadas correctamente"
+        }
+      },
+      "addresses": {
+        "title": "Direcciones",
+        "newAddress": "Nueva Dirección",
+        "editAddress": "Editar Dirección",
+        "street": "Calle",
+        "exteriorNumber": "Número Exterior",
+        "interiorNumber": "Número Interior",
+        "neighborhood": "Colonia",
+        "city": "Ciudad",
+        "municipality": "Municipio",
+        "zipCode": "Código Postal",
+        "state": "Estado",
+        "country": "País",
+        "type": "Tipo de Dirección",
+        "isMain": "Dirección Principal",
+        "types": {
+          "FISCAL": "Fiscal",
+          "SHIPPING": "Envío",
+          "BILLING": "Facturación",
+          "OTHER": "Otra"
+        },
+        "placeholders": {
+          "street": "Ej: Blvd. Atardecer",
+          "exteriorNumber": "Ej: 142",
+          "interiorNumber": "Ej: 4",
+          "neighborhood": "Ej: Centro",
+          "city": "Ej: Huatabampo",
+          "municipality": "Ej: Huatabampo",
+          "zipCode": "Ej: 86500",
+          "state": "Ej: Sonora",
+          "country": "Ej: MEX"
+        },
+        "errors": {
+          "streetRequired": "La calle es requerida",
+          "zipCodeRequired": "El código postal es requerido"
+        },
+        "messages": {
+          "created": "Dirección añadida correctamente",
+          "updated": "Dirección actualizada correctamente",
+          "deleted": "Dirección eliminada correctamente"
+        }
+      },
+      "taxData": {
+        "title": "Datos Fiscales",
+        "newTaxData": "Nuevo Perfil Fiscal",
+        "editTaxData": "Editar Perfil Fiscal",
+        "taxDocument": "RFC / Tax ID",
+        "taxName": "Razón Social",
+        "taxSystem": "Régimen Fiscal",
+        "defaultInvoiceUse": "Uso de CFDI",
+        "isMain": "Perfil Principal",
+        "placeholders": {
+          "taxDocument": "Ej: RUC 20123456789",
+          "taxName": "Ej: Empresa S.A. de C.V."
+        },
+        "errors": {
+          "taxDocumentRequired": "El RFC es requerido",
+          "taxNameRequired": "La razón social es requerida"
+        },
+        "messages": {
+          "created": "Datos fiscales añadidos correctamente",
+          "updated": "Datos fiscales actualizados correctamente",
+          "deleted": "Datos fiscales eliminados correctamente"
+        },
+        "regimes": {
+          "601": "General de Ley Personas Morales",
+          "603": "Personas Morales con Fines no Lucrativos",
+          "605": "Sueldos y Salarios e Ingresos Asimilados a Salarios",
+          "606": "Arrendamiento",
+          "608": "Demás ingresos",
+          "609": "Consolidación",
+          "610": "Residentes en el Extranjero sin Establecimiento Permanente en México",
+          "611": "Ingresos por Dividendos (socios y accionistas)",
+          "612": "Personas Físicas con Actividades Empresariales y Profesionales",
+          "614": "Ingresos por intereses",
+          "616": "Sin obligaciones fiscales",
+          "620": "Sociedades Cooperativas de Producción que optan por diferir sus ingresos",
+          "621": "Incorporación Fiscal",
+          "622": "Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras",
+          "623": "Opcional para Grupos de Sociedades",
+          "624": "Coordinados",
+          "628": "Hidrocarburos",
+          "607": "Régimen de Enajenación o Adquisición de Bienes",
+          "629": "De los Regímenes Fiscales Preferentes y de las Empresas Multinacionales",
+          "630": "Enajenación de acciones en bolsa de valores",
+          "615": "Régimen de los ingresos por obtención de premios",
+          "625": "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
+          "626": "Régimen Simplificado de Confianza"
+        },
+        "invoiceUses": {
+          "G01": "Adquisición de mercancías",
+          "G02": "Devoluciones, descuentos o bonificaciones",
+          "G03": "Gastos en general",
+          "I01": "Construcciones",
+          "I02": "Mobiliario y equipo de oficina por inversiones",
+          "I03": "Equipo de transporte",
+          "I04": "Equipo de computo y accesorios",
+          "I05": "Dados, troqueles, moldes, matrices y herramental",
+          "I06": "Comunicaciones telefónicas",
+          "I07": "Comunicaciones satelitales",
+          "I08": "Otra maquinaria y equipo",
+          "D01": "Honorarios médicos, dentales y gastos hospitalarios",
+          "D02": "Gastos médicos por incapacidad o discapacidad",
+          "D03": "Gastos funerales",
+          "D04": "Donativos",
+          "D05": "Intereses reales efectivamente pagados por créditos hipotecarios (casa habitación)",
+          "D06": "Aportaciones voluntarias al SAR",
+          "D07": "Primas por seguros de gastos médicos",
+          "D08": "Gastos de transportación escolar obligatoria",
+          "D09": "Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones",
+          "D10": "Pagos por servicios educativos (colegiaturas)",
+          "S01": "Sin efectos fiscales",
+          "CP01": "Pagos",
+          "CN01": "Nómina"
+        }
       }
     },
     "inventory": {

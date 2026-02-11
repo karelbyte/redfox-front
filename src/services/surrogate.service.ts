@@ -45,8 +45,7 @@ class SurrogateService {
   async getNextCode(code: string): Promise<NextCodeResponse> {
     try {
       const response: any = await api.get(`${this.baseUrl}/${code}/next`);
-      
-      console.log('Full response:', response); // Debug log
+  
       
       // El API service ya devuelve el JSON parseado directamente
       const data = response;
@@ -79,8 +78,6 @@ class SurrogateService {
   async useNextCode(code: string): Promise<NextCodeResponse> {
     try {
       const response: any = await api.post(`${this.baseUrl}/${code}/use`, {});
-      
-      console.log('Full response (useNextCode):', response); // Debug log
       
       // El API service ya devuelve el JSON parseado directamente
       const data = response;

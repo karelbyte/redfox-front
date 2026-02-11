@@ -1,8 +1,9 @@
 import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
-import { PencilIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CheckCircleIcon, MapPinIcon, IdentificationIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
+import { useRouter, useParams } from 'next/navigation';
 
 interface ClientTableProps {
   clients: Client[];
@@ -24,8 +25,12 @@ export default function ClientTable({
   onSelectAllChange
 }: ClientTableProps) {
   const t = useTranslations('pages.clients');
+  const tCredit = useTranslations('pages.clients.credit');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale;
   if (!Array.isArray(clients)) {
     return null;
   }
@@ -176,6 +181,31 @@ export default function ClientTable({
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
+                    {can(['client_update']) && (
+                      <>
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/direcciones`)}
+                          leftIcon={<MapPinIcon className="h-4 w-4" />}
+                          title={t('addresses.title')}
+                        />
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/datos-fiscales`)}
+                          leftIcon={<IdentificationIcon className="h-4 w-4" />}
+                          title={t('taxData.title')}
+                        />
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/credito`)}
+                          leftIcon={<BanknotesIcon className="h-4 w-4" />}
+                          title={tCredit('title')}
+                        />
+                      </>
+                    )}
                     {can(['client_update']) && <Btn
                       variant="ghost"
                       size="sm"

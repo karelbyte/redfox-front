@@ -15,6 +15,10 @@ export const clientsService = {
     return response;
   },
 
+  getClient: async (id: string): Promise<Client> => {
+    return api.get<Client>(`/clients/${id}`);
+  },
+
   createClient: async (client: Partial<Client>): Promise<ClientWithPackStatus> => {
     return api.post<ClientWithPackStatus>("/clients", client);
   },
