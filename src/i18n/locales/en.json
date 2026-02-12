@@ -3509,5 +3509,14 @@
       "item3": "Port 587 is for TLS, 465 for SSL",
       "item4": "Test the connection before saving to ensure it works"
     }
+  },
+  "offline": {
+    "offline": "Offline - Changes will be saved locally",
+    "backOnline": "Back online",
+    "syncing": "Syncing changes...",
+    "pendingOperations": "pending operations",
+    "remaining": "remaining",
+    "syncNow": "Sync now",
+    "pendingSync": "Pending sync"
   }
 }

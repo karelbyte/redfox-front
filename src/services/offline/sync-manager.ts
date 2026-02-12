@@ -1,5 +1,6 @@
 import { db, PendingOperation } from '@/lib/db';
 import { providersService } from '@/services/providers.service';
+import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
 
 class SyncManager {
@@ -79,6 +80,8 @@ class SyncManager {
         switch (operation.entity) {
             case 'provider':
                 return this.processProviderOperation(operation);
+            case 'client':
+                return this.processClientOperation(operation);
             default:
                 throw new Error(`Unknown entity type: ${operation.entity}`);
         }
@@ -88,6 +91,12 @@ class SyncManager {
         switch (operation.type) {
             case 'CREATE':
                 const created = await providersService.createProvider(operation.data);
+                
+                // If there was a temporary ID, we need to replace it with the real one
+                if (operation.entityId && operation.entityId.startsWith('temp_')) {
+                    await db.providers.delete(operation.entityId);
+                }
+                
                 // Update local DB with server-generated ID
                 await db.providers.put(created);
                 break;
@@ -96,6 +105,39 @@ class SyncManager {
                 if (!operation.entityId) {
                     throw new Error('Missing entityId for UPDATE operation');
                 }
+                
+                // Skip if it's a temporary ID that hasn't been created yet
+                if (operation.entityId.startsWith('temp_')) {
+                    console.log('Skipping update for temporary entity:', operation.entityId);
+                    return;
+                }
+                
+                // Check for conflicts before updating
+                try {
+                    const serverVersion = await providersService.getProvider(operation.entityId);
+                    const localVersion = await db.providers.get(operation.entityId);
+                    
+                    // Simple conflict detection: compare updated_at timestamps
+                    if (localVersion && serverVersion) {
+                        const serverTime = new Date(serverVersion.updated_at).getTime();
+                        const localTime = new Date(localVersion.updated_at).getTime();
+                        
+                        // If server version is newer, warn about potential conflict
+                        if (serverTime > localTime) {
+                            console.warn('⚠️ Conflict detected: server has newer version', {
+                                entityId: operation.entityId,
+                                serverTime,
+                                localTime
+                            });
+                            // Strategy: Last-write-wins (proceed with update)
+                            // TODO: Implement more sophisticated conflict resolution
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Could not check for conflicts:', error);
+                    // Proceed with update anyway
+                }
+                
                 const updated = await providersService.updateProvider(operation.entityId, operation.data);
                 await db.providers.put(updated);
                 break;
@@ -104,6 +146,13 @@ class SyncManager {
                 if (!operation.entityId) {
                     throw new Error('Missing entityId for DELETE operation');
                 }
+                
+                // Skip if it's a temporary ID
+                if (operation.entityId.startsWith('temp_')) {
+                    console.log('Skipping delete for temporary entity:', operation.entityId);
+                    return;
+                }
+                
                 await providersService.deleteProvider(operation.entityId);
                 await db.providers.delete(operation.entityId);
                 break;
@@ -115,6 +164,80 @@ class SyncManager {
 
     async getPendingCount(): Promise<number> {
         return await db.pendingOperations.count();
+    }
+
+    private async processClientOperation(operation: PendingOperation): Promise<void> {
+        switch (operation.type) {
+            case 'CREATE':
+                const result = await clientsService.createClient(operation.data);
+                
+                // If there was a temporary ID, we need to replace it with the real one
+                if (operation.entityId && operation.entityId.startsWith('temp_')) {
+                    await db.clients.delete(operation.entityId);
+                }
+                
+                // Update local DB with server-generated ID
+                await db.clients.put(result.client);
+                break;
+
+            case 'UPDATE':
+                if (!operation.entityId) {
+                    throw new Error('Missing entityId for UPDATE operation');
+                }
+                
+                // Skip if it's a temporary ID that hasn't been created yet
+                if (operation.entityId.startsWith('temp_')) {
+                    console.log('Skipping update for temporary entity:', operation.entityId);
+                    return;
+                }
+                
+                // Check for conflicts before updating
+                try {
+                    const serverVersion = await clientsService.getClient(operation.entityId);
+                    const localVersion = await db.clients.get(operation.entityId);
+                    
+                    // Simple conflict detection: compare updated_at timestamps
+                    if (localVersion && serverVersion) {
+                        const serverTime = new Date(serverVersion.updated_at).getTime();
+                        const localTime = new Date(localVersion.updated_at).getTime();
+                        
+                        // If server version is newer, warn about potential conflict
+                        if (serverTime > localTime) {
+                            console.warn('⚠️ Conflict detected: server has newer version', {
+                                entityId: operation.entityId,
+                                serverTime,
+                                localTime
+                            });
+                            // Strategy: Last-write-wins (proceed with update)
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Could not check for conflicts:', error);
+                    // Proceed with update anyway
+                }
+                
+                const updateResult = await clientsService.updateClient(operation.entityId, operation.data);
+                await db.clients.put(updateResult.client);
+                break;
+
+            case 'DELETE':
+                if (!operation.entityId) {
+                    throw new Error('Missing entityId for DELETE operation');
+                }
+                
+                // Skip if it's a temporary ID
+                if (operation.entityId.startsWith('temp_')) {
+                    console.log('Skipping delete for temporary entity:', operation.entityId);
+                    return;
+                }
+                
+                await clientsService.deleteClient(operation.entityId);
+                await db.clients.delete(operation.entityId);
+                break;
+
+            default:
+                throw new Error(`Unknown operation type: ${operation.type}`);
+        }
     }
 
     onSyncStatusChange(listener: (status: 'idle' | 'syncing' | 'error') => void): () => void {

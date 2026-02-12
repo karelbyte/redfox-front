@@ -3512,5 +3512,14 @@
       "item3": "El puerto 587 es para TLS, 465 para SSL",
       "item4": "Prueba la conexión antes de guardar para asegurar que funciona"
     }
+  },
+  "offline": {
+    "offline": "Sin conexión - Los cambios se guardarán localmente",
+    "backOnline": "Conexión restaurada",
+    "syncing": "Sincronizando cambios...",
+    "pendingOperations": "operaciones pendientes",
+    "remaining": "restantes",
+    "syncNow": "Sincronizar ahora",
+    "pendingSync": "Pendiente de sincronizar"
   }
 }

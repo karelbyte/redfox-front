@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Provider } from "@/types/provider";
-import { PencilIcon, TrashIcon, MapPinIcon, IdentificationIcon, BanknotesIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, MapPinIcon, IdentificationIcon, BanknotesIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter, useParams } from 'next/navigation';
@@ -26,6 +26,7 @@ export default function ProviderTable({
 }: ProviderTableProps) {
   const t = useTranslations('pages.providers');
   const tCommon = useTranslations('common');
+  const tOffline = useTranslations('offline');
   const { can } = usePermissions();
   const router = useRouter();
   const params = useParams();
@@ -129,7 +130,18 @@ export default function ProviderTable({
               )}
               {isVisible('name') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {provider.name}
+                  <div className="flex items-center gap-2">
+                    <span>{provider.name}</span>
+                    {provider.id.startsWith('temp_') && (
+                      <span 
+                        className="inline-flex items-center gap-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full"
+                        title={tOffline('pendingSync')}
+                      >
+                        <ClockIcon className="h-3 w-3" />
+                        {tOffline('pendingSync')}
+                      </span>
+                    )}
+                  </div>
                 </td>
               )}
               {isVisible('description') && (

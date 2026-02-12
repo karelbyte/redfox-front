@@ -1,35 +1,78 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { syncManager } from '@/services/offline/sync-manager';
 
 export function useOffline() {
-  const [isOnline, setIsOnline] = useState(true);
-  const [wasOffline, setWasOffline] = useState(false);
+  // Inicializar desde localStorage si existe
+  const [isOnline, setIsOnline] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('app_online_status');
+      return stored ? stored === 'true' : navigator.onLine;
+    }
+    return true;
+  });
+  
+  const [wasOffline, setWasOffline] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('app_was_offline') === 'true';
+    }
+    return false;
+  });
+  
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
-    // Check initial online status
-    setIsOnline(navigator.onLine);
+    // Actualizar estado inicial real
+    const actualOnlineStatus = navigator.onLine;
+    setIsOnline(actualOnlineStatus);
+    localStorage.setItem('app_online_status', String(actualOnlineStatus));
 
-    const handleOnline = () => {
+    // Check pending operations count
+    const updatePendingCount = async () => {
+      const count = await syncManager.getPendingCount();
+      setPendingCount(count);
+    };
+    updatePendingCount();
+
+    const handleOnline = async () => {
       setIsOnline(true);
+      localStorage.setItem('app_online_status', 'true');
+      
       if (wasOffline) {
         // Trigger sync when coming back online
-        if ('serviceWorker' in navigator) {
-          const swReg = window.ServiceWorkerRegistration as any;
-          if ('sync' in swReg.prototype) {
-            navigator.serviceWorker.ready.then((registration: any) => {
-              return registration.sync.register('background-sync');
-            });
-          }
+        console.log('🔄 Back online, starting sync...');
+        setIsSyncing(true);
+        
+        try {
+          await syncManager.processPendingOperations();
+          await updatePendingCount();
+        } catch (error) {
+          console.error('Sync failed:', error);
+        } finally {
+          setIsSyncing(false);
         }
+        
         setWasOffline(false);
+        localStorage.setItem('app_was_offline', 'false');
       }
     };
 
     const handleOffline = () => {
       setIsOnline(false);
       setWasOffline(true);
+      localStorage.setItem('app_online_status', 'false');
+      localStorage.setItem('app_was_offline', 'true');
     };
+
+    // Listen to sync status changes
+    const unsubscribe = syncManager.onSyncStatusChange((status) => {
+      setIsSyncing(status === 'syncing');
+      if (status === 'idle') {
+        updatePendingCount();
+      }
+    });
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -37,6 +80,7 @@ export function useOffline() {
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      unsubscribe();
     };
   }, [wasOffline]);
 
@@ -68,10 +112,31 @@ export function useOffline() {
     }
   };
 
+  const manualSync = async () => {
+    if (!isOnline) {
+      console.log('Cannot sync: offline');
+      return;
+    }
+    
+    setIsSyncing(true);
+    try {
+      await syncManager.processPendingOperations();
+      const count = await syncManager.getPendingCount();
+      setPendingCount(count);
+    } catch (error) {
+      console.error('Manual sync failed:', error);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return {
     isOnline,
     isOffline: !isOnline,
     wasOffline,
+    isSyncing,
+    pendingCount,
     queueOfflineAction,
+    manualSync,
   };
 }

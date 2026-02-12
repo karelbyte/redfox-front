@@ -114,10 +114,11 @@ export const providersService = {
 
     await db.providers.put(tempProvider);
 
-    // Queue for sync
+    // Queue for sync - store the temp ID so we can replace it later
     await db.pendingOperations.add({
       type: 'CREATE',
       entity: 'provider',
+      entityId: tempId, // Store temp ID for reference
       data: providerData,
       timestamp: Date.now(),
       retries: 0
