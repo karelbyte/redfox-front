@@ -33,32 +33,34 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       product_id: '',
       quantity: 0,
       price: 0,
+      batch_number: '',
+      expiration_date: '',
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
 
-    // Cargar datos del producto a editar
     useEffect(() => {
       if (receptionDetail) {
         setFormData({
           product_id: receptionDetail.product.id,
           quantity: receptionDetail.quantity,
           price: receptionDetail.price,
+          batch_number: receptionDetail.batch_number || '',
+          expiration_date: receptionDetail.expiration_date ? new Date(receptionDetail.expiration_date).toISOString().split('T')[0] : '',
         });
       }
     }, [receptionDetail]);
 
-    // Función para buscar productos
     const searchProducts = async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
-        const response = await productService.getProducts(1, term, true,'tangible');
+        const response = await productService.getProducts(1, term, true, 'tangible');
         return (response.data || []).map(product => ({
           id: product.id,
           label: product.name,
           subtitle: `SKU: ${product.sku}`
         }));
       } catch (error) {
-        console.error('Error buscando productos:', error);
+        console.error('Error searching products:', error);
         return [];
       }
     };
@@ -74,14 +76,14 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       const price = typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price;
 
       if (!formData.quantity || quantity <= 0) {
-        newErrors.quantity = quantity <= 0 
-          ? t('form.errors.quantityPositive') 
+        newErrors.quantity = quantity <= 0
+          ? t('form.errors.quantityPositive')
           : t('form.errors.quantityRequired');
       }
 
       if (!formData.price || price <= 0) {
-        newErrors.price = price <= 0 
-          ? t('form.errors.pricePositive') 
+        newErrors.price = price <= 0
+          ? t('form.errors.pricePositive')
           : t('form.errors.priceRequired');
       }
 
@@ -93,7 +95,7 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async (): Promise<ReceptionDetailFormData | null> => {
@@ -140,31 +142,52 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
           disabled={!!receptionDetail}
         />
 
-        <Input
-          type="number"
-          id="quantity"
-          label={t('form.quantity')}
-          required
-          value={formData.quantity}
-          onChange={(e) => setFormData(prev => ({ ...prev, quantity: parseFloat(e.target.value) || 0 }))}
-          placeholder={t('form.placeholders.quantity')}
-          error={errors.quantity}
-          step="0.01"
-          min="0"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            type="number"
+            id="quantity"
+            label={t('form.quantity')}
+            required
+            value={formData.quantity}
+            onChange={(e) => setFormData(prev => ({ ...prev, quantity: parseFloat(e.target.value) || 0 }))}
+            placeholder={t('form.placeholders.quantity')}
+            error={errors.quantity}
+            step="0.01"
+            min="0"
+          />
 
-        <Input
-          type="number"
-          id="price"
-          label={t('form.price')}
-          required
-          value={formData.price}
-          onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-          placeholder={t('form.placeholders.price')}
-          error={errors.price}
-          step="0.01"
-          min="0"
-        />
+          <Input
+            type="number"
+            id="price"
+            label={t('form.price')}
+            required
+            value={formData.price}
+            onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+            placeholder={t('form.placeholders.price')}
+            error={errors.price}
+            step="0.01"
+            min="0"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            type="text"
+            id="batch_number"
+            label={t('form.batchNumber')}
+            value={formData.batch_number}
+            onChange={(e) => setFormData(prev => ({ ...prev, batch_number: e.target.value }))}
+            placeholder={t('form.placeholders.batchNumber')}
+          />
+
+          <Input
+            type="date"
+            id="expiration_date"
+            label={t('form.expirationDate')}
+            value={formData.expiration_date}
+            onChange={(e) => setFormData(prev => ({ ...prev, expiration_date: e.target.value }))}
+          />
+        </div>
       </form>
     );
   }

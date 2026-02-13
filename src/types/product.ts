@@ -9,6 +9,18 @@ export enum ProductType {
   DIGITAL = 'digital'
 }
 
+export enum InventoryStrategy {
+  FIFO = 'fifo',
+  FEFO = 'fefo',
+  AVERAGE = 'average'
+}
+
+export interface ProductPrice {
+  id?: string;
+  name: string;
+  price: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -27,6 +39,9 @@ export interface Product {
   measurement_unit: MeasurementUnit | string;
   is_active: boolean;
   type: ProductType;
+  inventory_strategy: InventoryStrategy;
+  base_price: number;
+  prices: ProductPrice[];
   images: string[];
   created_at: string;
 }
@@ -48,4 +63,7 @@ export interface ProductFormData {
   measurement_unit_id: string;
   is_active: boolean;
   type: ProductType;
-} 
+  inventory_strategy?: InventoryStrategy;
+  base_price: number;
+  prices: Omit<ProductPrice, 'id'>[];
+}

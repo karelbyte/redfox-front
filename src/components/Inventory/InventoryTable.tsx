@@ -85,6 +85,16 @@ export default function InventoryTable({
                 {t('table.price')} ({currencyCode})
               </th>
             )}
+            {isVisible('batch_number') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.batchNumber')}
+              </th>
+            )}
+            {isVisible('expiration_date') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('table.expirationDate')}
+              </th>
+            )}
             {isVisible('date') && (
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 {t('table.date')}
@@ -138,6 +148,16 @@ export default function InventoryTable({
               {isVisible('price') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                   {formatPrice(item.price)}
+                </td>
+              )}
+              {isVisible('batch_number') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {item.batch_number || '-'}
+                </td>
+              )}
+              {isVisible('expiration_date') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {item.expiration_date ? formatDate(item.expiration_date) : '-'}
                 </td>
               )}
               {isVisible('date') && (

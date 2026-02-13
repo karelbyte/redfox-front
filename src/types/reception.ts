@@ -55,6 +55,8 @@ export interface ReceptionDetailFormData {
   product_id: string;
   quantity: string | number;
   price: string | number;
+  batch_number?: string;
+  expiration_date?: string;
 }
 
 export interface ReceptionDetail {
@@ -100,6 +102,8 @@ export interface ReceptionDetail {
   };
   quantity: string | number;
   price: string | number;
+  batch_number?: string;
+  expiration_date?: string;
   created_at: string;
 }
 

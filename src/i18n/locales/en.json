@@ -341,6 +341,11 @@
         "type": "Type",
         "status": "Status",
         "active": "Active",
+        "inventoryStrategy": "Inventory Strategy",
+        "pricing": "Pricing",
+        "basePrice": "Base Price (Standard Selling Price)",
+        "alternativePrices": "Alternative Price Lists",
+        "addPrice": "Add Alternative Price",
         "images": "Images",
         "placeholders": {
           "name": "Ex: Product XYZ",
@@ -352,12 +357,18 @@
           "weight": "Ex: 1.5",
           "width": "Ex: 10",
           "height": "Ex: 5",
-          "length": "Ex: 15"
+          "length": "Ex: 15",
+          "priceName": "Ex: Wholesale Price"
         },
         "types": {
           "digital": "Digital",
           "service": "Service",
           "tangible": "Tangible"
+        },
+        "strategies": {
+          "fifo": "FIFO (First In, First Out)",
+          "fefo": "FEFO (First Expired, First Out)",
+          "average": "Weighted Average"
         },
         "errors": {
           "nameRequired": "Name is required",
@@ -393,6 +404,7 @@
         "category": "Category",
         "measurementUnit": "Measurement Unit",
         "type": "Type",
+        "price": "Price",
         "tax": "Tax",
         "status": "Status",
         "actions": "Actions",
@@ -1099,6 +1111,8 @@
         "category": "Category",
         "quantity": "Quantity",
         "price": "Price",
+        "batchNumber": "Batch Number",
+        "expirationDate": "Expiration Date",
         "date": "Date",
         "actions": "Actions"
       },
@@ -1360,9 +1374,12 @@
           "noProductsFound": "No products found",
           "quantity": "Quantity",
           "price": "Price",
+          "batchNumber": "Batch Number",
+          "expirationDate": "Expiration Date",
           "placeholders": {
             "quantity": "Enter quantity",
-            "price": "Enter price"
+            "price": "Enter price",
+            "batchNumber": "Enter batch number"
           },
           "errors": {
             "productRequired": "Product is required",

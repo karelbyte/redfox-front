@@ -12,9 +12,9 @@ import { useTranslations } from 'next-intl';
 import { productService } from "@/services/products.service";
 import { toastService } from "@/services/toast.service";
 import { certificationPackService } from "@/services/certification-packs.service";
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import SearchProductCodeModal from './SearchProductCodeModal';
-import { Product, ProductFormData, ProductType } from "@/types/product";
+import { Product, ProductFormData, ProductType, InventoryStrategy } from "@/types/product";
 import { Brand } from "@/types/brand";
 import { Category } from "@/types/category";
 import { MeasurementUnit } from "@/types/measurement-unit";
@@ -77,6 +77,10 @@ interface FormErrors {
 const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
   ({ product, onSuccess, onSavingChange, onValidChange }, ref) => {
     const t = useTranslations('pages.products');
+    const tBrand = useTranslations('pages.brands');
+    const tCategory = useTranslations('pages.categories');
+    const tUnit = useTranslations('pages.measurementUnits');
+    const tTax = useTranslations('pages.taxes');
 
     const [formData, setFormData] = useState<ProductFormData>({
       name: "",
@@ -95,6 +99,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       tax_id: "",
       is_active: true,
       type: ProductType.TANGIBLE,
+      inventory_strategy: InventoryStrategy.AVERAGE,
+      base_price: 0,
+      prices: [],
     });
 
     const [images, setImages] = useState<(File | string)[]>([]);
@@ -230,6 +237,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             typeof product.tax === "object" ? product.tax.id : product.tax,
           is_active: product.is_active,
           type: product.type || ProductType.TANGIBLE,
+          inventory_strategy: product.inventory_strategy || InventoryStrategy.AVERAGE,
+          base_price: Number(product.base_price) || 0,
+          prices: product.prices ? product.prices.map(p => ({ name: p.name, price: Number(p.price) })) : [],
         });
         setImages(product.images || []);
       } else {
@@ -250,6 +260,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           tax_id: "",
           is_active: true,
           type: ProductType.TANGIBLE,
+          inventory_strategy: InventoryStrategy.AVERAGE,
+          base_price: 0,
+          prices: [],
         });
       }
     }, [product]);
@@ -380,7 +393,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleBrandDrawerClose();
       // Refrescar la lista de marcas
       fetchBrands();
-      toastService.success("Marca creada correctamente");
     };
 
     const handleBrandSave = () => {
@@ -397,7 +409,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleCategoryDrawerClose();
       // Refrescar la lista de categorías
       fetchCategories();
-      toastService.success("Categoría creada correctamente");
     };
 
     const handleCategorySave = () => {
@@ -414,7 +425,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleMeasurementUnitDrawerClose();
       // Refrescar la lista de unidades de medida
       fetchMeasurementUnits();
-      toastService.success("Unidad de medida creada correctamente");
     };
 
     const handleMeasurementUnitSave = () => {
@@ -431,7 +441,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       handleTaxDrawerClose();
       // Refrescar la lista de impuestos
       fetchTaxes();
-      toastService.success("Impuesto creado correctamente");
     };
 
     const handleTaxSave = () => {
@@ -458,6 +467,9 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           tax_id: "",
           is_active: true,
           type: ProductType.TANGIBLE,
+          inventory_strategy: InventoryStrategy.AVERAGE,
+          base_price: 0,
+          prices: [],
         });
         setImages([]);
       },
@@ -467,6 +479,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       { value: ProductType.TANGIBLE, label: t('form.types.tangible') },
       { value: ProductType.DIGITAL, label: t('form.types.digital') },
       { value: ProductType.SERVICE, label: t('form.types.service') },
+    ];
+
+    const inventoryStrategyOptions = [
+      { value: InventoryStrategy.AVERAGE, label: t('form.strategies.average') },
+      { value: InventoryStrategy.FIFO, label: t('form.strategies.fifo') },
+      { value: InventoryStrategy.FEFO, label: t('form.strategies.fefo') },
     ];
 
     return (
@@ -640,6 +658,16 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               error={errors.type}
             />
 
+            <Select
+              id="inventory_strategy"
+              label={t('form.inventoryStrategy')}
+              value={formData.inventory_strategy}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, inventory_strategy: e.target.value as InventoryStrategy }))
+              }
+              options={inventoryStrategyOptions}
+            />
+
             <SelectWithAddScrolled
               id="brand_id"
               label={t('form.brand')}
@@ -717,6 +745,89 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             />
           </div>
 
+          <div className="border-t border-gray-100 pt-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">{t('form.pricing')}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <Input
+                type="number"
+                step="0.01"
+                id="base_price"
+                label={t('form.basePrice')}
+                required
+                value={formData.base_price}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, base_price: parseFloat(e.target.value) || 0 }))
+                }
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="block text-sm font-medium text-gray-700">
+                  {t('form.alternativePrices')}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({
+                    ...prev,
+                    prices: [...prev.prices, { name: '', price: 0 }]
+                  }))}
+                  className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  <PlusCircleIcon className="h-5 w-5 mr-1" />
+                  {t('form.addPrice')}
+                </button>
+              </div>
+
+              {formData.prices.length > 0 && (
+                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                  {formData.prices.map((price, index) => (
+                    <div key={index} className="flex gap-4 items-start">
+                      <div className="flex-1">
+                        <Input
+                          type="text"
+                          id={`price-name-${index}`}
+                          placeholder={t('form.placeholders.priceName')}
+                          value={price.name}
+                          onChange={(e) => {
+                            const newPrices = [...formData.prices];
+                            newPrices[index].name = e.target.value;
+                            setFormData(prev => ({ ...prev, prices: newPrices }));
+                          }}
+                        />
+                      </div>
+                      <div className="w-32">
+                        <Input
+                          type="number"
+                          step="0.01"
+                          id={`price-value-${index}`}
+                          placeholder="0.00"
+                          value={price.price}
+                          onChange={(e) => {
+                            const newPrices = [...formData.prices];
+                            newPrices[index].price = parseFloat(e.target.value) || 0;
+                            setFormData(prev => ({ ...prev, prices: newPrices }));
+                          }}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newPrices = formData.prices.filter((_, i) => i !== index);
+                          setFormData(prev => ({ ...prev, prices: newPrices }));
+                        }}
+                        className="mt-3 p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               {t('form.images')}
@@ -734,7 +845,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           parentId="product-drawer"
           isOpen={showBrandDrawer}
           onClose={handleBrandDrawerClose}
-          title="Nueva Marca"
+          title={tBrand('newBrand')}
           onSave={handleBrandSave}
           isSaving={isSavingBrand}
           isFormValid={isBrandFormValid}
@@ -755,7 +866,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           parentId="product-drawer"
           isOpen={showCategoryDrawer}
           onClose={handleCategoryDrawerClose}
-          title="Nueva Categoría"
+          title={tCategory('newCategory')}
           onSave={handleCategorySave}
           isSaving={isSavingCategory}
           isFormValid={isCategoryFormValid}
@@ -776,7 +887,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           parentId="product-drawer"
           isOpen={showMeasurementUnitDrawer}
           onClose={handleMeasurementUnitDrawerClose}
-          title="Nueva Unidad de Medida"
+          title={tUnit('newUnit')}
           onSave={handleMeasurementUnitSave}
           isSaving={isSavingMeasurementUnit}
           isFormValid={isMeasurementUnitFormValid}
@@ -797,7 +908,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           parentId="product-drawer"
           isOpen={showTaxDrawer}
           onClose={handleTaxDrawerClose}
-          title="Nuevo Impuesto"
+          title={tTax('newTax')}
           onSave={handleTaxSave}
           isSaving={isSavingTax}
           isFormValid={isTaxFormValid}

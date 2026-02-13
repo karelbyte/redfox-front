@@ -26,6 +26,9 @@ export interface InventoryItem {
   };
   quantity: number;
   price: number;
+  batch_number?: string;
+  expiration_date?: string;
+  entry_id?: string;
   createdAt: string;
 }
 

@@ -348,6 +348,11 @@
         "type": "Tipo",
         "status": "Estado",
         "active": "Activo",
+        "inventoryStrategy": "Estrategia de Inventario",
+        "pricing": "Precios",
+        "basePrice": "Precio Base (Precio de Venta Estándar)",
+        "alternativePrices": "Listas de Precios Alternativas",
+        "addPrice": "Añadir Precio Alternativo",
         "images": "Imágenes",
         "placeholders": {
           "name": "Ej: Producto XYZ",
@@ -359,12 +364,18 @@
           "weight": "Ej: 1.5",
           "width": "Ej: 10",
           "height": "Ej: 5",
-          "length": "Ej: 15"
+          "length": "Ej: 15",
+          "priceName": "Ej: Precio Mayoreo"
         },
         "types": {
           "digital": "Digital",
           "service": "Servicio",
           "tangible": "Tangible"
+        },
+        "strategies": {
+          "fifo": "FIFO (Primero en entrar, primero en salir)",
+          "fefo": "FEFO (Primero en vencer, primero en salir)",
+          "average": "Promedio Ponderado"
         },
         "errors": {
           "nameRequired": "El nombre es requerido",
@@ -400,6 +411,7 @@
         "category": "Categoría",
         "measurementUnit": "Unidad de Medida",
         "type": "Tipo",
+        "price": "Precio",
         "tax": "Impuesto",
         "status": "Estado",
         "actions": "Acciones",
@@ -1094,6 +1106,8 @@
         "category": "Categoría",
         "quantity": "Cantidad",
         "price": "Precio",
+        "batchNumber": "Lote",
+        "expirationDate": "Fecha de Vencimiento",
         "date": "Fecha",
         "actions": "Acciones"
       },
@@ -1346,9 +1360,12 @@
           "noProductsFound": "No se encontraron productos",
           "quantity": "Cantidad",
           "price": "Precio",
+          "batchNumber": "Lote",
+          "expirationDate": "Fecha de Vencimiento",
           "placeholders": {
             "quantity": "Ingrese la cantidad",
-            "price": "Ingrese el precio"
+            "price": "Ingrese el precio",
+            "batchNumber": "Ingrese el lote"
           },
           "errors": {
             "productRequired": "El producto es requerido",

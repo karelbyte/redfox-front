@@ -70,7 +70,7 @@ export default function ReceptionDetailsPage() {
   useEffect(() => {
     fetchReception();
     fetchProducts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const handleDeleteProduct = async (detailId: string) => {
@@ -113,15 +113,49 @@ export default function ReceptionDetailsPage() {
     fetchProducts();
   };
 
-  const handleAddProductSave = () => {
+  const handleAddProductSave = async () => {
     if (productFormRef.current) {
-      productFormRef.current.submit();
+      const formData = await productFormRef.current.submit();
+      if (formData) {
+        try {
+          setIsSavingProduct(true);
+          await receptionService.addProductToReception(params.id as string, formData);
+          toastService.success(t('addProduct.messages.productAdded'));
+          handleAddProductDrawerClose();
+          fetchProducts();
+        } catch (error) {
+          if (error instanceof Error) {
+            toastService.error(error.message);
+          } else {
+            toastService.error(t('addProduct.messages.errorAdding'));
+          }
+        } finally {
+          setIsSavingProduct(false);
+        }
+      }
     }
   };
 
-  const handleEditProductSave = () => {
-    if (productFormRef.current) {
-      productFormRef.current.submit();
+  const handleEditProductSave = async () => {
+    if (productFormRef.current && productToEdit) {
+      const formData = await productFormRef.current.submit();
+      if (formData) {
+        try {
+          setIsSavingProduct(true);
+          await receptionService.updateReceptionDetail(params.id as string, productToEdit.id, formData);
+          toastService.success(t('addProduct.messages.productUpdated'));
+          handleEditProductDrawerClose();
+          fetchProducts();
+        } catch (error) {
+          if (error instanceof Error) {
+            toastService.error(error.message);
+          } else {
+            toastService.error(t('addProduct.messages.errorUpdating'));
+          }
+        } finally {
+          setIsSavingProduct(false);
+        }
+      }
     }
   };
 
@@ -205,7 +239,7 @@ export default function ReceptionDetailsPage() {
             <p className="text-sm text-gray-600">{t('details.subtitle')}</p>
           </div>
         </div>
-        
+
         <div className="flex space-x-2">
           {reception.status && (
             <Btn
@@ -237,9 +271,8 @@ export default function ReceptionDetailsPage() {
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.status')}:</span>
               <span
-                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                  reception.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}
+                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${reception.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}
               >
                 {reception.status ? t('status.open') : t('status.closed')}
               </span>
@@ -286,7 +319,7 @@ export default function ReceptionDetailsPage() {
           {t('productsTable.title')}
         </h3>
       </div>
-      
+
       <div className="mb-6">
         {loadingProducts ? (
           <div className="flex justify-center items-center h-32">
@@ -300,7 +333,7 @@ export default function ReceptionDetailsPage() {
             isReceptionOpen={reception.status}
           />
         )}
-        
+
         {/* Botón de agregar producto - solo visible cuando la recepción está abierta */}
         {reception.status && !loadingProducts && (
           <div className="mt-6 text-center">
