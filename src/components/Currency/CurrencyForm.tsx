@@ -20,7 +20,7 @@ interface CurrencyFormErrors {
 export interface CurrencyFormProps {
   initialData: Currency | null;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (currency?: Currency) => void;
   onSavingChange?: (isSaving: boolean) => void;
   onValidChange?: (isValid: boolean) => void;
 }
@@ -74,7 +74,7 @@ const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async () => {
@@ -91,14 +91,14 @@ const CurrencyForm = forwardRef<CurrencyFormRef, CurrencyFormProps>(
         };
 
         if (initialData) {
-          await api.put(`/currencies/${initialData.id}`, data);
+          const response = await api.put<Currency>(`/currencies/${initialData.id}`, data);
           toastService.success(t('messages.currencyUpdated'));
+          onSuccess(response);
         } else {
-          await api.post('/currencies', data);
+          const response = await api.post<Currency>('/currencies', data);
           toastService.success(t('messages.currencyCreated'));
+          onSuccess(response);
         }
-
-        onSuccess();
       } catch (error) {
         if (error instanceof Error) {
           toastService.error(error.message);

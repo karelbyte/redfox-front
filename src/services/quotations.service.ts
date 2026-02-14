@@ -48,8 +48,11 @@ class QuotationService {
     return response;
   }
 
-  async getQuotationDetails(quotationId: string, page?: number): Promise<PaginatedQuotationDetailsResponse> {
-    const queryParam = page ? `?page=${page}` : '';
+  async getQuotationDetails(quotationId: string, page?: number, limit?: number): Promise<PaginatedQuotationDetailsResponse> {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (limit) params.append('limit', limit.toString());
+    const queryParam = params.toString() ? `?${params.toString()}` : '';
     const response = await api.get<PaginatedQuotationDetailsResponse>(`/quotations/${quotationId}/details${queryParam}`);
     return response;
   }

@@ -442,10 +442,24 @@
         "packSyncFailedUpdate": "Product saved in Redfox. Attention: it was not updated in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}"
       },
       "pdf": {
-        "title": "Products List",
-        "subtitle": "Products Report",
+        "title": "Product Catalog",
+        "subtitle": "Complete product listing",
         "export": "Export PDF",
-        "generating": "Generating..."
+        "generating": "Generating PDF...",
+        "product": "Product",
+        "code": "SAT Code",
+        "sku": "SKU",
+        "brand": "Brand",
+        "category": "Category",
+        "measurementUnit": "Unit",
+        "type": "Type",
+        "tax": "Tax",
+        "basePrice": "Base Price",
+        "status": "Status",
+        "total": "Total products",
+        "footer": "Document generated automatically",
+        "generatedOn": "Generated on",
+        "page": "Page"
       }
     },
     "categories": {
@@ -1331,6 +1345,7 @@
         "receptionDeleted": "Reception deleted successfully",
         "receptionClosed": "Reception closed successfully",
         "pdfGenerated": "PDF generated successfully",
+        "pdfTitle": "Reception",
         "errorLoading": "Error loading receptions",
         "errorCreating": "Error creating reception",
         "errorUpdating": "Error updating reception",
@@ -1338,7 +1353,27 @@
         "errorClosing": "Error closing reception",
         "errorGeneratingPDF": "Error generating PDF",
         "confirmDelete": "Are you sure you want to delete the reception \"{code}\"? This action cannot be undone.",
-        "confirmClose": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone."
+        "confirmClose": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone.",
+        "pdfFooter": "Document generated automatically"
+      },
+      "pdf": {
+        "code": "Code",
+        "date": "Date",
+        "provider": "Provider",
+        "warehouse": "Warehouse",
+        "document": "Document",
+        "status": "Status",
+        "product": "Product",
+        "sku": "SKU",
+        "brand": "Brand",
+        "category": "Category",
+        "quantity": "Quantity",
+        "price": "Price",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "statusOpen": "Open",
+        "statusClosed": "Closed",
+        "page": "Page"
       },
       "modals": {
         "delete": {
@@ -1495,6 +1530,9 @@
         "product": "Product",
         "quantity": "Quantity",
         "price": "Price",
+        "basePrice": "Base Price",
+        "priceList": "Price List",
+        "customPrice": "Custom Price",
         "discountPercentage": "Discount (%)",
         "discountAmount": "Discount (Amount)",
         "placeholders": {
@@ -1523,6 +1561,7 @@
         "view": "View",
         "delete": "Delete",
         "convertToSale": "Convert to Sale",
+        "downloadPDF": "Download PDF",
         "addProduct": "Add Product",
         "editProduct": "Edit Product",
         "newClient": "New Client",
@@ -1549,12 +1588,22 @@
         "errorSavingProduct": "Error saving product",
         "errorDeletingProduct": "Error deleting product",
         "confirmDelete": "Are you sure you want to delete quotation \"{code}\"? This action cannot be undone.",
+        "confirmDeleteTitle": "Delete Quotation",
         "confirmConvertToSale": "Are you sure you want to convert quotation \"{code}\" to sale? This action cannot be undone.",
-        "confirmDeleteProduct": "Are you sure you want to delete product \"{name}\" from this quotation? This action cannot be undone."
+        "confirmConvertTitle": "Convert to Sale",
+        "confirmDeleteProduct": "Are you sure you want to delete product \"{name}\" from this quotation? This action cannot be undone.",
+        "confirmDeleteProductTitle": "Delete Product",
+        "pdfGenerated": "PDF generated successfully",
+        "errorGeneratingPDF": "Error generating PDF",
+        "pdfFooter": "Thank you for your preference",
+        "pdfTitle": "Quotation",
+        "pdfPage": "Page"
       },
       "details": {
         "title": "Quotation {code}",
         "subtitle": "Quotation details",
+        "back": "Back",
+        "generalInfo": "General Information",
         "client": "Client",
         "warehouse": "Warehouse",
         "date": "Date",
@@ -1566,6 +1615,8 @@
         "notes": "Notes",
         "products": "Products",
         "noProducts": "No products in this quotation",
+        "noProductsDesc": "Add products to start recording the quotation",
+        "noProductsClosedDesc": "This quotation has no registered products",
         "table": {
           "product": "Product",
           "quantity": "Quantity",
@@ -1573,6 +1624,18 @@
           "discount": "Discount",
           "subtotal": "Subtotal",
           "actions": "Actions"
+        },
+        "labels": {
+          "date": "Date",
+          "validUntil": "Valid Until",
+          "status": "Status",
+          "name": "Name",
+          "code": "Code",
+          "total": "Total",
+          "totalAmount": "Total Amount",
+          "subtotal": "Subtotal",
+          "tax": "Tax",
+          "notes": "Notes"
         }
       }
     },
@@ -1932,7 +1995,7 @@
         "change": "Change:",
         "thanks": "Thank you for your purchase!",
         "comeBack": "Please come back soon",
-        "powered": "Powered by RedFox POS",
+        "powered": "Powered by Nitro POS",
         "walkIn": "Walk-in Customer",
         "posSystem": "POS System"
       },

@@ -449,10 +449,24 @@
         "packSyncFailedUpdate": "Producto guardado en Redfox. Atención: no se actualizó en el PAC. No podrá usarlo en facturación hasta corregirlo. Detalle: {detail}"
       },
       "pdf": {
-        "title": "Lista de Productos",
-        "subtitle": "Reporte de Productos",
+        "title": "Catálogo de Productos",
+        "subtitle": "Listado completo de productos",
         "export": "Exportar PDF",
-        "generating": "Generando..."
+        "generating": "Generando PDF...",
+        "product": "Producto",
+        "code": "Código SAT",
+        "sku": "SKU",
+        "brand": "Marca",
+        "category": "Categoría",
+        "measurementUnit": "Unidad",
+        "type": "Tipo",
+        "tax": "Impuesto",
+        "basePrice": "Precio Base",
+        "status": "Estado",
+        "total": "Total de productos",
+        "footer": "Documento generado automáticamente",
+        "generatedOn": "Generado el",
+        "page": "Página"
       }
     },
     "categories": {
@@ -1317,6 +1331,7 @@
         "receptionDeleted": "Recepción eliminada correctamente",
         "receptionClosed": "Recepción cerrada correctamente",
         "pdfGenerated": "PDF generado correctamente",
+        "pdfTitle": "Recepción",
         "errorLoading": "Error al cargar las recepciones",
         "errorCreating": "Error al crear la recepción",
         "errorUpdating": "Error al actualizar la recepción",
@@ -1324,7 +1339,27 @@
         "errorClosing": "Error al cerrar la recepción",
         "errorGeneratingPDF": "Error al generar el PDF",
         "confirmDelete": "¿Estás seguro de que deseas eliminar la recepción \"{code}\"? Esta acción no se puede deshacer.",
-        "confirmClose": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer."
+        "confirmClose": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer.",
+        "pdfFooter": "Documento generado automáticamente"
+      },
+      "pdf": {
+        "code": "Código",
+        "date": "Fecha",
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
+        "document": "Documento",
+        "status": "Estado",
+        "product": "Producto",
+        "sku": "SKU",
+        "brand": "Marca",
+        "category": "Categoría",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "statusOpen": "Abierta",
+        "statusClosed": "Cerrada",
+        "page": "Página"
       },
       "modals": {
         "delete": {
@@ -1481,6 +1516,9 @@
         "product": "Producto",
         "quantity": "Cantidad",
         "price": "Precio",
+        "basePrice": "Precio Base",
+        "priceList": "Lista de Precios",
+        "customPrice": "Precio Personalizado",
         "discountPercentage": "Descuento (%)",
         "discountAmount": "Descuento (Monto)",
         "placeholders": {
@@ -1509,6 +1547,7 @@
         "view": "Ver",
         "delete": "Eliminar",
         "convertToSale": "Convertir a Venta",
+        "downloadPDF": "Descargar PDF",
         "addProduct": "Añadir Producto",
         "editProduct": "Editar Producto",
         "newClient": "Nuevo Cliente",
@@ -1535,12 +1574,22 @@
         "errorSavingProduct": "Error al guardar el producto",
         "errorDeletingProduct": "Error al eliminar el producto",
         "confirmDelete": "¿Estás seguro de que deseas eliminar la cotización \"{code}\"? Esta acción no se puede deshacer.",
+        "confirmDeleteTitle": "Eliminar Cotización",
         "confirmConvertToSale": "¿Estás seguro de que deseas convertir la cotización \"{code}\" a venta? Esta acción no se puede deshacer.",
-        "confirmDeleteProduct": "¿Estás seguro de que deseas eliminar el producto \"{name}\" de esta cotización? Esta acción no se puede deshacer."
+        "confirmConvertTitle": "Convertir a Venta",
+        "confirmDeleteProduct": "¿Estás seguro de que deseas eliminar el producto \"{name}\" de esta cotización? Esta acción no se puede deshacer.",
+        "confirmDeleteProductTitle": "Eliminar Producto",
+        "pdfGenerated": "PDF generado exitosamente",
+        "errorGeneratingPDF": "Error al generar el PDF",
+        "pdfFooter": "Gracias por su preferencia",
+        "pdfTitle": "Cotización",
+        "pdfPage": "Página"
       },
       "details": {
         "title": "Cotización {code}",
         "subtitle": "Detalles de la cotización",
+        "back": "Volver",
+        "generalInfo": "Información General",
         "client": "Cliente",
         "warehouse": "Almacén",
         "date": "Fecha",
@@ -1552,6 +1601,8 @@
         "notes": "Notas",
         "products": "Productos",
         "noProducts": "No hay productos en esta cotización",
+        "noProductsDesc": "Añade productos para comenzar a registrar la cotización",
+        "noProductsClosedDesc": "Esta cotización no tiene productos registrados",
         "table": {
           "product": "Producto",
           "quantity": "Cantidad",
@@ -1559,6 +1610,18 @@
           "discount": "Descuento",
           "subtotal": "Subtotal",
           "actions": "Acciones"
+        },
+        "labels": {
+          "date": "Fecha",
+          "validUntil": "Válida Hasta",
+          "status": "Estado",
+          "name": "Nombre",
+          "code": "Código",
+          "total": "Total",
+          "totalAmount": "Monto Total",
+          "subtotal": "Subtotal",
+          "tax": "Impuestos",
+          "notes": "Notas"
         }
       }
     },
@@ -1922,7 +1985,7 @@
         "change": "Cambio:",
         "thanks": "¡Gracias por su compra!",
         "comeBack": "Vuelva pronto",
-        "powered": "Impulsado por RedFox POS",
+        "powered": "Impulsado por Nitro POS",
         "walkIn": "Cliente de mostrador",
         "posSystem": "Sistema POS"
       },

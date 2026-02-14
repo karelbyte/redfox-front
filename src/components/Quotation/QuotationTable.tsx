@@ -6,6 +6,10 @@ import { useLocaleUtils } from '@/hooks/useLocale';
 import { Quotation, QuotationStatus } from '@/types/quotation';
 import { toastService } from '@/services/toast.service';
 import { quotationService } from '@/services/quotations.service';
+import { Btn } from '@/components/atoms';
+import { EyeIcon, PencilIcon, TrashIcon, ArrowsRightLeftIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import ConfirmModal from '@/components/Modal/ConfirmModal';
+import { QuotationPDFService } from '@/services/quotation-pdf.service';
 
 interface QuotationTableProps {
   quotations: Quotation[];
@@ -13,12 +17,23 @@ interface QuotationTableProps {
   onView: (quotation: Quotation) => void;
   onRefresh: () => void;
   visibleColumns: string[];
+  onGeneratePDF?: (quotation: Quotation) => void;
 }
 
-const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns }: QuotationTableProps) => {
+const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns, onGeneratePDF }: QuotationTableProps) => {
   const t = useTranslations('pages.quotations');
+  const tCommon = useTranslations('common');
   const { formatDate, formatCurrency } = useLocaleUtils();
   const [loadingActions, setLoadingActions] = useState<{ [key: string]: boolean }>({});
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [convertModalOpen, setConvertModalOpen] = useState(false);
+  const [selectedQuotation, setSelectedQuotation] = useState<Quotation | null>(null);
+
+  const handleGeneratePDF = (quotation: Quotation) => {
+    if (onGeneratePDF) {
+      onGeneratePDF(quotation);
+    }
+  };
 
   const getStatusBadge = (status: QuotationStatus) => {
     const statusConfig = {
@@ -39,15 +54,25 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns 
     );
   };
 
-  const handleDelete = async (quotation: Quotation) => {
-    if (!confirm(t('messages.confirmDelete', { code: quotation.code }))) {
-      return;
-    }
+  const handleDeleteClick = (quotation: Quotation) => {
+    setSelectedQuotation(quotation);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConvertClick = (quotation: Quotation) => {
+    setSelectedQuotation(quotation);
+    setConvertModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedQuotation) return;
 
     try {
-      setLoadingActions(prev => ({ ...prev, [`delete-${quotation.id}`]: true }));
-      await quotationService.deleteQuotation(quotation.id);
+      setLoadingActions(prev => ({ ...prev, [`delete-${selectedQuotation.id}`]: true }));
+      await quotationService.deleteQuotation(selectedQuotation.id);
       toastService.success(t('messages.deleteSuccess'));
+      setDeleteModalOpen(false);
+      setSelectedQuotation(null);
       onRefresh();
     } catch (error) {
       if (error instanceof Error) {
@@ -56,19 +81,19 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns 
         toastService.error(t('messages.errorDeleting'));
       }
     } finally {
-      setLoadingActions(prev => ({ ...prev, [`delete-${quotation.id}`]: false }));
+      setLoadingActions(prev => ({ ...prev, [`delete-${selectedQuotation.id}`]: false }));
     }
   };
 
-  const handleConvertToSale = async (quotation: Quotation) => {
-    if (!confirm(t('messages.confirmConvertToSale', { code: quotation.code }))) {
-      return;
-    }
+  const handleConvertConfirm = async () => {
+    if (!selectedQuotation) return;
 
     try {
-      setLoadingActions(prev => ({ ...prev, [`convert-${quotation.id}`]: true }));
-      const result = await quotationService.convertToSale(quotation.id);
+      setLoadingActions(prev => ({ ...prev, [`convert-${selectedQuotation.id}`]: true }));
+      const result = await quotationService.convertToSale(selectedQuotation.id);
       toastService.success(result.message);
+      setConvertModalOpen(false);
+      setSelectedQuotation(null);
       onRefresh();
     } catch (error) {
       if (error instanceof Error) {
@@ -77,7 +102,7 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns 
         toastService.error(t('messages.errorConverting'));
       }
     } finally {
-      setLoadingActions(prev => ({ ...prev, [`convert-${quotation.id}`]: false }));
+      setLoadingActions(prev => ({ ...prev, [`convert-${selectedQuotation.id}`]: false }));
     }
   };
 
@@ -98,8 +123,14 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns 
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
+    <>
+      <div
+        className="bg-white rounded-lg overflow-hidden"
+        style={{
+          boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
+        }}
+      >
+        <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
             {isColumnVisible('code') && (
@@ -146,7 +177,7 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns 
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {quotations.map((quotation) => (
-            <tr key={quotation.id} className="hover:bg-gray-50">
+            <tr key={quotation.id} className="hover:bg-primary-50 transition-colors">
               {isColumnVisible('code') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {quotation.code}
@@ -187,70 +218,56 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns 
               )}
               {isColumnVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex items-center justify-end space-x-2">
-                    <button
+                  <div className="flex justify-end space-x-2">
+                    <Btn
+                      variant="ghost"
+                      size="sm"
                       onClick={() => onView(quotation)}
-                      className="hover:opacity-75 transition-opacity"
-                      style={{ color: 'rgb(var(--color-primary-600))' }}
+                      leftIcon={<EyeIcon className="h-4 w-4" />}
                       title={t('actions.view')}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    </button>
+                    />
+
+                    <Btn
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleGeneratePDF(quotation)}
+                      leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
+                      title={t('actions.downloadPDF')}
+                      style={{ color: '#059669' }}
+                    />
 
                     {quotation.status !== QuotationStatus.CONVERTED && (
-                      <button
+                      <Btn
+                        variant="ghost"
+                        size="sm"
                         onClick={() => onEdit(quotation)}
-                        className="hover:opacity-75 transition-opacity"
-                        style={{ color: 'rgb(var(--color-primary-600))' }}
-                        title={t('actions.edit')}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
+                        leftIcon={<PencilIcon className="h-4 w-4" />}
+                        title={tCommon('actions.edit')}
+                      />
                     )}
 
                     {canConvertToSale(quotation) && (
-                      <button
-                        onClick={() => handleConvertToSale(quotation)}
-                        disabled={loadingActions[`convert-${quotation.id}`]}
-                        className="text-green-600 hover:text-green-700 disabled:opacity-50 transition-colors"
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleConvertClick(quotation)}
+                        leftIcon={<ArrowsRightLeftIcon className="h-4 w-4" />}
+                        loading={loadingActions[`convert-${quotation.id}`]}
                         title={t('actions.convertToSale')}
-                      >
-                        {loadingActions[`convert-${quotation.id}`] ? (
-                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                          </svg>
-                        )}
-                      </button>
+                        style={{ color: '#059669' }}
+                      />
                     )}
 
                     {quotation.status !== QuotationStatus.CONVERTED && (
-                      <button
-                        onClick={() => handleDelete(quotation)}
-                        disabled={loadingActions[`delete-${quotation.id}`]}
-                        className="text-red-600 hover:text-red-700 disabled:opacity-50 transition-colors"
-                        title={t('actions.delete')}
-                      >
-                        {loadingActions[`delete-${quotation.id}`] ? (
-                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        )}
-                      </button>
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteClick(quotation)}
+                        leftIcon={<TrashIcon className="h-4 w-4" />}
+                        loading={loadingActions[`delete-${quotation.id}`]}
+                        title={tCommon('actions.delete')}
+                        style={{ color: '#dc2626' }}
+                      />
                     )}
                   </div>
                 </td>
@@ -260,6 +277,37 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns 
         </tbody>
       </table>
     </div>
+
+    {/* Delete Confirmation Modal */}
+    <ConfirmModal
+      isOpen={deleteModalOpen}
+      onClose={() => {
+        setDeleteModalOpen(false);
+        setSelectedQuotation(null);
+      }}
+      onConfirm={handleDeleteConfirm}
+      title={t('messages.confirmDeleteTitle')}
+      message={t('messages.confirmDelete', { code: selectedQuotation?.code || '' })}
+      confirmText={tCommon('actions.delete')}
+      cancelText={tCommon('actions.cancel')}
+      confirmButtonStyle={{ backgroundColor: '#dc2626' }}
+    />
+
+    {/* Convert to Sale Confirmation Modal */}
+    <ConfirmModal
+      isOpen={convertModalOpen}
+      onClose={() => {
+        setConvertModalOpen(false);
+        setSelectedQuotation(null);
+      }}
+      onConfirm={handleConvertConfirm}
+      title={t('messages.confirmConvertTitle')}
+      message={t('messages.confirmConvertToSale', { code: selectedQuotation?.code || '' })}
+      confirmText={t('actions.convertToSale')}
+      cancelText={tCommon('actions.cancel')}
+      confirmButtonStyle={{ backgroundColor: '#059669' }}
+    />
+  </>
   );
 };
 

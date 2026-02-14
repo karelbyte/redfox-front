@@ -65,14 +65,17 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
 
     useEffect(() => {
       fetchCurrencies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const fetchCurrencies = async () => {
+    const fetchCurrencies = async (selectedId?: string) => {
       try {
         setLoadingCurrencies(true);
         const response = await currenciesService.getCurrencies(1);
         setCurrencies(response.data);
+        if (selectedId) {
+          setFormData(prev => ({ ...prev, currency_id: selectedId }));
+        }
       } catch {
         toastService.error(t('currency.errorLoading'));
       } finally {
@@ -139,7 +142,7 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async () => {
@@ -187,9 +190,9 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
       setShowCurrencyDrawer(false);
     };
 
-    const handleCurrencyFormSuccess = () => {
+    const handleCurrencyFormSuccess = (currency?: Currency) => {
       handleCurrencyDrawerClose();
-      fetchCurrencies(); // Recargar monedas
+      fetchCurrencies(currency?.id); // Recargar monedas y seleccionar la nueva
     };
 
     const handleCurrencySave = () => {

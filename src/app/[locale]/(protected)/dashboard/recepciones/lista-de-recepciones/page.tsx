@@ -7,7 +7,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Reception, ReceptionCloseResponse } from '@/types/reception';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
-import { PDFService } from '@/services/pdf.service';
+import { ReceptionPDFService } from '@/services/reception-pdf.service';
 import ReceptionTable from '@/components/Reception/ReceptionTable';
 import ReceptionForm from '@/components/Reception/ReceptionForm';
 import DeleteReceptionModal from '@/components/Reception/DeleteReceptionModal';
@@ -24,6 +24,7 @@ export default function RecepcionesPage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('pages.receptions');
+  const tPdf = useTranslations('pages.receptions.pdf');
   const [receptions, setReceptions] = useState<Reception[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,11 +111,32 @@ export default function RecepcionesPage() {
       const detailsResponse = await receptionService.getReceptionDetails(reception.id);
       const details = detailsResponse.data || [];
       
-      // Generar el PDF usando la recepción completa y los detalles
-      const pdfService = new PDFService({orientation: 'landscape'});
-      pdfService.generateReceptionPDF(reception, details, {
-        filename: `reception-${reception.code}.pdf`
-      });
+      // Preparar traducciones para el PDF
+      const translations = {
+        title: t('messages.pdfTitle'),
+        code: tPdf('code'),
+        date: tPdf('date'),
+        provider: tPdf('provider'),
+        warehouse: tPdf('warehouse'),
+        document: tPdf('document'),
+        status: tPdf('status'),
+        product: tPdf('product'),
+        sku: tPdf('sku'),
+        brand: tPdf('brand'),
+        category: tPdf('category'),
+        quantity: tPdf('quantity'),
+        price: tPdf('price'),
+        subtotal: tPdf('subtotal'),
+        total: tPdf('total'),
+        footer: t('messages.pdfFooter'),
+        statusOpen: tPdf('statusOpen'),
+        statusClosed: tPdf('statusClosed'),
+        page: tPdf('page')
+      };
+      
+      // Generar el PDF usando el nuevo servicio
+      const pdfService = new ReceptionPDFService(locale);
+      pdfService.generatePDF(reception, details, translations);
       
       toastService.success(t('messages.pdfGenerated'));
     } catch (error) {

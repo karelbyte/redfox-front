@@ -242,13 +242,24 @@ export default function ReceptionDetailsPage() {
 
         <div className="flex space-x-2">
           {reception.status && (
-            <Btn
-              variant="danger"
-              onClick={handleCloseReception}
-              leftIcon={<CheckCircleIcon className="h-5 w-5" />}
-            >
-              {t('actions.closeReception')}
-            </Btn>
+            <>
+              {products.length > 0 && (
+                <Btn
+                  variant="primary"
+                  onClick={() => setIsAddProductDrawerOpen(true)}
+                  leftIcon={<PlusIcon className="h-5 w-5" />}
+                >
+                  {t('details.addProduct')}
+                </Btn>
+              )}
+              <Btn
+                variant="danger"
+                onClick={handleCloseReception}
+                leftIcon={<CheckCircleIcon className="h-5 w-5" />}
+              >
+                {t('actions.closeReception')}
+              </Btn>
+            </>
           )}
         </div>
       </div>
@@ -334,8 +345,8 @@ export default function ReceptionDetailsPage() {
           />
         )}
 
-        {/* Botón de agregar producto - solo visible cuando la recepción está abierta */}
-        {reception.status && !loadingProducts && (
+        {/* Botón de agregar producto - solo visible cuando la recepción está abierta y NO hay productos */}
+        {reception.status && !loadingProducts && products.length === 0 && (
           <div className="mt-6 text-center">
             <Btn
               leftIcon={<PlusIcon className="h-5 w-5" />}

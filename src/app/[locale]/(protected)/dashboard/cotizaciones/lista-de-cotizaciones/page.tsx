@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { quotationService } from '@/services/quotations.service';
 import { toastService } from '@/services/toast.service';
 import { Quotation } from '@/types/quotation';
@@ -17,10 +17,12 @@ import { useRouter } from 'next/navigation';
 import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
+import { QuotationPDFService } from '@/services/quotation-pdf.service';
 
 const QuotationListPage = () => {
   const t = useTranslations('pages.quotations');
   const router = useRouter();
+  const locale = useLocale();
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,7 +84,7 @@ const QuotationListPage = () => {
   };
 
   const handleView = (quotation: Quotation) => {
-    router.push(`/dashboard/cotizaciones/${quotation.id}`);
+    router.push(`/${locale}/dashboard/cotizaciones/${quotation.id}`);
   };
 
   const handleDrawerClose = () => {
@@ -108,6 +110,43 @@ const QuotationListPage = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     loadQuotations();
+  };
+
+  const handleGeneratePDF = async (quotation: Quotation) => {
+    try {
+      // Cargar los detalles de la cotización
+      const detailsResponse = await quotationService.getQuotationDetails(quotation.id, 1, 1000);
+      
+      // Preparar las traducciones para el PDF
+      const pdfTranslations = {
+        title: t('messages.pdfTitle'),
+        code: t('table.code'),
+        date: t('table.date'),
+        validUntil: t('table.validUntil'),
+        client: t('table.client'),
+        warehouse: t('table.warehouse'),
+        status: t('table.status'),
+        product: t('details.table.product'),
+        quantity: t('details.table.quantity'),
+        price: t('details.table.price'),
+        discount: t('details.table.discount'),
+        subtotal: t('details.table.subtotal'),
+        total: t('details.labels.total'),
+        tax: t('details.labels.tax'),
+        notes: t('details.labels.notes'),
+        footer: t('messages.pdfFooter'),
+        page: t('messages.pdfPage')
+      };
+
+      // Generar el PDF
+      const pdfService = new QuotationPDFService(locale);
+      pdfService.generatePDF(quotation, detailsResponse.data, pdfTranslations);
+      
+      toastService.success(t('messages.pdfGenerated'));
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toastService.error(t('messages.errorGeneratingPDF'));
+    }
   };
 
   const filteredQuotations = quotations.filter(quotation =>
@@ -170,7 +209,7 @@ const QuotationListPage = () => {
           <Loading size="lg" />
         </div>
       ) : quotations && quotations.length === 0 ? (
-        <div 
+        <div
           className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
           style={{ borderColor: `rgb(var(--color-primary-200))` }}
         >
@@ -188,13 +227,13 @@ const QuotationListPage = () => {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p 
+          <p
             className="text-lg font-medium mb-2"
             style={{ color: `rgb(var(--color-primary-400))` }}
           >
             {t('noQuotations')}
           </p>
-          <p 
+          <p
             className="text-sm"
             style={{ color: `rgb(var(--color-primary-300))` }}
           >
@@ -237,6 +276,7 @@ const QuotationListPage = () => {
               onView={handleView}
               onRefresh={loadQuotations}
               visibleColumns={visibleColumns}
+              onGeneratePDF={handleGeneratePDF}
             />
           </div>
 

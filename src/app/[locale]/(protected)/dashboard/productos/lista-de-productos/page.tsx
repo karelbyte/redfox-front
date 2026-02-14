@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Product } from "@/types/product";
 import { productService } from "@/services/products.service";
-import { PDFService } from "@/services/pdf.service";
+import { ProductPDFService } from "@/services/product-pdf.service";
 import { toastService } from "@/services/toast.service";
 import ProductTable from "@/components/Product/ProductTable";
 import DeleteProductModal from "@/components/Product/DeleteProductModal";
@@ -28,6 +28,8 @@ import { ProductType } from "@/types/product";
 export default function ListProductsPage() {
   const t = useTranslations("pages.products");
   const tCommon = useTranslations("common");
+  const tPdf = useTranslations("pages.products.pdf");
+  const locale = useLocale();
   const { can } = usePermissions();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -162,42 +164,31 @@ export default function ListProductsPage() {
         return;
       }
 
-      // Preparar datos para el PDF
-      const pdfData = {
-        headers: [
-          t("table.name"),
-          t("table.sku"),
-          t("table.brand"),
-          t("table.category"),
-          t("table.measurementUnit"),
-          t("table.type"),
-          t("table.tax"),
-          t("table.status")
-        ],
-        rows: response.data.map(product => [
-          product.name,
-          product.sku,
-          typeof product.brand === 'object' ? product.brand.code : product.brand,
-          typeof product.category === 'object' ? product.category.name : product.category,
-          typeof product.measurement_unit === 'object' ? product.measurement_unit.code : product.measurement_unit,
-          product.type,
-          typeof product.tax === 'object' ? product.tax.code : product.tax,
-          product.is_active ? tCommon("status.active") : tCommon("status.inactive")
-        ])
+      // Preparar traducciones para el PDF
+      const translations = {
+        title: tPdf('title'),
+        subtitle: tPdf('subtitle'),
+        product: tPdf('product'),
+        code: tPdf('code'),
+        sku: tPdf('sku'),
+        brand: tPdf('brand'),
+        category: tPdf('category'),
+        measurementUnit: tPdf('measurementUnit'),
+        type: tPdf('type'),
+        tax: tPdf('tax'),
+        basePrice: tPdf('basePrice'),
+        status: tPdf('status'),
+        total: tPdf('total'),
+        footer: tPdf('footer'),
+        active: tCommon("status.active"),
+        inactive: tCommon("status.inactive"),
+        generatedOn: tPdf('generatedOn'),
+        page: tPdf('page')
       };
 
-      // Generar PDF
-      const pdfService = new PDFService();
-      const now = new Date();
-      const timestamp = now.toISOString().replace(/[:.]/g, '-').split('T')[0] + '_' +
-        now.toTimeString().split(' ')[0].replace(/:/g, '-');
-
-      pdfService.generateTablePDF(pdfData, {
-        title: t("pdf.title"),
-        subtitle: `${t("pdf.subtitle")} - ${now.toLocaleDateString()}`,
-        filename: `productos_${timestamp}.pdf`,
-        orientation: 'landscape' // Usar orientación horizontal para mejor visualización
-      });
+      // Generar PDF usando el nuevo servicio
+      const pdfService = new ProductPDFService(locale);
+      pdfService.generatePDF(response.data, translations);
 
       toastService.success(t("messages.pdfGenerated"));
     } catch (error) {
@@ -278,7 +269,7 @@ export default function ListProductsPage() {
           leftIcon={<DocumentArrowDownIcon className="h-5 w-5" />}
           style={{ color: '#059669' }}
         >
-          {generatingPDF ? t("pdf.generating") : t("pdf.export")}
+          {generatingPDF ? tPdf("generating") : tPdf("export")}
         </Btn>
         {products && products.length > 0 && (
           <>

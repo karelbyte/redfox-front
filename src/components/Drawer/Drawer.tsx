@@ -3,6 +3,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Btn } from "@/components/atoms";
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { useTranslations } from 'next-intl';
 
 // Contexto para manejar drawers anidados
 interface DrawerContextType {
@@ -100,6 +101,7 @@ export default function Drawer({
   parentId,
   headerButton,
 }: DrawerProps) {
+  const t = useTranslations('common.actions');
   const { openDrawer, closeDrawer, getDrawerStack, getParentId } = useDrawerContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const [hasChildOpen, setHasChildOpen] = useState(false);
@@ -211,7 +213,7 @@ export default function Drawer({
               onMouseLeave={(e) => {
                 e.currentTarget.style.color = "#4b5563";
               }}
-              title="Cerrar"
+              title={t('close')}
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -230,7 +232,7 @@ export default function Drawer({
                   loading={isSaving}
                   size="sm"
                 >
-                  Guardar
+                  {t('save')}
                 </Btn>
               )}
             </div>

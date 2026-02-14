@@ -8,9 +8,11 @@ import { warehousesService } from '@/services/warehouses.service';
 import { currenciesService } from '@/services/currencies.service';
 import { toastService } from '@/services/toast.service';
 import { Currency } from '@/types/currency';
-import { Btn, Input, Select, Checkbox } from '@/components/atoms';
+import { Btn, Input, Select, Checkbox, SelectWithAdd } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import Drawer from '@/components/Drawer/Drawer';
+import CurrencyForm, { CurrencyFormRef } from '@/components/Currency/CurrencyForm';
 
 interface WarehouseFormData {
   code: string;
@@ -26,6 +28,7 @@ export default function AgregarAlmacenPage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('pages.warehouses');
+  const tCurrency = useTranslations('pages.currencies');
   const [loading, setLoading] = useState(false);
   const [loadingCurrencies, setLoadingCurrencies] = useState(false);
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -40,24 +43,34 @@ export default function AgregarAlmacenPage() {
   const [errors, setErrors] = useState<Partial<WarehouseFormData>>({});
   const isInitialMount = useRef(true);
 
+  // Estados para el drawer de monedas
+  const [showCurrencyDrawer, setShowCurrencyDrawer] = useState(false);
+  const [isSavingCurrency, setIsSavingCurrency] = useState(false);
+  const [isCurrencyFormValid, setIsCurrencyFormValid] = useState(false);
+  const currencyFormRef = useRef<CurrencyFormRef>(null);
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-    fetchCurrencies();
+      fetchCurrencies();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     validateForm();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData]);
 
-  const fetchCurrencies = async () => {
+  const fetchCurrencies = async (selectedId?: string) => {
     try {
       setLoadingCurrencies(true);
       const response = await currenciesService.getCurrencies(1);
       setCurrencies(response.data);
+
+      if (selectedId) {
+        setFormData(prev => ({ ...prev, currencyId: selectedId }));
+      }
     } catch {
       toastService.error(t('currency.errorLoading'));
     } finally {
@@ -102,32 +115,7 @@ export default function AgregarAlmacenPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validación que muestra errores
-    const newErrors: Partial<WarehouseFormData> = {};
-
-    if (!formData.code.trim()) {
-      newErrors.code = t('form.errors.codeRequired');
-    }
-
-    if (!formData.name.trim()) {
-      newErrors.name = t('form.errors.nameRequired');
-    }
-
-    if (!formData.address.trim()) {
-      newErrors.address = t('form.errors.addressRequired');
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = t('form.errors.phoneRequired');
-    }
-
-    if (!formData.currencyId) {
-      newErrors.currencyId = t('form.errors.currencyRequired');
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) {
+    if (!validateForm()) {
       return;
     }
 
@@ -150,7 +138,7 @@ export default function AgregarAlmacenPage() {
       });
 
       toastService.success(t('messages.warehouseCreated'));
-      
+
       // Redirigir a la página de aperturas del almacén creado
       router.push(`/${locale}/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id}&warehouse_name=${encodeURIComponent(warehouse.name)}`);
     } catch (error) {
@@ -168,7 +156,21 @@ export default function AgregarAlmacenPage() {
     router.push(`/${locale}/dashboard/almacenes/lista-de-almacenes`);
   };
 
-  if (loadingCurrencies) {
+  const handleCurrencyDrawerOpen = () => setShowCurrencyDrawer(true);
+  const handleCurrencyDrawerClose = () => setShowCurrencyDrawer(false);
+
+  const handleCurrencySave = () => {
+    if (currencyFormRef.current) {
+      currencyFormRef.current.submit();
+    }
+  };
+
+  const handleCurrencySuccess = async (currency?: Currency) => {
+    setShowCurrencyDrawer(false);
+    await fetchCurrencies(currency?.id);
+  };
+
+  if (loadingCurrencies && currencies.length === 0) {
     return (
       <div className="p-6">
         <div className="flex justify-center items-center h-64">
@@ -210,7 +212,7 @@ export default function AgregarAlmacenPage() {
             <h3 className="text-lg font-semibold mb-4" style={{ color: `rgb(var(--color-primary-700))` }}>
               {t('form.title')}
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Código */}
               <div>
@@ -250,13 +252,16 @@ export default function AgregarAlmacenPage() {
 
               {/* Moneda */}
               <div>
-                <Select
+                <SelectWithAdd
+                  id="currencyId"
                   label={t('form.currency')}
                   placeholder={t('currency.selectCurrency')}
                   value={formData.currencyId}
                   onChange={(e) => handleInputChange('currencyId', e.target.value)}
                   error={errors.currencyId}
                   required
+                  showAddButton={can(['currency_create'])}
+                  onAddClick={handleCurrencyDrawerOpen}
                   options={currencies.map(currency => ({
                     value: currency.id,
                     label: `${currency.code} - ${currency.name}`
@@ -300,6 +305,26 @@ export default function AgregarAlmacenPage() {
           </div>
         </form>
       </div>
+
+      {/* Drawer para crear monedas */}
+      <Drawer
+        id="currency-drawer"
+        isOpen={showCurrencyDrawer}
+        onClose={handleCurrencyDrawerClose}
+        title={tCurrency('newCurrency')}
+        onSave={handleCurrencySave}
+        isSaving={isSavingCurrency}
+        isFormValid={isCurrencyFormValid}
+      >
+        <CurrencyForm
+          ref={currencyFormRef}
+          initialData={null}
+          onClose={handleCurrencyDrawerClose}
+          onSuccess={handleCurrencySuccess}
+          onSavingChange={setIsSavingCurrency}
+          onValidChange={setIsCurrencyFormValid}
+        />
+      </Drawer>
     </div>
   );
-} 
+}
