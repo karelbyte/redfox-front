@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { PhotoIcon } from '@heroicons/react/24/outline';
-import { Btn, Input } from '@/components/atoms';
+import { Btn, Input, EmptyState } from '@/components/atoms';
 import { CompanySettings } from '@/types/company-settings';
 import { companySettingsService } from '@/services/company-settings.service';
 import { toastService } from '@/services/toast.service';
+import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
 
 // Misma base que la API (sin /api) para que las imágenes en /uploads se carguen desde el servidor correcto
@@ -24,6 +25,7 @@ const getLogoFullUrl = (logoUrl: string | null): string | null => {
 export default function GeneralesEmpresaPage() {
   const t = useTranslations('pages.companySettings');
   const tCommon = useTranslations('common');
+  const { can } = usePermissions();
 
   const [settings, setSettings] = useState<CompanySettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,18 @@ export default function GeneralesEmpresaPage() {
     email: '',
     website: '',
   });
+
+  // Check permissions
+  if (!can(['company_settings_module_view'])) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          title={tCommon('noPermission')}
+          description={tCommon('noPermissionDescription')}
+        />
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchSettings();

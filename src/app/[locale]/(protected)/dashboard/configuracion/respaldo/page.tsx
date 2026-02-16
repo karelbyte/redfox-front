@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { ArrowLeftIcon, ArrowPathIcon, CloudArrowDownIcon, DocumentArrowDownIcon, ClockIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
-import { Btn, Input } from '@/components/atoms';
+import { Btn, Input, EmptyState } from '@/components/atoms';
 import { backupService, toastService } from '@/services';
 import { BackupConfig, BackupLog } from '@/types/backup';
+import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
 
 export default function BackupPage() {
@@ -14,12 +15,25 @@ export default function BackupPage() {
   const tCommon = useTranslations('common');
   const router = useRouter();
   const locale = useLocale();
+  const { can } = usePermissions();
 
   const [config, setConfig] = useState<BackupConfig | null>(null);
   const [logs, setLogs] = useState<BackupLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingConfig, setSavingConfig] = useState(false);
   const [runningBackup, setRunningBackup] = useState(false);
+
+  // Check permissions
+  if (!can(['backup_module_view'])) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          title={tCommon('noPermission')}
+          description={tCommon('noPermissionDescription')}
+        />
+      </div>
+    );
+  }
 
   const fetchLogs = useCallback(async () => {
     try {

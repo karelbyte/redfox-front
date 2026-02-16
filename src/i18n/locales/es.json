@@ -65,6 +65,8 @@
       "successDeleted": "{item} eliminado exitosamente",
       "successClosed": "{item} cerrado exitosamente"
     },
+    "noPermission": "Sin permisos",
+    "noPermissionDescription": "No tienes permisos para acceder a esta página. Contacta al administrador si crees que esto es un error.",
     "labels": {
       "code": "Código",
       "name": "Nombre",

@@ -979,7 +979,7 @@ export function SideMenu() {
           {
             name: t("companySettings"),
             path: getLocalizedPath("/dashboard/configuracion/generales-empresa"),
-            howCan: ["all"],
+            howCan: ["company_settings_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -1039,7 +1039,7 @@ export function SideMenu() {
           {
             name: t("emailConfig"),
             path: getLocalizedPath("/dashboard/configuracion/correo"),
-            howCan: ["all"],
+            howCan: ["email_config_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -1059,7 +1059,7 @@ export function SideMenu() {
           {
             name: t("paymentGateway"),
             path: getLocalizedPath("/dashboard/configuracion/pasarela-pago"),
-            howCan: ["all"],
+            howCan: ["payment_gateway_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -1079,7 +1079,7 @@ export function SideMenu() {
           {
             name: t("backup"),
             path: getLocalizedPath("/dashboard/configuracion/respaldo"),
-            howCan: ["all"],
+            howCan: ["backup_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -1099,7 +1099,7 @@ export function SideMenu() {
           {
             name: t("certificationPacks"),
             path: getLocalizedPath("/dashboard/configuracion/packs-sat"),
-            howCan: ["all"],
+            howCan: ["certification_pack_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
@@ -1119,7 +1119,7 @@ export function SideMenu() {
           {
             name: t("auditLogs"),
             path: getLocalizedPath("/dashboard/configuracion/logs-auditoria"),
-            howCan: ["all"],
+            howCan: ["audit_log_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"

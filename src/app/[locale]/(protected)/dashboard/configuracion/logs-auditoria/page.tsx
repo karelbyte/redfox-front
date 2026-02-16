@@ -9,6 +9,7 @@ import AdvancedFilters from '@/components/atoms/AdvancedFilters';
 import ExportButton from '@/components/atoms/ExportButton';
 import Pagination from '@/components/Pagination/Pagination';
 import Loading from '@/components/Loading/Loading';
+import { usePermissions } from '@/hooks/usePermissions';
 
 const ACTION_COLORS: Record<AuditAction, string> = {
   [AuditAction.CREATE]: 'bg-green-100 text-green-800',
@@ -31,6 +32,7 @@ const ACTION_LABELS: Record<AuditAction, { es: string; en: string }> = {
 export default function AuditLogsPage() {
   const t = useTranslations('pages.auditLogs');
   const tCommon = useTranslations('common');
+  const { can } = usePermissions();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,6 +40,18 @@ export default function AuditLogsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<Record<string, any>>({});
   const [expandedLog, setExpandedLog] = useState<string | null>(null);
+
+  // Check permissions
+  if (!can(['audit_log_module_view'])) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          title={tCommon('noPermission')}
+          description={tCommon('noPermissionDescription')}
+        />
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchLogs(1);
@@ -99,12 +113,14 @@ export default function AuditLogsPage() {
       {/* Filtros */}
       {logs.length > 0 && (
         <div className="mb-6 flex justify-end items-center gap-3">
-          <ExportButton
-            data={logs}
-            filename="audit-logs"
-            columns={['action', 'entityType', 'entityId', 'user', 'created_at']}
-          >
-          </ExportButton>
+          {can(['audit_log_export']) && (
+            <ExportButton
+              data={logs}
+              filename="audit-logs"
+              columns={['action', 'entityType', 'entityId', 'user', 'created_at']}
+            >
+            </ExportButton>
+          )}
           <AdvancedFilters
             fields={[
               {

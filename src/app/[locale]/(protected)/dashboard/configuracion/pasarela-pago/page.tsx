@@ -1,14 +1,29 @@
 'use client'
 
 import { useTranslations } from 'next-intl';
-import { Btn } from '@/components/atoms';
+import { Btn, EmptyState } from '@/components/atoms';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function PaymentGatewayPage() {
   const t = useTranslations('pages.construction');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const locale = useLocale();
+  const { can } = usePermissions();
+
+  // Check permissions
+  if (!can(['payment_gateway_module_view'])) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          title={tCommon('noPermission')}
+          description={tCommon('noPermissionDescription')}
+        />
+      </div>
+    );
+  }
 
   const handleBackToList = () => {
     router.push(`/${locale}/dashboard/configuracion`);

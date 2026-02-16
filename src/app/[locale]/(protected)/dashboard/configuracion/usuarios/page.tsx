@@ -17,11 +17,14 @@ import DeleteUserModal from '@/components/User/DeleteUserModal';
 import Pagination from '@/components/Pagination/Pagination';
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function UsersPage() {
   const t = useTranslations('pages.users');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const locale = useLocale();
+  const { can } = usePermissions();
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -108,6 +111,17 @@ export default function UsersPage() {
   const handlePageChange = (page: number) => {
     fetchUsers(page, searchTerm);
   };
+
+  if (!can(['user_module_view'])) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          title={tCommon('noPermission')}
+          description={tCommon('noPermissionDescription')}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">

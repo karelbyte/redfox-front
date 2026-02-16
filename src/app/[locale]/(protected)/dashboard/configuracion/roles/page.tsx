@@ -16,11 +16,14 @@ import RoleForm, { RoleFormRef } from '@/components/Role/RoleForm';
 import RoleTable from '@/components/Role/RoleTable';
 import DeleteRoleModal from '@/components/Role/DeleteRoleModal';
 import Pagination from '@/components/Pagination/Pagination';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function RolesPage() {
   const t = useTranslations('pages.roles');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const locale = useLocale();
+  const { can } = usePermissions();
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,6 +117,19 @@ export default function RolesPage() {
       formRef.current.submit();
     }
   };
+
+  if (!can(['role_module_view'])) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <EmptyState
+            title={tCommon('noPermission')}
+            description={tCommon('noPermissionDescription')}
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (loading && roles.length === 0) {
     return (

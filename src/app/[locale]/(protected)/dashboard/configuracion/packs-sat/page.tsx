@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { Btn, SearchInput } from '@/components/atoms';
+import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { CertificationPack } from '@/types/certification-pack';
 import { certificationPackService } from '@/services/certification-packs.service';
 import { toastService } from '@/services/toast.service';
+import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
-import EmptyState from '@/components/atoms/EmptyState';
 import Drawer from '@/components/Drawer/Drawer';
 import CertificationPackForm, { CertificationPackFormRef } from '@/components/CertificationPack/CertificationPackForm';
 import CertificationPackTable from '@/components/CertificationPack/CertificationPackTable';
@@ -16,6 +16,8 @@ import DeleteCertificationPackModal from '@/components/CertificationPack/DeleteC
 
 export default function CertificationPacksPage() {
   const t = useTranslations('pages.certificationPacks');
+  const tCommon = useTranslations('common');
+  const { can } = usePermissions();
   const [packs, setPacks] = useState<CertificationPack[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +27,18 @@ export default function CertificationPacksPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [packToDelete, setPackToDelete] = useState<CertificationPack | null>(null);
   const formRef = useRef<CertificationPackFormRef>(null);
+
+  // Check permissions
+  if (!can(['certification_pack_module_view'])) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          title={tCommon('noPermission')}
+          description={tCommon('noPermissionDescription')}
+        />
+      </div>
+    );
+  }
 
   const fetchPacks = useCallback(async () => {
     try {

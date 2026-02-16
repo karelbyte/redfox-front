@@ -4,13 +4,16 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { emailConfigService, EmailConfig } from '@/services/email-config.service';
 import { toastService } from '@/services/toast.service';
-import { Input, Btn } from '@/components/atoms';
+import { Input, Btn, EmptyState } from '@/components/atoms';
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
 
 export default function EmailConfigForm() {
   const t = useTranslations('emailConfig');
   const tCommon = useTranslations('common.actions');
+  const tCommonMsg = useTranslations('common');
+  const { can } = usePermissions();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,6 +30,16 @@ export default function EmailConfigForm() {
     fromName: '',
     secure: false,
   });
+
+  // Check permissions
+  if (!can(['email_config_module_view'])) {
+    return (
+      <EmptyState
+        title={tCommonMsg('noPermission')}
+        description={tCommonMsg('noPermissionDescription')}
+      />
+    );
+  }
 
   useEffect(() => {
     loadConfig();
