@@ -218,7 +218,9 @@ export default function ExpenseList() {
                 data={expenses}
                 filename="expenses"
                 columns={['id', 'description', 'amount', 'date', 'status']}
-              />
+              >
+                {tCommon('actions.export')}
+              </ExportButton>
               <AdvancedFilters
                 fields={advancedFilterFields}
                 onApply={handleAdvancedFilters}

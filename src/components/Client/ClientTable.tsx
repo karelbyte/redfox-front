@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
-import { PencilIcon, TrashIcon, CheckCircleIcon, MapPinIcon, IdentificationIcon, BanknotesIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CheckCircleIcon, MapPinIcon, IdentificationIcon, BanknotesIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter, useParams } from 'next/navigation';
@@ -183,6 +183,14 @@ export default function ClientTable({
                   <div className="flex justify-end space-x-2">
                     {can(['client_update']) && (
                       <>
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/ventas`)}
+                          leftIcon={<ShoppingCartIcon className="h-4 w-4" />}
+                          title={t('actions.viewSales')}
+                          style={{ color: '#059669' }}
+                        />
                         <Btn
                           variant="ghost"
                           size="sm"

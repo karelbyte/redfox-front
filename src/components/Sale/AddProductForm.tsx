@@ -2,6 +2,7 @@
 
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { toastService } from '@/services/toast.service';
 import { SaleDetail, SaleDetailFormData } from '@/types/sale';
@@ -26,13 +27,30 @@ interface FormErrors {
   price?: string;
 }
 
+interface ProductDrawerData {
+  product_id: string;
+  quantity: number;
+  price_id: string;
+  custom_price: number;
+  warehouse_id: string;
+}
+
 const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
   ({ saleDetail, onSavingChange, onValidChange }, ref) => {
     const t = useTranslations('pages.sales.addProduct');
+    const { formatCurrency } = useLocaleUtils();
     const [formData, setFormData] = useState<SaleDetailFormData>({
       product_id: '',
       quantity: 0,
       price: 0,
+      warehouse_id: '',
+    });
+
+    const [productDrawerData, setProductDrawerData] = useState<ProductDrawerData>({
+      product_id: '',
+      quantity: 0,
+      price_id: 'base',
+      custom_price: 0,
       warehouse_id: '',
     });
 
@@ -48,6 +66,14 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
           price: saleDetail.price,
           warehouse_id: '', // Se establecerá cuando se cargue la información del inventario
         });
+
+        setProductDrawerData({
+          product_id: saleDetail.product.id,
+          quantity: saleDetail.quantity,
+          price_id: 'custom',
+          custom_price: saleDetail.price,
+          warehouse_id: '',
+        });
         
         // Cargar la información del inventario para obtener el warehouse_id
         const loadInventoryInfo = async () => {
@@ -55,6 +81,10 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
           if (inventoryProduct) {
             setSelectedInventoryProduct(inventoryProduct);
             setFormData(prev => ({
+              ...prev,
+              warehouse_id: inventoryProduct.warehouse.id
+            }));
+            setProductDrawerData(prev => ({
               ...prev,
               warehouse_id: inventoryProduct.warehouse.id
             }));
@@ -95,23 +125,71 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
     // Manejar selección de producto
     const handleProductSelection = async (productId: string) => {
       setFormData(prev => ({ ...prev, product_id: productId }));
+      setProductDrawerData(prev => ({ ...prev, product_id: productId }));
       
       if (productId) {
         const inventoryProduct = await getInventoryProductById(productId);
         if (inventoryProduct) {
           setSelectedInventoryProduct(inventoryProduct);
-          // Establecer el precio del inventario como precio por defecto y el warehouse_id
+          // Establecer el precio base como precio por defecto y el warehouse_id
           setFormData(prev => ({ 
             ...prev, 
             product_id: productId,
-            price: inventoryProduct.price,
+            price: inventoryProduct.product.base_price,
+            warehouse_id: inventoryProduct.warehouse.id
+          }));
+          setProductDrawerData(prev => ({
+            ...prev,
+            product_id: productId,
+            price_id: 'base',
+            custom_price: 0,
             warehouse_id: inventoryProduct.warehouse.id
           }));
         }
       } else {
         setSelectedInventoryProduct(null);
         setFormData(prev => ({ ...prev, warehouse_id: '' }));
+        setProductDrawerData(prev => ({ ...prev, warehouse_id: '' }));
       }
+    };
+
+    // Manejar cambio de precio seleccionado
+    const handlePriceChange = (priceId: string) => {
+      if (!selectedInventoryProduct) return;
+
+      let finalPrice = 0;
+      
+      if (priceId === 'base') {
+        finalPrice = selectedInventoryProduct.product.base_price;
+      } else if (priceId === 'custom') {
+        finalPrice = productDrawerData.custom_price || selectedInventoryProduct.product.base_price;
+      } else {
+        const selectedPrice = selectedInventoryProduct.product.prices?.find(p => p.id === priceId);
+        finalPrice = selectedPrice?.price || 0;
+      }
+
+      setProductDrawerData(prev => ({
+        ...prev,
+        price_id: priceId,
+        custom_price: priceId === 'custom' ? (prev.custom_price || selectedInventoryProduct.product.base_price) : 0
+      }));
+
+      setFormData(prev => ({
+        ...prev,
+        price: finalPrice
+      }));
+    };
+
+    // Manejar cambio de precio personalizado
+    const handleCustomPriceChange = (value: number) => {
+      setProductDrawerData(prev => ({
+        ...prev,
+        custom_price: value
+      }));
+      setFormData(prev => ({
+        ...prev,
+        price: value
+      }));
     };
 
     const validateForm = (): boolean => {
@@ -175,13 +253,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       getFormData: () => formData,
     }));
 
-    const formatCurrency = (amount: number) => {
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD'
-      }).format(amount);
-    };
-
     return (
       <form className="space-y-6">
         <SearchSelect
@@ -236,25 +307,123 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
           label={t('form.quantity')}
           required
           value={formData.quantity}
-          onChange={(e) => setFormData(prev => ({ ...prev, quantity: parseFloat(e.target.value) || 0 }))}
+          onChange={(e) => {
+            const value = parseFloat(e.target.value) || 0;
+            setFormData(prev => ({ ...prev, quantity: value }));
+            setProductDrawerData(prev => ({ ...prev, quantity: value }));
+          }}
           placeholder={t('form.placeholders.quantity')}
           error={errors.quantity}
           step="0.01"
           min="0"
         />
 
-        <Input
-          type="number"
-          id="price"
-          label={t('form.price')}
-          required
-          value={formData.price}
-          onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-          placeholder={t('form.placeholders.price')}
-          error={errors.price}
-          step="0.01"
-          min="0"
-        />
+        {/* Selector de precio */}
+        {selectedInventoryProduct && (
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              {t('form.priceList')}
+            </label>
+            <div className="space-y-2">
+              {/* Precio Base - Siempre se muestra primero */}
+              <label
+                className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                style={{
+                  borderColor: productDrawerData.price_id === 'base' ? 'rgb(var(--color-primary-500))' : '#d1d5db',
+                  backgroundColor: productDrawerData.price_id === 'base' ? 'rgba(var(--color-primary-50), 0.5)' : 'white'
+                }}
+              >
+                <input
+                  type="radio"
+                  name="price"
+                  value="base"
+                  checked={productDrawerData.price_id === 'base'}
+                  onChange={(e) => handlePriceChange(e.target.value)}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500"
+                />
+                <div className="ml-3 flex-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-900">{t('form.basePrice')}</span>
+                    <span className="text-sm font-bold" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                      {formatCurrency(selectedInventoryProduct.product.base_price)}
+                    </span>
+                  </div>
+                </div>
+              </label>
+
+              {/* Lista de precios adicionales */}
+              {selectedInventoryProduct.product.prices && selectedInventoryProduct.product.prices.length > 0 && 
+                selectedInventoryProduct.product.prices.map((price) => (
+                  <label
+                    key={price.id}
+                    className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                    style={{
+                      borderColor: productDrawerData.price_id === price.id ? 'rgb(var(--color-primary-500))' : '#d1d5db',
+                      backgroundColor: productDrawerData.price_id === price.id ? 'rgba(var(--color-primary-50), 0.5)' : 'white'
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="price"
+                      value={price.id}
+                      checked={productDrawerData.price_id === price.id}
+                      onChange={(e) => handlePriceChange(e.target.value)}
+                      className="h-4 w-4 text-primary-600 focus:ring-primary-500"
+                    />
+                    <div className="ml-3 flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-900">{price.name}</span>
+                        <span className="text-sm font-bold" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                          {formatCurrency(price.price)}
+                        </span>
+                      </div>
+                    </div>
+                  </label>
+                ))
+              }
+              
+              {/* Opción de precio personalizado */}
+              <label
+                className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                style={{
+                  borderColor: productDrawerData.price_id === 'custom' ? 'rgb(var(--color-primary-500))' : '#d1d5db',
+                  backgroundColor: productDrawerData.price_id === 'custom' ? 'rgba(var(--color-primary-50), 0.5)' : 'white'
+                }}
+              >
+                <input
+                  type="radio"
+                  name="price"
+                  value="custom"
+                  checked={productDrawerData.price_id === 'custom'}
+                  onChange={() => handlePriceChange('custom')}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500"
+                />
+                <div className="ml-3 flex-1">
+                  <span className="text-sm font-medium text-gray-900">{t('form.customPrice')}</span>
+                </div>
+              </label>
+            </div>
+            {errors.price && (
+              <p className="text-sm text-red-600">{errors.price}</p>
+            )}
+          </div>
+        )}
+
+        {/* Campo de precio personalizado */}
+        {selectedInventoryProduct && productDrawerData.price_id === 'custom' && (
+          <Input
+            type="number"
+            id="custom_price"
+            label={t('form.price')}
+            value={productDrawerData.custom_price}
+            onChange={(e) => handleCustomPriceChange(parseFloat(e.target.value) || 0)}
+            placeholder={t('form.placeholders.price')}
+            error={errors.price}
+            step="0.01"
+            min="0"
+            required
+          />
+        )}
       </form>
     );
   }

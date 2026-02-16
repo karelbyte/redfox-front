@@ -16,9 +16,10 @@ interface SaleTableProps {
   onPrintTicket: (sale: Sale) => void;
   onInvoice?: (sale: Sale) => void;
   visibleColumns?: string[];
+  hideClientColumn?: boolean;
 }
 
-export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onRefund, onPrintTicket, onInvoice, visibleColumns }: SaleTableProps) {
+export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onRefund, onPrintTicket, onInvoice, visibleColumns, hideClientColumn = false }: SaleTableProps) {
   const t = useTranslations('pages.sales');
   const locale = useLocale();
 
@@ -80,7 +81,7 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                 {t('table.destination')}
               </th>
             )}
-            {isVisible('client') && (
+            {isVisible('client') && !hideClientColumn && (
               <th
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                 style={{ color: `rgb(var(--color-primary-600))` }}
@@ -140,7 +141,7 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                   {sale.destination}
                 </td>
               )}
-              {isVisible('client') && (
+              {isVisible('client') && !hideClientColumn && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {sale.client.name}
                 </td>

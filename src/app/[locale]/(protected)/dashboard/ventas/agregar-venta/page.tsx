@@ -27,7 +27,7 @@ export default function AddSalePage() {
     destination: '',
     client_id: '',
     amount: 0,
-    type: ''
+    type: 'WITHDRAWAL'
   });
   const [errors, setErrors] = useState<Partial<SaleFormData>>({});
 

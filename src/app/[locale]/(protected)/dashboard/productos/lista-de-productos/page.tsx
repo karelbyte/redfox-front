@@ -14,7 +14,7 @@ import Drawer from "@/components/Drawer/Drawer";
 import ProductForm from "@/components/Product/ProductForm";
 import { ProductFormRef } from "@/components/Product/ProductForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
-import { PlusIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, DocumentArrowDownIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import Loading from "@/components/Loading/Loading";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
@@ -262,22 +262,23 @@ export default function ListProductsPage() {
             }}
           />
         </div>
-        <Btn
-          variant="ghost"
-          onClick={handleGeneratePDF}
-          disabled={generatingPDF}
-          leftIcon={<DocumentArrowDownIcon className="h-5 w-5" />}
-          style={{ color: '#059669' }}
-        >
-          {generatingPDF ? tPdf("generating") : tPdf("export")}
-        </Btn>
+
         {products && products.length > 0 && (
           <>
             <ExportButton
               data={products}
               filename="products"
               columns={['name', 'code', 'sku', 'brand', 'category', 'status']}
-            />
+              label={tCommon('actions.export')}
+            >
+              <button
+                onClick={handleGeneratePDF}
+                disabled={generatingPDF}
+                className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700"
+              >
+                📄 {generatingPDF ? tPdf("generating") : tPdf("export")}
+              </button>
+            </ExportButton>
             <AdvancedFilters
               fields={[
                 {

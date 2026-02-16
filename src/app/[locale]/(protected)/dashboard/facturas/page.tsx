@@ -151,48 +151,63 @@ export default function InvoicesPage() {
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <div className="flex gap-3">
-          {invoices.length > 0 && (
-            <>
-              <ExportButton
-                data={invoices}
-                filename="invoices"
-                columns={['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status']}
-              />
-              <AdvancedFilters
-                fields={[
-                  {
-                    key: 'status',
-                    label: t('table.status'),
-                    type: 'select',
-                    options: [
-                      { value: 'DRAFT', label: 'Draft' },
-                      { value: 'SENT', label: 'Sent' },
-                      { value: 'PAID', label: 'Paid' },
-                      { value: 'CANCELLED', label: 'Cancelled' },
-                    ],
-                  },
-                  {
-                    key: 'date',
-                    label: t('table.date'),
-                    type: 'date',
-                  },
-                ]}
-                onApply={(filters) => {
-                  // Apply filters
-                }}
-                storageKey="invoice-advanced-filters"
-              />
-            </>
-          )}
-          <Btn
-            onClick={handleCreateInvoice}
-            leftIcon={<PlusIcon className="h-5 w-5" />}
-          >
-            {t('actions.createInvoice')}
-          </Btn>
-        </div>
+        <Btn
+          onClick={handleCreateInvoice}
+          leftIcon={<PlusIcon className="h-5 w-5" />}
+        >
+          {t('actions.createInvoice')}
+        </Btn>
       </div>
+
+      {invoices.length > 0 && (
+        <div className="mt-6 flex justify-end items-center gap-3">
+          <ExportButton
+            data={invoices}
+            filename="invoices"
+            columns={['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status']}
+          >
+            {t('export')}
+          </ExportButton>
+          <AdvancedFilters
+            fields={[
+              {
+                key: 'status',
+                label: t('table.status'),
+                type: 'select',
+                options: [
+                  { value: 'DRAFT', label: 'Draft' },
+                  { value: 'SENT', label: 'Sent' },
+                  { value: 'PAID', label: 'Paid' },
+                  { value: 'CANCELLED', label: 'Cancelled' },
+                ],
+              },
+              {
+                key: 'date',
+                label: t('table.date'),
+                type: 'date',
+              },
+            ]}
+            onApply={(filters) => {
+              // Apply filters
+            }}
+            storageKey="invoice-advanced-filters"
+          />
+          <ColumnSelector
+            columns={[
+              { key: 'code', label: t('table.code') },
+              { key: 'date', label: t('table.date') },
+              { key: 'client', label: t('table.client') },
+              { key: 'subtotal', label: t('table.subtotal') },
+              { key: 'tax', label: t('table.tax') },
+              { key: 'total', label: t('table.total') },
+              { key: 'status', label: t('table.status') },
+              { key: 'actions', label: t('table.actions') },
+            ]}
+            visibleColumns={visibleColumns}
+            onChange={toggleColumn}
+          />
+        </div>
+      )}
 
       {invoices.length === 0 ? (
         <div 
@@ -228,22 +243,6 @@ export default function InvoicesPage() {
         </div>
       ) : (
         <div className="mt-6">
-          <div className="mb-4 flex justify-end">
-            <ColumnSelector
-              columns={[
-                { key: 'code', label: t('table.code') },
-                { key: 'date', label: t('table.date') },
-                { key: 'client', label: t('table.client') },
-                { key: 'subtotal', label: t('table.subtotal') },
-                { key: 'tax', label: t('table.tax') },
-                { key: 'total', label: t('table.total') },
-                { key: 'status', label: t('table.status') },
-                { key: 'actions', label: t('table.actions') },
-              ]}
-              visibleColumns={visibleColumns}
-              onChange={toggleColumn}
-            />
-          </div>
           <InvoiceTable
             invoices={invoices}
             onEdit={handleEditInvoice}

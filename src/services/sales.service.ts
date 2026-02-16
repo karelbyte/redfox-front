@@ -2,8 +2,11 @@ import { api } from './api';
 import { Sale, SaleFormData, SaleDetailFormData, SaleDetail, PaginatedSaleResponse, PaginatedSaleDetailsResponse, SaleCloseResponse, SaleStatus } from '@/types/sale';
 
 class SaleService {
-  async getSales(page?: number): Promise<PaginatedSaleResponse> {
-    const queryParam = page ? `?page=${page}` : '';
+  async getSales(page?: number, clientId?: string): Promise<PaginatedSaleResponse> {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (clientId) params.append('client_id', clientId);
+    const queryParam = params.toString() ? `?${params.toString()}` : '';
     const response = await api.get<PaginatedSaleResponse>(`/withdrawals${queryParam}`);
     return response;
   }

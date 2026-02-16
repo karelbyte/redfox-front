@@ -239,7 +239,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           type: product.type || ProductType.TANGIBLE,
           inventory_strategy: product.inventory_strategy || InventoryStrategy.AVERAGE,
           base_price: Number(product.base_price) || 0,
-          prices: product.prices ? product.prices.map(p => ({ name: p.name, price: Number(p.price) })) : [],
+          prices: product.prices ? product.prices.map(p => ({ id: p.id, name: p.name, price: Number(p.price) })) : [],
         });
         setImages(product.images || []);
       } else {
@@ -358,12 +358,12 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         if (product) {
           await productService.updateProduct(
             product.id,
-            data,
+            data as Partial<Product>,
             images as File[]
           );
           toastService.success(t('messages.productUpdated'));
         } else {
-          await productService.createProduct(data, images as File[]);
+          await productService.createProduct(data as Partial<Product>, images as File[]);
           toastService.success(t('messages.productCreated'));
         }
 

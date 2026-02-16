@@ -16,7 +16,13 @@ import ReceptionCloseResultModal from '@/components/Reception/ReceptionCloseResu
 import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { ReceptionFormRef } from '@/components/Reception/ReceptionForm';
-import { Btn } from '@/components/atoms';
+import { Btn, SearchInput, EmptyState } from '@/components/atoms';
+import ExportButton from '@/components/atoms/ExportButton';
+import AdvancedFilters from '@/components/atoms/AdvancedFilters';
+import ColumnSelector from '@/components/Table/ColumnSelector';
+import BulkActionsBar from '@/components/atoms/BulkActionsBar';
+import { useBulkSelection, BulkAction } from '@/hooks/useBulkSelection';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 
@@ -24,6 +30,7 @@ export default function RecepcionesPage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('pages.receptions');
+  const tCommon = useTranslations('common');
   const tPdf = useTranslations('pages.receptions.pdf');
   const [receptions, setReceptions] = useState<Reception[]>([]);
   const [loading, setLoading] = useState(false);
@@ -37,17 +44,75 @@ export default function RecepcionesPage() {
   const [receptionToClose, setReceptionToClose] = useState<Reception | null>(null);
   const [isClosingReception, setIsClosingReception] = useState(false);
   const [closeResult, setCloseResult] = useState<ReceptionCloseResponse | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [hasInitialData, setHasInitialData] = useState(false);
+  const [filters, setFilters] = useState<Record<string, any>>({});
   const formRef = useRef<ReceptionFormRef>(null);
   const initialFetchDone = useRef(false);
 
-  const fetchReceptions = async (page: number) => {
+  const availableColumns = [
+    { key: 'code', label: t('table.code') },
+    { key: 'date', label: t('table.date') },
+    { key: 'provider', label: t('table.provider') },
+    { key: 'warehouse', label: t('table.warehouse') },
+    { key: 'document', label: t('table.document') },
+    { key: 'amount', label: t('table.amount') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'receptions_table',
+    availableColumns.map(c => c.key)
+  );
+
+  const {
+    selectedIds,
+    toggleSelect,
+    toggleSelectAll,
+    clearSelection,
+    hasSelection,
+  } = useBulkSelection(receptions.map(r => ({ ...r, id: r.id })));
+
+  const bulkActions: BulkAction[] = [
+    {
+      id: 'delete',
+      label: tCommon('actions.delete'),
+      color: 'danger',
+      requiresConfirm: true,
+      onClick: async () => {
+        try {
+          await receptionService.deleteReceptions(selectedIds);
+          toastService.success(t('messages.deleteSuccess'));
+          clearSelection();
+          fetchReceptions(currentPage, searchTerm);
+        } catch (error) {
+          console.error('Error deleting receptions:', error);
+          if (error instanceof Error) {
+            toastService.error(error.message);
+          } else {
+            toastService.error(t('messages.errorDeleting'));
+          }
+        }
+      },
+    },
+  ];
+
+  const fetchReceptions = async (page: number, term?: string, currentFilters?: Record<string, any>) => {
     try {
       setLoading(true);
-      const response = await receptionService.getReceptions(page);
+      const activeFilters = currentFilters || filters;
+      const isOpen = activeFilters.status === 'open' ? true : activeFilters.status === 'closed' ? false : undefined;
+      
+      const response = await receptionService.getReceptions(page, term, isOpen);
       setReceptions(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
+      setCurrentPage(page);
+
+      if (!hasInitialData && !term) {
+        setHasInitialData(true);
+      }
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
@@ -62,7 +127,7 @@ export default function RecepcionesPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchReceptions(currentPage);
+      fetchReceptions(1);
     }
   }, []);
 
@@ -71,7 +136,7 @@ export default function RecepcionesPage() {
 
     try {
       await receptionService.deleteReception(receptionToDelete.id);
-      fetchReceptions(currentPage);
+      fetchReceptions(currentPage, searchTerm);
       setReceptionToDelete(null);
     } catch (error) {
       setReceptionToDelete(null);
@@ -90,7 +155,7 @@ export default function RecepcionesPage() {
       setIsClosingReception(true);
       const result = await receptionService.closeReception(receptionToClose.id);
       setCloseResult(result);
-      fetchReceptions(currentPage);
+      fetchReceptions(currentPage, searchTerm);
       setReceptionToClose(null);
     } catch (error) {
       if (error instanceof Error) {
@@ -167,7 +232,7 @@ export default function RecepcionesPage() {
 
   const handleFormSuccess = () => {
     handleDrawerClose();
-    fetchReceptions(currentPage);
+    fetchReceptions(currentPage, searchTerm);
   };
 
   const handleSave = () => {
@@ -186,7 +251,7 @@ export default function RecepcionesPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchReceptions(page);
+    fetchReceptions(page, searchTerm);
   };
 
   return (
@@ -206,42 +271,64 @@ export default function RecepcionesPage() {
         </Btn>
       </div>
 
+      {/* Filtros y búsqueda */}
+      {(receptions.length > 0 || searchTerm) && (
+        <div className="mt-6 flex justify-between items-center gap-4">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('searchReceptions')}
+              onSearch={(term: string) => {
+                setSearchTerm(term);
+                fetchReceptions(1, term);
+              }}
+            />
+          </div>
+          {receptions && receptions.length > 0 && (
+            <>
+              <ExportButton
+                data={receptions}
+                filename="receptions"
+                columns={['code', 'date', 'provider', 'warehouse', 'document', 'amount', 'status']}
+              />
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'open', label: t('status.open') },
+                      { value: 'closed', label: t('status.closed') },
+                    ],
+                  },
+                ]}
+                onApply={(newFilters) => {
+                  setFilters(newFilters);
+                  fetchReceptions(1, searchTerm, newFilters);
+                }}
+                storageKey="reception-advanced-filters"
+              />
+            </>
+          )}
+          <ColumnSelector
+            columns={availableColumns}
+            visibleColumns={visibleColumns}
+            onChange={toggleColumn}
+          />
+        </div>
+      )}
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loading size="lg" />
         </div>
       ) : receptions && receptions.length === 0 ? (
-        <div 
-          className="mt-6 flex flex-col items-center justify-center h-64 bg-white rounded-lg border-2 border-dashed"
-          style={{ borderColor: `rgb(var(--color-primary-200))` }}
-        >
-          <svg
-            className="h-12 w-12 mb-4"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-            />
-          </svg>
-          <p 
-            className="text-lg font-medium mb-2"
-            style={{ color: `rgb(var(--color-primary-400))` }}
-          >
-            {t('noReceptions')}
-          </p>
-          <p 
-            className="text-sm"
-            style={{ color: `rgb(var(--color-primary-300))` }}
-          >
-            {t('noReceptionsDesc')}
-          </p>
-        </div>
+        <EmptyState
+          searchTerm={searchTerm}
+          title={t('noReceptions')}
+          description={t('noReceptionsDesc')}
+          searchDescription={t('noResultsDesc')}
+        />
       ) : (
         <>
           <div className="mt-6">
@@ -252,6 +339,10 @@ export default function RecepcionesPage() {
               onDetails={handleDetails}
               onClose={openCloseModal}
               onGeneratePDF={handleGeneratePDF}
+              visibleColumns={visibleColumns}
+              selectedIds={selectedIds}
+              onSelectChange={toggleSelect}
+              onSelectAllChange={toggleSelectAll}
             />
           </div>
 
@@ -308,6 +399,15 @@ export default function RecepcionesPage() {
         <ReceptionCloseResultModal
           closeResult={closeResult}
           onClose={() => setCloseResult(null)}
+        />
+      )}
+
+      {/* Barra de acciones masivas */}
+      {hasSelection && (
+        <BulkActionsBar
+          selectedCount={selectedIds.length}
+          actions={bulkActions}
+          onClose={clearSelection}
         />
       )}
     </div>

@@ -151,7 +151,9 @@ export default function AccountsPayableList() {
                 data={accounts}
                 filename="accounts-payable"
                 columns={['referenceNumber', 'provider', 'totalAmount', 'remainingAmount', 'dueDate', 'status']}
-              />
+              >
+                {tCommon('actions.export')}
+              </ExportButton>
               <AdvancedFilters
                 fields={advancedFilterFields}
                 onApply={handleAdvancedFilters}

@@ -13,7 +13,7 @@ interface CartItem {
 interface CartContextType {
   cart: CartItem[];
   selectedClient: string;
-  addToCart: (product: InventoryProduct) => void;
+  addToCart: (product: InventoryProduct, quantity?: number, price?: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   updatePrice: (productId: string, price: number) => void;
   removeFromCart: (productId: string) => void;
@@ -60,7 +60,13 @@ class CartStateManager {
     try {
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       if (savedCart) {
-        this.cart = JSON.parse(savedCart);
+        try {
+          this.cart = JSON.parse(savedCart);
+        } catch (parseError) {
+          console.error('Error parsing cart from localStorage, clearing cart:', parseError);
+          localStorage.removeItem(CART_STORAGE_KEY);
+          this.cart = [];
+        }
       }
       
       const savedClient = localStorage.getItem('pos_selected_client');
@@ -77,6 +83,8 @@ class CartStateManager {
           console.warn('Error cleaning up localStorage:', cleanupError);
         }
       }
+      this.cart = [];
+      this.selectedClient = '';
     }
   }
 
@@ -130,27 +138,37 @@ class CartStateManager {
     }
   }
 
-  addToCart(product: InventoryProduct) {
+  addToCart(product: InventoryProduct, quantity: number = 1, price?: number) {
     try {
       const existingItem = this.cart.find(item => item.product.id === product.id);
-      const productPrice = typeof product.price === 'string' ? parseFloat(product.price) : (typeof product.price === 'number' ? product.price : 0);
+      
+      // Determinar el precio a usar: precio pasado, precio base del producto, o precio del inventario
+      let productPrice: number;
+      if (price !== undefined) {
+        productPrice = price;
+      } else if (product.product.base_price !== undefined) {
+        productPrice = product.product.base_price;
+      } else {
+        productPrice = typeof product.price === 'string' ? parseFloat(product.price) : (typeof product.price === 'number' ? product.price : 0);
+      }
       
       if (existingItem) {
         this.cart = this.cart.map(item =>
           item.product.id === product.id
             ? { 
                 ...item, 
-                quantity: item.quantity + 1, 
-                subtotal: (item.quantity + 1) * productPrice 
+                quantity: item.quantity + quantity, 
+                price: productPrice,
+                subtotal: (item.quantity + quantity) * productPrice 
               }
             : item
         );
       } else {
         const newItem: CartItem = {
           product,
-          quantity: 1,
+          quantity,
           price: productPrice,
-          subtotal: productPrice
+          subtotal: quantity * productPrice
         };
         this.cart = [...this.cart, newItem];
       }
@@ -275,9 +293,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const contextValue: CartContextType = {
     cart,
     selectedClient,
-    addToCart: (product: InventoryProduct) => {
+    addToCart: (product: InventoryProduct, quantity?: number, price?: number) => {
       if (!isClient) return;
-      cartManager.addToCart(product);
+      cartManager.addToCart(product, quantity, price);
     },
     updateQuantity: (productId: string, quantity: number) => {
       if (!isClient) return;

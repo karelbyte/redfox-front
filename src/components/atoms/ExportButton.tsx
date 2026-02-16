@@ -10,6 +10,12 @@ interface ExportButtonProps<T extends Record<string, any>> {
   columns?: string[];
   label?: string;
   className?: string;
+  children?: React.ReactNode;
+  customOptions?: Array<{
+    label: string;
+    onClick: () => void;
+    disabled?: boolean;
+  }>;
 }
 
 export default function ExportButton<T extends Record<string, any>>({
@@ -18,6 +24,8 @@ export default function ExportButton<T extends Record<string, any>>({
   columns,
   label,
   className = '',
+  children,
+  customOptions = []
 }: ExportButtonProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const { exportExcel, exportCSV, exportJSON } = useExportToExcel<T>();
@@ -65,12 +73,29 @@ export default function ExportButton<T extends Record<string, any>>({
           >
             📄 {t('csv')}
           </button>
+      
           <button
             onClick={handleExportJSON}
-            className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700"
+            className={`w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700 ${children || customOptions.length > 0 ? 'border-b border-gray-100' : ''}`}
           >
-            { } {t('json')}
+            🔧 {t('json')}
           </button>
+
+          {children}
+
+          {customOptions.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                option.onClick();
+                setIsOpen(false);
+              }}
+              disabled={option.disabled}
+              className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
       )}
     </div>

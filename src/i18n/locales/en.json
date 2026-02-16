@@ -135,6 +135,7 @@
     "createInvoice": "Create Invoice",
     "invoiceList": "Invoice List",
     "certificationPacks": "SAT Packs",
+    "auditLogs": "Audit Logs",
     "finance": "Finance",
     "expenses": "Expenses",
     "accountsReceivable": "Accounts Receivable",
@@ -224,6 +225,36 @@
         "noInventoryData": "No products in inventory",
         "noRevenueData": "No revenue data in the last 12 months",
         "noProductsData": "No products sold to display"
+      }
+    },
+    "auditLogs": {
+      "title": "Audit Logs",
+      "subtitle": "Complete history of system changes",
+      "table": {
+        "date": "Date",
+        "action": "Action",
+        "entity": "Entity",
+        "user": "User",
+        "description": "Description",
+        "details": "Details",
+        "showDetails": "Show details",
+        "hideDetails": "Hide details",
+        "oldValues": "Old Values",
+        "newValues": "New Values"
+      },
+      "filters": {
+        "action": "Action",
+        "entityType": "Entity Type",
+        "startDate": "Start Date",
+        "endDate": "End Date"
+      },
+      "empty": {
+        "title": "No audit logs",
+        "description": "No changes have been recorded in the system",
+        "noResults": "No logs found with the search criteria"
+      },
+      "messages": {
+        "errorLoading": "Error loading audit logs"
       }
     },
     "warehouses": {
@@ -951,7 +982,9 @@
         "edit": "Edit",
         "delete": "Delete",
         "save": "Save",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "viewSales": "View Sales",
+        "back": "Back"
       },
       "status": {
         "active": "Active",
@@ -1354,7 +1387,9 @@
         "errorGeneratingPDF": "Error generating PDF",
         "confirmDelete": "Are you sure you want to delete the reception \"{code}\"? This action cannot be undone.",
         "confirmClose": "Are you sure you want to close the reception \"{code}\"? This action cannot be undone.",
-        "pdfFooter": "Document generated automatically"
+        "pdfFooter": "Document generated automatically",
+        "deleteSuccess": "Receptions deleted successfully",
+        "noResultsDesc": "No receptions found with the search criteria"
       },
       "pdf": {
         "code": "Code",
@@ -1771,7 +1806,27 @@
         "errorCreatingInvoice": "Error creating invoice",
         "globalInvoiceCreated": "Global invoice created successfully",
         "errorCreatingGlobalInvoice": "Error creating global invoice",
-        "noEligibleSales": "No sales with receipt without invoice in the selected period"
+        "noEligibleSales": "No sales with receipt without invoice in the selected period",
+        "pdfTitle": "Sales Receipt",
+        "pdfFooter": "Thank you for your purchase"
+      },
+      "pdf": {
+        "code": "Code",
+        "date": "Date",
+        "client": "Client",
+        "destination": "Destination",
+        "status": "Status",
+        "product": "Product",
+        "sku": "SKU",
+        "brand": "Brand",
+        "category": "Category",
+        "quantity": "Quantity",
+        "price": "Price",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "statusOpen": "Open",
+        "statusClosed": "Completed",
+        "page": "Page"
       },
       "modals": {
         "delete": {
@@ -1842,6 +1897,9 @@
           "noProductsFound": "No products found",
           "quantity": "Quantity",
           "price": "Price",
+          "priceList": "Price List",
+          "basePrice": "Base Price",
+          "customPrice": "Custom Price",
           "placeholders": {
             "quantity": "Enter quantity",
             "price": "Enter price"
@@ -1907,6 +1965,12 @@
         "noProductsDesc": "Add products to this sale to get started.",
         "noProductsCompletedDesc": "This sale has no registered products.",
         "addProduct": "Add Product",
+        "availableProducts": "Available Products",
+        "showProducts": "Show Products",
+        "hideProducts": "Hide Products",
+        "searchProducts": "Search products...",
+        "noProductsFound": "No products found",
+        "noProductsAvailable": "No products available",
         "labels": {
           "code": "Code",
           "destination": "Destination",
@@ -1939,6 +2003,8 @@
         "createNewClient": "Create new client",
         "quantity": "Quantity",
         "price": "Price",
+        "basePrice": "Base Price",
+        "customPrice": "Custom Price",
         "subtotal": "Subtotal",
         "total": "Total",
         "checkout": "Complete Sale",

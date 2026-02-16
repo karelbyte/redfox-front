@@ -19,7 +19,7 @@ import ProductsGrid from '@/components/POS/ProductsGrid';
 import PaymentModal from '@/components/POS/PaymentModal';
 import CashRegisterModal from '@/components/POS/CashRegisterModal';
 import CashDrawerModal from '@/components/POS/CashDrawerModal';
-import CashBalance from '@/components/POS/CashBalance'; // Added import for CashBalance
+import CashBalance from '@/components/POS/CashBalance';
 import { useCart } from '@/context/CartContext';
 
 export default function POSPage() {

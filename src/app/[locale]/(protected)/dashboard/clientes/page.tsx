@@ -243,7 +243,8 @@ export default function ClientsPage() {
                   data={clients}
                   filename="clients"
                   columns={['code', 'name', 'email', 'tax_document', 'status']}
-                />
+                >
+                </ExportButton>
                 <AdvancedFilters
                   fields={[
                     {

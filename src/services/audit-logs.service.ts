@@ -1,7 +1,41 @@
 import { api } from './api';
 import { AuditLog, AuditAction } from '@/types/audit-log';
 
+interface PaginatedAuditLogsResponse {
+  data: AuditLog[];
+  meta: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+  };
+}
+
 class AuditLogsService {
+  async getAll(
+    page: number = 1,
+    limit: number = 50,
+    filters?: {
+      entityType?: string;
+      action?: AuditAction;
+      userId?: string;
+      startDate?: string;
+      endDate?: string;
+    }
+  ): Promise<PaginatedAuditLogsResponse> {
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    params.append('limit', limit.toString());
+    
+    if (filters?.entityType) params.append('entityType', filters.entityType);
+    if (filters?.action) params.append('action', filters.action);
+    if (filters?.userId) params.append('userId', filters.userId);
+    if (filters?.startDate) params.append('startDate', filters.startDate);
+    if (filters?.endDate) params.append('endDate', filters.endDate);
+    
+    return api.get(`/audit-logs?${params.toString()}`) as Promise<PaginatedAuditLogsResponse>;
+  }
+
   async findByEntity(
     entityType: string,
     entityId: string,
@@ -29,5 +63,5 @@ class AuditLogsService {
 }
 
 export const auditLogsService = new AuditLogsService();
-export type { AuditLog };
+export type { AuditLog, PaginatedAuditLogsResponse };
 export { AuditAction };

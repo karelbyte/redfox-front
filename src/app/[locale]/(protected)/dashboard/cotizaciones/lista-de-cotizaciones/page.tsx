@@ -168,7 +168,9 @@ const QuotationListPage = () => {
                 data={quotations}
                 filename="quotations"
                 columns={['code', 'date', 'validUntil', 'client', 'total', 'status']}
-              />
+              >
+                {t('export')}
+              </ExportButton>
               <AdvancedFilters
                 fields={[
                   {

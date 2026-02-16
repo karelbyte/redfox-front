@@ -9,6 +9,12 @@ export interface InventoryProduct {
     name: string;
     description: string;
     price: number;
+    base_price: number;
+    prices?: {
+      id: string;
+      name: string;
+      price: number;
+    }[];
     cost: number;
     stock_min: number;
     stock_max: number;

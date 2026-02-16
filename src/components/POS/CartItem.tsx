@@ -1,7 +1,8 @@
 'use client'
 
 import { XMarkIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { Btn, Input } from '@/components/atoms';
+import { useTranslations } from 'next-intl';
+import { Btn, Select } from '@/components/atoms';
 import { InventoryProduct } from '@/services/inventory.service';
 
 interface CartItemProps {
@@ -22,6 +23,49 @@ export default function CartItem({
   onUpdatePrice, 
   onRemove 
 }: CartItemProps) {
+  const t = useTranslations('pages.pos.cart');
+
+  // Construir opciones de precio
+  const priceOptions = [];
+
+  // Agregar precio base si existe
+  if (item.product.product.base_price !== undefined) {
+    priceOptions.push({
+      value: item.product.product.base_price.toString(),
+      label: `${t('basePrice')}: $${item.product.product.base_price.toFixed(2)}`
+    });
+  }
+
+  // Agregar precios de la lista si existen
+  if (item.product.product.prices && item.product.product.prices.length > 0) {
+    item.product.product.prices.forEach(price => {
+      priceOptions.push({
+        value: price.price.toString(),
+        label: `${price.name}: $${price.price.toFixed(2)}`
+      });
+    });
+  }
+
+  // Si no hay opciones de precio, usar el precio del inventario
+  if (priceOptions.length === 0) {
+    priceOptions.push({
+      value: item.product.price.toString(),
+      label: `${t('price')}: $${item.product.price.toFixed(2)}`
+    });
+  }
+
+  // Agregar opción de precio personalizado si el precio actual no está en la lista
+  const currentPriceInList = priceOptions.some(
+    option => parseFloat(option.value) === item.price
+  );
+  
+  if (!currentPriceInList) {
+    priceOptions.push({
+      value: item.price.toString(),
+      label: `${t('customPrice')}: $${item.price.toFixed(2)}`
+    });
+  }
+
   return (
     <div className="border rounded-lg p-3">
       <div className="flex items-center space-x-3">
@@ -50,15 +94,14 @@ export default function CartItem({
           </Btn>
         </div>
         
-        {/* Precio */}
-        <div className="w-32">
-          <Input
-            type="number"
-            value={item.price}
+        {/* Selector de Precio */}
+        <div className="w-48">
+          <Select
+            id={`price-${item.product.id}`}
+            value={item.price.toString()}
             onChange={(e) => onUpdatePrice(item.product.id, parseFloat(e.target.value) || 0)}
+            options={priceOptions}
             className="text-sm"
-            min="0"
-            step="0.01"
           />
         </div>
         

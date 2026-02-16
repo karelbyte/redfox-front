@@ -2,8 +2,13 @@ import { api } from './api';
 import { Reception, ReceptionFormData, ReceptionDetailFormData, ReceptionDetail, PaginatedReceptionResponse, PaginatedReceptionDetailsResponse, ReceptionCloseResponse } from '@/types/reception';
 
 class ReceptionService {
-  async getReceptions(page?: number): Promise<PaginatedReceptionResponse> {
-    const queryParam = page ? `?page=${page}` : '';
+  async getReceptions(page?: number, search?: string, isOpen?: boolean): Promise<PaginatedReceptionResponse> {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (search) params.append('search', search);
+    if (isOpen !== undefined) params.append('status', isOpen.toString());
+    
+    const queryParam = params.toString() ? `?${params.toString()}` : '';
     const response = await api.get<PaginatedReceptionResponse>(`/receptions${queryParam}`);
     return response;
   }
@@ -27,6 +32,10 @@ class ReceptionService {
 
   async deleteReception(id: string): Promise<void> {
     await api.delete(`/receptions/${id}`);
+  }
+
+  async deleteReceptions(ids: string[]): Promise<void> {
+    await Promise.all(ids.map(id => api.delete(`/receptions/${id}`)));
   }
 
   async closeReception(id: string): Promise<ReceptionCloseResponse> {

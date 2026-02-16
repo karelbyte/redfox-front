@@ -142,6 +142,7 @@
     "createInvoice": "Crear Factura",
     "invoiceList": "Lista de Facturas",
     "certificationPacks": "Packs SAT",
+    "auditLogs": "Logs de Auditoría",
     "finance": "Finanzas",
     "expenses": "Gastos",
     "accountsReceivable": "Cuentas por Cobrar",
@@ -231,6 +232,36 @@
         "noInventoryData": "No hay productos en inventario",
         "noRevenueData": "No hay datos de ingresos en los últimos 12 meses",
         "noProductsData": "No hay productos vendidos para mostrar"
+      }
+    },
+    "auditLogs": {
+      "title": "Logs de Auditoría",
+      "subtitle": "Historial completo de cambios en el sistema",
+      "table": {
+        "date": "Fecha",
+        "action": "Acción",
+        "entity": "Entidad",
+        "user": "Usuario",
+        "description": "Descripción",
+        "details": "Detalles",
+        "showDetails": "Ver detalles",
+        "hideDetails": "Ocultar detalles",
+        "oldValues": "Valores Anteriores",
+        "newValues": "Valores Nuevos"
+      },
+      "filters": {
+        "action": "Acción",
+        "entityType": "Tipo de Entidad",
+        "startDate": "Fecha Inicio",
+        "endDate": "Fecha Fin"
+      },
+      "empty": {
+        "title": "No hay logs de auditoría",
+        "description": "No se han registrado cambios en el sistema",
+        "noResults": "No se encontraron logs con los criterios de búsqueda"
+      },
+      "messages": {
+        "errorLoading": "Error al cargar los logs de auditoría"
       }
     },
     "warehouses": {
@@ -946,7 +977,9 @@
         "edit": "Editar",
         "delete": "Eliminar",
         "save": "Guardar",
-        "cancel": "Cancelar"
+        "cancel": "Cancelar",
+        "viewSales": "Ver Ventas",
+        "back": "Volver"
       },
       "status": {
         "active": "Activo",
@@ -1340,7 +1373,9 @@
         "errorGeneratingPDF": "Error al generar el PDF",
         "confirmDelete": "¿Estás seguro de que deseas eliminar la recepción \"{code}\"? Esta acción no se puede deshacer.",
         "confirmClose": "¿Estás seguro de que deseas cerrar la recepción \"{code}\"? Esta acción no se puede deshacer.",
-        "pdfFooter": "Documento generado automáticamente"
+        "pdfFooter": "Documento generado automáticamente",
+        "deleteSuccess": "Recepciones eliminadas correctamente",
+        "noResultsDesc": "No se encontraron recepciones con los criterios de búsqueda"
       },
       "pdf": {
         "code": "Código",
@@ -1757,7 +1792,27 @@
         "errorCreatingInvoice": "Error al crear la factura",
         "globalInvoiceCreated": "Factura global creada exitosamente",
         "errorCreatingGlobalInvoice": "Error al crear la factura global",
-        "noEligibleSales": "No hay ventas con recibo sin facturar en el periodo seleccionado"
+        "noEligibleSales": "No hay ventas con recibo sin facturar en el periodo seleccionado",
+        "pdfTitle": "Nota de Venta",
+        "pdfFooter": "Gracias por su compra"
+      },
+      "pdf": {
+        "code": "Código",
+        "date": "Fecha",
+        "client": "Cliente",
+        "destination": "Destino",
+        "status": "Estado",
+        "product": "Producto",
+        "sku": "SKU",
+        "brand": "Marca",
+        "category": "Categoría",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "statusOpen": "Abierta",
+        "statusClosed": "Completada",
+        "page": "Página"
       },
       "modals": {
         "delete": {
@@ -1832,6 +1887,9 @@
           "noProductsFound": "No se encontraron productos",
           "quantity": "Cantidad",
           "price": "Precio",
+          "priceList": "Lista de Precios",
+          "basePrice": "Precio Base",
+          "customPrice": "Precio Personalizado",
           "placeholders": {
             "quantity": "Ingrese la cantidad",
             "price": "Ingrese el precio"
@@ -1897,6 +1955,12 @@
         "noProductsDesc": "Añade productos a esta venta para comenzar.",
         "noProductsCompletedDesc": "Esta venta no tiene productos registrados.",
         "addProduct": "Añadir Producto",
+        "availableProducts": "Productos Disponibles",
+        "showProducts": "Mostrar Productos",
+        "hideProducts": "Ocultar Productos",
+        "searchProducts": "Buscar productos...",
+        "noProductsFound": "No se encontraron productos",
+        "noProductsAvailable": "No hay productos disponibles",
         "labels": {
           "code": "Código",
           "destination": "Destino",
@@ -1913,6 +1977,21 @@
       "subtitle": "Sistema de ventas en punto de venta",
       "backToDashboard": "Dashboard",
       "total": "Total",
+      "addProduct": {
+        "title": "Agregar Producto",
+        "productInfo": "Información del Producto",
+        "product": "Producto",
+        "sku": "SKU",
+        "stock": "Stock Disponible",
+        "warehouse": "Almacén",
+        "quantity": "Cantidad",
+        "enterQuantity": "Ingrese la cantidad",
+        "priceList": "Lista de Precios",
+        "basePrice": "Precio Base",
+        "customPrice": "Precio Personalizado",
+        "price": "Precio",
+        "enterPrice": "Ingrese el precio"
+      },
       "products": {
         "title": "Productos",
         "searchPlaceholder": "Buscar productos...",
@@ -1929,6 +2008,8 @@
         "createNewClient": "Crear nuevo cliente",
         "quantity": "Cantidad",
         "price": "Precio",
+        "basePrice": "Precio Base",
+        "customPrice": "Precio Personalizado",
         "subtotal": "Subtotal",
         "total": "Total",
         "checkout": "Completar Venta",

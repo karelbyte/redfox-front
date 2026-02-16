@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, DocumentArrowDownIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { saleService } from '@/services/sales.service';
+import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { toastService } from '@/services/toast.service';
-import { PDFService } from '@/services/pdf.service';
-import { Sale, SaleDetail, SaleCloseResponse } from '@/types/sale';
-import { Btn } from '@/components/atoms';
+import { SalePDFService } from '@/services/sale-pdf.service';
+import { Sale, SaleDetail, SaleCloseResponse, SaleStatus } from '@/types/sale';
+import { Btn, Input } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AddProductForm, { AddProductFormRef } from '@/components/Sale/AddProductForm';
 import SaleProductsTable from '@/components/Sale/SaleProductsTable';
@@ -21,6 +22,7 @@ export default function SaleDetailsPage() {
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations('pages.sales');
+  const tPdf = useTranslations('pages.sales.pdf');
   const [sale, setSale] = useState<Sale | null>(null);
   const [products, setProducts] = useState<SaleDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,12 @@ export default function SaleDetailsPage() {
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [closeResult, setCloseResult] = useState<SaleCloseResponse | null>(null);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [availableProducts, setAvailableProducts] = useState<InventoryProduct[]>([]);
+  const [loadingAvailableProducts, setLoadingAvailableProducts] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showProductsGrid, setShowProductsGrid] = useState(false);
   const productFormRef = useRef<AddProductFormRef>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchSale = async () => {
     try {
@@ -75,17 +82,91 @@ export default function SaleDetailsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
+  // Debounced search effect para productos disponibles
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      if (showProductsGrid) {
+        fetchAvailableProducts(searchTerm);
+      }
+    }, 500);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, showProductsGrid]);
+
+  const fetchAvailableProducts = async (term: string = '') => {
+    try {
+      setLoadingAvailableProducts(true);
+      const response = await inventoryService.getInventoryProducts(1, term);
+      setAvailableProducts(response.data || []);
+    } catch (error) {
+      console.error('Error cargando productos disponibles:', error);
+    } finally {
+      setLoadingAvailableProducts(false);
+    }
+  };
+
+  const handleQuickAddProduct = async (inventoryProduct: InventoryProduct) => {
+    if (!sale) return;
+
+    try {
+      await saleService.addProductToSale(sale.id, {
+        product_id: inventoryProduct.product.id,
+        quantity: 1,
+        price: inventoryProduct.product.base_price,
+        warehouse_id: inventoryProduct.warehouse.id
+      });
+      toastService.success(t('addProduct.messages.productAdded'));
+      fetchSale();
+      fetchProducts();
+    } catch (error) {
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('addProduct.messages.errorAdding'));
+      }
+    }
+  };
+
   const handleGeneratePDF = async () => {
     if (!sale) return;
 
     try {
       setIsGeneratingPDF(true);
       
-      // Generar el PDF con los productos ya cargados
-      const pdfService = new PDFService({orientation: 'landscape'});
-      pdfService.generateSalePDF(sale, products, {
-        filename: `sale-${sale.code}.pdf`
-      });
+      // Preparar traducciones para el PDF
+      const translations = {
+        title: t('messages.pdfTitle'),
+        code: tPdf('code'),
+        date: tPdf('date'),
+        client: tPdf('client'),
+        destination: tPdf('destination'),
+        status: tPdf('status'),
+        product: tPdf('product'),
+        sku: tPdf('sku'),
+        brand: tPdf('brand'),
+        category: tPdf('category'),
+        quantity: tPdf('quantity'),
+        price: tPdf('price'),
+        subtotal: tPdf('subtotal'),
+        total: tPdf('total'),
+        footer: t('messages.pdfFooter'),
+        statusOpen: tPdf('statusOpen'),
+        statusClosed: tPdf('statusClosed'),
+        page: tPdf('page')
+      };
+      
+      // Generar el PDF usando el nuevo servicio
+      const pdfService = new SalePDFService(locale);
+      pdfService.generatePDF(sale, products, translations);
       
       toastService.success(t('messages.pdfGenerated'));
     } catch (error) {
@@ -275,8 +356,7 @@ export default function SaleDetailsPage() {
           >
             {isGeneratingPDF ? t('actions.generatingPDF') : t('actions.generatePDF')}
           </Btn>
-          
-          {!sale.status && (
+          {sale.status === SaleStatus.OPEN && (
             <>
               <Btn
                 leftIcon={<PlusIcon className="h-5 w-5" />}
@@ -316,12 +396,14 @@ export default function SaleDetailsPage() {
               <span className="text-sm font-medium text-gray-500">{t('details.labels.status')}:</span>
               <span
                 className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                  sale.status
+                  sale.status === SaleStatus.CLOSED
                     ? 'bg-green-100 text-green-800'
+                    : sale.status === SaleStatus.RETURNED
+                    ? 'bg-red-100 text-red-800'
                     : 'bg-yellow-100 text-yellow-800'
                 }`}
               >
-                {sale.status ? t('status.completed') : t('status.pending')}
+                {sale.status === SaleStatus.CLOSED ? t('status.completed') : sale.status === SaleStatus.RETURNED ? t('status.returned') : t('status.pending')}
               </span>
             </div>
             <div>
@@ -383,6 +465,98 @@ export default function SaleDetailsPage() {
         </div>
       </div>
 
+      {/* Grid de productos disponibles - Solo visible si la venta está abierta */}
+      {sale.status === SaleStatus.OPEN && (
+        <div className="mb-8">
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold" style={{ color: `rgb(var(--color-primary-700))` }}>
+                  {t('details.availableProducts')}
+                </h3>
+                <Btn
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setShowProductsGrid(!showProductsGrid);
+                    if (!showProductsGrid) {
+                      fetchAvailableProducts();
+                    }
+                  }}
+                >
+                  {showProductsGrid ? t('details.hideProducts') : t('details.showProducts')}
+                </Btn>
+              </div>
+              
+              {showProductsGrid && (
+                <div className="mt-4">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder={t('details.searchProducts')}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {showProductsGrid && (
+              <div className="p-4">
+                {loadingAvailableProducts ? (
+                  <div className="flex justify-center items-center h-32">
+                    <Loading size="md" />
+                  </div>
+                ) : availableProducts.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    {searchTerm ? t('details.noProductsFound') : t('details.noProductsAvailable')}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    {availableProducts.map((inventoryProduct) => (
+                      <div
+                        key={inventoryProduct.id}
+                        className="border rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => handleQuickAddProduct(inventoryProduct)}
+                      >
+                        <div className="aspect-square bg-gray-100 rounded-md mb-2 flex items-center justify-center overflow-hidden">
+                          {inventoryProduct.product.images && inventoryProduct.product.images.length > 0 ? (
+                            <img
+                              src={process.env.NEXT_PUBLIC_URL_API + inventoryProduct.product.images[0]}
+                              alt={inventoryProduct.product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-gray-400 text-xs">Sin imagen</span>
+                          )}
+                        </div>
+                        <h4 className="text-sm font-medium text-gray-900 truncate" title={inventoryProduct.product.name}>
+                          {inventoryProduct.product.name}
+                        </h4>
+                        <p className="text-xs text-gray-500 truncate">
+                          SKU: {inventoryProduct.product.sku}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Stock: {inventoryProduct.quantity}
+                        </p>
+                        <p className="text-sm font-bold mt-1" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                          {formatCurrency(inventoryProduct.product.base_price.toString())}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Lista de productos */}
       <div className="py-4 border-gray-200">
         <h3 className="text-lg font-semibold" style={{ color: `rgb(var(--color-primary-700))` }}>
@@ -400,11 +574,11 @@ export default function SaleDetailsPage() {
             products={products}
             onDeleteProduct={handleDeleteProduct}
             onEditProduct={handleEditProduct}
-            isSaleOpen={!sale.status}
+            isSaleOpen={sale.status === SaleStatus.OPEN}
           />
         )}
         
-        {!sale.status && products.length === 0 && !loadingProducts && (
+        {sale.status === SaleStatus.OPEN && products.length === 0 && !loadingProducts && (
           <div className="mt-6 text-center">
             <Btn
               leftIcon={<PlusIcon className="h-5 w-5" />}

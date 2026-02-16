@@ -65,5 +65,5 @@ export interface ProductFormData {
   type: ProductType;
   inventory_strategy?: InventoryStrategy;
   base_price: number;
-  prices: Omit<ProductPrice, 'id'>[];
+  prices: Partial<ProductPrice>[];
 }
