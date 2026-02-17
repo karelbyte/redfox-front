@@ -18,7 +18,8 @@ class SaleService {
       destination: data.destination,
       client_id: data.client_id,
       type: data.type,
-      status: SaleStatus.OPEN
+      status: SaleStatus.OPEN,
+      payment_method: data.payment_method
     };
     const response = await api.post<Sale>('/withdrawals', createData);
     return response;

@@ -808,6 +808,30 @@
         "daysUnit": "days",
         "isActive": "Credit Active",
         "currency": "Limit Currency",
+        "portfolioAnalysis": "Portfolio Analysis",
+        "loadingAnalysis": "Loading portfolio analysis...",
+        "creditNotActive": "Credit is not active for this client",
+        "usedCredit": "Used Credit",
+        "availableCredit": "Available Credit",
+        "currentBalance": "Current Balance",
+        "overdueBalance": "Overdue Balance",
+        "utilized": "utilized",
+        "accountsReceivable": "Accounts Receivable",
+        "reference": "Reference",
+        "issueDate": "Issue Date",
+        "dueDate": "Due Date",
+        "totalAmount": "Total Amount",
+        "remainingAmount": "Remaining Balance",
+        "status": "Status",
+        "aging": "Aging",
+        "daysOverdue": "days overdue",
+        "statuses": {
+          "pending": "Pending",
+          "partial": "Partial",
+          "paid": "Paid",
+          "overdue": "Overdue",
+          "cancelled": "Cancelled"
+        },
         "analysisTitle": "Debt Analysis (Coming Soon)",
         "analysisDescription": "We're working on bringing you powerful insights to manage your provider debt more effectively.",
         "placeholders": {
@@ -992,7 +1016,7 @@
         "active": "Active",
         "inactive": "Inactive"
       },
-      "credit": {
+        "credit": {
         "title": "Credit & Collections",
         "editCredit": "Edit Credit Conditions",
         "limit": "Credit Limit",
@@ -1000,6 +1024,32 @@
         "daysUnit": "days",
         "isActive": "Credit Active",
         "currency": "Limit Currency",
+        "portfolioAnalysis": "Portfolio Analysis",
+        "loadingAnalysis": "Loading portfolio analysis...",
+        "creditNotActive": "Credit is not active for this client",
+        "usedCredit": "Used Credit",
+        "availableCredit": "Available Credit",
+        "currentBalance": "Current Balance",
+        "overdueBalance": "Overdue Balance",
+        "utilized": "utilized",
+        "accountsReceivable": "Accounts Receivable",
+        "reference": "Reference",
+        "issueDate": "Issue Date",
+        "dueDate": "Due Date",
+        "totalAmount": "Total Amount",
+        "remainingAmount": "Remaining Balance",
+        "status": "Status",
+        "aging": "Aging",
+        "daysOverdue": "days overdue",
+        "statuses": {
+          "pending": "Pending",
+          "partial": "Partial",
+          "paid": "Paid",
+          "overdue": "Overdue",
+          "cancelled": "Cancelled"
+        },
+        "analysisTitle": "Debt Analysis (Coming Soon)",
+        "analysisDescription": "We're working on bringing you powerful insights to manage your provider debt more effectively.",
         "placeholders": {
           "limit": "Ex: 50000.00",
           "days": "Ex: 30"
@@ -1242,6 +1292,9 @@
         "product": "Product",
         "quantity": "Quantity",
         "price": "Price",
+        "selectPrice": "Select Price",
+        "basePrice": "Base Price",
+        "customPrice": "Custom Price",
         "selectProduct": "Select product...",
         "placeholders": {
           "quantity": "Ex: 100",
@@ -2019,6 +2072,9 @@
         "selectMethod": "Select payment method",
         "cash": "Cash",
         "card": "Card",
+        "credit": "Credit",
+        "creditLimit": "Credit limit",
+        "days": "days",
         "cashReceived": "Cash Received",
         "change": "Change",
         "insufficientCash": "Cash amount is insufficient",
@@ -3353,7 +3409,45 @@
     "subtitle": "Manage accounts receivable ({count} accounts)",
     "addAccount": "New Account Receivable",
     "editAccount": "Edit Account Receivable",
+    "registerPayment": "Register Payment",
     "confirmDelete": "Are you sure you want to delete this account receivable?",
+    "actions": {
+      "registerPayment": "Register Payment",
+      "viewPayments": "View Payments"
+    },
+    "paymentHistory": {
+      "title": "Payment History",
+      "accountSummary": "Account Summary",
+      "paymentsTitle": "Registered Payments",
+      "noPayments": "No payments registered for this account",
+      "paidAmount": "Paid Amount",
+      "registeredBy": "Registered by"
+    },
+    "paymentDrawer": {
+      "reference": "Reference",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "amount": "Payment Amount",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "notes": "Notes",
+      "referencePlaceholder": "Reference or transaction number",
+      "notesPlaceholder": "Additional notes about the payment",
+      "methods": {
+        "cash": "Cash",
+        "creditCard": "Credit Card",
+        "debitCard": "Debit Card",
+        "bankTransfer": "Bank Transfer",
+        "check": "Check",
+        "other": "Other"
+      },
+      "errors": {
+        "amountRequired": "Amount is required",
+        "amountExceedsRemaining": "Amount exceeds remaining balance",
+        "dateRequired": "Date is required",
+        "methodRequired": "Payment method is required"
+      }
+    },
     "table": {
       "reference": "Reference",
       "client": "Client",

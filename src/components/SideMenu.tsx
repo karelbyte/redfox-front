@@ -32,7 +32,9 @@ export function SideMenu() {
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredCollapsedItem, setHoveredCollapsedItem] = useState<string | null>(null);
+  const [popoverPosition, setPopoverPosition] = useState<{ top?: number; bottom?: number }>({});
   const collapsePopoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const popoverTriggerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     return () => {
@@ -1257,22 +1259,50 @@ export function SideMenu() {
               const options = filteredSubItems.length > 0
                 ? filteredSubItems
                 : [{ name: item.name, path: item.path, icon: item.icon }];
-              const handleCollapsedEnter = () => {
+              
+              const handleCollapsedEnter = (e: React.MouseEvent<HTMLDivElement>) => {
                 if (collapsePopoverTimeoutRef.current) {
                   clearTimeout(collapsePopoverTimeoutRef.current);
                   collapsePopoverTimeoutRef.current = null;
                 }
                 setHoveredCollapsedItem(item.path);
+                
+                // Calcular posición del popover
+                const trigger = e.currentTarget;
+                const triggerRect = trigger.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+                
+                // Estimar altura del popover (cada item ~40px + padding)
+                const estimatedPopoverHeight = options.length * 40 + 16;
+                
+                // Verificar si se sale por abajo
+                const spaceBelow = viewportHeight - triggerRect.bottom;
+                const spaceAbove = triggerRect.top;
+                
+                if (spaceBelow < estimatedPopoverHeight && spaceAbove > spaceBelow) {
+                  // No hay espacio abajo pero sí arriba, alinear al bottom
+                  setPopoverPosition({ bottom: 0 });
+                } else if (spaceBelow < estimatedPopoverHeight) {
+                  // No hay espacio suficiente, calcular top para que quepa
+                  const maxTop = Math.max(0, viewportHeight - estimatedPopoverHeight - triggerRect.top - 20);
+                  setPopoverPosition({ top: -Math.abs(triggerRect.bottom - viewportHeight + 20) });
+                } else {
+                  // Hay espacio, posición normal
+                  setPopoverPosition({ top: 0 });
+                }
               };
+              
               const handleCollapsedLeave = () => {
                 collapsePopoverTimeoutRef.current = setTimeout(() => {
                   setHoveredCollapsedItem(null);
                   collapsePopoverTimeoutRef.current = null;
                 }, 120);
               };
+              
               return (
                 <div
                   key={item.path}
+                  ref={popoverTriggerRef}
                   className="relative"
                   onMouseEnter={handleCollapsedEnter}
                   onMouseLeave={handleCollapsedLeave}
@@ -1299,8 +1329,12 @@ export function SideMenu() {
                   )}
                   {showPopover && (
                     <div
-                      className="absolute left-full top-0 z-50 py-1 min-w-[180px] bg-white rounded-lg shadow-lg border border-gray-200 -ml-px"
-                      style={{ borderColor: "rgb(var(--color-primary-100))" }}
+                      className="absolute left-full z-50 py-1 min-w-[180px] bg-white rounded-lg shadow-lg border border-gray-200 -ml-px"
+                      style={{ 
+                        borderColor: "rgb(var(--color-primary-100))",
+                        ...(popoverPosition.top !== undefined ? { top: popoverPosition.top } : {}),
+                        ...(popoverPosition.bottom !== undefined ? { bottom: popoverPosition.bottom } : {})
+                      }}
                       role="menu"
                     >
                       {options.map((opt) => (

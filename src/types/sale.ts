@@ -21,6 +21,12 @@ export enum SaleStatus {
   RETURNED = 'RETURNED',
 }
 
+export enum PaymentMethod {
+  CASH = 'cash',
+  CARD = 'card',
+  CREDIT = 'credit',
+}
+
 export interface Sale {
   id: string;
   code: string;
@@ -28,6 +34,7 @@ export interface Sale {
   client: Client;
   amount: string;
   status: SaleStatus;
+  payment_method: PaymentMethod;
   created_at: string;
   /** Estado fiscal: solo nota, facturada directa o facturada global */
   invoice_id?: string | null;
@@ -43,6 +50,7 @@ export interface SaleFormData {
   client_id: string;
   status?: SaleStatus;
   type: string;
+  payment_method?: PaymentMethod;
 }
 
 export interface SaleDetailFormData {

@@ -831,6 +831,30 @@
         "daysUnit": "días",
         "isActive": "Crédito Activo",
         "currency": "Moneda del Límite",
+        "portfolioAnalysis": "Análisis de Cartera",
+        "loadingAnalysis": "Cargando análisis de cartera...",
+        "creditNotActive": "El crédito no está activo para este cliente",
+        "usedCredit": "Crédito Utilizado",
+        "availableCredit": "Crédito Disponible",
+        "currentBalance": "Saldo Vigente",
+        "overdueBalance": "Saldo Vencido",
+        "utilized": "utilizado",
+        "accountsReceivable": "Cuentas por Cobrar",
+        "reference": "Referencia",
+        "issueDate": "Fecha Emisión",
+        "dueDate": "Fecha Vencimiento",
+        "totalAmount": "Monto Total",
+        "remainingAmount": "Saldo Pendiente",
+        "status": "Estado",
+        "aging": "Antigüedad",
+        "daysOverdue": "días vencidos",
+        "statuses": {
+          "pending": "Pendiente",
+          "partial": "Parcial",
+          "paid": "Pagado",
+          "overdue": "Vencido",
+          "cancelled": "Cancelado"
+        },
         "analysisTitle": "Análisis de Deuda (Próximamente)",
         "analysisDescription": "Aquí podrás visualizar el saldo por pagar, saldo vencido y la antigüedad de la deuda con el proveedor una vez que se completen los módulos de recepciones y pagos.",
         "placeholders": {
@@ -987,7 +1011,7 @@
         "active": "Activo",
         "inactive": "Inactivo"
       },
-      "credit": {
+       "credit": {
         "title": "Crédito y Cobranza",
         "editCredit": "Editar Condiciones de Crédito",
         "limit": "Límite de Crédito",
@@ -995,6 +1019,32 @@
         "daysUnit": "días",
         "isActive": "Crédito Activo",
         "currency": "Moneda del Límite",
+        "portfolioAnalysis": "Análisis de Cartera",
+        "loadingAnalysis": "Cargando análisis de cartera...",
+        "creditNotActive": "El crédito no está activo para este cliente",
+        "usedCredit": "Crédito Utilizado",
+        "availableCredit": "Crédito Disponible",
+        "currentBalance": "Saldo Vigente",
+        "overdueBalance": "Saldo Vencido",
+        "utilized": "utilizado",
+        "accountsReceivable": "Cuentas por Cobrar",
+        "reference": "Referencia",
+        "issueDate": "Fecha Emisión",
+        "dueDate": "Fecha Vencimiento",
+        "totalAmount": "Monto Total",
+        "remainingAmount": "Saldo Pendiente",
+        "status": "Estado",
+        "aging": "Antigüedad",
+        "daysOverdue": "días vencidos",
+        "statuses": {
+          "pending": "Pendiente",
+          "partial": "Parcial",
+          "paid": "Pagado",
+          "overdue": "Vencido",
+          "cancelled": "Cancelado"
+        },
+        "analysisTitle": "Análisis de Deuda (Próximamente)",
+        "analysisDescription": "Aquí podrás visualizar el saldo por pagar, saldo vencido y la antigüedad de la deuda con el proveedor una vez que se completen los módulos de recepciones y pagos.",
         "placeholders": {
           "limit": "Ej: 50000.00",
           "days": "Ej: 30"
@@ -1228,6 +1278,9 @@
         "product": "Producto",
         "quantity": "Cantidad",
         "price": "Precio",
+        "selectPrice": "Seleccionar Precio",
+        "basePrice": "Precio Base",
+        "customPrice": "Precio Personalizado",
         "selectProduct": "Seleccionar producto...",
         "placeholders": {
           "quantity": "Ej: 100",
@@ -2024,6 +2077,9 @@
         "selectMethod": "Seleccionar método de pago",
         "cash": "Efectivo",
         "card": "Tarjeta",
+        "credit": "Crédito",
+        "creditLimit": "Límite de crédito",
+        "days": "días",
         "cashReceived": "Efectivo Recibido",
         "change": "Cambio",
         "insufficientCash": "El monto en efectivo es insuficiente",
@@ -3371,7 +3427,45 @@
     "subtitle": "Gestiona las cuentas por cobrar ({count} cuentas)",
     "addAccount": "Nueva Cuenta por Cobrar",
     "editAccount": "Editar Cuenta por Cobrar",
+    "registerPayment": "Registrar Pago",
     "confirmDelete": "¿Estás seguro de que deseas eliminar esta cuenta por cobrar?",
+    "actions": {
+      "registerPayment": "Registrar Pago",
+      "viewPayments": "Ver Pagos"
+    },
+    "paymentHistory": {
+      "title": "Historial de Pagos",
+      "accountSummary": "Resumen de la Cuenta",
+      "paymentsTitle": "Pagos Registrados",
+      "noPayments": "No hay pagos registrados para esta cuenta",
+      "paidAmount": "Monto Pagado",
+      "registeredBy": "Registrado por"
+    },
+    "paymentDrawer": {
+      "reference": "Referencia",
+      "totalAmount": "Monto Total",
+      "remainingAmount": "Monto Pendiente",
+      "amount": "Monto del Pago",
+      "paymentDate": "Fecha de Pago",
+      "paymentMethod": "Método de Pago",
+      "notes": "Notas",
+      "referencePlaceholder": "Número de referencia o transacción",
+      "notesPlaceholder": "Notas adicionales sobre el pago",
+      "methods": {
+        "cash": "Efectivo",
+        "creditCard": "Tarjeta de Crédito",
+        "debitCard": "Tarjeta de Débito",
+        "bankTransfer": "Transferencia Bancaria",
+        "check": "Cheque",
+        "other": "Otro"
+      },
+      "errors": {
+        "amountRequired": "El monto es requerido",
+        "amountExceedsRemaining": "El monto excede el saldo pendiente",
+        "dateRequired": "La fecha es requerida",
+        "methodRequired": "El método de pago es requerido"
+      }
+    },
     "table": {
       "reference": "Referencia",
       "client": "Cliente",

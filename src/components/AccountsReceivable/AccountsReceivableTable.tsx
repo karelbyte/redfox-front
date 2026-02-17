@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { AccountReceivable, AccountReceivableStatus } from '@/types/account-receivable';
 import { Client } from '@/types/client';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -13,9 +13,12 @@ interface AccountsReceivableTableProps {
   isLoading: boolean;
   onEdit: (account: AccountReceivable) => void;
   onDelete: (account: AccountReceivable) => void;
+  onRegisterPayment: (account: AccountReceivable) => void;
+  onViewPayments: (account: AccountReceivable) => void;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  visibleColumns?: string[];
 }
 
 export default function AccountsReceivableTable({ 
@@ -23,14 +26,22 @@ export default function AccountsReceivableTable({
   clients, 
   isLoading, 
   onEdit, 
-  onDelete, 
+  onDelete,
+  onRegisterPayment,
+  onViewPayments,
   currentPage, 
   totalPages, 
-  onPageChange 
+  onPageChange,
+  visibleColumns
 }: AccountsReceivableTableProps) {
   const t = useTranslations('accountsReceivable');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+
+  const isVisible = (key: string) => {
+    if (!visibleColumns) return true;
+    return visibleColumns.includes(key);
+  };
 
   const getClientName = (clientId: string) => {
     const client = clients.find(c => c.id === clientId);
@@ -88,98 +99,143 @@ export default function AccountsReceivableTable({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.reference')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.client')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.totalAmount')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.remainingAmount')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.dueDate')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.status')}
-              </th>
-              <th
-                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.actions')}
-              </th>
+              {isVisible('reference') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.reference')}
+                </th>
+              )}
+              {isVisible('client') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.client')}
+                </th>
+              )}
+              {isVisible('totalAmount') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.totalAmount')}
+                </th>
+              )}
+              {isVisible('remainingAmount') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.remainingAmount')}
+                </th>
+              )}
+              {isVisible('dueDate') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.dueDate')}
+                </th>
+              )}
+              {isVisible('status') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.status')}
+                </th>
+              )}
+              {isVisible('actions') && (
+                <th
+                  className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.actions')}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {accounts.map((account) => (
               <tr key={account.id} className="hover:bg-primary-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{account.referenceNumber}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {getClientName(account.clientId)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(account.totalAmount)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(account.remainingAmount)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(account.dueDate)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(account.status)}`}
-                  >
-                    {t(`status.${account.status.toLowerCase()}`)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    {can(["account_receivable_update"]) && (
+                {isVisible('reference') && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{account.referenceNumber}</div>
+                  </td>
+                )}
+                {isVisible('client') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {getClientName(account.clientId)}
+                  </td>
+                )}
+                {isVisible('totalAmount') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {formatCurrency(account.totalAmount)}
+                  </td>
+                )}
+                {isVisible('remainingAmount') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {formatCurrency(account.remainingAmount)}
+                  </td>
+                )}
+                {isVisible('dueDate') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatDate(account.dueDate)}
+                  </td>
+                )}
+                {isVisible('status') && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(account.status)}`}
+                    >
+                      {t(`status.${account.status.toLowerCase()}`)}
+                    </span>
+                  </td>
+                )}
+                {isVisible('actions') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
                       <Btn
                         variant="ghost"
                         size="sm"
-                        onClick={() => onEdit(account)}
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={tCommon('actions.edit')}
+                        onClick={() => onViewPayments(account)}
+                        leftIcon={<ClockIcon className="h-4 w-4" />}
+                        title={t('actions.viewPayments')}
                       />
-                    )}
-                    {can(["account_receivable_delete"]) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(account)}
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        title={tCommon('actions.delete')}
-                        style={{ color: '#dc2626' }}
-                      />
-                    )}
-                  </div>
-                </td>
+                      {account.status !== AccountReceivableStatus.PAID && account.status !== AccountReceivableStatus.CANCELLED && can(["account_receivable_update"]) && (
+                        <Btn
+                          variant="primary"
+                          size="sm"
+                          onClick={() => onRegisterPayment(account)}
+                          title={t('actions.registerPayment')}
+                        >
+                          {t('actions.registerPayment')}
+                        </Btn>
+                      )}
+                      {can(["account_receivable_update"]) && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(account)}
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                          title={tCommon('actions.edit')}
+                        />
+                      )}
+                      {can(["account_receivable_delete"]) && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(account)}
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          title={tCommon('actions.delete')}
+                          style={{ color: '#dc2626' }}
+                        />
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

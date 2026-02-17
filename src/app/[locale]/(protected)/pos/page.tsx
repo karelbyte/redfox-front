@@ -8,7 +8,7 @@ import { inventoryService, InventoryProduct } from '@/services/inventory.service
 import { cashRegisterService } from '@/services/cash-register.service';
 import { ticketPrinterService } from '@/services/ticket-printer.service';
 import { toastService } from '@/services/toast.service';
-import { SaleFormData } from '@/types/sale';
+import { SaleFormData, PaymentMethod } from '@/types/sale';
 import { Client } from '@/types/client';
 import { CashRegister } from '@/types/cash-register';
 import Drawer from '@/components/Drawer/Drawer';
@@ -33,7 +33,7 @@ export default function POSPage() {
   const [showClientDrawer, setShowClientDrawer] = useState(false);
   const [isSavingClient, setIsSavingClient] = useState(false);
   const [isClientFormValid, setIsClientFormValid] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CASH);
   const [cashAmount, setCashAmount] = useState<number>(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [currentCashRegister, setCurrentCashRegister] = useState<CashRegister | null>(null);
@@ -325,7 +325,7 @@ export default function POSPage() {
       return;
     }
 
-    if (paymentMethod === 'cash' && cashAmount < getTotal()) {
+    if (paymentMethod === PaymentMethod.CASH && cashAmount < getTotal()) {
       toastService.error(t('messages.insufficientCash'));
       return;
     }
@@ -338,7 +338,8 @@ export default function POSPage() {
         destination: 'Venta POS',
         client_id: selectedClient,
         type: 'POS',
-        amount: getTotal()
+        amount: getTotal(),
+        payment_method: paymentMethod,
       };
 
       const sale = await saleService.createSale(saleData);
@@ -368,8 +369,8 @@ export default function POSPage() {
           client: selectedClientData || null,
           cashierName: 'POS System', // Se puede obtener del contexto de usuario
           paymentMethod: paymentMethod,
-          cashAmount: paymentMethod === 'cash' ? cashAmount : undefined,
-          change: paymentMethod === 'cash' ? getChange() : undefined,
+          cashAmount: paymentMethod === PaymentMethod.CASH ? cashAmount : undefined,
+          change: paymentMethod === PaymentMethod.CASH ? getChange() : undefined,
           locale,
           labels: {
             ticket: t('ticket.ticket', { default: 'Ticket' }),
@@ -399,17 +400,17 @@ export default function POSPage() {
         toastService.warning(t('messages.ticketPrintError'));
       }
 
-      // Registrar transacción de caja según el método de pago
-      if (currentCashRegister && currentCashRegister.status === 'open') {
+      // Registrar transacción de caja solo si NO es crédito
+      if (paymentMethod !== PaymentMethod.CREDIT && currentCashRegister && currentCashRegister.status === 'open') {
         try {
           const transactionType: 'sale' | 'adjustment' = 'sale';
           let transactionDescription = '';
           let transactionPaymentMethod: 'cash' | 'card' | 'mixed' = 'cash';
 
-          if (paymentMethod === 'cash') {
+          if (paymentMethod === PaymentMethod.CASH) {
             transactionDescription = `Venta POS en Efectivo - ${sale.code}`;
             transactionPaymentMethod = 'cash';
-          } else if (paymentMethod === 'card') {
+          } else if (paymentMethod === PaymentMethod.CARD) {
             transactionDescription = `Venta POS con Tarjeta - ${sale.code}`;
             transactionPaymentMethod = 'card';
           }
@@ -436,7 +437,7 @@ export default function POSPage() {
 
       toastService.success(t('messages.saleCompleted'));
       clearCart();
-      setPaymentMethod('cash');
+      setPaymentMethod(PaymentMethod.CASH);
       setCashAmount(0);
       setShowPaymentModal(false);
       
@@ -562,6 +563,7 @@ export default function POSPage() {
         onCashAmountChange={setCashAmount}
         getChange={getChange}
         onDownloadTicket={handleDownloadTicket}
+        selectedClient={clients.find(c => c.id === selectedClient)}
       />
 
       {/* Modal de inicialización de caja */}

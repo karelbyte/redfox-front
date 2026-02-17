@@ -18,7 +18,13 @@ export const accountsReceivableService = {
     status?: AccountReceivableStatus,
     clientId?: number,
     overdue?: boolean
-  ): Promise<PaginatedResponse<AccountReceivable>> {
+  ): Promise<{
+    data: AccountReceivable[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
@@ -30,7 +36,7 @@ export const accountsReceivableService = {
     if (overdue) params.append('overdue', 'true');
 
     const response = await api.get(`/accounts-receivable?${params.toString()}`);
-    return response as PaginatedResponse<AccountReceivable>;
+    return response as any;
   },
 
   async getAccountReceivable(id: number): Promise<AccountReceivable> {
@@ -69,5 +75,28 @@ export const accountsReceivableService = {
 
   async updateOverdueStatus(): Promise<void> {
     await api.post('/accounts-receivable/update-overdue-status', {});
+  },
+
+  async getClientCreditAnalysis(clientId: string): Promise<{
+    totalCredit: number;
+    usedCredit: number;
+    availableCredit: number;
+    overdueBalance: number;
+    currentBalance: number;
+    accounts: Array<{
+      id: number;
+      referenceNumber: string;
+      issueDate: Date;
+      dueDate: Date;
+      totalAmount: number;
+      paidAmount: number;
+      remainingAmount: number;
+      status: AccountReceivableStatus;
+      daysOverdue: number;
+      agingCategory: string;
+    }>;
+  }> {
+    const response = await api.get(`/accounts-receivable/client/${clientId}/analysis`);
+    return response as any;
   },
 };

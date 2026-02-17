@@ -2,21 +2,24 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { BanknotesIcon, CreditCardIcon, XMarkIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import { BanknotesIcon, CreditCardIcon, XMarkIcon, DocumentArrowDownIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Input, Btn } from '@/components/atoms';
+import { Client } from '@/types/client';
+import { PaymentMethod } from '@/types/sale';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  paymentMethod: 'cash' | 'card';
+  paymentMethod: PaymentMethod;
   cashAmount: number;
   total: number;
   loading: boolean;
-  onPaymentMethodChange: (method: 'cash' | 'card') => void;
+  onPaymentMethodChange: (method: PaymentMethod) => void;
   onCashAmountChange: (amount: number) => void;
   getChange: () => number;
   onDownloadTicket?: () => void;
+  selectedClient?: Client | null;
 }
 
 const PaymentModal = React.memo(({
@@ -30,20 +33,24 @@ const PaymentModal = React.memo(({
   onPaymentMethodChange,
   onCashAmountChange,
   getChange,
-  onDownloadTicket
+  onDownloadTicket,
+  selectedClient
 }: PaymentModalProps) => {
   const t = useTranslations('pages.pos');
 
   if (!isOpen) return null;
 
   const handleConfirm = () => {
-    if (paymentMethod === 'cash' && cashAmount < total) {
+    if (paymentMethod === PaymentMethod.CASH && cashAmount < total) {
       return; // No permitir confirmar si el efectivo es insuficiente
     }
     onConfirm();
   };
 
-  const isCashInsufficient = paymentMethod === 'cash' && cashAmount < total;
+  const isCashInsufficient = paymentMethod === PaymentMethod.CASH && cashAmount < total;
+  const hasActiveCredit = selectedClient?.credit?.is_active === true;
+  const creditLimit = selectedClient?.credit?.credit_limit || 0;
+  const creditDays = selectedClient?.credit?.credit_days || 0;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -77,9 +84,9 @@ const PaymentModal = React.memo(({
               <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                 <input
                   type="radio"
-                  value="cash"
-                  checked={paymentMethod === 'cash'}
-                  onChange={(e) => onPaymentMethodChange(e.target.value as 'cash')}
+                  value={PaymentMethod.CASH}
+                  checked={paymentMethod === PaymentMethod.CASH}
+                  onChange={(e) => onPaymentMethodChange(e.target.value as PaymentMethod)}
                   className="text-primary-600"
                 />
                 <BanknotesIcon className="h-5 w-5" />
@@ -88,19 +95,37 @@ const PaymentModal = React.memo(({
               <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                 <input
                   type="radio"
-                  value="card"
-                  checked={paymentMethod === 'card'}
-                  onChange={(e) => onPaymentMethodChange(e.target.value as 'card')}
+                  value={PaymentMethod.CARD}
+                  checked={paymentMethod === PaymentMethod.CARD}
+                  onChange={(e) => onPaymentMethodChange(e.target.value as PaymentMethod)}
                   className="text-primary-600"
                 />
                 <CreditCardIcon className="h-5 w-5" />
                 <span className="font-medium">{t('payment.card')}</span>
               </label>
+              {hasActiveCredit && (
+                <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="radio"
+                    value={PaymentMethod.CREDIT}
+                    checked={paymentMethod === PaymentMethod.CREDIT}
+                    onChange={(e) => onPaymentMethodChange(e.target.value as PaymentMethod)}
+                    className="text-primary-600"
+                  />
+                  <ClockIcon className="h-5 w-5" />
+                  <div className="flex-1">
+                    <span className="font-medium block">{t('payment.credit')}</span>
+                    <span className="text-xs text-gray-500">
+                      {t('payment.creditLimit')}: ${creditLimit.toFixed(2)} | {creditDays} {t('payment.days')}
+                    </span>
+                  </div>
+                </label>
+              )}
             </div>
           </div>
 
           {/* Efectivo recibido */}
-          {paymentMethod === 'cash' && (
+          {paymentMethod === PaymentMethod.CASH && (
             <div className="mb-6">
               <Input
                 label={t('payment.cashReceived')}

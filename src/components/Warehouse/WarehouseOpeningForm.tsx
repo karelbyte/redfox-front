@@ -7,7 +7,7 @@ import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
 import { WarehouseOpeningFormData, WarehouseOpening } from '@/types/warehouse-opening';
 import { Warehouse } from '@/types/warehouse';
-import { Input, SearchSelect } from '@/components/atoms';
+import { Input, SearchSelect, Select } from '@/components/atoms';
 
 export interface WarehouseOpeningFormProps {
   warehouseId: string;
@@ -40,6 +40,9 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
+    const [selectedProduct, setSelectedProduct] = useState<any>(null);
+    const [availablePrices, setAvailablePrices] = useState<Array<{ value: string; label: string }>>([]);
+    const [selectedPriceOption, setSelectedPriceOption] = useState<string>('custom');
     const isSubmittingRef = useRef(false);
 
     useEffect(() => {
@@ -59,6 +62,59 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
         });
       }
     }, [opening, warehouseId]);
+
+    // Fetch product details when product is selected
+    useEffect(() => {
+      const fetchProductDetails = async () => {
+        if (formData.productId && !opening) {
+          try {
+            const product = await productService.getProductById(formData.productId);
+            setSelectedProduct(product);
+
+            // Build available prices
+            const prices: Array<{ value: string; label: string }> = [];
+
+            // Add base price
+            if (product.base_price !== undefined && product.base_price !== null) {
+              prices.push({
+                value: product.base_price.toString(),
+                label: `${t('form.basePrice')}: ${product.base_price.toFixed(2)}`
+              });
+            }
+
+            // Add prices from price list
+            if (product.prices && product.prices.length > 0) {
+              product.prices.forEach(price => {
+                prices.push({
+                  value: price.price.toString(),
+                  label: `${price.name}: ${price.price.toFixed(2)}`
+                });
+              });
+            }
+
+            // Add custom price option
+            prices.push({
+              value: 'custom',
+              label: t('form.customPrice')
+            });
+
+            setAvailablePrices(prices);
+
+            // Set default price to base price if available
+            if (prices.length > 0 && prices[0].value !== 'custom') {
+              setSelectedPriceOption(prices[0].value);
+              setFormData(prev => ({ ...prev, price: parseFloat(prices[0].value) }));
+            } else {
+              setSelectedPriceOption('custom');
+            }
+          } catch (error) {
+            console.error('Error fetching product details:', error);
+          }
+        }
+      };
+
+      fetchProductDetails();
+    }, [formData.productId, opening, t]);
 
     // Función para buscar productos - memoizada para evitar llamadas innecesarias
     const searchProducts = useCallback(async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
@@ -213,6 +269,13 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       submit: handleSubmit,
     }), []);
 
+    const handlePriceOptionChange = (value: string) => {
+      setSelectedPriceOption(value);
+      if (value !== 'custom') {
+        setFormData(prev => ({ ...prev, price: parseFloat(value) }));
+      }
+    };
+
     return (
       <form className="space-y-6">
         <div>
@@ -241,6 +304,16 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
           error={errors.quantity}
         />
 
+        {availablePrices.length > 0 && !opening && (
+          <Select
+            id="priceOption"
+            label={t('form.selectPrice')}
+            value={selectedPriceOption}
+            onChange={(e) => handlePriceOptionChange(e.target.value)}
+            options={availablePrices}
+          />
+        )}
+
         <Input
           type="number"
           id="price"
@@ -249,9 +322,13 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
           min="0.01"
           step="0.01"
           value={formData.price || ''}
-          onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
+          onChange={(e) => {
+            setFormData(prev => ({ ...prev, price: Number(e.target.value) }));
+            setSelectedPriceOption('custom');
+          }}
           placeholder={t('form.placeholders.price')}
           error={errors.price}
+          disabled={selectedPriceOption !== 'custom' && !opening}
         />
       </form>
     );
