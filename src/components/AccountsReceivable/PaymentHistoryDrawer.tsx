@@ -66,7 +66,6 @@ export default function PaymentHistoryDrawer({
       onClose={onClose}
       title={`${t('paymentHistory.title')} - ${account.referenceNumber}`}
       width="max-w-3xl"
-      hideFooter
     >
       <div className="space-y-6">
         {/* Account Summary */}

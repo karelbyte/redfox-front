@@ -13,7 +13,7 @@ interface PaymentDrawerProps {
   onSubmit: (paymentData: {
     amount: number;
     paymentDate: string;
-    paymentMethod: string;
+    paymentMethod: PaymentMethod;
     reference?: string;
     notes?: string;
   }) => Promise<void>;
@@ -34,7 +34,7 @@ export default function PaymentDrawer({
   const [paymentDate, setPaymentDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
-  const [paymentMethod, setPaymentMethod] = useState<string>(PaymentMethod.CASH);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CASH);
   const [reference, setReference] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -155,7 +155,7 @@ export default function PaymentDrawer({
           <Select
             label={t('paymentDrawer.paymentMethod')}
             value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
+            onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
             options={paymentMethodOptions}
             error={errors.paymentMethod}
             required

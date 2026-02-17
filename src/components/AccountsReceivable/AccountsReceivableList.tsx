@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { AccountReceivable, AccountReceivableStatus } from '@/types/account-receivable';
+import { AccountReceivable, AccountReceivableStatus, PaymentMethod } from '@/types/account-receivable';
 import { Client } from '@/types/client';
 import { accountsReceivableService } from '@/services/accounts-receivable.service';
 import { clientsService } from '@/services/clients.service';
@@ -170,7 +170,7 @@ export default function AccountsReceivableList() {
   const handlePaymentSubmit = async (paymentData: {
     amount: number;
     paymentDate: string;
-    paymentMethod: string;
+    paymentMethod: PaymentMethod;
     reference?: string;
     notes?: string;
   }) => {
