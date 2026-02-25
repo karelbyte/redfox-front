@@ -1,8 +1,6 @@
 This is the RedFox POS frontend: a [Next.js](https://nextjs.org) application with multi-language support (es/en) and integration to the RedFox API.
 
-## 🚀 Phase 2 Features - Expansion
-
-This version includes the Phase 2 expansion features:
+![Nitro](https://i.imgur.com/EyDykIP.png)
 
 ### 💰 Financial Management
 - **Expense Tracking**: Complete expense management with categories and receipts
