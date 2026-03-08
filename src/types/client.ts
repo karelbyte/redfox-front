@@ -43,6 +43,7 @@ export interface Client {
   pack_client_response?: any;
   addresses?: ClientAddress[];
   taxData?: ClientTaxData[];
+  balance: number;
   credit?: {
     id: string;
     credit_limit: number;

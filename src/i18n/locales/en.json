@@ -14,7 +14,14 @@
         "clear": "Clear",
         "min": "Min",
         "max": "Max",
-        "select": "Select..."
+        "select": "Select...",
+        "surrogateInput": {
+          "useSuggestion": "Use suggestion: {code}",
+          "refreshSuggestion": "Refresh suggestion",
+          "suggestionLabel": "Suggestion: {code}",
+          "useAction": "Use",
+          "loadingSuggestion": "Loading suggestion..."
+        }
       }
     },
     "actions": {
@@ -438,6 +445,7 @@
         "measurementUnit": "Measurement Unit",
         "type": "Type",
         "price": "Price",
+        "stock": "Stock",
         "tax": "Tax",
         "status": "Status",
         "actions": "Actions",
@@ -776,6 +784,7 @@
         "name": "Name",
         "description": "Description",
         "email": "Email",
+        "balance": "Balance",
         "status": "Status",
         "actions": "Actions"
       },
@@ -882,6 +891,13 @@
           "created": "Address added successfully",
           "updated": "Address updated successfully",
           "deleted": "Address deleted successfully"
+        },
+        "emptyState": {
+          "title": "No addresses registered",
+          "description": "This provider does not have any addresses configured yet."
+        },
+        "table": {
+          "actions": "Actions"
         }
       },
       "taxData": {
@@ -913,6 +929,10 @@
           "created": "Tax data added successfully",
           "updated": "Tax data updated successfully",
           "deleted": "Tax data deleted successfully"
+        },
+        "emptyState": {
+          "title": "No tax data registered",
+          "description": "This provider does not have any tax profiles configured yet."
         }
       }
     },
@@ -985,6 +1005,7 @@
         "name": "Name",
         "description": "Description",
         "email": "Email",
+        "balance": "Balance",
         "taxDocument": "Tax Document",
         "status": "Status",
         "actions": "Actions",
@@ -1102,6 +1123,9 @@
           "created": "Address added successfully",
           "updated": "Address updated successfully",
           "deleted": "Address deleted successfully"
+        },
+        "table": {
+          "actions": "Actions"
         }
       },
       "taxData": {
@@ -1121,35 +1145,39 @@
           "taxDocumentRequired": "Tax document is required",
           "taxNameRequired": "Legal name is required"
         },
+        "emptyState": {
+          "title": "Tax Data not registered",
+          "description": "This client does not have any configured tax profiles yet."
+        },
         "messages": {
           "created": "Tax data added successfully",
           "updated": "Tax data updated successfully",
           "deleted": "Tax data deleted successfully"
         },
         "regimes": {
-          "601": "General de Ley Personas Morales",
-          "603": "Personas Morales con Fines no Lucrativos",
-          "605": "Sueldos y Salarios e Ingresos Asimilados a Salarios",
-          "606": "Arrendamiento",
-          "608": "Demás ingresos",
-          "609": "Consolidación",
-          "610": "Residentes en el Extranjero sin Establecimiento Permanente en México",
-          "611": "Ingresos por Dividendos (socios y accionistas)",
-          "612": "Personas Físicas con Actividades Empresariales y Profesionales",
-          "614": "Ingresos por intereses",
-          "616": "Sin obligaciones fiscales",
-          "620": "Sociedades Cooperativas de Producción que optan por diferir sus ingresos",
-          "621": "Incorporación Fiscal",
-          "622": "Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras",
-          "623": "Opcional para Grupos de Sociedades",
-          "624": "Coordinados",
-          "628": "Hidrocarburos",
-          "607": "Régimen de Enajenación o Adquisición de Bienes",
-          "629": "De los Regímenes Fiscales Preferentes y de las Empresas Multinacionales",
-          "630": "Enajenación de acciones en bolsa de valores",
-          "615": "Régimen de los ingresos por obtención de premios",
-          "625": "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
-          "626": "Régimen Simplificado de Confianza"
+          "601": "General Law for Legal Entities",
+          "603": "Non-Profit Legal Entities",
+          "605": "Wages, Salaries, and Income Assimilated to Salaries",
+          "606": "Leasing",
+          "607": "Regime for Alienation or Acquisition of Goods",
+          "608": "Other Income",
+          "609": "Consolidation",
+          "610": "Foreign Residents without a Permanent Establishment in Mexico",
+          "611": "Dividend Income (Partners and Shareholders)",
+          "612": "Individuals with Business and Professional Activities",
+          "614": "Interest Income",
+          "615": "Regime for Income from Winning Prizes",
+          "616": "No Tax Obligations",
+          "620": "Production Cooperative Societies Opting to Defer Income",
+          "621": "Fiscal Incorporation",
+          "622": "Agricultural, Livestock, Forestry, and Fishing Activities",
+          "623": "Optional Regime for Groups of Companies",
+          "624": "Coordinated Entities",
+          "625": "Business Activities with Income via Technological Platforms",
+          "626": "Simplified Trust Regime",
+          "628": "Hydrocarbons",
+          "629": "Preferential Tax Regimes and Multinational Companies",
+          "630": "Alienation of Shares on the Stock Exchange"
         },
         "invoiceUses": {
           "G01": "Acquisition of merchandise",
@@ -1176,6 +1204,9 @@
           "S01": "No tax effects",
           "CP01": "Payments",
           "CN01": "Payroll"
+        },
+        "table": {
+          "actions": "Actions"
         }
       }
     },
@@ -1254,7 +1285,8 @@
         "description": "Description",
         "quantity": "Quantity",
         "price": "Price",
-        "date": "Date",
+        "stock": "Stock",
+        "tax": "Tax",
         "close": "Close"
       },
       "productMessages": {
@@ -3594,6 +3626,32 @@
       "endDate": "To date",
       "allStatuses": "All statuses",
       "allProviders": "All providers"
+    },
+    "registerPayment": "Register Payment",
+    "paymentDrawer": {
+      "reference": "Reference",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "amount": "Amount to Pay",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "referencePlaceholder": "E.g.: Transaction #12345",
+      "notes": "Notes",
+      "notesPlaceholder": "Additional payment notes...",
+      "methods": {
+        "cash": "Cash",
+        "creditCard": "Credit Card",
+        "debitCard": "Debit Card",
+        "bankTransfer": "Bank Transfer",
+        "check": "Check",
+        "other": "Other"
+      },
+      "errors": {
+        "amountRequired": "Amount is required",
+        "amountExceedsRemaining": "Amount cannot exceed remaining balance",
+        "dateRequired": "Date is required",
+        "methodRequired": "Payment method is required"
+      }
     }
   },
   "cashFlow": {

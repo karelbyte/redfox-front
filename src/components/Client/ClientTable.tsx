@@ -92,6 +92,14 @@ export default function ClientTable({
                 {t('table.email')}
               </th>
             )}
+            {isVisible('balance') && (
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.balance')}
+              </th>
+            )}
             {isVisible('tax_document') && (
               <th
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
@@ -160,6 +168,11 @@ export default function ClientTable({
               {isVisible('email') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {client.email}
+                </td>
+              )}
+              {isVisible('balance') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                  {new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(client.balance)}
                 </td>
               )}
               {isVisible('tax_document') && (

@@ -54,6 +54,7 @@ export default function ProvidersPage() {
     { key: 'name', label: t('table.name') },
     { key: 'description', label: t('table.description') },
     { key: 'email', label: t('table.email') },
+    { key: 'balance', label: t('table.balance') },
     { key: 'status', label: t('table.status') },
     { key: 'actions', label: t('table.actions') },
   ];
@@ -205,7 +206,7 @@ export default function ProvidersPage() {
               <ExportButton
                 data={providers}
                 filename="providers"
-                columns={['code', 'name', 'email', 'phone', 'status']}
+                columns={['code', 'name', 'email', 'balance', 'phone', 'status']}
               />
               <AdvancedFilters
                 fields={[

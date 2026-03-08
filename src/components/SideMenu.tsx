@@ -1194,13 +1194,13 @@ export function SideMenu() {
 
   return (
     <aside
-      className={`relative flex-shrink-0 bg-white border-r h-full transition-[width] duration-200 ${collapsed ? "w-20" : "w-64"}`}
+      className={`relative z-20 flex-shrink-0 bg-white border-r h-full transition-[width] duration-200 ${collapsed ? "w-20" : "w-64"}`}
       style={{ borderColor: `rgb(var(--color-primary-100))` }}
     >
       <button
         type="button"
         onClick={toggleCollapsed}
-        className="absolute -right-3 top-4 z-10 p-1 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors flex items-center justify-center"
+        className="absolute -right-3 top-4 z-10 p-1.5 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors flex items-center justify-center cursor-pointer"
         title={collapsed ? t("expandMenu") : t("collapseMenu")}
         aria-label={collapsed ? t("expandMenu") : t("collapseMenu")}
       >

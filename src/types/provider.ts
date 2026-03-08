@@ -41,6 +41,7 @@ export interface Provider {
   status: boolean;
   addresses?: ProviderAddress[];
   taxData?: ProviderTaxData[];
+  balance: number;
   credit?: {
     id: string;
     credit_limit: number;

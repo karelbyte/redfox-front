@@ -3,6 +3,7 @@ import Input from './Input';
 import Btn from './Btn';
 import { ArrowPathIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { useSurrogate } from '@/hooks/useSurrogate';
+import { useTranslations } from 'next-intl';
 
 interface SurrogateInputProps {
   label: string;
@@ -29,8 +30,9 @@ export function SurrogateInput({
   showSuggestion = true,
   autoSuggest = true,
 }: SurrogateInputProps) {
+  const t = useTranslations('common.components.surrogateInput');
   const [hasUserInput, setHasUserInput] = useState(false);
-  
+
   const {
     suggestedCode,
     loading,
@@ -85,7 +87,7 @@ export function SurrogateInput({
             error={error}
           />
         </div>
-        
+
         {showSuggestion && (
           <div className="flex gap-1 pb-1">
             {suggestedCode && suggestedCode !== value && (
@@ -95,30 +97,30 @@ export function SurrogateInput({
                 size="sm"
                 onClick={handleUseSuggestion}
                 disabled={disabled || loading}
-                title={`Usar sugerencia: ${suggestedCode}`}
+                title={t('useSuggestion', { code: suggestedCode })}
                 leftIcon={<SparklesIcon className="h-4 w-4" />}
               >
                 {suggestedCode}
               </Btn>
             )}
-            
+
             <Btn
               type="button"
               variant="ghost"
               size="sm"
               onClick={handleRefresh}
               disabled={disabled || loading}
-              title="Actualizar sugerencia"
+              title={t('refreshSuggestion')}
               leftIcon={<ArrowPathIcon className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />}
             />
           </div>
         )}
       </div>
-      
+
       {showSuggestion && suggestedCode && !loading && (
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <SparklesIcon className="h-4 w-4" />
-          <span>Sugerencia: {suggestedCode}</span>
+          <span>{t('suggestionLabel', { code: suggestedCode })}</span>
           {suggestedCode !== value && (
             <button
               type="button"
@@ -126,16 +128,16 @@ export function SurrogateInput({
               className="text-primary-600 hover:text-primary-700 underline"
               disabled={disabled}
             >
-              Usar
+              {t('useAction')}
             </button>
           )}
         </div>
       )}
-      
+
       {loading && showSuggestion && (
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <ArrowPathIcon className="h-4 w-4 animate-spin" />
-          <span>Cargando sugerencia...</span>
+          <span>{t('loadingSuggestion')}</span>
         </div>
       )}
     </div>

@@ -12,6 +12,7 @@ import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters
 import Drawer from '@/components/Drawer/Drawer';
 import AccountsPayableTable from './AccountsPayableTable';
 import AccountsPayableForm, { AccountsPayableFormRef } from './AccountsPayableForm';
+import PaymentDrawer from './PaymentDrawer';
 import Loading from '@/components/Loading/Loading';
 
 export default function AccountsPayableList() {
@@ -23,8 +24,10 @@ export default function AccountsPayableList() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isPaymentDrawerOpen, setIsPaymentDrawerOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<AccountPayable | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPaymentSaving, setIsPaymentSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
@@ -101,6 +104,29 @@ export default function AccountsPayableList() {
     }
   };
 
+  const handleRegisterPayment = (account: AccountPayable) => {
+    setSelectedAccount(account);
+    setIsPaymentDrawerOpen(true);
+  };
+
+  const handlePaymentSubmit = async (paymentData: any) => {
+    if (!selectedAccount) return;
+
+    try {
+      setIsPaymentSaving(true);
+      await accountsPayableService.addPayment(selectedAccount.id, paymentData);
+      toastService.success(tCommon('messages.successCreated', { item: t('registerPayment') }));
+      setIsPaymentDrawerOpen(false);
+      setSelectedAccount(null);
+      loadAccounts();
+    } catch (error) {
+      console.error('Error registering payment:', error);
+      toastService.error(tCommon('messages.errorCreating', { item: t('registerPayment') }));
+    } finally {
+      setIsPaymentSaving(false);
+    }
+  };
+
   const handleFilterChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
     setPage(1);
@@ -161,8 +187,8 @@ export default function AccountsPayableList() {
               />
             </>
           )}
-          <Btn 
-            onClick={() => handleOpenDrawer()} 
+          <Btn
+            onClick={() => handleOpenDrawer()}
             className="flex items-center"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
@@ -191,6 +217,7 @@ export default function AccountsPayableList() {
             isLoading={isLoading}
             onEdit={handleOpenDrawer}
             onDelete={handleDelete}
+            onRegisterPayment={handleRegisterPayment}
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
@@ -217,6 +244,19 @@ export default function AccountsPayableList() {
           onValidChange={setIsFormValid}
         />
       </Drawer>
+
+      {selectedAccount && (
+        <PaymentDrawer
+          account={selectedAccount}
+          isOpen={isPaymentDrawerOpen}
+          onClose={() => {
+            setIsPaymentDrawerOpen(false);
+            setSelectedAccount(null);
+          }}
+          onSubmit={handlePaymentSubmit}
+          isSaving={isPaymentSaving}
+        />
+      )}
     </div>
   );
 }

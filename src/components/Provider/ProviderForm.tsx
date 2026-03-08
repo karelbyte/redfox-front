@@ -85,11 +85,6 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
         isValid = false;
       }
 
-      if (!formData.description.trim()) {
-        newErrors.description = t('form.errors.descriptionRequired');
-        isValid = false;
-      }
-
       if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
         newErrors.email = t('form.errors.invalidEmail');
         isValid = false;
@@ -177,7 +172,6 @@ const ProviderForm = forwardRef<ProviderFormRef, ProviderFormProps>(
         <TextArea
           id="description"
           label={t('form.description')}
-          required
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           rows={3}

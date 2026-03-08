@@ -198,11 +198,11 @@ function CertificationPackFormInner(
           disabled={!!pack}
         >
           <option value={CertificationPackType.FACTURAAPI}>FacturaAPI</option>
-          <option value={CertificationPackType.SAT}>SAT</option>
+         {/* <option value={CertificationPackType.SAT}>SAT</option>*/} 
         </select>
       </div>
 
-      <div className="border-t pt-4">
+      <div className="pt-2">
         <h3 className="text-sm font-medium text-gray-700 mb-4">{t('form.configuration')}</h3>
         {renderConfigFields()}
       </div>

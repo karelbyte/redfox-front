@@ -115,8 +115,8 @@ export default function ProviderAddressesPage() {
 
             {!provider.addresses?.length ? (
                 <EmptyState
-                    title={t("addresses.title") + " no registradas"}
-                    description="Este proveedor aún no tiene direcciones configuradas."
+                    title={t("addresses.emptyState.title")}
+                    description={t("addresses.emptyState.description")}
                 />
             ) : (
                 <ProviderAddressTable

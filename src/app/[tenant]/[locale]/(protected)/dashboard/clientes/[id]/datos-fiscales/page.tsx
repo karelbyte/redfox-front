@@ -115,8 +115,8 @@ export default function ClientTaxDataPage() {
 
             {!client.taxData?.length ? (
                 <EmptyState
-                    title={t("taxData.title") + " no registrados"}
-                    description="Este cliente aún no tiene perfiles fiscales configurados."
+                    title={t("taxData.emptyState.title")}
+                    description={t("taxData.emptyState.description")}
                 />
             ) : (
                 <ClientTaxDataTable

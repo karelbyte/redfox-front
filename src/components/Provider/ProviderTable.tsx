@@ -92,6 +92,14 @@ export default function ProviderTable({
                 {t('table.email')}
               </th>
             )}
+            {isVisible('balance') && (
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('table.balance')}
+              </th>
+            )}
             {isVisible('status') && (
               <th
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
@@ -153,6 +161,11 @@ export default function ProviderTable({
               {isVisible('email') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {provider.email}
+                </td>
+              )}
+              {isVisible('balance') && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                  {new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(provider.balance)}
                 </td>
               )}
               {isVisible('status') && (

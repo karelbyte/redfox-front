@@ -115,8 +115,8 @@ export default function ProviderTaxDataPage() {
 
             {!provider.taxData?.length ? (
                 <EmptyState
-                    title={t("taxData.title") + " no registrados"}
-                    description="Este proveedor aún no tiene perfiles fiscales configurados."
+                    title={t("taxData.emptyState.title")}
+                    description={t("taxData.emptyState.description")}
                 />
             ) : (
                 <ProviderTaxDataTable

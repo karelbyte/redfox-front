@@ -55,6 +55,8 @@ export default function ListProductsPage() {
     { key: 'sku', label: t('table.sku') },
     { key: 'brand', label: t('table.brand') },
     { key: 'category', label: t('table.category') },
+    { key: 'price', label: t('table.price') },
+    { key: 'stock', label: t('table.stock') },
     { key: 'status', label: t('table.status') },
     { key: 'actions', label: t('table.actions') },
   ];

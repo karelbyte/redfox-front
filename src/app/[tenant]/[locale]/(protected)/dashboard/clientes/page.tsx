@@ -50,6 +50,7 @@ export default function ClientsPage() {
     { key: 'name', label: t('table.name') },
     { key: 'description', label: t('table.description') },
     { key: 'email', label: t('table.email') },
+    { key: 'balance', label: t('table.balance') },
     { key: 'tax_document', label: t('table.taxDocument') },
     { key: 'status', label: t('table.status') },
     { key: 'actions', label: t('table.actions') },
@@ -242,7 +243,7 @@ export default function ClientsPage() {
                 <ExportButton
                   data={clients}
                   filename="clients"
-                  columns={['code', 'name', 'email', 'tax_document', 'status']}
+                  columns={['code', 'name', 'email', 'balance', 'tax_document', 'status']}
                 >
                 </ExportButton>
                 <AdvancedFilters

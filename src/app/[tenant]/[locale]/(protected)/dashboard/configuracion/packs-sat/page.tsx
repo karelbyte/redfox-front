@@ -138,12 +138,14 @@ export default function CertificationPacksPage() {
         </div>
       </div>
 
-      <div className="mt-6">
-        <SearchInput
-          placeholder={t('searchPlaceholder')}
-          onSearch={handleSearch}
-        />
-      </div>
+      {(packs.length > 0 || searchTerm) && (
+        <div className="mt-6">
+          <SearchInput
+            placeholder={t('searchPlaceholder')}
+            onSearch={handleSearch}
+          />
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">

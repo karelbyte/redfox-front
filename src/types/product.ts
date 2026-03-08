@@ -41,6 +41,7 @@ export interface Product {
   type: ProductType;
   inventory_strategy: InventoryStrategy;
   base_price: number;
+  total_stock: number;
   prices: ProductPrice[];
   images: string[];
   created_at: string;

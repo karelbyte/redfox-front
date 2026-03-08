@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { AccountPayable, AccountPayableStatus } from '@/types/account-payable';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -11,6 +11,7 @@ interface AccountsPayableTableProps {
   isLoading?: boolean;
   onEdit: (account: AccountPayable) => void;
   onDelete: (account: AccountPayable) => void;
+  onRegisterPayment: (account: AccountPayable) => void;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -21,6 +22,7 @@ export default function AccountsPayableTable({
   isLoading,
   onEdit,
   onDelete,
+  onRegisterPayment,
   currentPage,
   totalPages,
   onPageChange,
@@ -153,6 +155,15 @@ export default function AccountsPayableTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
+                    {account.status !== AccountPayableStatus.PAID && account.status !== AccountPayableStatus.CANCELLED && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onRegisterPayment(account)}
+                        leftIcon={<BanknotesIcon className="h-4 w-4 text-green-600" />}
+                        title={t('registerPayment')}
+                      />
+                    )}
                     <Btn
                       variant="ghost"
                       size="sm"
@@ -221,11 +232,10 @@ export default function AccountsPayableTable({
                     <button
                       key={page}
                       onClick={() => onPageChange(page)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                        page === currentPage
+                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${page === currentPage
                           ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
                           : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       {page}
                     </button>

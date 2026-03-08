@@ -84,6 +84,11 @@ export const accountsPayableService = {
     await api.delete(`/accounts-payable/${id}`);
   },
 
+  async addPayment(id: number, data: any): Promise<any> {
+    const response = await api.post(`/accounts-payable/${id}/payments`, data);
+    return response;
+  },
+
   async getAccountsPayableSummary(
     startDate?: string,
     endDate?: string

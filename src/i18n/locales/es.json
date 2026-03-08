@@ -14,7 +14,14 @@
         "clear": "Limpiar",
         "min": "Mín",
         "max": "Máx",
-        "select": "Seleccionar..."
+        "select": "Seleccionar...",
+        "surrogateInput": {
+          "useSuggestion": "Usar sugerencia: {code}",
+          "refreshSuggestion": "Actualizar sugerencia",
+          "suggestionLabel": "Sugerencia: {code}",
+          "useAction": "Usar",
+          "loadingSuggestion": "Cargando sugerencia..."
+        }
       }
     },
     "bulkActions": {
@@ -376,6 +383,8 @@
         "length": "Largo",
         "measurementUnit": "Unidad de Medida",
         "category": "Categoría",
+        "price": "Precio",
+        "stock": "Stock",
         "brand": "Marca",
         "tax": "Impuesto",
         "type": "Tipo",
@@ -445,6 +454,7 @@
         "measurementUnit": "Unidad de Medida",
         "type": "Tipo",
         "price": "Precio",
+        "stock": "Stock",
         "tax": "Impuesto",
         "status": "Estado",
         "actions": "Acciones",
@@ -799,6 +809,7 @@
         "name": "Nombre",
         "description": "Descripción",
         "email": "Email",
+        "balance": "Saldo",
         "status": "Estado",
         "actions": "Acciones"
       },
@@ -905,6 +916,9 @@
           "created": "Dirección añadida correctamente",
           "updated": "Dirección actualizada correctamente",
           "deleted": "Dirección eliminada correctamente"
+        },
+        "table": {
+          "actions": "Actions"
         }
       },
       "taxData": {
@@ -936,6 +950,10 @@
           "created": "Datos fiscales añadidos correctamente",
           "updated": "Datos fiscales actualizados correctamente",
           "deleted": "Datos fiscales eliminados correctamente"
+        },
+        "emptyState": {
+          "title": "Datos Fiscales no registrados",
+          "description": "Este proveedor aún no tiene perfiles fiscales configurados."
         }
       }
     },
@@ -980,6 +998,7 @@
         "name": "Nombre",
         "description": "Descripción",
         "email": "Email",
+        "balance": "Saldo",
         "taxDocument": "Documento Fiscal",
         "status": "Estado",
         "actions": "Acciones",
@@ -1089,14 +1108,17 @@
           "streetRequired": "La calle es requerida",
           "zipCodeRequired": "El código postal es requerido"
         },
-        "emptyState": {
-          "title": "Direcciones no registradas",
-          "description": "Este cliente aún no tiene direcciones configuradas."
-        },
         "messages": {
           "created": "Dirección añadida correctamente",
           "updated": "Dirección actualizada correctamente",
           "deleted": "Dirección eliminada correctamente"
+        },
+        "emptyState": {
+          "title": "Direcciones no registradas",
+          "description": "Este proveedor aún no tiene direcciones configuradas."
+        },
+        "table": {
+          "actions": "Acciones"
         }
       },
       "taxData": {
@@ -1115,6 +1137,10 @@
         "errors": {
           "taxDocumentRequired": "El RFC es requerido",
           "taxNameRequired": "La razón social es requerida"
+        },
+        "emptyState": {
+          "title": "Datos Fiscales no registrados",
+          "description": "Este cliente aún no tiene perfiles fiscales configurados."
         },
         "messages": {
           "created": "Datos fiscales añadidos correctamente",
@@ -1171,6 +1197,9 @@
           "S01": "Sin efectos fiscales",
           "CP01": "Pagos",
           "CN01": "Nómina"
+        },
+        "table": {
+          "actions": "Acciones"
         }
       }
     },
@@ -3612,6 +3641,32 @@
       "endDate": "Fecha hasta",
       "allStatuses": "Todos los estados",
       "allProviders": "Todos los proveedores"
+    },
+    "registerPayment": "Registrar Pago",
+    "paymentDrawer": {
+      "reference": "Referencia",
+      "totalAmount": "Monto Total",
+      "remainingAmount": "Monto Pendiente",
+      "amount": "Monto a Pagar",
+      "paymentDate": "Fecha de Pago",
+      "paymentMethod": "Método de Pago",
+      "referencePlaceholder": "Ej: Transacción #12345",
+      "notes": "Notas",
+      "notesPlaceholder": "Notas adicionales del pago...",
+      "methods": {
+        "cash": "Efectivo",
+        "creditCard": "Tarjeta de Crédito",
+        "debitCard": "Tarjeta de Débito",
+        "bankTransfer": "Transferencia Bancaria",
+        "check": "Cheque",
+        "other": "Otro"
+      },
+      "errors": {
+        "amountRequired": "El monto es requerido",
+        "amountExceedsRemaining": "El monto no puede exceder el saldo pendiente",
+        "dateRequired": "La fecha es requerida",
+        "methodRequired": "El método de pago es requerido"
+      }
     }
   },
   "cashFlow": {
