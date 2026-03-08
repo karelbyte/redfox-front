@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useTheme, ThemeType } from "@/context/ThemeContext";
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { authService } from "@/services/auth.service";
 import { toastService } from "@/services/toast.service";
 
@@ -13,6 +14,7 @@ export default function ForgotPasswordPage() {
     const [success, setSuccess] = useState(false);
     const { currentTheme, themes } = useTheme();
     const t = useTranslations('pages.forgotPassword');
+    const locale = useLocale();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -125,7 +127,7 @@ export default function ForgotPasswordPage() {
 
                             <div className="text-center">
                                 <Link
-                                    href="/login"
+                                    href={`/${locale}/login`}
                                     className="text-sm font-medium transition-colors hover:underline"
                                     style={{ color: `rgb(var(--color-primary-600))` }}
                                 >
@@ -140,7 +142,7 @@ export default function ForgotPasswordPage() {
                             {t('success')}
                         </div>
                         <Link
-                            href="/login"
+                            href={`/${locale}/login`}
                             className="inline-block text-sm font-medium transition-colors hover:underline"
                             style={{ color: `rgb(var(--color-primary-600))` }}
                         >

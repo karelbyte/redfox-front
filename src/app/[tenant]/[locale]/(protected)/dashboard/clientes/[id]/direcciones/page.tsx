@@ -115,8 +115,8 @@ export default function ClientAddressesPage() {
 
             {!client.addresses?.length ? (
                 <EmptyState
-                    title={t("addresses.title") + " no registradas"}
-                    description="Este cliente aún no tiene direcciones configuradas."
+                    title={t("addresses.emptyState.title")}
+                    description={t("addresses.emptyState.description")}
                 />
             ) : (
                 <ClientAddressTable

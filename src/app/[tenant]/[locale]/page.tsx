@@ -1,21 +1,25 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Loading from '@/components/Loading/Loading';
 
 export default function Home() {
   const router = useRouter();
+  const params = useParams();
   const { isAuthenticated, isLoading } = useAuth();
+
+  const tenant = params?.tenant as string;
+  const locale = params?.locale as string;
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/dashboard');
+      router.push(`/${tenant}/${locale}/dashboard`);
     } else if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+      router.push(`/${locale}/login`);
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, router, tenant, locale]);
 
   if (isLoading) {
     return (

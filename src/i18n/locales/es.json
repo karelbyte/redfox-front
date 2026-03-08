@@ -1011,7 +1011,7 @@
         "active": "Activo",
         "inactive": "Inactivo"
       },
-       "credit": {
+      "credit": {
         "title": "Crédito y Cobranza",
         "editCredit": "Editar Condiciones de Crédito",
         "limit": "Límite de Crédito",
@@ -1088,6 +1088,10 @@
         "errors": {
           "streetRequired": "La calle es requerida",
           "zipCodeRequired": "El código postal es requerido"
+        },
+        "emptyState": {
+          "title": "Direcciones no registradas",
+          "description": "Este cliente aún no tiene direcciones configuradas."
         },
         "messages": {
           "created": "Dirección añadida correctamente",

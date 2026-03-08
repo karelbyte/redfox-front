@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
@@ -12,6 +12,8 @@ interface POSHeaderProps {
 export default function POSHeader({ total }: POSHeaderProps) {
   const router = useRouter();
   const locale = useLocale();
+  const params = useParams();
+  const tenant = params?.tenant as string;
   const t = useTranslations('pages.pos');
 
   return (
@@ -21,7 +23,7 @@ export default function POSHeader({ total }: POSHeaderProps) {
           <div className="flex items-center space-x-4">
             <Btn
               variant="ghost"
-              onClick={() => router.push(`/${locale}/dashboard`)}
+              onClick={() => router.push(`/${tenant}/${locale}/dashboard`)}
               leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
             >
               {t('backToDashboard')}

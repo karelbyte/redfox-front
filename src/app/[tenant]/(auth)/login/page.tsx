@@ -1,15 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, ThemeType } from "@/context/ThemeContext";
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
+
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@nitro.com");
   const [password, setPassword] = useState("admin123");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const locale = useLocale();
   const { currentTheme, setTheme, themes } = useTheme();
   const t = useTranslations('pages.login');
 
@@ -187,7 +190,7 @@ export default function LoginPage() {
 
             <div className="text-center">
               <Link
-                href="/forgot-password"
+                href={`/${locale}/forgot-password`}
                 className="text-sm transition-colors"
                 style={{ color: `rgb(var(--color-primary-500))` }}
                 onMouseEnter={(e) => {
@@ -203,7 +206,7 @@ export default function LoginPage() {
 
             <div className="text-center mt-6">
               <Link
-                href="/register"
+                href={`/${locale}/register`}
                 className="text-sm font-medium transition-colors hover:underline"
                 style={{ color: `rgb(var(--color-primary-600))` }}
               >

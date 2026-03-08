@@ -22,19 +22,39 @@ export function LanguageInitializer() {
     try {
       // Get stored language
       const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      
+
       if (storedLanguage && locales.includes(storedLanguage as Locale)) {
         // Extract current locale from pathname
-        const pathSegments = pathname.split('/');
-        const currentLocale = pathSegments[1];
-        
+        const pathSegments = pathname.split('/').filter(Boolean);
+        const localeIndices = pathSegments.reduce((acc, segment, index) => {
+          if (locales.includes(segment as Locale)) {
+            acc.push(index);
+          }
+          return acc;
+        }, [] as number[]);
+
+        const currentLocale = localeIndices.length > 0 ? pathSegments[localeIndices[0]] : null;
+
         // If the stored language is different from the current path locale
-        if (currentLocale !== storedLanguage) {
-          // Remove the current locale from the pathname
-          const pathWithoutLocale = pathname.replace(`/${currentLocale}`, '') || '/';
-          
-          // Navigate to the stored language
-          router.replace(`/${storedLanguage}${pathWithoutLocale}`);
+        if (currentLocale && currentLocale !== storedLanguage) {
+          // Replace the FIRST found locale and remove others
+          let newSegments = [...pathSegments];
+          newSegments[localeIndices[0]] = storedLanguage;
+
+          for (let i = localeIndices.length - 1; i > 0; i--) {
+            newSegments.splice(localeIndices[i], 1);
+          }
+
+          const newPathname = '/' + newSegments.join('/');
+          router.replace(newPathname);
+        } else if (localeIndices.length > 1) {
+          // If the locale is correct but there are duplicates, clean them up
+          let newSegments = [...pathSegments];
+          for (let i = localeIndices.length - 1; i > 0; i--) {
+            newSegments.splice(localeIndices[i], 1);
+          }
+          const newPathname = '/' + newSegments.join('/');
+          router.replace(newPathname);
         }
       }
     } catch (error) {

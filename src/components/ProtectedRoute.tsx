@@ -1,14 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Loading from '@/components/Loading/Loading';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const params = useParams();
   const [isClient, setIsClient] = useState(false);
+
+  const tenant = params?.tenant as string;
+  const locale = params?.locale as string || 'es';
 
   useEffect(() => {
     setIsClient(true);
@@ -16,9 +20,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isClient && !isLoading && !isAuthenticated) {
-      router.push('/login');
+      router.push(`/${locale}/login`);
     }
-  }, [isAuthenticated, isLoading, router, isClient]);
+  }, [isAuthenticated, isLoading, router, isClient, locale]);
 
   if (!isClient || isLoading) {
     return (

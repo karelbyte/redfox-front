@@ -7,7 +7,7 @@ const nextConfig = {
   generateEtags: false,
   poweredByHeader: false,
   compress: true,
-  
+
   async headers() {
     return [
       {
@@ -47,27 +47,27 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
-          source: '/:locale/nitro:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          source: '/:tenant/:locale/nitro:ext(.png|.jpg|.jpeg|.gif|.svg)',
           destination: '/nitro:ext',
         },
         {
-          source: '/:locale/nitrob:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          source: '/:tenant/:locale/nitrob:ext(.png|.jpg|.jpeg|.gif|.svg)',
           destination: '/nitrob:ext',
         },
         {
-          source: '/:locale/nitrog:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          source: '/:tenant/:locale/nitrog:ext(.png|.jpg|.jpeg|.gif|.svg)',
           destination: '/nitrog:ext',
         },
         {
-          source: '/:locale/nitrogy:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          source: '/:tenant/:locale/nitrogy:ext(.png|.jpg|.jpeg|.gif|.svg)',
           destination: '/nitrogy:ext',
         },
         {
-          source: '/:locale/nitrobw:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          source: '/:tenant/:locale/nitrobw:ext(.png|.jpg|.jpeg|.gif|.svg)',
           destination: '/nitrobw:ext',
         },
         {
-          source: '/:locale/nitro-s:ext(.png|.jpg|.jpeg|.gif|.svg)',
+          source: '/:tenant/:locale/nitro-s:ext(.png|.jpg|.jpeg|.gif|.svg)',
           destination: '/nitro-s:ext',
         },
       ],

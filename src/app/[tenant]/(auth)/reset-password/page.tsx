@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { authService } from "@/services/auth.service";
 import { toastService } from "@/services/toast.service";
 import { Suspense } from "react";
+import { useParams } from "next/navigation";
 
 function ResetPasswordForm() {
     const searchParams = useSearchParams();
@@ -20,6 +21,7 @@ function ResetPasswordForm() {
 
     const { currentTheme } = useTheme();
     const t = useTranslations('pages.resetPassword');
+    const locale = useLocale();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -172,7 +174,7 @@ function ResetPasswordForm() {
 
                             <div className="text-center">
                                 <Link
-                                    href="/login"
+                                    href={`/${locale}/login`}
                                     className="text-sm font-medium transition-colors hover:underline"
                                     style={{ color: `rgb(var(--color-primary-600))` }}
                                 >
@@ -187,7 +189,7 @@ function ResetPasswordForm() {
                             {t('success')}
                         </div>
                         <Link
-                            href="/login"
+                            href={`/${locale}/login`}
                             className="inline-block text-base font-semibold py-3 px-8 rounded-lg text-white transition-all duration-200 shadow-sm hover:shadow-md"
                             style={{
                                 backgroundColor: `rgb(var(--color-primary-500))`,

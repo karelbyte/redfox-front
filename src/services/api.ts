@@ -6,13 +6,20 @@ const handleUnauthorized = () => {
     localStorage.removeItem('tokenExpires');
     localStorage.removeItem('user');
 
-    // Obtener el locale actual de la URL
-    const pathname = window.location.pathname;
-    const localeMatch = pathname.match(/^\/([a-z]{2})(\/|$)/);
-    const locale = localeMatch ? localeMatch[1] : 'es';
+    // Obtener tenant y locale de la URL de forma robusta
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const locales = ['es', 'en'];
 
-    // Usar window.location.href con el locale correcto
-    window.location.href = `/${locale}/login`;
+    // El tenant suele ser el primer segmento si no es un locale
+    const firstSegmentIsLocale = locales.includes(segments[0]);
+    const tenant = firstSegmentIsLocale ? null : segments[0];
+    const locale = firstSegmentIsLocale ? segments[0] : (segments[1] || 'es');
+
+    if (tenant) {
+      window.location.href = `/${tenant}/${locale}/login`;
+    } else {
+      window.location.href = `/${locale}/login`;
+    }
   }
 };
 
@@ -21,6 +28,13 @@ const getHeaders = (isFormData = false) => {
 
   if (typeof window !== 'undefined') {
     headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
+    // Obtener el tenant actual de la URL
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const tenant = segments[0];
+    if (tenant) {
+      headers['X-Tenant-Slug'] = tenant;
+    }
   }
 
   if (!isFormData) {

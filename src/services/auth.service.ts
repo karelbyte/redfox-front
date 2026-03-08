@@ -18,6 +18,8 @@ interface LoginResponse {
       status: boolean;
       created_at: string;
     }>;
+    organization_id?: string;
+    organization_slug?: string;
     permissions: string[];
     status: boolean;
     created_at: string;
@@ -148,11 +150,11 @@ export const authService = {
     this.clearAuth();
 
     if (typeof window !== 'undefined') {
-      // Limpiar todas las cookies relacionadas con la autenticación
+      // Limpiar todas las cookies relacionadas con la autenticación y el inquilino
       const cookies = document.cookie.split(';');
       cookies.forEach(cookie => {
         const [name] = cookie.trim().split('=');
-        if (name === 'token' || name.startsWith('auth_')) {
+        if (name === 'token' || name.startsWith('auth_') || name === 'last_tenant') {
           document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=strict`;
         }
       });
@@ -225,6 +227,7 @@ export const authService = {
         const user = JSON.parse(storedUser);
         // Verificar que el usuario tenga los campos mínimos requeridos
         if (user && user.id && user.email) {
+          // Asegurarse de que el usuario tenga el slug si está disponible
           return user;
         }
       } catch (error) {
@@ -285,11 +288,11 @@ export const authService = {
       localStorage.removeItem('tokenExpires');
       localStorage.removeItem('user');
 
-      // Limpiar cookies relacionadas con la autenticación
+      // Limpiar cookies relacionadas con la autenticación y el inquilino
       const cookies = document.cookie.split(';');
       cookies.forEach(cookie => {
         const [name] = cookie.trim().split('=');
-        if (name === 'token' || name.startsWith('auth_')) {
+        if (name === 'token' || name.startsWith('auth_') || name === 'last_tenant') {
           document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; secure; samesite=strict`;
         }
       });

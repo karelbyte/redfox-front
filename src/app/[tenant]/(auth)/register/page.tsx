@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme, ThemeType } from '@/context/ThemeContext';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { authService } from '@/services/auth.service';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { toastService } from '@/services/toast.service';
 
@@ -20,6 +20,7 @@ export default function RegisterPage() {
     const { currentTheme, setTheme, themes } = useTheme();
     const t = useTranslations('pages.register');
     const router = useRouter();
+    const locale = useLocale();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +39,7 @@ export default function RegisterPage() {
         try {
             await authService.register(formData);
             toastService.success(t('success'));
-            router.push('/login');
+            router.push(`/${locale}/login`);
         } catch {
             // Error is handled in service
         } finally {
@@ -247,7 +248,7 @@ export default function RegisterPage() {
 
                         <div className="text-center">
                             <Link
-                                href="/login"
+                                href={`/${locale}/login`}
                                 className="text-sm transition-colors"
                                 style={{ color: `rgb(var(--color-primary-500))` }}
                                 onMouseEnter={(e) => {

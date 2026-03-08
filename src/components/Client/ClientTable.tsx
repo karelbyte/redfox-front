@@ -30,7 +30,8 @@ export default function ClientTable({
   const { can } = usePermissions();
   const router = useRouter();
   const params = useParams();
-  const locale = params.locale;
+  const tenant = params?.tenant as string;
+  const locale = params?.locale as string || 'es';
   if (!Array.isArray(clients)) {
     return null;
   }
@@ -186,7 +187,7 @@ export default function ClientTable({
                         <Btn
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/ventas`)}
+                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/ventas`)}
                           leftIcon={<ShoppingCartIcon className="h-4 w-4" />}
                           title={t('actions.viewSales')}
                           style={{ color: '#059669' }}
@@ -194,21 +195,21 @@ export default function ClientTable({
                         <Btn
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/direcciones`)}
+                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/direcciones`)}
                           leftIcon={<MapPinIcon className="h-4 w-4" />}
                           title={t('addresses.title')}
                         />
                         <Btn
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/datos-fiscales`)}
+                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/datos-fiscales`)}
                           leftIcon={<IdentificationIcon className="h-4 w-4" />}
                           title={t('taxData.title')}
                         />
                         <Btn
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.push(`/${locale}/dashboard/clientes/${client.id}/credito`)}
+                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/credito`)}
                           leftIcon={<BanknotesIcon className="h-4 w-4" />}
                           title={tCredit('title')}
                         />

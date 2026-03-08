@@ -1016,7 +1016,7 @@
         "active": "Active",
         "inactive": "Inactive"
       },
-        "credit": {
+      "credit": {
         "title": "Credit & Collections",
         "editCredit": "Edit Credit Conditions",
         "limit": "Credit Limit",
@@ -1093,6 +1093,10 @@
         "errors": {
           "streetRequired": "Street is required",
           "zipCodeRequired": "Zip code is required"
+        },
+        "emptyState": {
+          "title": "Addresses not registered",
+          "description": "This client does not have any configured addresses yet."
         },
         "messages": {
           "created": "Address added successfully",

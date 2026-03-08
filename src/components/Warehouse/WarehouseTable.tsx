@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { Warehouse, WarehouseCloseResponse } from "@/types/warehouse";
 import {
@@ -36,6 +36,8 @@ export default function WarehouseTable({
   const { can } = usePermissions();
   const router = useRouter();
   const locale = useLocale();
+  const params = useParams();
+  const tenant = params?.tenant as string;
   const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(
     null
   );
@@ -52,7 +54,7 @@ export default function WarehouseTable({
 
   const handleOpenAperturas = (warehouse: Warehouse) => {
     router.push(
-      `/${locale}/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id
+      `/${tenant}/${locale}/dashboard/almacenes/aperturas?warehouse_id=${warehouse.id
       }&warehouse_name=${encodeURIComponent(warehouse.name)}`
     );
   };
@@ -202,8 +204,8 @@ export default function WarehouseTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${warehouse.status
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
                         }`}
                     >
                       {warehouse.status
@@ -216,8 +218,8 @@ export default function WarehouseTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${warehouse.is_open
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
                         }`}
                     >
                       {warehouse.is_open ? t("status.open") : t("status.closed")}

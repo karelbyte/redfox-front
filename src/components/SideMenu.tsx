@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -26,9 +26,13 @@ const SIDEBAR_COLLAPSED_STORAGE_KEY = "nitro-sidebar-collapsed";
 export function SideMenu() {
   const pathname = usePathname();
   const router = useRouter();
+  const params = useParams();
   const locale = useLocale();
   const t = useTranslations("navigation");
   const { can } = usePermissions();
+
+  const tenant = params?.tenant as string;
+
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredCollapsedItem, setHoveredCollapsedItem] = useState<string | null>(null);
@@ -128,8 +132,8 @@ export function SideMenu() {
     }
   };
 
-  // Función para construir rutas con locale
-  const getLocalizedPath = useCallback((path: string) => `/${locale}${path}`, [locale]);
+  // Función para construir rutas con tenant y locale
+  const getLocalizedPath = useCallback((path: string) => `/${tenant}/${locale}${path}`, [tenant, locale]);
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -1169,7 +1173,7 @@ export function SideMenu() {
     if (!item.howCan || item.howCan.length === 0) {
       return true;
     }
-    
+
     // Verificar si el usuario tiene al menos uno de los permisos requeridos
     return can(item.howCan);
   };
@@ -1180,7 +1184,7 @@ export function SideMenu() {
     if (!subItem.howCan || subItem.howCan.length === 0) {
       return true;
     }
-    
+
     // Verificar si el usuario tiene al menos uno de los permisos requeridos
     return can(subItem.howCan);
   };
@@ -1259,26 +1263,26 @@ export function SideMenu() {
               const options = filteredSubItems.length > 0
                 ? filteredSubItems
                 : [{ name: item.name, path: item.path, icon: item.icon }];
-              
+
               const handleCollapsedEnter = (e: React.MouseEvent<HTMLDivElement>) => {
                 if (collapsePopoverTimeoutRef.current) {
                   clearTimeout(collapsePopoverTimeoutRef.current);
                   collapsePopoverTimeoutRef.current = null;
                 }
                 setHoveredCollapsedItem(item.path);
-                
+
                 // Calcular posición del popover
                 const trigger = e.currentTarget;
                 const triggerRect = trigger.getBoundingClientRect();
                 const viewportHeight = window.innerHeight;
-                
+
                 // Estimar altura del popover (cada item ~40px + padding)
                 const estimatedPopoverHeight = options.length * 40 + 16;
-                
+
                 // Verificar si se sale por abajo
                 const spaceBelow = viewportHeight - triggerRect.bottom;
                 const spaceAbove = triggerRect.top;
-                
+
                 if (spaceBelow < estimatedPopoverHeight && spaceAbove > spaceBelow) {
                   // No hay espacio abajo pero sí arriba, alinear al bottom
                   setPopoverPosition({ bottom: 0 });
@@ -1291,14 +1295,14 @@ export function SideMenu() {
                   setPopoverPosition({ top: 0 });
                 }
               };
-              
+
               const handleCollapsedLeave = () => {
                 collapsePopoverTimeoutRef.current = setTimeout(() => {
                   setHoveredCollapsedItem(null);
                   collapsePopoverTimeoutRef.current = null;
                 }, 120);
               };
-              
+
               return (
                 <div
                   key={item.path}
@@ -1330,7 +1334,7 @@ export function SideMenu() {
                   {showPopover && (
                     <div
                       className="absolute left-full z-50 py-1 min-w-[180px] bg-white rounded-lg shadow-lg border border-gray-200 -ml-px"
-                      style={{ 
+                      style={{
                         borderColor: "rgb(var(--color-primary-100))",
                         ...(popoverPosition.top !== undefined ? { top: popoverPosition.top } : {}),
                         ...(popoverPosition.bottom !== undefined ? { bottom: popoverPosition.bottom } : {})
@@ -1402,9 +1406,8 @@ export function SideMenu() {
                     {iconContent}
                     {item.name}
                     <svg
-                      className={`ml-auto w-4 h-4 transform transition-transform ${
-                        isExpanded ? "rotate-180" : ""
-                      }`}
+                      className={`ml-auto w-4 h-4 transform transition-transform ${isExpanded ? "rotate-180" : ""
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"

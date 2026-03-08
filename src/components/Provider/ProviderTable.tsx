@@ -30,7 +30,8 @@ export default function ProviderTable({
   const { can } = usePermissions();
   const router = useRouter();
   const params = useParams();
-  const locale = params.locale;
+  const tenant = params?.tenant as string;
+  const locale = params?.locale as string || 'es';
 
   if (!Array.isArray(providers)) {
     return null;
@@ -133,7 +134,7 @@ export default function ProviderTable({
                   <div className="flex items-center gap-2">
                     <span>{provider.name}</span>
                     {provider.id.startsWith('temp_') && (
-                      <span 
+                      <span
                         className="inline-flex items-center gap-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full"
                         title={tOffline('pendingSync')}
                       >
@@ -174,21 +175,21 @@ export default function ProviderTable({
                         <Btn
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.push(`/${locale}/dashboard/proveedores/${provider.id}/direcciones`)}
+                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/direcciones`)}
                           leftIcon={<MapPinIcon className="h-4 w-4" />}
                           title={t('addresses.title')}
                         />
                         <Btn
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.push(`/${locale}/dashboard/proveedores/${provider.id}/datos-fiscales`)}
+                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/datos-fiscales`)}
                           leftIcon={<IdentificationIcon className="h-4 w-4" />}
                           title={t('taxData.title')}
                         />
                         <Btn
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.push(`/${locale}/dashboard/proveedores/${provider.id}/credito`)}
+                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/credito`)}
                           leftIcon={<BanknotesIcon className="h-4 w-4" />}
                           title={t('credit.title')}
                         />

@@ -15,13 +15,14 @@ export function useLanguage() {
   // Extract locale from pathname
   const getLocaleFromPath = () => {
     const pathSegments = pathname.split('/');
-    return pathSegments[1] || defaultLocale;
+    const foundLocale = pathSegments.find(segment => locales.includes(segment as Locale));
+    return foundLocale || defaultLocale;
   };
 
   // Get stored language from localStorage
   const getStoredLanguage = (): string => {
     if (typeof window === 'undefined') return defaultLocale;
-    
+
     try {
       const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
       return stored && locales.includes(stored as Locale) ? stored : defaultLocale;
@@ -34,7 +35,7 @@ export function useLanguage() {
   // Save language to localStorage
   const saveLanguage = (locale: string) => {
     if (typeof window === 'undefined') return;
-    
+
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, locale);
     } catch (error) {
@@ -44,10 +45,44 @@ export function useLanguage() {
 
   // Change language and save to localStorage and API
   const changeLanguage = async (newLocale: string) => {
-    const currentPathLocale = getLocaleFromPath();
-    
+    const pathSegments = pathname.split('/').filter(Boolean);
+
+    // Find all indices that contain a valid locale
+    const localeIndices = pathSegments.reduce((acc, segment, index) => {
+      if (locales.includes(segment as Locale)) {
+        acc.push(index);
+      }
+      return acc;
+    }, [] as number[]);
+
+    let newSegments = [...pathSegments];
+
+    if (localeIndices.length > 0) {
+      // Replace the FIRST found locale with the new one
+      const primaryLocaleIndex = localeIndices[0];
+      newSegments[primaryLocaleIndex] = newLocale;
+
+      // Remove ANY OTHER locale segments that might have been accidentally added
+      // We process from right to left to avoid index shifting issues
+      for (let i = localeIndices.length - 1; i > 0; i--) {
+        newSegments.splice(localeIndices[i], 1);
+      }
+    } else {
+      // If no locale found, we need to decide where to put it
+      // Usually after tenant if tenant exists, or at the beginning
+      // For now, let's keep it simple: if first segment is NOT a locale, 
+      // it might be a tenant, so we put locale as second segment.
+      if (newSegments.length > 0) {
+        newSegments.splice(1, 0, newLocale);
+      } else {
+        newSegments.push(newLocale);
+      }
+    }
+
+    const newPathname = '/' + newSegments.join('/');
+
     // Don't navigate if clicking on the current locale
-    if (newLocale === currentPathLocale) {
+    if (newLocale === getLocaleFromPath()) {
       return;
     }
 
@@ -57,17 +92,14 @@ export function useLanguage() {
     // Send to API (async, don't wait for it to complete)
     userLanguageService.updateUserLanguage(newLocale);
 
-    // Remove the current locale from the pathname
-    const pathWithoutLocale = pathname.replace(`/${currentPathLocale}`, '') || '/';
-    
     // Navigate to the new locale
-    router.push(`/${newLocale}${pathWithoutLocale}`);
+    router.push(newPathname);
   };
 
   // Update current locale when pathname changes
   useEffect(() => {
     setCurrentLocale(getLocaleFromPath());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return {

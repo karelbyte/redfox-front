@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ThemeSelectorCompact } from "@/components/ThemeSelector";
 import { LanguageSelectorCompact } from "@/components/LanguageSelectorCompact";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 
 const USER_MENU_STORAGE_KEY = 'nitro-user-menu-open';
@@ -18,6 +18,9 @@ export function UserMenu() {
   const t = useTranslations('common');
   const locale = useLocale();
   const router = useRouter();
+  const params = useParams();
+
+  const tenant = params?.tenant as string;
 
   // Load menu state from localStorage on mount
   useEffect(() => {
@@ -75,7 +78,7 @@ export function UserMenu() {
   };
 
   const handlePOSClick = () => {
-    router.push(`/${locale}/pos`);
+    router.push(`/${tenant}/${locale}/pos`);
   };
 
   return (
@@ -123,9 +126,8 @@ export function UserMenu() {
             </p>
           </div>
           <svg
-            className={`h-5 w-5 text-gray-400 transition-transform ${
-              isMenuOpen ? "transform rotate-180" : ""
-            }`}
+            className={`h-5 w-5 text-gray-400 transition-transform ${isMenuOpen ? "transform rotate-180" : ""
+              }`}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
