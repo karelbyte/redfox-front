@@ -180,7 +180,7 @@ const ExpenseForm = forwardRef<ExpenseFormRef, ExpenseFormProps>(
         const data = {
           description: formData.description.trim(),
           amount: Number(formData.amount),
-          categoryId: Number(formData.categoryId),
+          categoryId: formData.categoryId,
           providerId: formData.providerId || undefined,
           reference: formData.reference.trim() || undefined,
           expenseDate: formData.expenseDate,

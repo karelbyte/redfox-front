@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Expense, ExpenseStatus, ExpenseCategory } from '@/types/expense';
@@ -18,14 +18,21 @@ import ExpenseTable from './ExpenseTable';
 import ExpenseForm from './ExpenseForm';
 import { ExpenseFormRef } from './ExpenseForm';
 import ExpenseFilters from './ExpenseFilters';
+import ExpensePaymentDrawer from './ExpensePaymentDrawer';
+import ConfirmModal from '@/components/Modal/ConfirmModal';
 
 export default function ExpenseList() {
   const router = useRouter();
+  const locale = useLocale();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<ExpenseCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showDrawer, setShowDrawer] = useState(false);
+  const [showPaymentDrawer, setShowPaymentDrawer] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [paymentExpense, setPaymentExpense] = useState<Expense | null>(null);
+  const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -45,7 +52,7 @@ export default function ExpenseList() {
   const [filters, setFilters] = useState({
     search: '',
     status: undefined as ExpenseStatus | undefined,
-    categoryId: undefined as number | undefined,
+    categoryId: undefined as string | undefined,
     startDate: '',
     endDate: '',
   });
@@ -105,14 +112,23 @@ export default function ExpenseList() {
     setShowDrawer(true);
   };
 
-  const handleDeleteExpense = async (expense: Expense) => {
-    if (window.confirm(t('confirmDelete'))) {
-      try {
-        await expensesService.deleteExpense(expense.id);
-        loadExpenses();
-      } catch (error) {
-        console.error('Error deleting expense:', error);
-      }
+  const handleDeleteExpense = (expense: Expense) => {
+    setExpenseToDelete(expense);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!expenseToDelete) return;
+
+    try {
+      await expensesService.deleteExpense(expenseToDelete.id);
+      toastService.success(t('messages.expenseDeleted'));
+      setShowDeleteModal(false);
+      setExpenseToDelete(null);
+      loadExpenses();
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+      toastService.error(t('messages.errorDeleting'));
     }
   };
 
@@ -150,7 +166,7 @@ export default function ExpenseList() {
       requiresConfirm: true,
       onClick: async () => {
         try {
-          await expensesService.deleteExpenses(selectedIds.map(Number));
+          await expensesService.deleteExpenses(selectedIds);
           toastService.success(t('bulkDeleteSuccess'));
           clearSelection();
           loadExpenses();
@@ -219,7 +235,6 @@ export default function ExpenseList() {
                 filename="expenses"
                 columns={['id', 'description', 'amount', 'date', 'status']}
               >
-                {tCommon('actions.export')}
               </ExportButton>
               <AdvancedFilters
                 fields={advancedFilterFields}
@@ -265,7 +280,8 @@ export default function ExpenseList() {
             isLoading={isLoading}
             onEdit={handleEditExpense}
             onDelete={handleDeleteExpense}
-            onView={(expenseId) => router.push(`/es/dashboard/finanzas/gastos/${expenseId}`)}
+            onView={(expenseId) => router.push(`/${locale}/dashboard/finanzas/gastos/${expenseId}`)}
+            onPayment={handlePaymentExpense}
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
@@ -304,6 +320,58 @@ export default function ExpenseList() {
           onValidChange={setIsFormValid}
         />
       </Drawer>
+
+      {paymentExpense && (
+        <ExpensePaymentDrawer
+          expense={paymentExpense}
+          isOpen={showPaymentDrawer}
+          onClose={handlePaymentDrawerClose}
+          onSubmit={handlePaymentSubmit}
+          isSaving={isSaving}
+        />
+      )}
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setExpenseToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title={t('deleteModal.title')}
+        message={expenseToDelete ? t('deleteModal.message', { description: expenseToDelete.description }) : ''}
+        confirmText={tCommon('actions.delete')}
+        cancelText={tCommon('actions.cancel')}
+      />
     </div>
   );
+
+  function handlePaymentExpense(expense: Expense) {
+    setPaymentExpense(expense);
+    setShowPaymentDrawer(true);
+  }
+
+  async function handlePaymentSubmit(paymentData: any) {
+    if (!paymentExpense) return;
+
+    try {
+      setIsSaving(true);
+      await expensesService.addPayment(paymentExpense.id, paymentData);
+      toastService.success(t('messages.paymentRegistered'));
+      setShowPaymentDrawer(false);
+      setPaymentExpense(null);
+      loadExpenses();
+    } catch (error) {
+      console.error('Error registering payment:', error);
+      toastService.error(t('messages.errorRegisteringPayment'));
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  function handlePaymentDrawerClose() {
+    setShowPaymentDrawer(false);
+    setPaymentExpense(null);
+    setIsSaving(false);
+  }
 }

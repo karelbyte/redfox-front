@@ -1,5 +1,5 @@
 export interface ExpenseCategory {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   color: string;
@@ -36,10 +36,40 @@ export enum ExpenseRecurrence {
   YEARLY = 'yearly'
 }
 
+export enum PaymentMethod {
+  CASH = 'cash',
+  CREDIT_CARD = 'credit_card',
+  DEBIT_CARD = 'debit_card',
+  BANK_TRANSFER = 'bank_transfer',
+  CHECK = 'check',
+  OTHER = 'other',
+}
+
+export interface ExpensePayment {
+  id: string;
+  amount: number;
+  paymentDate: string;
+  paymentMethod: PaymentMethod;
+  reference?: string;
+  notes?: string;
+  expenseId: string;
+  createdBy?: string;
+  createdByUser?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Expense {
-  id: number;
+  id: string;
   description: string;
   amount: number;
+  paidAmount: number;
+  remainingAmount: number;
   expenseDate: string;
   dueDate?: string;
   status: ExpenseStatus;
@@ -49,8 +79,9 @@ export interface Expense {
   reference?: string;
   providerId?: string;
   provider?: Provider;
-  categoryId: number;
+  categoryId: string;
   category?: ExpenseCategory;
+  payments?: ExpensePayment[];
   createdBy: string;
   createdByUser?: {
     id: string;
@@ -72,10 +103,19 @@ export interface CreateExpenseDto {
   notes?: string;
   providerId?: string;
   reference?: string;
-  categoryId: number;
+  categoryId?: string;
 }
 
 export interface UpdateExpenseDto extends Partial<CreateExpenseDto> {}
+
+export interface CreateExpensePaymentDto {
+  expenseId: string;
+  amount: number;
+  paymentDate: string;
+  paymentMethod: PaymentMethod;
+  reference?: string;
+  notes?: string;
+}
 
 export interface ExpensesSummary {
   totalExpenses: number;

@@ -10,7 +10,7 @@ interface ExpenseFiltersProps {
   filters: {
     search: string;
     status: ExpenseStatus | undefined;
-    categoryId: number | undefined;
+    categoryId: string | undefined;
     startDate: string;
     endDate: string;
   };
@@ -58,7 +58,7 @@ export default function ExpenseFilters({ filters, categories, onFiltersChange, o
   const categoryOptions = [
     { value: '', label: t('filters.allCategories') },
     ...categories.map(category => ({
-      value: category.id.toString(),
+      value: category.id,
       label: category.name,
     })),
   ];
@@ -106,10 +106,10 @@ export default function ExpenseFilters({ filters, categories, onFiltersChange, o
           <Select
             id="categoryId"
             label={t('filters.category')}
-            value={localFilters.categoryId?.toString() || ''}
+            value={localFilters.categoryId || ''}
             onChange={(e) => setLocalFilters(prev => ({ 
               ...prev, 
-              categoryId: e.target.value ? Number(e.target.value) : undefined 
+              categoryId: e.target.value || undefined 
             }))}
             options={categoryOptions}
           />

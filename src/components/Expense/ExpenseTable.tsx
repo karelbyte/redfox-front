@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Expense, ExpenseCategory, ExpenseStatus } from '@/types/expense';
-import { PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, CurrencyDollarIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -12,7 +12,8 @@ interface ExpenseTableProps {
   isLoading: boolean;
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
-  onView?: (expenseId: number) => void;
+  onView?: (expenseId: string) => void;
+  onPayment?: (expense: Expense) => void;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -28,6 +29,7 @@ export default function ExpenseTable({
   onEdit, 
   onDelete,
   onView,
+  onPayment,
   currentPage, 
   totalPages, 
   onPageChange,
@@ -39,7 +41,7 @@ export default function ExpenseTable({
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
 
-  const getCategoryName = (categoryId: number) => {
+  const getCategoryName = (categoryId: string) => {
     const category = categories.find(c => c.id === categoryId);
     return category?.name || '';
   };
@@ -131,6 +133,12 @@ export default function ExpenseTable({
                 className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                 style={{ color: `rgb(var(--color-primary-600))` }}
               >
+                {t('table.remaining')}
+              </th>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
                 {t('table.date')}
               </th>
               <th
@@ -172,6 +180,11 @@ export default function ExpenseTable({
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {formatCurrency(expense.amount)}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <span className={expense.remainingAmount > 0 ? 'text-red-600' : 'text-green-600'}>
+                    {formatCurrency(expense.remainingAmount)}
+                  </span>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {formatDate(expense.expenseDate)}
                 </td>
@@ -184,13 +197,25 @@ export default function ExpenseTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onView?.(expense.id)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title="Ver detalle"
-                    />
+                    {onView && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onView(expense.id)}
+                        leftIcon={<EyeIcon className="h-4 w-4" />}
+                        title={tCommon('actions.view')}
+                      />
+                    )}
+                    {onPayment && expense.remainingAmount > 0 && can(["expense_update"]) && (
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onPayment(expense)}
+                        leftIcon={<CurrencyDollarIcon className="h-4 w-4" />}
+                        title={t('actions.registerPayment')}
+                        style={{ color: '#10b981' }}
+                      />
+                    )}
                     {can(["expense_update"]) && (
                       <Btn
                         variant="ghost"
@@ -215,7 +240,7 @@ export default function ExpenseTable({
               </tr>
             )) : (
               <tr>
-                <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500">
                   {isLoading ? tCommon('actions.loading') : 'No hay gastos disponibles'}
                 </td>
               </tr>

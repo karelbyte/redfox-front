@@ -24,6 +24,12 @@
         }
       }
     },
+    "bulkActions": {
+      "selectedCount": "{count} item(s) selected",
+      "confirmTitle": "Delete {count} item(s)?",
+      "confirmMessage": "Are you sure you want to delete {count} item(s)? This action cannot be undone.",
+      "processing": "Processing..."
+    },
     "actions": {
       "save": "Save",
       "cancel": "Cancel",
@@ -44,7 +50,8 @@
       "saving": "Saving...",
       "deleting": "Deleting...",
       "logout": "Logout",
-      "viewColumns": "View columns"
+      "viewColumns": "View columns",
+      "export": "Export"
     },
     "status": {
       "active": "Active",
@@ -3389,6 +3396,7 @@
       "category": "Category",
       "provider": "Provider",
       "amount": "Amount",
+      "remaining": "Remaining",
       "date": "Date",
       "status": "Status",
       "actions": "Actions"
@@ -3437,8 +3445,12 @@
     "messages": {
       "expenseCreated": "Expense created successfully",
       "expenseUpdated": "Expense updated successfully",
+      "expenseDeleted": "Expense deleted successfully",
       "errorCreating": "Error creating expense",
-      "errorUpdating": "Error updating expense"
+      "errorUpdating": "Error updating expense",
+      "errorDeleting": "Error deleting expense",
+      "paymentRegistered": "Payment registered successfully",
+      "errorRegisteringPayment": "Error registering payment"
     },
     "empty": {
       "title": "No expenses",
@@ -3446,7 +3458,41 @@
       "noResults": "No results found for your search"
     },
     "details": "Expense Details",
-    "notFound": "Expense not found"
+    "notFound": "Expense not found",
+    "deleteModal": {
+      "title": "Delete Expense",
+      "message": "Are you sure you want to delete the expense {description}? This action cannot be undone."
+    },
+    "registerPayment": "Register Payment",
+    "actions": {
+      "registerPayment": "Register Payment"
+    },
+    "paymentDrawer": {
+      "description": "Description",
+      "totalAmount": "Total Amount",
+      "remainingAmount": "Remaining Amount",
+      "amount": "Payment Amount",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "reference": "Reference",
+      "notes": "Notes",
+      "referencePlaceholder": "Reference or transaction number",
+      "notesPlaceholder": "Additional notes about the payment",
+      "methods": {
+        "cash": "Cash",
+        "creditCard": "Credit Card",
+        "debitCard": "Debit Card",
+        "bankTransfer": "Bank Transfer",
+        "check": "Check",
+        "other": "Other"
+      },
+      "errors": {
+        "amountRequired": "Amount is required",
+        "amountExceedsRemaining": "Amount exceeds remaining balance",
+        "dateRequired": "Date is required",
+        "methodRequired": "Payment method is required"
+      }
+    }
   },
   "accountsReceivable": {
     "title": "Accounts Receivable",
@@ -3499,6 +3545,7 @@
       "totalAmount": "Total Amount",
       "remainingAmount": "Remaining Amount",
       "dueDate": "Due Date",
+      "issueDate": "Issue Date",
       "status": "Status",
       "description": "Description",
       "notes": "Notes",
@@ -3589,7 +3636,8 @@
       "actions_title": "Actions",
       "actions": {
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "viewPayments": "View Payments"
       }
     },
     "form": {

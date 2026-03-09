@@ -3401,6 +3401,7 @@
       "category": "Categoría",
       "provider": "Proveedor",
       "amount": "Monto",
+      "remaining": "Pendiente",
       "date": "Fecha",
       "status": "Estado",
       "actions": "Acciones"
@@ -3452,8 +3453,12 @@
     "messages": {
       "expenseCreated": "Gasto creado exitosamente",
       "expenseUpdated": "Gasto actualizado exitosamente",
+      "expenseDeleted": "Gasto eliminado exitosamente",
       "errorCreating": "Error al crear el gasto",
-      "errorUpdating": "Error al actualizar el gasto"
+      "errorUpdating": "Error al actualizar el gasto",
+      "errorDeleting": "Error al eliminar el gasto",
+      "paymentRegistered": "Pago registrado exitosamente",
+      "errorRegisteringPayment": "Error al registrar el pago"
     },
     "empty": {
       "title": "No hay gastos",
@@ -3461,7 +3466,41 @@
       "noResults": "No se encontraron gastos con los filtros aplicados"
     },
     "details": "Detalles del Gasto",
-    "notFound": "Gasto no encontrado"
+    "notFound": "Gasto no encontrado",
+    "deleteModal": {
+      "title": "Eliminar Gasto",
+      "message": "¿Estás seguro de que deseas eliminar el gasto {description}? Esta acción no se puede deshacer."
+    },
+    "registerPayment": "Registrar Pago",
+    "actions": {
+      "registerPayment": "Registrar Pago"
+    },
+    "paymentDrawer": {
+      "description": "Descripción",
+      "totalAmount": "Monto Total",
+      "remainingAmount": "Monto Pendiente",
+      "amount": "Monto del Pago",
+      "paymentDate": "Fecha de Pago",
+      "paymentMethod": "Método de Pago",
+      "reference": "Referencia",
+      "notes": "Notas",
+      "referencePlaceholder": "Referencia o número de transacción",
+      "notesPlaceholder": "Notas adicionales sobre el pago",
+      "methods": {
+        "cash": "Efectivo",
+        "creditCard": "Tarjeta de Crédito",
+        "debitCard": "Tarjeta de Débito",
+        "bankTransfer": "Transferencia Bancaria",
+        "check": "Cheque",
+        "other": "Otro"
+      },
+      "errors": {
+        "amountRequired": "El monto es requerido",
+        "amountExceedsRemaining": "El monto excede el saldo pendiente",
+        "dateRequired": "La fecha es requerida",
+        "methodRequired": "El método de pago es requerido"
+      }
+    }
   },
   "accountsReceivable": {
     "title": "Cuentas por Cobrar",
@@ -3522,6 +3561,7 @@
       "totalAmount": "Monto Total",
       "remainingAmount": "Monto Pendiente",
       "dueDate": "Fecha de Vencimiento",
+      "issueDate": "Fecha de Emisión",
       "status": "Estado",
       "description": "Descripción",
       "notes": "Notas",

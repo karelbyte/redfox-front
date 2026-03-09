@@ -2,8 +2,10 @@ import { api } from './api';
 import {
   Expense,
   ExpenseCategory,
+  ExpensePayment,
   CreateExpenseDto,
   UpdateExpenseDto,
+  CreateExpensePaymentDto,
   ExpensesSummary,
   MonthlyExpense,
   ExpenseByCategory,
@@ -24,7 +26,7 @@ export const expensesService = {
     limit: number = 10,
     search?: string,
     status?: ExpenseStatus,
-    categoryId?: number,
+    categoryId?: string,
     startDate?: string,
     endDate?: string
   ): Promise<ExpensesResponse> {
@@ -35,7 +37,7 @@ export const expensesService = {
 
     if (search) params.append('search', search);
     if (status) params.append('status', status);
-    if (categoryId) params.append('categoryId', categoryId.toString());
+    if (categoryId) params.append('categoryId', categoryId);
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
 
@@ -43,7 +45,7 @@ export const expensesService = {
     return response
   },
 
-  async getExpense(id: number): Promise<Expense> {
+  async getExpense(id: string): Promise<Expense> {
     return await api.get(`/expenses/${id}`);
   },
 
@@ -51,15 +53,15 @@ export const expensesService = {
     return await api.post('/expenses', expense as unknown as Record<string, unknown>);
   },
 
-  async updateExpense(id: number, expense: UpdateExpenseDto): Promise<Expense> {
+  async updateExpense(id: string, expense: UpdateExpenseDto): Promise<Expense> {
     return await api.patch(`/expenses/${id}`, expense);
   },
 
-  async deleteExpense(id: number): Promise<void> {
+  async deleteExpense(id: string): Promise<void> {
     await api.delete(`/expenses/${id}`);
   },
 
-  async deleteExpenses(ids: number[]): Promise<void> {
+  async deleteExpenses(ids: string[]): Promise<void> {
     await api.post('/expenses/bulk-delete', { ids });
   },
 
@@ -91,11 +93,19 @@ export const expensesService = {
     return await api.post('/expense-categories', category);
   },
 
-  async updateExpenseCategory(id: number, category: Partial<ExpenseCategory>): Promise<ExpenseCategory> {
+  async updateExpenseCategory(id: string, category: Partial<ExpenseCategory>): Promise<ExpenseCategory> {
     return await api.patch(`/expense-categories/${id}`, category);
   },
 
-  async deleteExpenseCategory(id: number): Promise<void> {
+  async deleteExpenseCategory(id: string): Promise<void> {
     await api.delete(`/expense-categories/${id}`);
+  },
+
+  async addPayment(expenseId: string, payment: Omit<CreateExpensePaymentDto, 'expenseId'>): Promise<ExpensePayment> {
+    return await api.post(`/expenses/${expenseId}/payments`, payment);
+  },
+
+  async getPayments(expenseId: string): Promise<ExpensePayment[]> {
+    return await api.get(`/expenses/${expenseId}/payments`);
   },
 };
