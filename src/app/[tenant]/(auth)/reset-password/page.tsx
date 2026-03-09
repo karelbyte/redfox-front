@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslations, useLocale } from 'next-intl';
@@ -11,8 +11,16 @@ import { Suspense } from "react";
 import { useParams } from "next/navigation";
 
 function ResetPasswordForm() {
-    const searchParams = useSearchParams();
-    const token = searchParams.get('token');
+    const [token, setToken] = useState<string | null>(null);
+
+    useEffect(() => {
+        // Fallback robusto nativo para evitar bugs del App Router de Next.js
+        if (typeof window !== 'undefined') {
+            const urlParams = new URL(window.location.href);
+            const tokenFromUrl = urlParams.searchParams.get('token');
+            setToken(tokenFromUrl);
+        }
+    }, []);
 
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -151,7 +159,7 @@ function ResetPasswordForm() {
                         <div className="space-y-4">
                             <button
                                 type="submit"
-                                disabled={loading || !token}
+                                disabled={loading}
                                 className="w-full flex justify-center items-center py-3.5 px-4 text-base font-semibold rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
                                 style={
                                     {

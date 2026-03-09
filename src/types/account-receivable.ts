@@ -16,13 +16,13 @@ export enum PaymentMethod {
 }
 
 export interface AccountReceivablePayment {
-  id: number;
+  id: string;
   amount: number;
   paymentDate: string;
   paymentMethod: PaymentMethod;
   reference?: string;
   notes?: string;
-  accountReceivableId: number;
+  accountReceivableId: string;
   createdBy: string;
   createdByUser?: {
     id: string;
@@ -35,7 +35,7 @@ export interface AccountReceivablePayment {
 }
 
 export interface AccountReceivable {
-  id: number;
+  id: string;
   referenceNumber: string;
   totalAmount: number;
   paidAmount: number;
@@ -73,7 +73,7 @@ export interface CreateAccountReceivableDto {
   invoiceId?: string;
 }
 
-export interface UpdateAccountReceivableDto extends Partial<CreateAccountReceivableDto> {}
+export interface UpdateAccountReceivableDto extends Partial<CreateAccountReceivableDto> { }
 
 export interface CreateAccountReceivablePaymentDto {
   amount: number;
@@ -81,7 +81,7 @@ export interface CreateAccountReceivablePaymentDto {
   paymentMethod: PaymentMethod;
   reference?: string;
   notes?: string;
-  accountReceivableId: number;
+  accountReceivableId: string;
 }
 
 export interface AccountsReceivableSummary {

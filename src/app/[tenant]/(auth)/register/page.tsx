@@ -12,6 +12,7 @@ import { toastService } from '@/services/toast.service';
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
         name: '',
+        companyName: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -140,6 +141,32 @@ export default function RegisterPage() {
                                 } as React.CSSProperties
                             }
                             value={formData.name}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="companyName"
+                            className="block text-sm font-medium mb-2"
+                            style={{ color: `rgb(var(--color-secondary-700))` }}
+                        >
+                            {t('companyName')}
+                        </label>
+                        <input
+                            id="companyName"
+                            name="companyName"
+                            type="text"
+                            required
+                            className="appearance-none block w-full px-4 py-3 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors"
+                            style={
+                                {
+                                    border: `1px solid rgb(var(--color-secondary-300))`,
+                                    '--tw-ring-color': `rgb(var(--color-primary-500))`,
+                                    '--tw-ring-offset-color': 'white',
+                                } as React.CSSProperties
+                            }
+                            value={formData.companyName}
                             onChange={handleChange}
                         />
                     </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { AccountReceivable, AccountReceivableStatus, PaymentMethod } from '@/types/account-receivable';
 import { Client } from '@/types/client';
@@ -10,10 +11,8 @@ import { clientsService } from '@/services/clients.service';
 import { Btn, EmptyState, SearchInput } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AccountsReceivableTable from './AccountsReceivableTable';
-import AccountsReceivableForm from './AccountsReceivableForm';
-import { AccountsReceivableFormRef } from './AccountsReceivableForm';
+import AccountsReceivableForm, { AccountsReceivableFormRef } from './AccountsReceivableForm';
 import PaymentDrawer from './PaymentDrawer';
-import PaymentHistoryDrawer from './PaymentHistoryDrawer';
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import AdvancedFilters from '@/components/atoms/AdvancedFilters';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
@@ -26,8 +25,6 @@ export default function AccountsReceivableList() {
   const [selectedAccount, setSelectedAccount] = useState<AccountReceivable | null>(null);
   const [showPaymentDrawer, setShowPaymentDrawer] = useState(false);
   const [accountForPayment, setAccountForPayment] = useState<AccountReceivable | null>(null);
-  const [showPaymentHistoryDrawer, setShowPaymentHistoryDrawer] = useState(false);
-  const [accountForHistory, setAccountForHistory] = useState<AccountReceivable | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -35,11 +32,14 @@ export default function AccountsReceivableList() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<AccountsReceivableFormRef>(null);
-  
+
+  const router = useRouter();
+  const locale = useLocale();
+
   const [filters, setFilters] = useState({
     search: '',
     status: undefined as AccountReceivableStatus | undefined,
-    clientId: undefined as number | undefined,
+    clientId: undefined as string | undefined,
   });
 
   const t = useTranslations('accountsReceivable');
@@ -151,20 +151,8 @@ export default function AccountsReceivableList() {
     handlePaymentClose();
   };
 
-  const handleViewPayments = async (account: AccountReceivable) => {
-    try {
-      // Fetch full account details with payments
-      const fullAccount = await accountsReceivableService.getAccountReceivable(account.id);
-      setAccountForHistory(fullAccount);
-      setShowPaymentHistoryDrawer(true);
-    } catch (error) {
-      console.error('Error loading payment history:', error);
-    }
-  };
-
-  const handlePaymentHistoryClose = () => {
-    setShowPaymentHistoryDrawer(false);
-    setAccountForHistory(null);
+  const handleViewPayments = (account: AccountReceivable) => {
+    router.push(`/${locale}/dashboard/finanzas/cuentas-por-cobrar/${account.id}`);
   };
 
   const handlePaymentSubmit = async (paymentData: {
@@ -204,20 +192,19 @@ export default function AccountsReceivableList() {
         </div>
       </div>
 
-      {/* Filtro de búsqueda y botones */}
-      <div className="mt-6 flex gap-4 items-center">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t('filters.searchPlaceholder')}
-            onSearch={(term: string) => {
-              setFilters(prev => ({ ...prev, search: term }));
-              setCurrentPage(1);
-            }}
-          />
-        </div>
+      {(total > 0 || filters.search) && (
+        <div className="mt-6 flex gap-4 items-center">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('filters.searchPlaceholder')}
+              onSearch={(term: string) => {
+                setFilters(prev => ({ ...prev, search: term }));
+                setCurrentPage(1);
+              }}
+            />
+          </div>
 
-        {accounts && accounts.length > 0 && (
-          <>
+          <div className="flex items-center space-x-3">
             <AdvancedFilters
               fields={[
                 {
@@ -253,9 +240,9 @@ export default function AccountsReceivableList() {
               visibleColumns={visibleColumns}
               onChange={toggleColumn}
             />
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="flex justify-center items-center h-64 mt-6">
@@ -265,9 +252,9 @@ export default function AccountsReceivableList() {
         <div className="mt-6">
           <EmptyState
             searchTerm={filters.search}
-            title="No hay cuentas por cobrar"
-            description="Haz clic en 'Nueva Cuenta por Cobrar' para agregar una."
-            searchDescription="No se encontraron cuentas con los filtros aplicados"
+            title={t('empty.title')}
+            description={t('empty.description')}
+            searchDescription={t('empty.noResults')}
           />
         </div>
       ) : (
@@ -317,15 +304,6 @@ export default function AccountsReceivableList() {
           onClose={handlePaymentClose}
           onSubmit={handlePaymentSubmit}
           isSaving={isSaving}
-        />
-      )}
-
-      {/* Drawer para ver historial de pagos */}
-      {accountForHistory && (
-        <PaymentHistoryDrawer
-          account={accountForHistory}
-          isOpen={showPaymentHistoryDrawer}
-          onClose={handlePaymentHistoryClose}
         />
       )}
     </div>

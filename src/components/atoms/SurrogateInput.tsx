@@ -30,7 +30,7 @@ export function SurrogateInput({
   showSuggestion = true,
   autoSuggest = true,
 }: SurrogateInputProps) {
-  const t = useTranslations('common.components.surrogateInput');
+  const t = useTranslations('common.components.advancedFilters.surrogateInput');
   const [hasUserInput, setHasUserInput] = useState(false);
 
   const {

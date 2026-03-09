@@ -64,7 +64,7 @@ export const authService = {
     }
   },
 
-  async register(data: { name: string; email: string; password: string; password_confirmation: string }): Promise<void> {
+  async register(data: { name: string; email: string; password: string; password_confirmation: string; companyName: string }): Promise<void> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
@@ -76,8 +76,12 @@ export const authService = {
 
       if (!response.ok) {
         const error = await response.json();
-        toastService.error(error.message || 'Error en el registro');
-        throw new Error(error.message);
+        const errorMessage = Array.isArray(error.message)
+          ? error.message.join(', ')
+          : error.message || 'Error en el registro';
+
+        toastService.error(errorMessage);
+        throw new Error(errorMessage);
       }
 
       // No login automatically, wait for activation
@@ -89,7 +93,7 @@ export const authService = {
     }
   },
 
-  async activate(token: string): Promise<void> {
+  async activate(token: string): Promise<{ message: string; alreadyActive: boolean }> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/activate`, {
         method: 'POST',
@@ -103,6 +107,8 @@ export const authService = {
         const error = await response.json();
         throw new Error(error.message || 'Error user activation');
       }
+
+      return await response.json();
     } catch (error) {
       throw error;
     }

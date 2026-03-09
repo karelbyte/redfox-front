@@ -22,6 +22,7 @@ export function LanguageInitializer() {
     try {
       // Get stored language
       const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      const searchParams = window.location.search;
 
       if (storedLanguage && locales.includes(storedLanguage as Locale)) {
         // Extract current locale from pathname
@@ -45,7 +46,8 @@ export function LanguageInitializer() {
             newSegments.splice(localeIndices[i], 1);
           }
 
-          const newPathname = '/' + newSegments.join('/');
+          const newPathname = '/' + newSegments.join('/') + searchParams;
+          console.log('[LanguageInitializer] Redirecting to change locale:', newPathname);
           router.replace(newPathname);
         } else if (localeIndices.length > 1) {
           // If the locale is correct but there are duplicates, clean them up
@@ -53,7 +55,8 @@ export function LanguageInitializer() {
           for (let i = localeIndices.length - 1; i > 0; i--) {
             newSegments.splice(localeIndices[i], 1);
           }
-          const newPathname = '/' + newSegments.join('/');
+          const newPathname = '/' + newSegments.join('/') + searchParams;
+          console.log('[LanguageInitializer] Cleaning up duplicate locales:', newPathname);
           router.replace(newPathname);
         }
       }
@@ -64,4 +67,4 @@ export function LanguageInitializer() {
 
   // This component doesn't render anything
   return null;
-} 
+}

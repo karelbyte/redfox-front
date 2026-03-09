@@ -1,7 +1,7 @@
 import { api } from './api';
-import { 
-  AccountReceivable, 
-  CreateAccountReceivableDto, 
+import {
+  AccountReceivable,
+  CreateAccountReceivableDto,
   UpdateAccountReceivableDto,
   CreateAccountReceivablePaymentDto,
   AccountReceivablePayment,
@@ -16,7 +16,7 @@ export const accountsReceivableService = {
     limit: number = 10,
     search?: string,
     status?: AccountReceivableStatus,
-    clientId?: number,
+    clientId?: string,
     overdue?: boolean
   ): Promise<{
     data: AccountReceivable[];
@@ -32,14 +32,14 @@ export const accountsReceivableService = {
 
     if (search) params.append('search', search);
     if (status) params.append('status', status);
-    if (clientId) params.append('clientId', clientId.toString());
+    if (clientId) params.append('clientId', clientId);
     if (overdue) params.append('overdue', 'true');
 
     const response = await api.get(`/accounts-receivable?${params.toString()}`);
     return response as any;
   },
 
-  async getAccountReceivable(id: number): Promise<AccountReceivable> {
+  async getAccountReceivable(id: string): Promise<AccountReceivable> {
     const response = await api.get(`/accounts-receivable/${id}`);
     return response as AccountReceivable;
   },
@@ -49,16 +49,16 @@ export const accountsReceivableService = {
     return response as AccountReceivable;
   },
 
-  async updateAccountReceivable(id: number, account: UpdateAccountReceivableDto): Promise<AccountReceivable> {
+  async updateAccountReceivable(id: string, account: UpdateAccountReceivableDto): Promise<AccountReceivable> {
     const response = await api.patch(`/accounts-receivable/${id}`, account as any);
     return response as AccountReceivable;
   },
 
-  async deleteAccountReceivable(id: number): Promise<void> {
+  async deleteAccountReceivable(id: string): Promise<void> {
     await api.delete(`/accounts-receivable/${id}`);
   },
 
-  async addPayment(accountId: number, payment: Omit<CreateAccountReceivablePaymentDto, 'accountReceivableId'>): Promise<AccountReceivablePayment> {
+  async addPayment(accountId: string, payment: Omit<CreateAccountReceivablePaymentDto, 'accountReceivableId'>): Promise<AccountReceivablePayment> {
     const response = await api.post(`/accounts-receivable/${accountId}/payments`, payment as any);
     return response as AccountReceivablePayment;
   },
@@ -84,7 +84,7 @@ export const accountsReceivableService = {
     overdueBalance: number;
     currentBalance: number;
     accounts: Array<{
-      id: number;
+      id: string;
       referenceNumber: string;
       issueDate: Date;
       dueDate: Date;

@@ -160,6 +160,7 @@
       "title": "Create Account",
       "subtitle": "Sign up to get started with Nitro",
       "name": "Full Name",
+      "companyName": "Company Name",
       "email": "Email Address",
       "password": "Password",
       "confirmPassword": "Confirm Password",
@@ -174,6 +175,8 @@
       "successTitle": "Account Activated!",
       "successMessage": "Your account has been successfully activated. You can now sign in.",
       "successToast": "Account activated successfully",
+      "alreadyActiveTitle": "Account Already Active",
+      "alreadyActiveMessage": "Your account was already activated previously. You can now sign in.",
       "errorTitle": "Activation Error",
       "errorMessage": "The activation link is invalid or has expired.",
       "loginButton": "Go to Sign In",
@@ -3437,6 +3440,11 @@
       "errorCreating": "Error creating expense",
       "errorUpdating": "Error updating expense"
     },
+    "empty": {
+      "title": "No expenses",
+      "description": "Click on 'New Expense' to add one.",
+      "noResults": "No results found for your search"
+    },
     "details": "Expense Details",
     "notFound": "Expense not found"
   },
@@ -3450,14 +3458,6 @@
     "actions": {
       "registerPayment": "Register Payment",
       "viewPayments": "View Payments"
-    },
-    "paymentHistory": {
-      "title": "Payment History",
-      "accountSummary": "Account Summary",
-      "paymentsTitle": "Registered Payments",
-      "noPayments": "No payments registered for this account",
-      "paidAmount": "Paid Amount",
-      "registeredBy": "Registered by"
     },
     "paymentDrawer": {
       "reference": "Reference",
@@ -3541,6 +3541,28 @@
       "accountUpdated": "Account receivable updated successfully",
       "errorCreating": "Error creating account receivable",
       "errorUpdating": "Error updating account receivable"
+    },
+    "empty": {
+      "title": "No accounts receivable",
+      "description": "Click on 'New Account Receivable' to add one.",
+      "noResults": "No results found for your search"
+    },
+    "paymentHistory": {
+      "title": "Payment History",
+      "accountSummary": "Account Summary",
+      "paymentsTitle": "Registered Payments",
+      "noPayments": "No payments registered for this account",
+      "paidAmount": "Paid Amount",
+      "registeredBy": "Registered by"
+    },
+    "details": {
+      "additionalInfo": "Additional Information",
+      "referenceId": "Reference ID",
+      "createdAt": "Created at",
+      "updatedAt": "Last Modified",
+      "accountStatus": "Account Status",
+      "paymentProgress": "Payment Progress",
+      "viewDetail": "Account receivable details"
     }
   },
   "accountsPayable": {
@@ -3606,6 +3628,7 @@
       "errorLoading": "Error loading accounts payable",
       "errorDeleting": "Error deleting account payable",
       "accountDeleted": "Account payable deleted successfully",
+      "confirmDeleteTitle": "Delete Account Payable",
       "confirmDelete": "Are you sure you want to delete this account payable?",
       "accountCreated": "Account payable created successfully",
       "accountUpdated": "Account payable updated successfully",
@@ -3652,6 +3675,23 @@
         "dateRequired": "Date is required",
         "methodRequired": "Payment method is required"
       }
+    },
+    "paymentHistory": {
+      "title": "Payment History",
+      "accountSummary": "Account Summary",
+      "paymentsTitle": "Registered Payments",
+      "noPayments": "No payments registered for this account",
+      "paidAmount": "Paid Amount",
+      "registeredBy": "Registered by"
+    },
+    "details": {
+      "additionalInfo": "Additional Information",
+      "referenceId": "Reference ID",
+      "createdAt": "Created at",
+      "updatedAt": "Last Modified",
+      "accountStatus": "Account Status",
+      "paymentProgress": "Payment Progress",
+      "viewDetail": "Account payable details"
     }
   },
   "cashFlow": {

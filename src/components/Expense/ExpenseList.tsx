@@ -252,9 +252,9 @@ export default function ExpenseList() {
         <div className="mt-6">
           <EmptyState
             searchTerm={filters.search}
-            title="No hay gastos"
-            description="Haz clic en 'Nuevo Gasto' para agregar uno."
-            searchDescription="No se encontraron gastos con los filtros aplicados"
+            title={t('empty.title')}
+            description={t('empty.description')}
+            searchDescription={t('empty.noResults')}
           />
         </div>
       ) : (

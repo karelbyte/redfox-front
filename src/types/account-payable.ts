@@ -18,20 +18,24 @@ export enum PaymentMethod {
 }
 
 export interface AccountPayablePayment {
-  id: number;
+  id: string;
   amount: number;
   paymentDate: string;
   paymentMethod: PaymentMethod;
   reference?: string;
   notes?: string;
-  accountPayableId: number;
+  accountPayableId: string;
   createdBy: string;
+  createdByUser?: {
+    id: string;
+    name: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
 
 export interface AccountPayable {
-  id: number;
+  id: string;
   referenceNumber: string;
   providerId: string;
   provider?: Provider;

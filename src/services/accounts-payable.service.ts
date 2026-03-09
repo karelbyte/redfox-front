@@ -44,7 +44,7 @@ export const accountsPayableService = {
     return response;
   },
 
-  async getAccountPayable(id: number): Promise<AccountPayable> {
+  async getAccountPayable(id: string): Promise<AccountPayable> {
     const response = await api.get<AccountPayable>(`/accounts-payable/${id}`);
     return response;
   },
@@ -64,7 +64,7 @@ export const accountsPayableService = {
   },
 
   async updateAccountPayable(
-    id: number,
+    id: string,
     data: {
       referenceNumber?: string;
       providerId?: string;
@@ -80,11 +80,11 @@ export const accountsPayableService = {
     return response;
   },
 
-  async deleteAccountPayable(id: number): Promise<void> {
+  async deleteAccountPayable(id: string): Promise<void> {
     await api.delete(`/accounts-payable/${id}`);
   },
 
-  async addPayment(id: number, data: any): Promise<any> {
+  async addPayment(id: string, data: any): Promise<any> {
     const response = await api.post(`/accounts-payable/${id}/payments`, data);
     return response;
   },

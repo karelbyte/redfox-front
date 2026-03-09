@@ -21,16 +21,16 @@ interface AccountsReceivableTableProps {
   visibleColumns?: string[];
 }
 
-export default function AccountsReceivableTable({ 
-  accounts, 
-  clients, 
-  isLoading, 
-  onEdit, 
+export default function AccountsReceivableTable({
+  accounts,
+  clients,
+  isLoading,
+  onEdit,
   onDelete,
   onRegisterPayment,
   onViewPayments,
-  currentPage, 
-  totalPages, 
+  currentPage,
+  totalPages,
   onPageChange,
   visibleColumns
 }: AccountsReceivableTableProps) {
@@ -223,7 +223,7 @@ export default function AccountsReceivableTable({
                           title={tCommon('actions.edit')}
                         />
                       )}
-                      {can(["account_receivable_delete"]) && (
+                      {can(["account_receivable_delete"]) && Number(account.paidAmount) === 0 && (
                         <Btn
                           variant="ghost"
                           size="sm"
@@ -281,11 +281,10 @@ export default function AccountsReceivableTable({
                     <button
                       key={page}
                       onClick={() => onPageChange(page)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                        page === currentPage
+                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${page === currentPage
                           ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
                           : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       {page}
                     </button>

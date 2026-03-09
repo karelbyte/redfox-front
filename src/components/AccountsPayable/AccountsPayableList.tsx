@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { AccountPayable, AccountPayableStatus } from '@/types/account-payable';
 import { accountsPayableService } from '@/services/accounts-payable.service';
 import { toastService } from '@/services/toast.service';
-import { Btn, EmptyState } from '@/components/atoms';
+import { Btn, EmptyState, SearchInput } from '@/components/atoms';
 import ExportButton from '@/components/atoms/ExportButton';
 import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
 import Drawer from '@/components/Drawer/Drawer';
@@ -14,21 +15,31 @@ import AccountsPayableTable from './AccountsPayableTable';
 import AccountsPayableForm, { AccountsPayableFormRef } from './AccountsPayableForm';
 import PaymentDrawer from './PaymentDrawer';
 import Loading from '@/components/Loading/Loading';
+import ColumnSelector from '@/components/Table/ColumnSelector';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import ConfirmModal from '@/components/Modal/ConfirmModal';
 
 export default function AccountsPayableList() {
+  const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations('accountsPayable');
   const tCommon = useTranslations('common');
+
   const [accounts, setAccounts] = useState<AccountPayable[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isPaymentDrawerOpen, setIsPaymentDrawerOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<AccountPayable | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isPaymentSaving, setIsPaymentSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState<AccountPayable | null>(null);
+
   const [filters, setFilters] = useState({
     search: '',
     status: undefined as AccountPayableStatus | undefined,
@@ -37,6 +48,21 @@ export default function AccountsPayableList() {
   });
 
   const formRef = useRef<AccountsPayableFormRef>(null);
+
+  const availableColumns = [
+    { key: 'referenceNumber', label: t('table.referenceNumber') },
+    { key: 'provider', label: t('table.provider') },
+    { key: 'totalAmount', label: t('table.totalAmount') },
+    { key: 'remainingAmount', label: t('table.remainingAmount') },
+    { key: 'dueDate', label: t('table.dueDate') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions_title') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'accounts_payable_table',
+    availableColumns.map(c => c.key)
+  );
 
   useEffect(() => {
     loadAccounts();
@@ -89,18 +115,24 @@ export default function AccountsPayableList() {
     loadAccounts();
   };
 
-  const handleDelete = async (account: AccountPayable) => {
-    if (!confirm(t('messages.confirmDelete'))) {
-      return;
-    }
+  const handleDelete = (account: AccountPayable) => {
+    setAccountToDelete(account);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!accountToDelete) return;
 
     try {
-      await accountsPayableService.deleteAccountPayable(account.id);
+      await accountsPayableService.deleteAccountPayable(accountToDelete.id);
       toastService.success(t('messages.accountDeleted'));
       loadAccounts();
     } catch (error) {
       console.error('Error deleting account:', error);
       toastService.error(t('messages.errorDeleting'));
+    } finally {
+      setIsDeleteModalOpen(false);
+      setAccountToDelete(null);
     }
   };
 
@@ -127,9 +159,8 @@ export default function AccountsPayableList() {
     }
   };
 
-  const handleFilterChange = (newFilters: typeof filters) => {
-    setFilters(newFilters);
-    setPage(1);
+  const handleViewPayments = (account: AccountPayable) => {
+    router.push(`/${locale}/dashboard/finanzas/cuentas-por-pagar/${account.id}`);
   };
 
   const handleAdvancedFilters = (advFilters: any) => {
@@ -169,24 +200,14 @@ export default function AccountsPayableList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            {t('subtitle', { count: total })}
+          </p>
+        </div>
         <div className="flex items-center space-x-3">
-          {total > 0 && (
-            <>
-              <ExportButton
-                data={accounts}
-                filename="accounts-payable"
-                columns={['referenceNumber', 'provider', 'totalAmount', 'remainingAmount', 'dueDate', 'status']}
-              >
-                {tCommon('actions.export')}
-              </ExportButton>
-              <AdvancedFilters
-                fields={advancedFilterFields}
-                onApply={handleAdvancedFilters}
-                storageKey="accounts-payable-advanced-filters"
-              />
-            </>
-          )}
           <Btn
             onClick={() => handleOpenDrawer()}
             className="flex items-center"
@@ -197,17 +218,58 @@ export default function AccountsPayableList() {
         </div>
       </div>
 
+      {(total > 0 || filters.search) && (
+        <div className="mt-6 flex gap-4 items-center">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('filters.searchPlaceholder')}
+              onSearch={(term) => {
+                setFilters(prev => ({ ...prev, search: term }));
+                setPage(1);
+              }}
+            />
+          </div>
+          <div className="flex items-center space-x-3">
+            <ExportButton
+              data={accounts}
+              filename="accounts-payable"
+              columns={['referenceNumber', 'provider', 'totalAmount', 'remainingAmount', 'dueDate', 'status']}
+            >
+            </ExportButton>
+            <AdvancedFilters
+              fields={advancedFilterFields}
+              onApply={handleAdvancedFilters}
+              storageKey="accounts-payable-advanced-filters"
+            />
+            <ColumnSelector
+              columns={availableColumns}
+              visibleColumns={visibleColumns}
+              onChange={toggleColumn}
+            />
+          </div>
+        </div>
+      )}
+
       {isLoading ? (
         <div className="flex justify-center items-center h-64 mt-6">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          <Loading size="lg" />
         </div>
-      ) : !accounts || accounts.length === 0 ? (
+      ) : !accounts || (accounts.length === 0 && !filters.search) ? (
         <div className="mt-6">
           <EmptyState
             searchTerm={filters.search}
             title={t('empty.title')}
             description={t('empty.description')}
             searchDescription={t('empty.description')}
+          />
+        </div>
+      ) : accounts.length === 0 && filters.search ? (
+        <div className="mt-6">
+          <EmptyState
+            searchTerm={filters.search}
+            title={t('empty.title')}
+            description={t('empty.description')}
+            searchDescription={t('messages.noResults')}
           />
         </div>
       ) : (
@@ -218,9 +280,11 @@ export default function AccountsPayableList() {
             onEdit={handleOpenDrawer}
             onDelete={handleDelete}
             onRegisterPayment={handleRegisterPayment}
+            onViewPayments={handleViewPayments}
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
+            visibleColumns={visibleColumns}
           />
         </div>
       )}
@@ -257,6 +321,16 @@ export default function AccountsPayableList() {
           isSaving={isPaymentSaving}
         />
       )}
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title={t('messages.confirmDeleteTitle')}
+        message={t('messages.confirmDelete')}
+        confirmText={tCommon('actions.delete')}
+        cancelText={tCommon('actions.cancel')}
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { AccountPayable, AccountPayableStatus } from '@/types/account-payable';
-import { PencilIcon, TrashIcon, BanknotesIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, BanknotesIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -12,9 +12,11 @@ interface AccountsPayableTableProps {
   onEdit: (account: AccountPayable) => void;
   onDelete: (account: AccountPayable) => void;
   onRegisterPayment: (account: AccountPayable) => void;
+  onViewPayments: (account: AccountPayable) => void;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  visibleColumns?: string[];
 }
 
 export default function AccountsPayableTable({
@@ -23,13 +25,20 @@ export default function AccountsPayableTable({
   onEdit,
   onDelete,
   onRegisterPayment,
+  onViewPayments,
   currentPage,
   totalPages,
   onPageChange,
+  visibleColumns,
 }: AccountsPayableTableProps) {
   const t = useTranslations('accountsPayable');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+
+  const isVisible = (key: string) => {
+    if (!visibleColumns) return true;
+    return visibleColumns.includes(key);
+  };
 
   const getStatusColor = (status: AccountPayableStatus) => {
     switch (status) {
@@ -86,101 +95,138 @@ export default function AccountsPayableTable({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.referenceNumber')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.provider')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.totalAmount')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.remainingAmount')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.dueDate')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.status')}
-              </th>
-              <th
-                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.actions_title')}
-              </th>
+              {isVisible('referenceNumber') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.referenceNumber')}
+                </th>
+              )}
+              {isVisible('provider') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.provider')}
+                </th>
+              )}
+              {isVisible('totalAmount') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.totalAmount')}
+                </th>
+              )}
+              {isVisible('remainingAmount') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.remainingAmount')}
+                </th>
+              )}
+              {isVisible('dueDate') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.dueDate')}
+                </th>
+              )}
+              {isVisible('status') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.status')}
+                </th>
+              )}
+              {isVisible('actions') && (
+                <th
+                  className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.actions_title')}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {accounts && accounts.length > 0 ? accounts.map((account) => (
               <tr key={account.id} className="hover:bg-primary-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{account.referenceNumber}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {account.provider ? `${account.provider.code} - ${account.provider.name}` : '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(Number(account.totalAmount))}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(Number(account.remainingAmount))}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(account.dueDate)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(account.status)}`}>
-                    {getStatusLabel(account.status)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    {account.status !== AccountPayableStatus.PAID && account.status !== AccountPayableStatus.CANCELLED && (
+                {isVisible('referenceNumber') && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{account.referenceNumber}</div>
+                  </td>
+                )}
+                {isVisible('provider') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {account.provider ? `${account.provider.code} - ${account.provider.name}` : '-'}
+                  </td>
+                )}
+                {isVisible('totalAmount') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {formatCurrency(Number(account.totalAmount))}
+                  </td>
+                )}
+                {isVisible('remainingAmount') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {formatCurrency(Number(account.remainingAmount))}
+                  </td>
+                )}
+                {isVisible('dueDate') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatDate(account.dueDate)}
+                  </td>
+                )}
+                {isVisible('status') && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(account.status)}`}>
+                      {getStatusLabel(account.status)}
+                    </span>
+                  </td>
+                )}
+                {isVisible('actions') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
                       <Btn
                         variant="ghost"
                         size="sm"
-                        onClick={() => onRegisterPayment(account)}
-                        leftIcon={<BanknotesIcon className="h-4 w-4 text-green-600" />}
-                        title={t('registerPayment')}
+                        onClick={() => onViewPayments(account)}
+                        leftIcon={<ClockIcon className="h-4 w-4" />}
+                        title={t('table.actions.viewPayments')}
                       />
-                    )}
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(account)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={tCommon('actions.edit')}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(account)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={tCommon('actions.delete')}
-                      style={{ color: '#dc2626' }}
-                    />
-                  </div>
-                </td>
+                      {account.status !== AccountPayableStatus.PAID && account.status !== AccountPayableStatus.CANCELLED && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onRegisterPayment(account)}
+                          leftIcon={<BanknotesIcon className="h-4 w-4 text-green-600" />}
+                          title={t('registerPayment')}
+                        />
+                      )}
+                     {account.status !== AccountPayableStatus.PAID && account.status !== AccountPayableStatus.CANCELLED && (  <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEdit(account)}
+                        leftIcon={<PencilIcon className="h-4 w-4" />}
+                        title={tCommon('actions.edit')}
+                      />)}
+                      {Number(account.paidAmount) === 0 && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(account)}
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          title={tCommon('actions.delete')}
+                          style={{ color: '#dc2626' }}
+                        />
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             )) : (
               <tr>
@@ -233,8 +279,8 @@ export default function AccountsPayableTable({
                       key={page}
                       onClick={() => onPageChange(page)}
                       className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${page === currentPage
-                          ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
-                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                        ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
+                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
                         }`}
                     >
                       {page}

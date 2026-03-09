@@ -167,6 +167,7 @@
       "title": "Crear Cuenta",
       "subtitle": "Regístrate para comenzar a usar Nitro",
       "name": "Nombre Completo",
+      "companyName": "Nombre de la Empresa",
       "email": "Correo Electrónico",
       "password": "Contraseña",
       "confirmPassword": "Confirmar Contraseña",
@@ -181,6 +182,8 @@
       "successTitle": "¡Cuenta Activada!",
       "successMessage": "Tu cuenta ha sido activada correctamente. Ahora puedes iniciar sesión.",
       "successToast": "Cuenta activada correctamente",
+      "alreadyActiveTitle": "Cuenta ya activa",
+      "alreadyActiveMessage": "Tu cuenta ya se encontraba activada previamente. Puedes iniciar sesión.",
       "errorTitle": "Error de Activación",
       "errorMessage": "El enlace de activación es inválido o ha expirado.",
       "loginButton": "Ir a Iniciar Sesión",
@@ -3452,6 +3455,11 @@
       "errorCreating": "Error al crear el gasto",
       "errorUpdating": "Error al actualizar el gasto"
     },
+    "empty": {
+      "title": "No hay gastos",
+      "description": "Haz clic en 'Nuevo Gasto' para agregar uno.",
+      "noResults": "No se encontraron gastos con los filtros aplicados"
+    },
     "details": "Detalles del Gasto",
     "notFound": "Gasto no encontrado"
   },
@@ -3556,6 +3564,20 @@
       "accountUpdated": "Cuenta por cobrar actualizada exitosamente",
       "errorCreating": "Error al crear la cuenta por cobrar",
       "errorUpdating": "Error al actualizar la cuenta por cobrar"
+    },
+    "empty": {
+      "title": "No hay cuentas por cobrar",
+      "description": "Haz clic en 'Nueva Cuenta por Cobrar' para agregar una.",
+      "noResults": "No se encontraron cuentas con los filtros aplicados"
+    },
+    "details": {
+      "additionalInfo": "Información Adicional",
+      "referenceId": "ID de Referencia",
+      "createdAt": "Creado el",
+      "updatedAt": "Última Modificación",
+      "accountStatus": "Estado de Cuenta",
+      "paymentProgress": "Progreso de Pago",
+      "viewDetail": "Detalles de la cuenta por cobrar"
     }
   },
   "accountsPayable": {
@@ -3581,7 +3603,8 @@
       "status": "Estado",
       "actions": {
         "edit": "Editar",
-        "delete": "Eliminar"
+        "delete": "Eliminar",
+        "viewPayments": "Ver Pagos"
       },
       "actions_title": "Acciones"
     },
@@ -3621,11 +3644,21 @@
       "errorLoading": "Error al cargar las cuentas por pagar",
       "errorDeleting": "Error al eliminar la cuenta por pagar",
       "accountDeleted": "Cuenta por pagar eliminada exitosamente",
+      "confirmDeleteTitle": "Eliminar Cuenta por Pagar",
       "confirmDelete": "¿Estás seguro de que deseas eliminar esta cuenta por pagar?",
       "accountCreated": "Cuenta por pagar creada exitosamente",
       "accountUpdated": "Cuenta por pagar actualizada exitosamente",
       "errorCreating": "Error al crear la cuenta por pagar",
-      "errorUpdating": "Error al actualizar la cuenta por pagar"
+      "errorUpdating": "Error al actualizar la cuenta por pagar",
+      "cannotDeleteWithPayments": "No se puede eliminar una cuenta que ya tiene pagos registrados"
+    },
+    "paymentHistory": {
+      "title": "Historial de Pagos",
+      "accountSummary": "Resumen de la Cuenta",
+      "paymentsTitle": "Pagos Registrados",
+      "noPayments": "No hay pagos registrados para esta cuenta",
+      "paidAmount": "Monto Pagado",
+      "registeredBy": "Registrado por"
     },
     "actions": {
       "create": "Nueva Cuenta por Pagar",
@@ -3667,6 +3700,15 @@
         "dateRequired": "La fecha es requerida",
         "methodRequired": "El método de pago es requerido"
       }
+    },
+    "details": {
+      "additionalInfo": "Información Adicional",
+      "referenceId": "ID de Referencia",
+      "createdAt": "Creado el",
+      "updatedAt": "Última Modificación",
+      "accountStatus": "Estado de Cuenta",
+      "paymentProgress": "Progreso de Pago",
+      "viewDetail": "Detalles de la cuenta por pagar"
     }
   },
   "cashFlow": {
