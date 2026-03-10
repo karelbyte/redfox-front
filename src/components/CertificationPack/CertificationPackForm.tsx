@@ -59,6 +59,13 @@ function CertificationPackFormInner(
       return !!String(cfg.api_key || '').trim();
     }
 
+    if (formData.type === CertificationPackType.FACTURA_GREEN) {
+      return (
+        !!String(cfg.tenant_id || '').trim() &&
+        !!String(cfg.business_uuid || '').trim()
+      );
+    }
+
     if (formData.type === CertificationPackType.SAT) {
       return (
         !!String(cfg.certificate || '').trim() &&
@@ -124,7 +131,7 @@ function CertificationPackFormInner(
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              API Key
+              API Key *
             </label>
             <input
               type="password"
@@ -133,6 +140,74 @@ function CertificationPackFormInner(
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="sk_live_..."
             />
+            <p className="mt-1 text-xs text-gray-500">
+              Obtén tu API Key desde tu cuenta de FacturaAPI
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    if (formData.type === CertificationPackType.FACTURA_GREEN) {
+      return (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tenant ID *
+            </label>
+            <input
+              type="text"
+              value={formData.config?.tenant_id || ''}
+              onChange={(e) => updateConfig('tenant_id', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="www"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Tu identificador de tenant (ej: www, sandbox)
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Business UUID *
+            </label>
+            <input
+              type="text"
+              value={formData.config?.business_uuid || ''}
+              onChange={(e) => updateConfig('business_uuid', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e-business-xxxxx"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              UUID del business (emisor) registrado en Factura Green
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Account UUID
+            </label>
+            <input
+              type="text"
+              value={formData.config?.account_uuid || '0000'}
+              onChange={(e) => updateConfig('account_uuid', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="0000"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              UUID de la cuenta (por defecto: 0000)
+            </p>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+            <h4 className="text-sm font-medium text-blue-900 mb-2">
+              ℹ️ Información Importante
+            </h4>
+            <ul className="text-xs text-blue-800 space-y-1 list-disc list-inside">
+              <li>Debes tener un business registrado en Factura Green</li>
+              <li>El CSD debe estar cargado en tu business</li>
+              <li>Los clientes y productos se sincronizarán automáticamente</li>
+            </ul>
           </div>
         </div>
       );
@@ -198,6 +273,7 @@ function CertificationPackFormInner(
           disabled={!!pack}
         >
           <option value={CertificationPackType.FACTURAAPI}>FacturaAPI</option>
+          <option value={CertificationPackType.FACTURA_GREEN}>Factura Green</option>
          {/* <option value={CertificationPackType.SAT}>SAT</option>*/} 
         </select>
       </div>

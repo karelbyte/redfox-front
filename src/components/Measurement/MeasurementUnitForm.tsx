@@ -1,7 +1,6 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { measurementUnitsService, MeasurementUnitSuggestion } from '@/services/measurement-units.service';
-import { certificationPackService } from '@/services/certification-packs.service';
 import { toastService } from '@/services/toast.service';
 import { MeasurementUnit } from '@/types/measurement-unit';
 import { Input, Checkbox } from '@/components/atoms';
@@ -41,7 +40,6 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
     const [errors, setErrors] = useState<FormErrors>({});
     const [suggestions, setSuggestions] = useState<MeasurementUnitSuggestion[]>([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [hasActivePack, setHasActivePack] = useState(false);
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -64,16 +62,6 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
     }, [unit]);
 
     useEffect(() => {
-      const checkActivePack = async () => {
-        try {
-          const activePack = await certificationPackService.getActive();
-          setHasActivePack(!!activePack);
-        } catch (error) {
-          setHasActivePack(false);
-        }
-      };
-      checkActivePack();
-
       return () => {
         if (searchTimeoutRef.current) {
           clearTimeout(searchTimeoutRef.current);
@@ -129,7 +117,7 @@ const MeasurementUnitForm = forwardRef<MeasurementUnitFormRef, MeasurementUnitFo
         clearTimeout(searchTimeoutRef.current);
       }
 
-      if (!hasActivePack || !value.trim()) {
+      if (!value.trim()) {
         setSuggestions([]);
         return;
       }

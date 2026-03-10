@@ -1,5 +1,6 @@
 export enum CertificationPackType {
   FACTURAAPI = 'FACTURAAPI',
+  FACTURA_GREEN = 'FACTURA_GREEN',
   SAT = 'SAT',
 }
 

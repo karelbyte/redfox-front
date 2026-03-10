@@ -11,7 +11,6 @@ import {
 import { useTranslations } from 'next-intl';
 import { productService } from "@/services/products.service";
 import { toastService } from "@/services/toast.service";
-import { certificationPackService } from "@/services/certification-packs.service";
 import { MagnifyingGlassIcon, TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import SearchProductCodeModal from './SearchProductCodeModal';
 import { Product, ProductFormData, ProductType, InventoryStrategy } from "@/types/product";
@@ -114,7 +113,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
     const [errors, setErrors] = useState<FormErrors>({});
     const initialFetchDone = useRef(false);
     const [showSearchCodeModal, setShowSearchCodeModal] = useState(false);
-    const [hasActivePack, setHasActivePack] = useState(false);
 
     const fetchBrands = async () => {
       try {
@@ -320,18 +318,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       validateForm();
     }, [validateForm]);
 
-    useEffect(() => {
-      const checkActivePack = async () => {
-        try {
-          const activePack = await certificationPackService.getActive();
-          setHasActivePack(!!activePack);
-        } catch (error) {
-          setHasActivePack(false);
-        }
-      };
-      checkActivePack();
-    }, []);
-
     const handleCodeSelect = (code: string) => {
       setFormData(prev => ({ ...prev, code }));
     };
@@ -504,7 +490,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               error={errors.name}
             />
 
-            <div>
+              <div>
               <label
                 htmlFor="code"
                 className="block text-sm font-medium mb-2"
@@ -529,17 +515,15 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                     ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
                   }}
                 />
-                {hasActivePack && (
-                  <button
-                    type="button"
-                    onClick={() => setShowSearchCodeModal(true)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-md hover:bg-gray-100 transition-colors"
-                    style={{ color: `rgb(var(--color-primary-500))` }}
-                    title={t('form.searchCode', { default: 'Buscar código' })}
-                  >
-                    <MagnifyingGlassIcon className="h-5 w-5" />
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => setShowSearchCodeModal(true)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-md hover:bg-gray-100 transition-colors"
+                  style={{ color: `rgb(var(--color-primary-500))` }}
+                  title={t('form.searchCode', { default: 'Buscar código' })}
+                >
+                  <MagnifyingGlassIcon className="h-5 w-5" />
+                </button>
               </div>
               {errors.code && (
                 <p className="mt-1 text-xs text-gray-300">{errors.code}</p>
