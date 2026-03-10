@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
+import { useSearchStore } from "@/stores/search.store";
 import ClientTable from "@/components/Client/ClientTable";
 import ClientForm from "@/components/Client/ClientForm";
 import ClientAddressForm from "@/components/Client/ClientAddressForm";
@@ -28,6 +29,7 @@ export default function ClientsPage() {
   const t = useTranslations("pages.clients");
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const { search_client, setSearchClient, clearAllSearches } = useSearchStore();
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -36,7 +38,7 @@ export default function ClientsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(search_client || "");
   const [hasInitialData, setHasInitialData] = useState(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -123,9 +125,15 @@ export default function ClientsPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchClients(1);
+      // Si hay un término de búsqueda en el store, usarlo
+      if (search_client) {
+        setSearchTerm(search_client);
+        fetchClients(1, search_client);
+      } else {
+        fetchClients(1);
+      }
     }
-  }, [fetchClients]);
+  }, [fetchClients, search_client]);
 
   const handleEdit = (client: Client) => {
     setSelectedClient(client);
@@ -232,9 +240,16 @@ export default function ClientsPage() {
             <div className="flex-1">
               <SearchInput
                 placeholder={t("searchClients")}
+                value={searchTerm}
                 onSearch={(term: string) => {
                   setSearchTerm(term);
+                  setSearchClient(term);
                   fetchClients(1, term);
+                }}
+                onClear={() => {
+                  setSearchTerm("");
+                  setSearchClient("");
+                  fetchClients(1, "");
                 }}
               />
             </div>

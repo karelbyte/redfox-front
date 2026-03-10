@@ -7,7 +7,9 @@ import { Invoice } from '@/types/invoice';
 import { Client } from '@/types/client';
 import { invoiceService, clientsService } from '@/services';
 import { toastService } from '@/services/toast.service';
+import { useSearchStore } from "@/stores/search.store";
 import { Btn } from '@/components/atoms';
+import { SearchInput } from '@/components/atoms';
 import ExportButton from '@/components/atoms/ExportButton';
 import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
 import Loading from "@/components/Loading/Loading";
@@ -21,6 +23,7 @@ import ColumnSelector from '@/components/Table/ColumnSelector';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 export default function InvoicesPage() {
   const t = useTranslations('pages.invoices');
+  const { search_invoice, setSearchInvoice } = useSearchStore();
   
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
@@ -32,6 +35,7 @@ export default function InvoicesPage() {
   const [generateCFDIModal, setGenerateCFDIModal] = useState<Invoice | null>(null);
   const [cancelCFDIModal, setCancelCFDIModal] = useState<Invoice | null>(null);
   const [isCFDILoading, setIsCFDILoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(search_invoice || "");
 
   // Column visibility management
   const defaultColumns = ['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status', 'actions'];
@@ -45,7 +49,7 @@ export default function InvoicesPage() {
   const loadInvoices = async () => {
     try {
       setLoading(true);
-      const response = await invoiceService.getInvoices();
+      const response = await invoiceService.getInvoices(undefined, searchTerm);
       setInvoices(response.data);
     } catch (error) {
       console.error('Error loading invoices:', error);
@@ -161,6 +165,22 @@ export default function InvoicesPage() {
 
       {invoices.length > 0 && (
         <div className="mt-6 flex justify-end items-center gap-3">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('searchInvoices')}
+              value={searchTerm}
+              onSearch={(term: string) => {
+                setSearchTerm(term);
+                setSearchInvoice(term);
+                loadInvoices();
+              }}
+              onClear={() => {
+                setSearchTerm("");
+                setSearchInvoice("");
+                loadInvoices();
+              }}
+            />
+          </div>
           <ExportButton
             data={invoices}
             filename="invoices"

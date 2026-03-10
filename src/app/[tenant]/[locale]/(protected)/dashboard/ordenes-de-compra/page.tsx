@@ -8,6 +8,7 @@ import { PurchaseOrder, PurchaseOrderApprovalResponse, PurchaseOrderRejectionRes
 import { purchaseOrdersService } from '@/services';
 import { toastService } from '@/services';
 import { PDFService } from '@/services';
+import { useSearchStore } from "@/stores/search.store";
 import PurchaseOrderTable from '@/components/PurchaseOrder/PurchaseOrderTable';
 import PurchaseOrderForm from '@/components/PurchaseOrder/PurchaseOrderForm';
 import DeletePurchaseOrderModal from '@/components/PurchaseOrder/DeletePurchaseOrderModal';
@@ -21,6 +22,7 @@ import Pagination from '@/components/Pagination/Pagination';
 import Drawer from '@/components/Drawer/Drawer';
 import { PurchaseOrderFormRef } from '@/components/PurchaseOrder/PurchaseOrderForm';
 import { Btn } from '@/components/atoms';
+import { SearchInput } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -32,6 +34,7 @@ export default function PurchaseOrdersPage() {
   const locale = useLocale();
   const t = useTranslations('pages.purchaseOrders');
   const { can } = usePermissions();
+  const { search_purchase_order, setSearchPurchaseOrder } = useSearchStore();
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,6 +50,7 @@ export default function PurchaseOrdersPage() {
   const [approvalResult, setApprovalResult] = useState<PurchaseOrderApprovalResponse | null>(null);
   const [rejectionResult, setRejectionResult] = useState<PurchaseOrderRejectionResponse | null>(null);
   const [cancellationResult, setCancellationResult] = useState<PurchaseOrderCancellationResponse | null>(null);
+  const [searchTerm, setSearchTerm] = useState(search_purchase_order || "");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef<PurchaseOrderFormRef>(null);
@@ -68,10 +72,10 @@ export default function PurchaseOrdersPage() {
     availableColumns.map(c => c.key)
   );
 
-  const fetchPurchaseOrders = async (page: number) => {
+  const fetchPurchaseOrders = async (page: number, term?: string) => {
     try {
       setLoading(true);
-      const response = await purchaseOrdersService.getPurchaseOrders({ page });
+      const response = await purchaseOrdersService.getPurchaseOrders({ page, search: term });
       setPurchaseOrders(response.data || []);
       setTotalPages(response.meta?.totalPages || 1);
     } catch (error) {
@@ -88,9 +92,15 @@ export default function PurchaseOrdersPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchPurchaseOrders(currentPage);
+      // Si hay un término de búsqueda en el store, usarlo
+      if (search_purchase_order) {
+        setSearchTerm(search_purchase_order);
+        fetchPurchaseOrders(1, search_purchase_order);
+      } else {
+        fetchPurchaseOrders(1);
+      }
     }
-  }, []);
+  }, [search_purchase_order]);
 
   const handleDelete = async () => {
     if (!purchaseOrderToDelete) return;
@@ -279,8 +289,24 @@ export default function PurchaseOrdersPage() {
         )}
       </div>
 
-      {/* Segunda fila con el selector de columnas */}
-      <div className="mt-6 flex justify-end">
+      {/* Segunda fila con el selector de columnas y búsqueda */}
+      <div className="mt-6 flex justify-between items-center gap-4">
+        <div className="flex-1">
+          <SearchInput
+            placeholder={t('searchPurchaseOrders')}
+            value={searchTerm}
+            onSearch={(term: string) => {
+              setSearchTerm(term);
+              setSearchPurchaseOrder(term);
+              fetchPurchaseOrders(1, term);
+            }}
+            onClear={() => {
+              setSearchTerm("");
+              setSearchPurchaseOrder("");
+              fetchPurchaseOrders(1, "");
+            }}
+          />
+        </div>
         <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}

@@ -8,6 +8,7 @@ import { AccountReceivable, AccountReceivableStatus, PaymentMethod } from '@/typ
 import { Client } from '@/types/client';
 import { accountsReceivableService } from '@/services/accounts-receivable.service';
 import { clientsService } from '@/services/clients.service';
+import { useSearchStore } from "@/stores/search.store";
 import { Btn, EmptyState, SearchInput } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AccountsReceivableTable from './AccountsReceivableTable';
@@ -35,9 +36,10 @@ export default function AccountsReceivableList() {
 
   const router = useRouter();
   const locale = useLocale();
+  const { search_account_receivable, setSearchAccountReceivable } = useSearchStore();
 
   const [filters, setFilters] = useState({
-    search: '',
+    search: search_account_receivable || '',
     status: undefined as AccountReceivableStatus | undefined,
     clientId: undefined as string | undefined,
   });
@@ -197,8 +199,15 @@ export default function AccountsReceivableList() {
           <div className="flex-1">
             <SearchInput
               placeholder={t('filters.searchPlaceholder')}
+              value={filters.search}
               onSearch={(term: string) => {
                 setFilters(prev => ({ ...prev, search: term }));
+                setSearchAccountReceivable(term);
+                setCurrentPage(1);
+              }}
+              onClear={() => {
+                setFilters(prev => ({ ...prev, search: '' }));
+                setSearchAccountReceivable("");
                 setCurrentPage(1);
               }}
             />

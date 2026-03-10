@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { globalSearchService } from '@/services/global-search.service';
+import { useSearchStore } from '@/stores/search.store';
 import { SearchResult } from '@/types/global-search';
 
 interface GlobalSearchModalProps {
@@ -38,6 +39,7 @@ export default function GlobalSearchModal({ isOpen, onClose }: GlobalSearchModal
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const router = useRouter();
+  const params = useParams();
   const t = useTranslations('globalSearch');
   const inputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -95,7 +97,31 @@ export default function GlobalSearchModal({ isOpen, onClose }: GlobalSearchModal
   };
 
   const handleResultClick = (result: SearchResult) => {
-    router.push(result.url);
+    // Mapear el tipo de resultado a la propiedad del store
+    const searchTypeMap: Record<string, string> = {
+      client: 'search_client',
+      product: 'search_product',
+      provider: 'search_provider',
+      invoice: 'search_invoice',
+      purchase_order: 'search_purchase_order',
+      expense: 'search_expense',
+      account_receivable: 'search_account_receivable',
+    };
+    
+    const searchKey = searchTypeMap[result.type];
+    if (searchKey) {
+      const state: any = {};
+      state[searchKey] = result.title;
+      useSearchStore.setState(state);
+    }
+    
+    // Navegar con tenant y locale
+    const tenant = Array.isArray(params.tenant) ? params.tenant[0] : params.tenant;
+    const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale;
+    const cleanUrl = result.url.split('?')[0];
+    const urlWithTenantAndLocale = `/${tenant}/${locale}${cleanUrl}`;
+    
+    router.push(urlWithTenantAndLocale);
     onClose();
     setQuery('');
     setResults([]);

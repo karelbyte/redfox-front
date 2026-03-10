@@ -6,6 +6,7 @@ import { Product } from "@/types/product";
 import { productService } from "@/services/products.service";
 import { ProductPDFService } from "@/services/product-pdf.service";
 import { toastService } from "@/services/toast.service";
+import { useSearchStore } from "@/stores/search.store";
 import ProductTable from "@/components/Product/ProductTable";
 import DeleteProductModal from "@/components/Product/DeleteProductModal";
 import BarcodeGeneratorModal from "@/components/Product/BarcodeGeneratorModal";
@@ -31,6 +32,7 @@ export default function ListProductsPage() {
   const tPdf = useTranslations("pages.products.pdf");
   const locale = useLocale();
   const { can } = usePermissions();
+  const { search_product, setSearchProduct } = useSearchStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,7 +42,7 @@ export default function ListProductsPage() {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(search_product || "");
   const [hasInitialData, setHasInitialData] = useState(false);
   const [showBarcodeModal, setShowBarcodeModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -125,10 +127,16 @@ export default function ListProductsPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchProducts(1);
+      // Si hay un término de búsqueda en el store, usarlo
+      if (search_product) {
+        setSearchTerm(search_product);
+        fetchProducts(1, search_product);
+      } else {
+        fetchProducts(1);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [search_product]);
 
   const handleDelete = async () => {
     if (!productToDelete) return;
@@ -258,9 +266,16 @@ export default function ListProductsPage() {
         <div className="flex-1">
           <SearchInput
             placeholder={t("searchProducts")}
+            value={searchTerm}
             onSearch={(term: string) => {
               setSearchTerm(term);
+              setSearchProduct(term);
               fetchProducts(1, term);
+            }}
+            onClear={() => {
+              setSearchTerm("");
+              setSearchProduct("");
+              fetchProducts(1, "");
             }}
           />
         </div>

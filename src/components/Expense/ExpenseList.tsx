@@ -6,7 +6,9 @@ import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Expense, ExpenseStatus, ExpenseCategory } from '@/types/expense';
 import { expensesService } from '@/services/expenses.service';
+import { useSearchStore } from "@/stores/search.store";
 import { Btn } from '@/components/atoms';
+import { SearchInput } from '@/components/atoms';
 import { EmptyState } from '@/components/atoms';
 import ExportButton from '@/components/atoms/ExportButton';
 import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
@@ -24,6 +26,7 @@ import ConfirmModal from '@/components/Modal/ConfirmModal';
 export default function ExpenseList() {
   const router = useRouter();
   const locale = useLocale();
+  const { search_expense, setSearchExpense } = useSearchStore();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<ExpenseCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +53,7 @@ export default function ExpenseList() {
   } = useBulkSelection(expenses.map(e => ({ ...e, id: e.id.toString() })));
 
   const [filters, setFilters] = useState({
-    search: '',
+    search: search_expense || '',
     status: undefined as ExpenseStatus | undefined,
     categoryId: undefined as string | undefined,
     startDate: '',
@@ -257,6 +260,26 @@ export default function ExpenseList() {
           onFiltersChange={handleFiltersChange}
           onClose={() => setShowFilters(false)}
         />
+      )}
+
+      {/* Búsqueda */}
+      {(expenses.length > 0 || filters.search) && (
+        <div className="mt-6 flex-1">
+          <SearchInput
+            placeholder={t('searchExpenses')}
+            value={filters.search}
+            onSearch={(term: string) => {
+              setFilters(prev => ({ ...prev, search: term }));
+              setSearchExpense(term);
+              setCurrentPage(1);
+            }}
+            onClear={() => {
+              setFilters(prev => ({ ...prev, search: '' }));
+              setSearchExpense("");
+              setCurrentPage(1);
+            }}
+          />
+        </div>
       )}
 
       {isLoading ? (

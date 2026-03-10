@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations } from 'next-intl';
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
+import { useSearchStore } from "@/stores/search.store";
 import { Provider } from "@/types/provider";
 import ProviderForm from "@/components/Provider/ProviderForm";
 import ProviderTable from "@/components/Provider/ProviderTable";
@@ -26,6 +27,7 @@ export default function ProvidersPage() {
   const t = useTranslations('pages.providers');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const { search_provider, setSearchProvider } = useSearchStore();
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -33,7 +35,7 @@ export default function ProvidersPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(search_provider || '');
   const [hasInitialData, setHasInitialData] = useState(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,9 +97,15 @@ export default function ProvidersPage() {
   useEffect(() => {
     if (!initialFetchDone.current) {
       initialFetchDone.current = true;
-      fetchProviders(1);
+      // Si hay un término de búsqueda en el store, usarlo
+      if (search_provider) {
+        setSearchTerm(search_provider);
+        fetchProviders(1, search_provider);
+      } else {
+        fetchProviders(1);
+      }
     }
-  }, [fetchProviders]);
+  }, [fetchProviders, search_provider]);
 
   const handleEdit = (provider: Provider) => {
     setSelectedProvider(provider);
@@ -195,9 +203,16 @@ export default function ProvidersPage() {
           <div className="flex-1">
             <SearchInput
               placeholder={t('searchProviders')}
+              value={searchTerm}
               onSearch={(term: string) => {
                 setSearchTerm(term);
+                setSearchProvider(term);
                 fetchProviders(1, term);
+              }}
+              onClear={() => {
+                setSearchTerm("");
+                setSearchProvider("");
+                fetchProviders(1, "");
               }}
             />
           </div>
