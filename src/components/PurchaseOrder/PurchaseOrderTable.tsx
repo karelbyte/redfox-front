@@ -2,8 +2,8 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { PurchaseOrder } from '@/types/purchase-order';
-import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon, XMarkIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import ActionsMenu from '@/components/atoms/ActionsMenu';
+import { PurchaseOrderActionsMenu } from './PurchaseOrderActionsMenu';
 
 interface PurchaseOrderTableProps {
   purchaseOrders: PurchaseOrder[];
@@ -226,71 +226,18 @@ export default function PurchaseOrderTable({
               )}
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end gap-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDetails(purchaseOrder)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onGeneratePDF(purchaseOrder)}
-                      leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
-                      title={t('actions.generatePDF')}
-                    />
-                    {canApprove(purchaseOrder.status) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onApprove(purchaseOrder)}
-                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                        title={t('actions.approve')}
-                        style={{ color: '#059669' }}
-                      />
-                    )}
-                    {canReject(purchaseOrder.status) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onReject(purchaseOrder)}
-                        leftIcon={<XCircleIcon className="h-4 w-4" />}
-                        title={t('actions.reject')}
-                        style={{ color: '#dc2626' }}
-                      />
-                    )}
-                    {canCancel(purchaseOrder.status) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onCancel(purchaseOrder)}
-                        leftIcon={<XMarkIcon className="h-4 w-4" />}
-                        title={t('actions.cancel')}
-                        style={{ color: '#f59e0b' }}
-                      />
-                    )}
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(purchaseOrder)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={canEdit(purchaseOrder.status) ? t('actions.edit') : t(`actions.cannotEdit${purchaseOrder.status.charAt(0) + purchaseOrder.status.slice(1).toLowerCase()}`)}
-                      disabled={!canEdit(purchaseOrder.status)}
-                      className={!canEdit(purchaseOrder.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(purchaseOrder)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={canDelete(purchaseOrder.status) ? t('actions.delete') : t(`actions.cannotDelete${purchaseOrder.status.charAt(0) + purchaseOrder.status.slice(1).toLowerCase()}`)}
-                      disabled={!canDelete(purchaseOrder.status)}
-                      className={!canDelete(purchaseOrder.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                      style={{ color: canDelete(purchaseOrder.status) ? '#dc2626' : '#9ca3af' }}
-                    />
-                  </div>
+                  <ActionsMenu
+                    items={PurchaseOrderActionsMenu({
+                      purchaseOrder,
+                      onDetails,
+                      onEdit,
+                      onDelete,
+                      onApprove,
+                      onReject,
+                      onCancel,
+                      onGeneratePDF,
+                    })}
+                  />
                 </td>
               )}
             </tr>

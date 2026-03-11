@@ -249,4 +249,12 @@ export const clientsService = {
     }
     return api.post(`/clients/import-from-pack`, {});
   },
+
+  syncWithPack: async (clientId: string): Promise<ClientWithPackStatus> => {
+    // Esta operación solo funciona online
+    if (!navigator.onLine) {
+      throw new Error('Sync with pack requires internet connection');
+    }
+    return api.post(`/clients/${clientId}/sync-with-pack`, {});
+  },
 }; 

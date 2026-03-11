@@ -140,23 +140,29 @@ export default function MeasurementUnitsPage() {
         )}
       </div>
 
-      {/* Filtro de búsqueda */}
-      <div className="mt-6 flex justify-between items-center gap-4">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t('searchUnits')}
-            onSearch={(term: string) => {
-              setSearchTerm(term);
-              fetchUnits(1, term);
-            }}
+      {/* Filtro de búsqueda - Solo mostrar si hay unidades o si se está buscando */}
+      {(units.length > 0 || searchTerm) && (
+        <div className="mt-6 flex justify-between items-center gap-4">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('searchUnits')}
+              onSearch={(term: string) => {
+                setSearchTerm(term);
+                fetchUnits(1, term);
+              }}
+              onClear={() => {
+                setSearchTerm("");
+                fetchUnits(1, "");
+              }}
+            />
+          </div>
+          <ColumnSelector
+            columns={availableColumns}
+            visibleColumns={visibleColumns}
+            onChange={toggleColumn}
           />
         </div>
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
-      </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">

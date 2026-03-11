@@ -261,76 +261,78 @@ export default function ListProductsPage() {
         )}
       </div>
 
-      {/* Filtro de búsqueda y botón PDF */}
-      <div className="mt-6 flex gap-4 items-center">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t("searchProducts")}
-            value={searchTerm}
-            onSearch={(term: string) => {
-              setSearchTerm(term);
-              setSearchProduct(term);
-              fetchProducts(1, term);
-            }}
-            onClear={() => {
-              setSearchTerm("");
-              setSearchProduct("");
-              fetchProducts(1, "");
-            }}
-          />
-        </div>
-
-        {products && products.length > 0 && (
-          <>
-            <ExportButton
-              data={products}
-              filename="products"
-              columns={['name', 'code', 'sku', 'brand', 'category', 'status']}
-              label={tCommon('actions.export')}
-            >
-              <button
-                onClick={handleGeneratePDF}
-                disabled={generatingPDF}
-                className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700"
-              >
-                📄 {generatingPDF ? tPdf("generating") : tPdf("export")}
-              </button>
-            </ExportButton>
-            <AdvancedFilters
-              fields={[
-                {
-                  key: 'status',
-                  label: t('table.status'),
-                  type: 'select',
-                  options: [
-                    { value: 'true', label: tCommon('status.active') },
-                    { value: 'false', label: tCommon('status.inactive') },
-                  ],
-                },
-                {
-                  key: 'type',
-                  label: t('table.type'),
-                  type: 'select',
-                  options: [
-                    { value: ProductType.TANGIBLE, label: t('form.types.tangible') },
-                    { value: ProductType.SERVICE, label: t('form.types.service') },
-                  ],
-                },
-              ]}
-              onApply={(newFilters) => {
-                setFilters(newFilters);
-                fetchProducts(1, searchTerm, newFilters);
+      {/* Filtro de búsqueda y botón PDF - Solo mostrar si hay productos o si se está buscando */}
+      {(products && products.length > 0 || searchTerm) && (
+        <div className="mt-6 flex gap-4 items-center">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t("searchProducts")}
+              value={searchTerm}
+              onSearch={(term: string) => {
+                setSearchTerm(term);
+                setSearchProduct(term);
+                fetchProducts(1, term);
               }}
-              storageKey="product-advanced-filters"
+              onClear={() => {
+                setSearchTerm("");
+                setSearchProduct("");
+                fetchProducts(1, "");
+              }}
             />
-          </>
-        )}
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
-      </div>
+          </div>
+
+          {products && products.length > 0 && (
+            <>
+              <ExportButton
+                data={products}
+                filename="products"
+                columns={['name', 'code', 'sku', 'brand', 'category', 'status']}
+                label={tCommon('actions.export')}
+              >
+                <button
+                  onClick={handleGeneratePDF}
+                  disabled={generatingPDF}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700"
+                >
+                  📄 {generatingPDF ? tPdf("generating") : tPdf("export")}
+                </button>
+              </ExportButton>
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'true', label: tCommon('status.active') },
+                      { value: 'false', label: tCommon('status.inactive') },
+                    ],
+                  },
+                  {
+                    key: 'type',
+                    label: t('table.type'),
+                    type: 'select',
+                    options: [
+                      { value: ProductType.TANGIBLE, label: t('form.types.tangible') },
+                      { value: ProductType.SERVICE, label: t('form.types.service') },
+                    ],
+                  },
+                ]}
+                onApply={(newFilters) => {
+                  setFilters(newFilters);
+                  fetchProducts(1, searchTerm, newFilters);
+                }}
+                storageKey="product-advanced-filters"
+              />
+              <ColumnSelector
+                columns={availableColumns}
+                visibleColumns={visibleColumns}
+                onChange={toggleColumn}
+              />
+            </>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">

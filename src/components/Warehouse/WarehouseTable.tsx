@@ -238,7 +238,7 @@ export default function WarehouseTable({
                             onClick={() => handleOpenAperturas(warehouse)}
                             variant="ghost"
                             size="sm"
-                            leftIcon={<EyeIcon className="h-4 w-4" />}
+                            leftIcon={<EyeIcon className="h-4 w-4 mr-2" />}
                             title={t("actions.open")}
                             style={{ color: "#059669" }}
                           />

@@ -3,8 +3,10 @@
 import { useTranslations } from 'next-intl';
 import { AccountReceivable, AccountReceivableStatus } from '@/types/account-receivable';
 import { Client } from '@/types/client';
-import { PencilIcon, TrashIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { ClockIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import ActionsMenu from '@/components/atoms/ActionsMenu';
+import { AccountsReceivableActionsMenu } from './AccountsReceivableActionsMenu';
 import { usePermissions } from '@/hooks/usePermissions';
 
 interface AccountsReceivableTableProps {
@@ -196,7 +198,7 @@ export default function AccountsReceivableTable({
                 )}
                 {isVisible('actions') && (
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex justify-end items-center gap-2">
                       <Btn
                         variant="ghost"
                         size="sm"
@@ -204,35 +206,15 @@ export default function AccountsReceivableTable({
                         leftIcon={<ClockIcon className="h-4 w-4" />}
                         title={t('actions.viewPayments')}
                       />
-                      {account.status !== AccountReceivableStatus.PAID && account.status !== AccountReceivableStatus.CANCELLED && can(["account_receivable_update"]) && (
-                        <Btn
-                          variant="primary"
-                          size="sm"
-                          onClick={() => onRegisterPayment(account)}
-                          title={t('actions.registerPayment')}
-                        >
-                          {t('actions.registerPayment')}
-                        </Btn>
-                      )}
-                      {can(["account_receivable_update"]) && (
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(account)}
-                          leftIcon={<PencilIcon className="h-4 w-4" />}
-                          title={tCommon('actions.edit')}
-                        />
-                      )}
-                      {can(["account_receivable_delete"]) && Number(account.paidAmount) === 0 && (
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onDelete(account)}
-                          leftIcon={<TrashIcon className="h-4 w-4" />}
-                          title={tCommon('actions.delete')}
-                          style={{ color: '#dc2626' }}
-                        />
-                      )}
+                      <ActionsMenu
+                        items={AccountsReceivableActionsMenu({
+                          account,
+                          onEdit,
+                          onDelete,
+                          onRegisterPayment,
+                          onViewPayments,
+                        })}
+                      />
                     </div>
                   </td>
                 )}

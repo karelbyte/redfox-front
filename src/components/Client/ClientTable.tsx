@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Client } from "@/types/client";
-import { PencilIcon, TrashIcon, CheckCircleIcon, MapPinIcon, IdentificationIcon, BanknotesIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
-import { Btn } from "@/components/atoms";
+import { PencilIcon, TrashIcon, CheckCircleIcon, MapPinIcon, IdentificationIcon, BanknotesIcon, ShoppingCartIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter, useParams } from 'next/navigation';
 
@@ -9,6 +9,7 @@ interface ClientTableProps {
   clients: Client[];
   onEdit: (client: Client) => void;
   onDelete: (client: Client) => void;
+  onSync?: (client: Client) => void;
   visibleColumns?: string[];
   selectedIds?: string[];
   onSelectChange?: (id: string) => void;
@@ -19,6 +20,7 @@ export default function ClientTable({
   clients,
   onEdit,
   onDelete,
+  onSync,
   visibleColumns,
   selectedIds = [],
   onSelectChange,
@@ -194,56 +196,14 @@ export default function ClientTable({
               )}
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    {can(['client_update']) && (
-                      <>
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/ventas`)}
-                          leftIcon={<ShoppingCartIcon className="h-4 w-4" />}
-                          title={t('actions.viewSales')}
-                          style={{ color: '#059669' }}
-                        />
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/direcciones`)}
-                          leftIcon={<MapPinIcon className="h-4 w-4" />}
-                          title={t('addresses.title')}
-                        />
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/datos-fiscales`)}
-                          leftIcon={<IdentificationIcon className="h-4 w-4" />}
-                          title={t('taxData.title')}
-                        />
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/credito`)}
-                          leftIcon={<BanknotesIcon className="h-4 w-4" />}
-                          title={tCredit('title')}
-                        />
-                      </>
-                    )}
-                    {can(['client_update']) && <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(client)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={tCommon('actions.edit')}
-                    />}
-                    {can(['client_delete']) && <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(client)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={tCommon('actions.delete')}
-                      style={{ color: '#dc2626' }}
-                    />}
-                  </div>
+                  <ClientActionsMenu
+                    client={client}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onSync={onSync}
+                    tenant={tenant}
+                    locale={locale}
+                  />
                 </td>
               )}
             </tr>
@@ -252,4 +212,98 @@ export default function ClientTable({
       </table>
     </div>
   );
+}
+
+interface ClientActionsMenuProps {
+  client: Client;
+  onEdit: (client: Client) => void;
+  onDelete: (client: Client) => void;
+  onSync?: (client: Client) => void;
+  tenant: string;
+  locale: string;
+}
+
+function ClientActionsMenu({
+  client,
+  onEdit,
+  onDelete,
+  onSync,
+  tenant,
+  locale,
+}: ClientActionsMenuProps) {
+  const t = useTranslations('pages.clients');
+  const tCredit = useTranslations('pages.clients.credit');
+  const tCommon = useTranslations('common');
+  const { can } = usePermissions();
+  const router = useRouter();
+
+  const menuItems: ActionMenuItem[] = [
+    ...(can(['client_update'])
+      ? [
+           ...(can(['client_update']) && !client.pack_client_id && onSync
+      ? [
+          {
+            icon: <ArrowPathIcon className="h-4 w-4" />,
+            label: t('actions.syncWithPack'),
+            color: '#0891b2',
+            onClick: () => {
+              onSync(client);
+            },
+          },
+        ]
+      : []),
+          {
+            icon: <ShoppingCartIcon className="h-4 w-4" />,
+            label: t('actions.viewSales'),
+            color: '#059669',
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/ventas`);
+            },
+          },
+          {
+            icon: <MapPinIcon className="h-4 w-4" />,
+            label: t('addresses.title'),
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/direcciones`);
+            },
+          },
+          {
+            icon: <IdentificationIcon className="h-4 w-4" />,
+            label: t('taxData.title'),
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/datos-fiscales`);
+            },
+          },
+          {
+            icon: <BanknotesIcon className="h-4 w-4" />,
+            label: tCredit('title'),
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/clientes/${client.id}/credito`);
+            },
+          },
+          {
+            icon: <PencilIcon className="h-4 w-4" />,
+            label: tCommon('actions.edit'),
+            onClick: () => {
+              onEdit(client);
+            },
+          },
+        ]
+      : []),
+ 
+    ...(can(['client_delete'])
+      ? [
+          {
+            icon: <TrashIcon className="h-4 w-4" />,
+            label: tCommon('actions.delete'),
+            color: '#dc2626',
+            onClick: () => {
+              onDelete(client);
+            },
+          },
+        ]
+      : []),
+  ];
+
+  return <ActionsMenu items={menuItems} />;
 }

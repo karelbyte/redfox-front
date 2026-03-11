@@ -35,7 +35,8 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
-        <script
+        {/* PWA/Service Worker - DESHABILITADO */}
+        {/* <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
@@ -55,7 +56,7 @@ export default function RootLayout({
               }
             `,
           }}
-        />
+        /> */}
 
       </body>
     </html>

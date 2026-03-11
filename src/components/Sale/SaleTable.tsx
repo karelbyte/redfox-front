@@ -2,8 +2,8 @@
 
 import { useTranslations, useLocale } from 'next-intl';
 import { Sale } from '@/types/sale';
-import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, DocumentTextIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
+import ActionsMenu from '@/components/atoms/ActionsMenu';
+import { SaleActionsMenu } from './SaleActionsMenu';
 import { SaleStatus } from '@/types/sale';
 
 interface SaleTableProps {
@@ -189,95 +189,18 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
               )}
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDetails(sale)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onPrintTicket(sale)}
-                      leftIcon={<DocumentTextIcon className="h-4 w-4" />}
-                      title={t('actions.printTicket')}
-                    />
-                    {sale.status === SaleStatus.CLOSED && onInvoice && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onInvoice(sale)}
-                        leftIcon={<DocumentTextIcon className="h-4 w-4" />}
-                        title={t('actions.invoice')}
-                        style={{ color: '#059669' }}
-                      />
-                    )}
-                    {sale.status === SaleStatus.OPEN && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onClose(sale)}
-                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                        title={t('actions.closeSale')}
-                        style={{ color: '#059669' }}
-                      />
-                    )}
-                    {sale.status === SaleStatus.CLOSED && !sale.pack_fiscal_status && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onRefund(sale)}
-                        leftIcon={<ArrowUturnLeftIcon className="h-4 w-4" />}
-                        title={t('actions.refund')}
-                        style={{ color: '#dc2626' }}
-                      />
-                    )}
-                    {sale.status === SaleStatus.CLOSED && sale.pack_fiscal_status && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onRefund(sale)}
-                        leftIcon={<ArrowUturnLeftIcon className="h-4 w-4" />}
-                        title={
-                          sale.pack_fiscal_status === 'INVOICED_DIRECT' || sale.cfdi_uuid
-                            ? t('actions.cannotRefundInvoiced')
-                            : t('actions.refund')
-                        }
-                        disabled={sale.pack_fiscal_status === 'INVOICED_DIRECT' || !!sale.cfdi_uuid}
-                        className={
-                          sale.pack_fiscal_status === 'INVOICED_DIRECT' || sale.cfdi_uuid
-                            ? 'opacity-50 cursor-not-allowed'
-                            : ''
-                        }
-                        style={{ 
-                          color: sale.pack_fiscal_status === 'INVOICED_DIRECT' || sale.cfdi_uuid 
-                            ? '#9ca3af' 
-                            : '#dc2626' 
-                        }}
-                      />
-                    )}
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(sale)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={sale.status !== SaleStatus.OPEN ? t('actions.cannotEditCompleted') : t('actions.edit')}
-                      disabled={sale.status !== SaleStatus.OPEN}
-                      className={sale.status !== SaleStatus.OPEN ? 'opacity-50 cursor-not-allowed' : ''}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(sale)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={sale.status !== SaleStatus.OPEN ? t('actions.cannotDeleteCompleted') : t('actions.delete')}
-                      disabled={sale.status !== SaleStatus.OPEN}
-                      className={sale.status !== SaleStatus.OPEN ? 'opacity-50 cursor-not-allowed' : ''}
-                      style={{ color: sale.status !== SaleStatus.OPEN ? '#9ca3af' : '#dc2626' }}
-                    />
-                  </div>
+                  <ActionsMenu
+                    items={SaleActionsMenu({
+                      sale,
+                      onDetails,
+                      onEdit,
+                      onDelete,
+                      onClose,
+                      onRefund,
+                      onPrintTicket,
+                      onInvoice,
+                    })}
+                  />
                 </td>
               )}
             </tr>

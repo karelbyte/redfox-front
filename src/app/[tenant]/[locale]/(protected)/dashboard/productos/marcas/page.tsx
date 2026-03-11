@@ -146,20 +146,28 @@ export default function BrandsPage() {
       </div>
 
       <div className="mt-6 flex justify-between items-center gap-4">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t('searchBrands')}
-            onSearch={(term: string) => {
-              setSearchTerm(term);
-              fetchBrands(1, term);
-            }}
-          />
-        </div>
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
+        {(brands.length > 0 || searchTerm) && (
+          <>
+            <div className="flex-1">
+              <SearchInput
+                placeholder={t('searchBrands')}
+                onSearch={(term: string) => {
+                  setSearchTerm(term);
+                  fetchBrands(1, term);
+                }}
+                onClear={() => {
+                  setSearchTerm("");
+                  fetchBrands(1, "");
+                }}
+              />
+            </div>
+            <ColumnSelector
+              columns={availableColumns}
+              visibleColumns={visibleColumns}
+              onChange={toggleColumn}
+            />
+          </>
+        )}
       </div>
 
       {loading ? (

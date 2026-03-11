@@ -1,9 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { Invoice } from '@/types/invoice';
-import { PencilIcon, TrashIcon, EyeIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Btn } from "@/components/atoms";
+import ActionsMenu from '@/components/atoms/ActionsMenu';
+import { InvoiceActionsMenu } from './InvoiceActionsMenu';
 import { InvoicePDFButton, InvoiceXMLButton } from './InvoiceDownloadButtons';
-import { FileCheck2 } from 'lucide-react';
 
 interface InvoiceTableProps {
   invoices: Invoice[];
@@ -195,15 +194,7 @@ export default function InvoiceTable({
               )}
               {visibleColumns.includes('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDetails(invoice)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />
-                    
+                  <div className="flex justify-end items-center gap-2">
                     {canDownload(invoice.status) && (
                       <>
                         <InvoicePDFButton 
@@ -216,48 +207,15 @@ export default function InvoiceTable({
                         />
                       </>
                     )}
-                    
-                    {canGenerateCFDI(invoice.status) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onGenerateCFDI(invoice)}
-                        leftIcon={<FileCheck2 className="h-4 w-4" />}
-                        title={t('actions.generateCFDI')}
-                        style={{ color: '#059669' }}
-                      />
-                    )}
-                    
-                    {canCancelCFDI(invoice.status) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onCancelCFDI(invoice)}
-                        leftIcon={<XMarkIcon className="h-4 w-4" />}
-                        title={t('actions.cancelCFDI')}
-                        style={{ color: '#dc2626' }}
-                      />
-                    )}
-                    
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(invoice)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={canEdit(invoice.status) ? t('actions.edit') : t('actions.cannotEdit')}
-                      disabled={!canEdit(invoice.status)}
-                      className={!canEdit(invoice.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                    />
-                    
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(invoice)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={canDelete(invoice.status) ? t('actions.delete') : t('actions.cannotDelete')}
-                      disabled={!canDelete(invoice.status)}
-                      className={!canDelete(invoice.status) ? 'opacity-50 cursor-not-allowed' : ''}
-                      style={{ color: canDelete(invoice.status) ? '#dc2626' : '#9ca3af' }}
+                    <ActionsMenu
+                      items={InvoiceActionsMenu({
+                        invoice,
+                        onEdit,
+                        onDelete,
+                        onDetails,
+                        onGenerateCFDI,
+                        onCancelCFDI,
+                      })}
                     />
                   </div>
                 </td>

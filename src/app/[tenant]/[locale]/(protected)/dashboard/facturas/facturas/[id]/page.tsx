@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
-import { Invoice, InvoiceDetail } from '@/types/invoice';
+import { Invoice } from '@/types/invoice';
 import { invoiceService } from '@/services';
 import { toastService } from '@/services/toast.service';
 import Loading from "@/components/Loading/Loading";
@@ -17,7 +17,6 @@ export default function InvoiceDetailsPage() {
   const invoiceId = params.id as string;
   
   const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,13 +28,8 @@ export default function InvoiceDetailsPage() {
   const loadInvoiceDetails = async () => {
     try {
       setLoading(true);
-      const [invoiceResponse, detailsResponse] = await Promise.all([
-        invoiceService.getInvoiceById(invoiceId),
-        invoiceService.getInvoiceDetails(invoiceId)
-      ]);
-      
+      const invoiceResponse = await invoiceService.getInvoiceById(invoiceId);
       setInvoice(invoiceResponse);
-      setDetails(detailsResponse.data);
     } catch (error) {
       console.error('Error loading invoice details:', error);
       toastService.error(t('errors.loadInvoiceDetails'));
@@ -209,7 +203,7 @@ export default function InvoiceDetailsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {details.map((detail) => (
+                  {invoice.details.map((detail) => (
                     <tr key={detail.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {detail.product.name}

@@ -186,7 +186,6 @@ export default function InvoicesPage() {
             filename="invoices"
             columns={['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status']}
           >
-            {t('export')}
           </ExportButton>
           <AdvancedFilters
             fields={[

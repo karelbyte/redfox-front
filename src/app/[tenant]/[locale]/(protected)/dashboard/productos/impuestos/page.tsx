@@ -141,23 +141,29 @@ export default function TaxesPage() {
         )}
       </div>
 
-      {/* Filtro de búsqueda */}
-      <div className="mt-6 flex justify-between items-center gap-4">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t('searchTaxes')}
-            onSearch={(term: string) => {
-              setSearchTerm(term);
-              fetchTaxes(1, term);
-            }}
+      {/* Filtro de búsqueda - Solo mostrar si hay impuestos o si se está buscando */}
+      {(taxes.length > 0 || searchTerm) && (
+        <div className="mt-6 flex justify-between items-center gap-4">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('searchTaxes')}
+              onSearch={(term: string) => {
+                setSearchTerm(term);
+                fetchTaxes(1, term);
+              }}
+              onClear={() => {
+                setSearchTerm("");
+                fetchTaxes(1, "");
+              }}
+            />
+          </div>
+          <ColumnSelector
+            columns={availableColumns}
+            visibleColumns={visibleColumns}
+            onChange={toggleColumn}
           />
         </div>
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
-      </div>
+      )}
 
       {isLoading ? (
         <div className="flex justify-center items-center h-64">

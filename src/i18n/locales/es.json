@@ -1027,7 +1027,8 @@
         "save": "Guardar",
         "cancel": "Cancelar",
         "viewSales": "Ver Ventas",
-        "back": "Volver"
+        "back": "Volver",
+        "syncWithPack": "Resincronizar con PAC"
       },
       "status": {
         "active": "Activo",

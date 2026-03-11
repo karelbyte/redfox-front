@@ -1041,7 +1041,8 @@
         "save": "Save",
         "cancel": "Cancel",
         "viewSales": "View Sales",
-        "back": "Back"
+        "back": "Back",
+        "syncWithPack": "Resync with PAC"
       },
       "status": {
         "active": "Active",

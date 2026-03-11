@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Provider } from "@/types/provider";
 import { PencilIcon, TrashIcon, MapPinIcon, IdentificationIcon, BanknotesIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter, useParams } from 'next/navigation';
 
@@ -182,50 +183,13 @@ export default function ProviderTable({
               )}
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    {can(['provider_update']) && (
-                      <>
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/direcciones`)}
-                          leftIcon={<MapPinIcon className="h-4 w-4" />}
-                          title={t('addresses.title')}
-                        />
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/datos-fiscales`)}
-                          leftIcon={<IdentificationIcon className="h-4 w-4" />}
-                          title={t('taxData.title')}
-                        />
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/credito`)}
-                          leftIcon={<BanknotesIcon className="h-4 w-4" />}
-                          title={t('credit.title')}
-                        />
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(provider)}
-                          leftIcon={<PencilIcon className="h-4 w-4" />}
-                          title={tCommon('actions.edit')}
-                        />
-                      </>
-                    )}
-                    {can(['provider_delete']) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(provider)}
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        title={tCommon('actions.delete')}
-                        style={{ color: '#dc2626' }}
-                      />
-                    )}
-                  </div>
+                  <ProviderActionsMenu
+                    provider={provider}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    tenant={tenant}
+                    locale={locale}
+                  />
                 </td>
               )}
             </tr>
@@ -234,4 +198,74 @@ export default function ProviderTable({
       </table>
     </div>
   );
+}
+
+interface ProviderActionsMenuProps {
+  provider: Provider;
+  onEdit: (provider: Provider) => void;
+  onDelete: (provider: Provider) => void;
+  tenant: string;
+  locale: string;
+}
+
+function ProviderActionsMenu({
+  provider,
+  onEdit,
+  onDelete,
+  tenant,
+  locale,
+}: ProviderActionsMenuProps) {
+  const t = useTranslations('pages.providers');
+  const tCommon = useTranslations('common');
+  const { can } = usePermissions();
+  const router = useRouter();
+
+  const menuItems: ActionMenuItem[] = [
+    ...(can(['provider_update'])
+      ? [
+          {
+            icon: <MapPinIcon className="h-4 w-4" />,
+            label: t('addresses.title'),
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/direcciones`);
+            },
+          },
+          {
+            icon: <IdentificationIcon className="h-4 w-4" />,
+            label: t('taxData.title'),
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/datos-fiscales`);
+            },
+          },
+          {
+            icon: <BanknotesIcon className="h-4 w-4" />,
+            label: t('credit.title'),
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/proveedores/${provider.id}/credito`);
+            },
+          },
+          {
+            icon: <PencilIcon className="h-4 w-4" />,
+            label: tCommon('actions.edit'),
+            onClick: () => {
+              onEdit(provider);
+            },
+          },
+        ]
+      : []),
+    ...(can(['provider_delete'])
+      ? [
+          {
+            icon: <TrashIcon className="h-4 w-4" />,
+            label: tCommon('actions.delete'),
+            color: '#dc2626',
+            onClick: () => {
+              onDelete(provider);
+            },
+          },
+        ]
+      : []),
+  ];
+
+  return <ActionsMenu items={menuItems} />;
 }

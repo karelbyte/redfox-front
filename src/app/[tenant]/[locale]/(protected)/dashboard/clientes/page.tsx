@@ -190,6 +190,23 @@ export default function ClientsPage() {
     }
   };
 
+  const handleSyncWithPack = async (client: Client) => {
+    try {
+      setIsSaving(true);
+      const result = await clientsService.syncWithPack(client.id);
+      if (result.pack_sync_success) {
+        toastService.success(t("messages.syncSuccess"));
+        fetchClients(currentPage, searchTerm);
+      } else {
+        toastService.error(result.pack_sync_error || t("messages.syncError"));
+      }
+    } catch (error) {
+      toastService.error(error instanceof Error ? error.message : t("messages.syncError"));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     fetchClients(page, searchTerm);
@@ -308,6 +325,7 @@ export default function ClientsPage() {
                 clients={clients}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onSync={handleSyncWithPack}
                 visibleColumns={visibleColumns}
                 selectedIds={selectedIds}
                 onSelectChange={toggleSelect}

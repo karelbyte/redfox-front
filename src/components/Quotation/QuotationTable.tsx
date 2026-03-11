@@ -7,7 +7,8 @@ import { Quotation, QuotationStatus } from '@/types/quotation';
 import { toastService } from '@/services/toast.service';
 import { quotationService } from '@/services/quotations.service';
 import { Btn } from '@/components/atoms';
-import { EyeIcon, PencilIcon, TrashIcon, ArrowsRightLeftIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import ActionsMenu from '@/components/atoms/ActionsMenu';
+import { QuotationActionsMenu } from './QuotationActionsMenu';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
 import { QuotationPDFService } from '@/services/quotation-pdf.service';
 
@@ -104,12 +105,6 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
     } finally {
       setLoadingActions(prev => ({ ...prev, [`convert-${selectedQuotation.id}`]: false }));
     }
-  };
-
-  const canConvertToSale = (quotation: Quotation) => {
-    return quotation.status !== QuotationStatus.CONVERTED && 
-           quotation.status !== QuotationStatus.REJECTED &&
-           quotation.status !== QuotationStatus.EXPIRED;
   };
 
   const isColumnVisible = (column: string) => visibleColumns.includes(column);
@@ -218,58 +213,17 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
               )}
               {isColumnVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onView(quotation)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.view')}
-                    />
-
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleGeneratePDF(quotation)}
-                      leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
-                      title={t('actions.downloadPDF')}
-                      style={{ color: '#059669' }}
-                    />
-
-                    {quotation.status !== QuotationStatus.CONVERTED && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(quotation)}
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={tCommon('actions.edit')}
-                      />
-                    )}
-
-                    {canConvertToSale(quotation) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleConvertClick(quotation)}
-                        leftIcon={<ArrowsRightLeftIcon className="h-4 w-4" />}
-                        loading={loadingActions[`convert-${quotation.id}`]}
-                        title={t('actions.convertToSale')}
-                        style={{ color: '#059669' }}
-                      />
-                    )}
-
-                    {quotation.status !== QuotationStatus.CONVERTED && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteClick(quotation)}
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        loading={loadingActions[`delete-${quotation.id}`]}
-                        title={tCommon('actions.delete')}
-                        style={{ color: '#dc2626' }}
-                      />
-                    )}
-                  </div>
+                  <ActionsMenu
+                    items={QuotationActionsMenu({
+                      quotation,
+                      onView,
+                      onEdit,
+                      onDelete: handleDeleteClick,
+                      onConvert: handleConvertClick,
+                      onGeneratePDF: handleGeneratePDF,
+                      loadingActions,
+                    })}
+                  />
                 </td>
               )}
             </tr>
