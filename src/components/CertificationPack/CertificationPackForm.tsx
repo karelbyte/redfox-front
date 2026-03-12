@@ -62,7 +62,8 @@ function CertificationPackFormInner(
     if (formData.type === CertificationPackType.FACTURA_GREEN) {
       return (
         !!String(cfg.tenant_id || '').trim() &&
-        !!String(cfg.business_uuid || '').trim()
+        !!String(cfg.business_uuid || '').trim() &&
+        !!String(cfg.api_key || '').trim()
       );
     }
 
@@ -153,6 +154,22 @@ function CertificationPackFormInner(
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
+              API Key *
+            </label>
+            <input
+              type="password"
+              value={formData.config?.api_key || ''}
+              onChange={(e) => updateConfig('api_key', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="BDI5e07d9c59c5a5297058e32d6b9883dce92b175104"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Tu API Key de Factura Green (x-application-key)
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Tenant ID *
             </label>
             <input
@@ -160,10 +177,10 @@ function CertificationPackFormInner(
               value={formData.config?.tenant_id || ''}
               onChange={(e) => updateConfig('tenant_id', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="www"
+              placeholder="https://api.alpha.tpa.factura.green"
             />
             <p className="mt-1 text-xs text-gray-500">
-              Tu identificador de tenant (ej: www, sandbox)
+              URL base de tu tenant (ej: https://api.alpha.tpa.factura.green)
             </p>
           </div>
 
@@ -176,7 +193,7 @@ function CertificationPackFormInner(
               value={formData.config?.business_uuid || ''}
               onChange={(e) => updateConfig('business_uuid', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e-business-xxxxx"
+              placeholder="e-business-160625973100059788268-4a7c-44f8-a3b1-8346a22b9061"
             />
             <p className="mt-1 text-xs text-gray-500">
               UUID del business (emisor) registrado en Factura Green

@@ -8,6 +8,7 @@ export interface Client {
   phone: string;
   email: string;
   status: boolean;
+  balance: number;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

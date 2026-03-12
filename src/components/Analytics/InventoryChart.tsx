@@ -100,11 +100,14 @@ export default function InventoryChart({ data, themeColors }: InventoryChartProp
           <Legend 
             verticalAlign="bottom" 
             height={36}
-            formatter={(value, entry) => (
-              <span style={{ color: entry.color, fontSize: '12px' }}>
-                {entry.payload?.categoryName || value}
-              </span>
-            )}
+            formatter={(value, entry: any) => {
+              const categoryName = entry?.payload?.categoryName || value;
+              return (
+                <span style={{ color: entry.color, fontSize: '12px' }}>
+                  {categoryName}
+                </span>
+              );
+            }}
           />
         </PieChart>
       </ResponsiveContainer>

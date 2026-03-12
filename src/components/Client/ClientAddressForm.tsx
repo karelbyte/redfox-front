@@ -97,18 +97,28 @@ const ClientAddressForm = forwardRef<ClientAddressFormRef, ClientAddressFormProp
 
             try {
                 onSavingChange(true);
+                
+                // Limpiar campos vacíos para evitar errores de validación
+                const cleanedData: any = { ...formData };
+                Object.keys(cleanedData).forEach(key => {
+                    if (typeof cleanedData[key] === 'string' && cleanedData[key].trim() === '') {
+                        cleanedData[key] = undefined;
+                    }
+                });
+                
                 const payload = {
                     addresses: address
-                        ? [{ ...formData, id: address.id }]
-                        : [formData]
+                        ? [{ ...cleanedData, id: address.id }]
+                        : [cleanedData]
                 };
 
                 await clientsService.updateClient(clientId, payload as any);
-
                 toastService.success(address ? t('messages.updated') : t('messages.created'));
                 onSuccess();
-            } catch (error) {
-                toastService.error(error instanceof Error ? error.message : "Error saving address");
+            } catch (error: any) {
+                console.error('Error saving address:', error);
+                const errorMessage = error?.message || t('messages.error');
+                toastService.error(errorMessage);
             } finally {
                 onSavingChange(false);
             }

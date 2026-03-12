@@ -14,6 +14,7 @@ import {
 export interface GetPurchaseOrdersParams {
   page?: number;
   status?: string;
+  search?: string;
 }
 
 class PurchaseOrdersService {
@@ -26,6 +27,10 @@ class PurchaseOrdersService {
     
     if (params.status) {
       searchParams.append('status', params.status);
+    }
+    
+    if (params.search) {
+      searchParams.append('search', params.search);
     }
     
     const queryString = searchParams.toString();

@@ -40,11 +40,6 @@ export function TrialBanner() {
     return null;
   }
 
-  // No mostrar si la suscripción está activa y no es trial
-  if (subscription.status === 'active' && subscription.status !== 'trial') {
-    return null;
-  }
-
   // No mostrar si no está en período de prueba
   if (subscription.status !== 'trial') {
     return null;

@@ -49,7 +49,7 @@ export default function InvoicesPage() {
   const loadInvoices = async () => {
     try {
       setLoading(true);
-      const response = await invoiceService.getInvoices(undefined, searchTerm);
+      const response = await invoiceService.getInvoices(undefined, undefined, searchTerm);
       setInvoices(response.data);
     } catch (error) {
       console.error('Error loading invoices:', error);

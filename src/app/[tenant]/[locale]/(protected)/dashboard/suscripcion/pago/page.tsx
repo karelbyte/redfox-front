@@ -4,17 +4,8 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { StripeProvider } from '@/providers/StripeProvider';
 import { PaymentForm } from '@/components/Subscription/PaymentForm';
-import { subscriptionService, SubscriptionStatus } from '@/services/subscription.service';
+import { subscriptionService, SubscriptionStatus, Plan } from '@/services/subscription.service';
 import { toastService } from '@/services/toast.service';
-
-interface Plan {
-  id: string;
-  name: string;
-  price: string;
-  currency: string;
-  billing_period: string;
-  description: string;
-}
 
 export default function PaymentPage() {
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
@@ -38,7 +29,7 @@ export default function PaymentPage() {
       
       // Seleccionar el plan actual o el primero por defecto
       if (subscriptionData.plan) {
-        const currentPlan = plansData.find((p: Plan) => p.id === subscriptionData.plan.id);
+        const currentPlan = plansData.find((p: Plan) => p.id === subscriptionData.plan!.id);
         setSelectedPlan(currentPlan || plansData[0]);
       } else {
         setSelectedPlan(plansData[0]);

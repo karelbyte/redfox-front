@@ -240,7 +240,7 @@ function ClientActionsMenu({
   const menuItems: ActionMenuItem[] = [
     ...(can(['client_update'])
       ? [
-           ...(can(['client_update']) && !client.pack_client_id && onSync
+           ...(can(['client_update']) && onSync
       ? [
           {
             icon: <ArrowPathIcon className="h-4 w-4" />,

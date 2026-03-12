@@ -53,7 +53,11 @@ const handleResponse = async (response: Response) => {
   if (!response.ok) {
     try {
       const errorData = await response.json();
-      return Promise.reject(new Error(errorData.message || 'Error en la petición'));
+      // Si message es un array, unirlo con saltos de línea
+      const errorMessage = Array.isArray(errorData.message)
+        ? errorData.message.join('\n')
+        : errorData.message || 'Error en la petición';
+      return Promise.reject(new Error(errorMessage));
     } catch {
       return Promise.reject(new Error('Error en la petición'));
     }
