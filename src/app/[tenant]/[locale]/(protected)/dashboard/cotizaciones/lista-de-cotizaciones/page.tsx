@@ -161,49 +161,12 @@ const QuotationListPage = () => {
         <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
           {t('title')}
         </h1>
-        <div className="flex gap-3">
-          {quotations.length > 0 && (
-            <>
-              <ExportButton
-                data={quotations}
-                filename="quotations"
-                columns={['code', 'date', 'validUntil', 'client', 'total', 'status']}
-              >
-                {t('export')}
-              </ExportButton>
-              <AdvancedFilters
-                fields={[
-                  {
-                    key: 'status',
-                    label: t('table.status'),
-                    type: 'select',
-                    options: [
-                      { value: 'DRAFT', label: 'Draft' },
-                      { value: 'SENT', label: 'Sent' },
-                      { value: 'ACCEPTED', label: 'Accepted' },
-                      { value: 'REJECTED', label: 'Rejected' },
-                    ],
-                  },
-                  {
-                    key: 'date',
-                    label: t('table.date'),
-                    type: 'date',
-                  },
-                ]}
-                onApply={(filters) => {
-                  // Apply filters
-                }}
-                storageKey="quotation-advanced-filters"
-              />
-            </>
-          )}
-          <Btn
-            onClick={handleCreate}
-            leftIcon={<PlusIcon className="h-5 w-5" />}
-          >
-            {t('actions.create')}
-          </Btn>
-        </div>
+        <Btn
+          onClick={handleCreate}
+          leftIcon={<PlusIcon className="h-5 w-5" />}
+        >
+          {t('actions.create')}
+        </Btn>
       </div>
 
       {loading ? (
@@ -244,7 +207,7 @@ const QuotationListPage = () => {
         </div>
       ) : (
         <>
-          {/* Search and Column Selector */}
+          {/* Search and Filters */}
           <div className="mt-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             <div className="flex-1 max-w-md">
               <div className="relative">
@@ -263,11 +226,43 @@ const QuotationListPage = () => {
               </div>
             </div>
 
-            <ColumnSelector
-              columns={availableColumns}
-              visibleColumns={visibleColumns}
-              onChange={toggleColumn}
-            />
+            <div className="flex gap-3">
+              <ExportButton
+                data={quotations}
+                filename="quotations"
+                columns={['code', 'date', 'validUntil', 'client', 'total', 'status']}
+              >
+              </ExportButton>
+              <AdvancedFilters
+                fields={[
+                  {
+                    key: 'status',
+                    label: t('table.status'),
+                    type: 'select',
+                    options: [
+                      { value: 'DRAFT', label: 'Draft' },
+                      { value: 'SENT', label: 'Sent' },
+                      { value: 'ACCEPTED', label: 'Accepted' },
+                      { value: 'REJECTED', label: 'Rejected' },
+                    ],
+                  },
+                  {
+                    key: 'date',
+                    label: t('table.date'),
+                    type: 'date',
+                  },
+                ]}
+                onApply={(filters) => {
+                  // Apply filters
+                }}
+                storageKey="quotation-advanced-filters"
+              />
+              <ColumnSelector
+                columns={availableColumns}
+                visibleColumns={visibleColumns}
+                onChange={toggleColumn}
+              />
+            </div>
           </div>
 
           {/* Table */}

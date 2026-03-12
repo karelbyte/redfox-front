@@ -51,7 +51,8 @@
       "deleting": "Eliminando...",
       "logout": "Cerrar sesión",
       "viewColumns": "Ver columnas",
-      "export": "Exportar"
+      "export": "Exportar",
+      "more": "Mas"
     },
     "status": {
       "active": "Activo",
@@ -93,7 +94,8 @@
       "selectTheme": "Seleccionar tema",
       "selectLanguage": "Seleccionar idioma",
       "user": "Usuario",
-      "role": "Rol"
+      "role": "Rol",
+      "subscription": "Mi Suscripción"
     },
     "languages": {
       "es": "Español",
@@ -142,6 +144,7 @@
     "cashRegister": "Caja",
     "users": "Usuarios",
     "companySettings": "Generales de empresa",
+    "subscription": "Suscripción",
     "roles": "Roles",
     "emailConfig": "Configuración de Correo",
     "paymentGateway": "Pasarela de Pago",
@@ -1399,6 +1402,7 @@
       "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
       "addProductTitle": "Añadir Producto",
       "noReceptions": "No hay recepciones",
+         "noResultsDesc": "Resultados no encontrados",
       "noReceptionsDesc": "Haz clic en \"Nueva Recepción\" para agregar una.",
       "searchReceptions": "Buscar recepciones...",
       "form": {
@@ -2281,6 +2285,7 @@
     "invoices": {
       "title": "Facturas",
       "subtitle": "Gestión de facturas y CFDI",
+      "searchInvoices": "Buscar factura",
       "create": {
         "title": "Crear Factura",
         "subtitle": "Crear una nueva factura"
@@ -3037,6 +3042,7 @@
       "noPurchaseOrders": "No hay órdenes de compra",
       "noPurchaseOrdersDesc": "Haz clic en \"Crear Orden de Compra\" para agregar una.",
       "noPermissionDesc": "No tienes permisos para ver esta página",
+      "searchPurchaseOrders":"Buscar ordenes de compra..",
       "table": {
         "code": "Código",
         "date": "Fecha",
@@ -3387,6 +3393,7 @@
   },
   "expenses": {
     "title": "Gastos",
+    "searchExpenses": "",
     "subtitle": "Gestiona los gastos de tu empresa ({count} gastos)",
     "addExpense": "Nuevo Gasto",
     "editExpense": "Editar Gasto",
@@ -3920,5 +3927,85 @@
     "remaining": "restantes",
     "syncNow": "Sincronizar ahora",
     "pendingSync": "Pendiente de sincronizar"
+  },
+  "subscription": {
+    "banner": {
+      "trialRemaining": "Período de prueba: {days} {days, plural, one {día} other {días}} restantes",
+      "trialUrgent": "¡Solo quedan {days} {days, plural, one {día} other {días}} de prueba!",
+      "trialExpired": "Tu período de prueba ha finalizado",
+      "trialExpiredMessage": "Activa tu suscripción para continuar usando Nitro",
+      "urgentMessage": "Activa tu suscripción ahora para no perder acceso",
+      "enjoyMessage": "Disfruta de todas las funcionalidades sin costo",
+      "activateSubscription": "Activar Suscripción",
+      "activateNow": "Activar Ahora",
+      "viewDetails": "Ver Detalles",
+      "clickToViewDetails": "Click para ver detalles",
+      "close": "Cerrar"
+    },
+    "blocker": {
+      "title": "Suscripción Requerida",
+      "message": "Tu período de prueba ha finalizado. Activa tu suscripción para continuar usando Nitro.",
+      "activate": "Activar Suscripción",
+      "verifying": "Verificando suscripción..."
+    },
+    "page": {
+      "title": "Mi Suscripción",
+      "currentStatus": "Estado Actual",
+      "active": "✓ Activa",
+      "inactive": "✗ Inactiva",
+      "trialPeriod": "Período de Prueba",
+      "daysRemaining": "Te quedan {days} días de prueba gratis",
+      "endsOn": "Finaliza: {date}",
+      "activeSubscription": "Suscripción Activa",
+      "nextRenewal": "Próxima renovación: {date}",
+      "expiredSubscription": "Suscripción Expirada",
+      "expiredMessage": "Tu período de prueba ha finalizado. Activa tu suscripción para continuar usando Nitro.",
+      "currentPlan": "Plan Actual",
+      "perMonth": "mes",
+      "perYear": "año",
+      "activateYourSubscription": "Activa tu Suscripción",
+      "activateSubscription": "Activar Suscripción",
+      "trialEndingSoon": "Tu período de prueba está por finalizar. Activa tu suscripción ahora para continuar sin interrupciones.",
+      "renewSubscription": "Renovar Suscripción",
+      "renewMessage": "Tu suscripción ha expirado. Renuévala para continuar usando todas las funcionalidades de Nitro.",
+      "renewNow": "Renovar Ahora",
+      "loading": "Cargando...",
+      "errorLoading": "No se pudo cargar la información de la suscripción",
+      "errorLoadingSubscription": "Error al cargar la suscripción"
+    },
+    "payment": {
+      "title": "Activar Suscripción",
+      "subtitle": "Completa tu pago para continuar usando Nitro sin interrupciones",
+      "selectPlan": "Selecciona tu Plan",
+      "saveMore": "Ahorra más de 1 mes",
+      "planSummary": "Resumen del Plan",
+      "perMonth": "mes",
+      "perYear": "año",
+      "includes": "Incluye:",
+      "feature1": "Usuarios ilimitados",
+      "feature2": "Almacenes ilimitados",
+      "feature3": "Productos ilimitados",
+      "feature4": "Todas las estrategias de inventario",
+      "feature5": "Facturación electrónica (CFDI)",
+      "feature6": "Reportes avanzados",
+      "feature7": "API REST y Webhooks",
+      "feature8": "Soporte prioritario",
+      "paymentInfo": "Información de Pago",
+      "securityNote": "Tu información está protegida con encriptación de nivel bancario.",
+      "securityNote2": "No almacenamos los datos de tu tarjeta.",
+      "errorLoading": "Error al cargar la información"
+    },
+    "paymentForm": {
+      "cardInfo": "Información de la Tarjeta",
+      "cancel": "Cancelar",
+      "payNow": "Pagar Ahora",
+      "processing": "Procesando...",
+      "securePayment": "Pago seguro procesado por Stripe",
+      "stripeNotLoaded": "Stripe no está cargado correctamente",
+      "formNotLoaded": "No se pudo cargar el formulario de pago",
+      "paymentError": "Error al procesar el pago",
+      "confirmError": "Error al confirmar el pago",
+      "paymentSuccess": "¡Pago procesado exitosamente!"
+    }
   }
 }

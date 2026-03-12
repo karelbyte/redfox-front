@@ -20,6 +20,7 @@ interface ExpenseTableProps {
   selectedIds?: string[];
   onSelectChange?: (id: string) => void;
   onSelectAllChange?: () => void;
+  visibleColumns?: string[];
 }
 
 export default function ExpenseTable({ 
@@ -36,10 +37,16 @@ export default function ExpenseTable({
   selectedIds = [],
   onSelectChange,
   onSelectAllChange,
+  visibleColumns,
 }: ExpenseTableProps) {
   const t = useTranslations('expenses');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+
+  const isVisible = (key: string) => {
+    if (!visibleColumns) return true;
+    return visibleColumns.includes(key);
+  };
 
   const getCategoryName = (categoryId: string) => {
     const category = categories.find(c => c.id === categoryId);
@@ -105,54 +112,70 @@ export default function ExpenseTable({
                   />
                 </th>
               )}
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.description')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.category')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.provider')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.amount')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.remaining')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.date')}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.status')}
-              </th>
-              <th
-                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('table.actions')}
-              </th>
+              {isVisible('description') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.description')}
+                </th>
+              )}
+              {isVisible('category') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.category')}
+                </th>
+              )}
+              {isVisible('provider') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.provider')}
+                </th>
+              )}
+              {isVisible('amount') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.amount')}
+                </th>
+              )}
+              {isVisible('remaining') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.remaining')}
+                </th>
+              )}
+              {isVisible('date') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.date')}
+                </th>
+              )}
+              {isVisible('status') && (
+                <th
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.status')}
+                </th>
+              )}
+              {isVisible('actions') && (
+                <th
+                  className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('table.actions')}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -168,75 +191,91 @@ export default function ExpenseTable({
                     />
                   </td>
                 )}
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{expense.description}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {getCategoryName(expense.categoryId)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {expense.provider ? `${expense.provider.code} - ${expense.provider.name}` : '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(expense.amount)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <span className={expense.remainingAmount > 0 ? 'text-red-600' : 'text-green-600'}>
-                    {formatCurrency(expense.remainingAmount)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(expense.expenseDate)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(expense.status)}`}
-                  >
-                    {t(`status.${expense.status.toLowerCase()}`)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    {onView && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onView(expense.id)}
-                        leftIcon={<EyeIcon className="h-4 w-4" />}
-                        title={tCommon('actions.view')}
-                      />
-                    )}
-                    {onPayment && expense.remainingAmount > 0 && can(["expense_update"]) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onPayment(expense)}
-                        leftIcon={<CurrencyDollarIcon className="h-4 w-4" />}
-                        title={t('actions.registerPayment')}
-                        style={{ color: '#10b981' }}
-                      />
-                    )}
-                    {can(["expense_update"]) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(expense)}
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={tCommon('actions.edit')}
-                      />
-                    )}
-                    {can(["expense_delete"]) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(expense)}
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        title={tCommon('actions.delete')}
-                        style={{ color: '#dc2626' }}
-                      />
-                    )}
-                  </div>
-                </td>
+                {isVisible('description') && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{expense.description}</div>
+                  </td>
+                )}
+                {isVisible('category') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {getCategoryName(expense.categoryId)}
+                  </td>
+                )}
+                {isVisible('provider') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {expense.provider ? `${expense.provider.code} - ${expense.provider.name}` : '-'}
+                  </td>
+                )}
+                {isVisible('amount') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {formatCurrency(expense.amount)}
+                  </td>
+                )}
+                {isVisible('remaining') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <span className={expense.remainingAmount > 0 ? 'text-red-600' : 'text-green-600'}>
+                      {formatCurrency(expense.remainingAmount)}
+                    </span>
+                  </td>
+                )}
+                {isVisible('date') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {formatDate(expense.expenseDate)}
+                  </td>
+                )}
+                {isVisible('status') && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(expense.status)}`}
+                    >
+                      {t(`status.${expense.status.toLowerCase()}`)}
+                    </span>
+                  </td>
+                )}
+                {isVisible('actions') && (
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
+                      {onView && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onView(expense.id)}
+                          leftIcon={<EyeIcon className="h-4 w-4" />}
+                          title={tCommon('actions.view')}
+                        />
+                      )}
+                      {onPayment && expense.remainingAmount > 0 && can(["expense_update"]) && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onPayment(expense)}
+                          leftIcon={<CurrencyDollarIcon className="h-4 w-4" />}
+                          title={t('actions.registerPayment')}
+                          style={{ color: '#10b981' }}
+                        />
+                      )}
+                      {can(["expense_update"]) && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(expense)}
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                          title={tCommon('actions.edit')}
+                        />
+                      )}
+                      {can(["expense_delete"]) && (
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(expense)}
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          title={tCommon('actions.delete')}
+                          style={{ color: '#dc2626' }}
+                        />
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             )) : (
               <tr>

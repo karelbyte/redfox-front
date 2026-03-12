@@ -12,8 +12,10 @@ import { SearchInput } from '@/components/atoms';
 import { EmptyState } from '@/components/atoms';
 import ExportButton from '@/components/atoms/ExportButton';
 import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
+import ColumnSelector from '@/components/Table/ColumnSelector';
 import BulkActionsBar from '@/components/atoms/BulkActionsBar';
 import { useBulkSelection, BulkAction } from '@/hooks/useBulkSelection';
+import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import { toastService } from '@/services/toast.service';
 import Drawer from '@/components/Drawer/Drawer';
 import ExpenseTable from './ExpenseTable';
@@ -62,6 +64,22 @@ export default function ExpenseList() {
 
   const t = useTranslations('expenses');
   const tCommon = useTranslations('common');
+
+  const availableColumns = [
+    { key: 'description', label: t('table.description') },
+    { key: 'category', label: t('table.category') },
+    { key: 'provider', label: t('table.provider') },
+    { key: 'amount', label: t('table.amount') },
+    { key: 'remaining', label: t('table.remaining') },
+    { key: 'date', label: t('table.date') },
+    { key: 'status', label: t('table.status') },
+    { key: 'actions', label: t('table.actions') },
+  ];
+
+  const { visibleColumns, toggleColumn } = useColumnPersistence(
+    'expenses_table',
+    availableColumns.map(c => c.key)
+  );
 
   useEffect(() => {
     loadExpenses();
@@ -230,55 +248,51 @@ export default function ExpenseList() {
             {t('subtitle', { count: total })}
           </p>
         </div>
-        <div className="flex items-center space-x-3">
-          {total > 0 && (
-            <>
-              <ExportButton
-                data={expenses}
-                filename="expenses"
-                columns={['id', 'description', 'amount', 'date', 'status']}
-              >
-              </ExportButton>
-              <AdvancedFilters
-                fields={advancedFilterFields}
-                onApply={handleAdvancedFilters}
-                storageKey="expense-advanced-filters"
-              />
-            </>
-          )}
-          <Btn onClick={handleCreateExpense} className="flex items-center">
-            <PlusIcon className="h-4 w-4 mr-2" />
-            {t('addExpense')}
-          </Btn>
-        </div>
+        <Btn onClick={handleCreateExpense} className="flex items-center">
+          <PlusIcon className="h-4 w-4 mr-2" />
+          {t('addExpense')}
+        </Btn>
       </div>
 
-      {showFilters && (
-        <ExpenseFilters
-          filters={filters}
-          categories={categories}
-          onFiltersChange={handleFiltersChange}
-          onClose={() => setShowFilters(false)}
-        />
-      )}
-
-      {/* Búsqueda */}
+      {/* Búsqueda y Filtros */}
       {(expenses.length > 0 || filters.search) && (
-        <div className="mt-6 flex-1">
-          <SearchInput
-            placeholder={t('searchExpenses')}
-            value={filters.search}
-            onSearch={(term: string) => {
-              setFilters(prev => ({ ...prev, search: term }));
-              setSearchExpense(term);
-              setCurrentPage(1);
-            }}
-            onClear={() => {
-              setFilters(prev => ({ ...prev, search: '' }));
-              setSearchExpense("");
-              setCurrentPage(1);
-            }}
-          />
+        <div className="mt-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex-1 max-w-md">
+            <SearchInput
+              placeholder={t('searchExpenses')}
+              value={filters.search}
+              onSearch={(term: string) => {
+                setFilters(prev => ({ ...prev, search: term }));
+                setSearchExpense(term);
+                setCurrentPage(1);
+              }}
+              onClear={() => {
+                setFilters(prev => ({ ...prev, search: '' }));
+                setSearchExpense("");
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <ExportButton
+              data={expenses}
+              filename="expenses"
+              columns={['id', 'description', 'amount', 'date', 'status']}
+            >
+              {tCommon('actions.export')}
+            </ExportButton>
+            <AdvancedFilters
+              fields={advancedFilterFields}
+              onApply={handleAdvancedFilters}
+              storageKey="expense-advanced-filters"
+            />
+            <ColumnSelector
+              columns={availableColumns}
+              visibleColumns={visibleColumns}
+              onChange={toggleColumn}
+            />
+          </div>
         </div>
       )}
 
@@ -311,6 +325,7 @@ export default function ExpenseList() {
             selectedIds={selectedIds}
             onSelectChange={(id) => toggleSelect(id)}
             onSelectAllChange={toggleSelectAll}
+            visibleColumns={visibleColumns}
           />
         </div>
       )}

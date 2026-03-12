@@ -90,6 +90,7 @@ export default function InventoryChart({ data, themeColors }: InventoryChartProp
             outerRadius={100}
             fill="#8884d8"
             dataKey="count"
+            nameKey="categoryName"
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -101,7 +102,7 @@ export default function InventoryChart({ data, themeColors }: InventoryChartProp
             height={36}
             formatter={(value, entry) => (
               <span style={{ color: entry.color, fontSize: '12px' }}>
-                {value}
+                {entry.payload?.categoryName || value}
               </span>
             )}
           />

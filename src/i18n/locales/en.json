@@ -51,7 +51,8 @@
       "deleting": "Deleting...",
       "logout": "Logout",
       "viewColumns": "View columns",
-      "export": "Export"
+      "export": "Export",
+      "more": "More"
     },
     "status": {
       "active": "Active",
@@ -93,7 +94,8 @@
       "selectTheme": "Select theme",
       "selectLanguage": "Select language",
       "user": "User",
-      "role": "Role"
+      "role": "Role",
+      "subscription": "My Subscription"
     },
     "languages": {
       "es": "Spanish",
@@ -142,6 +144,7 @@
     "cashRegister": "Cash Register",
     "users": "Users",
     "companySettings": "Company settings",
+    "subscription": "Subscription",
     "roles": "Roles",
     "emailConfig": "Email Configuration",
     "paymentGateway": "Payment Gateway",
@@ -1423,6 +1426,7 @@
       "noProductsClosedDesc": "This reception has no registered products.",
       "addProductTitle": "Add Product",
       "noReceptions": "No receptions",
+      "noResultsDesc": "No results found",
       "noReceptionsDesc": "Click on \"New Reception\" to add one.",
       "searchReceptions": "Search receptions...",
       "form": {
@@ -2286,6 +2290,7 @@
     "invoices": {
       "title": "Invoices",
       "subtitle": "Invoice and CFDI management",
+      "searchInvoices": "",
       "create": {
         "title": "Create Invoice",
         "subtitle": "Create a new invoice"
@@ -3021,6 +3026,7 @@
       "noPurchaseOrders": "No purchase orders",
       "noPurchaseOrdersDesc": "Click on \"Create Purchase Order\" to add one.",
       "noPermissionDesc": "You don't have permission to view this page",
+      "searchPurchaseOrders":"",
       "table": {
         "code": "Code",
         "date": "Date",
@@ -3379,6 +3385,7 @@
   },
   "expenses": {
     "title": "Expenses",
+    "searchExpenses": "",
     "subtitle": "Manage your company expenses ({count} expenses)",
     "addExpense": "New Expense",
     "editExpense": "Edit Expense",
@@ -3911,5 +3918,85 @@
     "remaining": "remaining",
     "syncNow": "Sync now",
     "pendingSync": "Pending sync"
+  },
+  "subscription": {
+    "banner": {
+      "trialRemaining": "Trial period: {days} {days, plural, one {day} other {days}} remaining",
+      "trialUrgent": "Only {days} {days, plural, one {day} other {days}} of trial left!",
+      "trialExpired": "Your trial period has ended",
+      "trialExpiredMessage": "Activate your subscription to continue using Nitro",
+      "urgentMessage": "Activate your subscription now to avoid losing access",
+      "enjoyMessage": "Enjoy all features at no cost",
+      "activateSubscription": "Activate Subscription",
+      "activateNow": "Activate Now",
+      "viewDetails": "View Details",
+      "clickToViewDetails": "Click to view details",
+      "close": "Close"
+    },
+    "blocker": {
+      "title": "Subscription Required",
+      "message": "Your trial period has ended. Activate your subscription to continue using Nitro.",
+      "activate": "Activate Subscription",
+      "verifying": "Verifying subscription..."
+    },
+    "page": {
+      "title": "My Subscription",
+      "currentStatus": "Current Status",
+      "active": "✓ Active",
+      "inactive": "✗ Inactive",
+      "trialPeriod": "Trial Period",
+      "daysRemaining": "You have {days} days of free trial remaining",
+      "endsOn": "Ends: {date}",
+      "activeSubscription": "Active Subscription",
+      "nextRenewal": "Next renewal: {date}",
+      "expiredSubscription": "Expired Subscription",
+      "expiredMessage": "Your trial period has ended. Activate your subscription to continue using Nitro.",
+      "currentPlan": "Current Plan",
+      "perMonth": "month",
+      "perYear": "year",
+      "activateYourSubscription": "Activate Your Subscription",
+      "activateSubscription": "Activate Subscription",
+      "trialEndingSoon": "Your trial period is about to end. Activate your subscription now to continue without interruptions.",
+      "renewSubscription": "Renew Subscription",
+      "renewMessage": "Your subscription has expired. Renew it to continue using all Nitro features.",
+      "renewNow": "Renew Now",
+      "loading": "Loading...",
+      "errorLoading": "Could not load subscription information",
+      "errorLoadingSubscription": "Error loading subscription"
+    },
+    "payment": {
+      "title": "Activate Subscription",
+      "subtitle": "Complete your payment to continue using Nitro without interruptions",
+      "selectPlan": "Select Your Plan",
+      "saveMore": "Save more than 1 month",
+      "planSummary": "Plan Summary",
+      "perMonth": "month",
+      "perYear": "year",
+      "includes": "Includes:",
+      "feature1": "Unlimited users",
+      "feature2": "Unlimited warehouses",
+      "feature3": "Unlimited products",
+      "feature4": "All inventory strategies",
+      "feature5": "Electronic invoicing (CFDI)",
+      "feature6": "Advanced reports",
+      "feature7": "REST API and Webhooks",
+      "feature8": "Priority support",
+      "paymentInfo": "Payment Information",
+      "securityNote": "Your information is protected with bank-level encryption.",
+      "securityNote2": "We do not store your card data.",
+      "errorLoading": "Error loading information"
+    },
+    "paymentForm": {
+      "cardInfo": "Card Information",
+      "cancel": "Cancel",
+      "payNow": "Pay Now",
+      "processing": "Processing...",
+      "securePayment": "Secure payment processed by Stripe",
+      "stripeNotLoaded": "Stripe is not loaded correctly",
+      "formNotLoaded": "Could not load payment form",
+      "paymentError": "Error processing payment",
+      "confirmError": "Error confirming payment",
+      "paymentSuccess": "Payment processed successfully!"
+    }
   }
 }

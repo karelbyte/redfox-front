@@ -7,6 +7,7 @@ import GlobalSearchModal from "@/components/GlobalSearch/GlobalSearchModal";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
+import { TrialBanner } from "@/components/Subscription/TrialBanner";
 
 export function MainMenu() {
   const { currentTheme } = useTheme();
@@ -43,6 +44,11 @@ export function MainMenu() {
               <div className="flex-shrink-0 flex items-center">
                 <img src={getImageUrl()} alt="Nitro" className="h-8 w-auto" />
               </div>
+            </div>
+
+            {/* Trial Banner - Centered */}
+            <div className="flex items-center flex-1 justify-center px-4">
+              <TrialBanner />
             </div>
 
             {/* Search, Notifications and User Menu */}
