@@ -36,6 +36,7 @@ export interface Product {
   brand: Brand | string;
   category: Category | string;
   tax: Tax | string;
+  taxes?: Tax[];
   measurement_unit: MeasurementUnit | string;
   is_active: boolean;
   type: ProductType;
@@ -60,7 +61,7 @@ export interface ProductFormData {
   length: number;
   brand_id: string;
   category_id: string;
-  tax_id: string;
+  tax_ids: string[];
   measurement_unit_id: string;
   is_active: boolean;
   type: ProductType;

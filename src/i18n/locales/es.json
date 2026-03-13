@@ -376,6 +376,8 @@
       "noProducts": "No hay productos",
       "noProductsDesc": "Haz clic en 'Nuevo Producto' para agregar uno.",
       "noResultsDesc": "No se encontraron resultados",
+      "importFromPack": "Importar del Pack",
+      "importingFromPack": "Importando...",
       "form": {
         "name": "Nombre",
         "slug": "Slug",
@@ -393,6 +395,9 @@
         "stock": "Stock",
         "brand": "Marca",
         "tax": "Impuesto",
+        "taxes": "Impuestos",
+        "selectTax": "Seleccionar impuesto...",
+        "taxesHelp": "Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples impuestos",
         "type": "Tipo",
         "status": "Estado",
         "active": "Activo",
@@ -495,7 +500,9 @@
         "pdfGenerated": "PDF generado correctamente",
         "errorGeneratingPDF": "Error al generar el PDF",
         "packSyncFailedCreate": "Producto guardado en Redfox. Atención: no se registró en el PAC. No podrá usarlo en facturación hasta corregirlo. Detalle: {detail}",
-        "packSyncFailedUpdate": "Producto guardado en Redfox. Atención: no se actualizó en el PAC. No podrá usarlo en facturación hasta corregirlo. Detalle: {detail}"
+        "packSyncFailedUpdate": "Producto guardado en Redfox. Atención: no se actualizó en el PAC. No podrá usarlo en facturación hasta corregirlo. Detalle: {detail}",
+        "importFromPackSuccess": "Importación completada: {created} creados, {updated} actualizados, {skipped} omitidos",
+        "importFromPackError": "Error al importar productos del pack"
       },
       "pdf": {
         "title": "Catálogo de Productos",
@@ -4007,5 +4014,60 @@
       "confirmError": "Error al confirmar el pago",
       "paymentSuccess": "¡Pago procesado exitosamente!"
     }
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "¡Bienvenido a Nitro!",
+      "description": "Te guiaremos en unos simples pasos para configurar tu cuenta y comenzar a usar la plataforma."
+    },
+    "company": {
+      "title": "Información de tu Empresa",
+      "description": "Completa los datos generales de tu empresa. Puedes actualizar esta información más tarde.",
+      "legalName": "Razón Social",
+      "legalNamePlaceholder": "Nombre legal de tu empresa",
+      "taxId": "RFC / Tax ID",
+      "taxIdPlaceholder": "RFC o identificador fiscal",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "correo@empresa.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "+52 123 456 7890"
+    },
+    "pack": {
+      "title": "Configuración de Facturación",
+      "description": "Selecciona el proveedor de facturación que deseas usar. Puedes configurarlo más tarde."
+    },
+    "packConfig": {
+      "title": "Configurar {packName}",
+      "description": "Ingresa las credenciales de tu proveedor de facturación.",
+      "facturaApi": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "sk_live_...",
+        "apiKeyHelp": "Obtén tu API Key desde tu cuenta de FacturaAPI"
+      },
+      "facturaGreen": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "BDI5e07d9c59c5a5297058e32d6b9883dce92b175104",
+        "apiKeyHelp": "Tu API Key de Factura Green (x-application-key)",
+        "tenantId": "Tenant ID",
+        "tenantIdPlaceholder": "https://api.alpha.tpa.factura.green",
+        "tenantIdHelp": "URL base de tu tenant",
+        "businessUuid": "Business UUID",
+        "businessUuidPlaceholder": "e-business-160625973100059788268-4a7c-44f8-a3b1-8346a22b9061",
+        "businessUuidHelp": "UUID del business (emisor) registrado en Factura Green",
+        "accountUuid": "Account UUID",
+        "accountUuidPlaceholder": "0000",
+        "accountUuidHelp": "UUID de la cuenta (por defecto: 0000)"
+      }
+    },
+    "complete": {
+      "title": "¡Todo Listo!",
+      "description": "Tu cuenta está configurada. Ahora puedes comenzar a usar todas las funcionalidades de Nitro.",
+      "button": "Comenzar a Usar Nitro"
+    },
+    "skipForNow": "Omitir por ahora",
+    "getStarted": "Comenzar",
+    "continue": "Continuar",
+    "back": "Atrás",
+    "noPack": "No usar facturación por ahora"
   }
 }

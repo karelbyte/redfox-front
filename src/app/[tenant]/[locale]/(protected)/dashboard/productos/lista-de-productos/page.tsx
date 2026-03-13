@@ -48,6 +48,7 @@ export default function ListProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
+  const [isImporting, setIsImporting] = useState(false);
   const formRef = useRef<ProductFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -209,6 +210,25 @@ export default function ListProductsPage() {
     }
   };
 
+  const handleImportFromPack = async () => {
+    try {
+      setIsImporting(true);
+      const result = await productService.importFromPack();
+      toastService.success(
+        t("messages.importFromPackSuccess", {
+          created: result.created,
+          updated: result.updated,
+          skipped: result.skipped,
+        })
+      );
+      fetchProducts(1, searchTerm);
+    } catch (error) {
+      toastService.error(error instanceof Error ? error.message : t("messages.importFromPackError"));
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const handleDrawerClose = () => {
     setShowDrawer(false);
     setEditingProduct(null);
@@ -249,15 +269,25 @@ export default function ListProductsPage() {
           {t("title")}
         </h1>
         {can(["product_create"]) && (
-          <Btn
-            onClick={() => {
-              setEditingProduct(null);
-              setShowDrawer(true);
-            }}
-            leftIcon={<PlusIcon className="h-5 w-5" />}
-          >
-            {t("newProduct")}
-          </Btn>
+          <div className="flex gap-2">
+            <Btn
+              variant="secondary"
+              onClick={handleImportFromPack}
+              disabled={isImporting}
+              leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
+            >
+              {isImporting ? t("importingFromPack") : t("importFromPack")}
+            </Btn>
+            <Btn
+              onClick={() => {
+                setEditingProduct(null);
+                setShowDrawer(true);
+              }}
+              leftIcon={<PlusIcon className="h-5 w-5" />}
+            >
+              {t("newProduct")}
+            </Btn>
+          </div>
         )}
       </div>
 

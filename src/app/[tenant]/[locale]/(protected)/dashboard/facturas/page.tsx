@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Invoice } from '@/types/invoice';
 import { Client } from '@/types/client';
@@ -23,6 +25,8 @@ import ColumnSelector from '@/components/Table/ColumnSelector';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 export default function InvoicesPage() {
   const t = useTranslations('pages.invoices');
+  const router = useRouter();
+  const locale = useLocale();
   const { search_invoice, setSearchInvoice } = useSearchStore();
   
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -89,6 +93,10 @@ export default function InvoicesPage() {
 
   const handleCancelCFDI = (invoice: Invoice) => {
     setCancelCFDIModal(invoice);
+  };
+
+  const handleViewDetails = (invoice: Invoice) => {
+    router.push(`/${locale}/dashboard/facturas/facturas/${invoice.id}`);
   };
 
   const handleConfirmDelete = async () => {
@@ -266,7 +274,7 @@ export default function InvoicesPage() {
             invoices={invoices}
             onEdit={handleEditInvoice}
             onDelete={handleDeleteInvoice}
-            onDetails={() => {}}
+            onDetails={handleViewDetails}
             onGenerateCFDI={handleGenerateCFDI}
             onCancelCFDI={handleCancelCFDI}
             visibleColumns={visibleColumns}

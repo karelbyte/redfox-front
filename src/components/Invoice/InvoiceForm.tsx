@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { InvoiceFormData, PaymentMethod } from '@/types/invoice';
-import { Client } from '@/types/client';
-import { Input } from '@/components/atoms';
+import { Input, SearchSelect } from '@/components/atoms';
 import { SelectWithAdd } from '@/components/atoms';
+import { SearchSelectOption } from '@/components/atoms/SearchSelect';
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
 export interface InvoiceFormRef {
@@ -12,14 +12,14 @@ export interface InvoiceFormRef {
 
 interface InvoiceFormProps {
   initialData?: Partial<InvoiceFormData>;
-  clients: Client[];
+  onSearchClients: (term: string) => Promise<SearchSelectOption[]>;
   onSuccess: () => void;
   onSavingChange?: (isSaving: boolean) => void;
   onValidChange?: (isValid: boolean) => void;
 }
 
 const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
-  ({ initialData, clients, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ initialData, onSearchClients, onSuccess, onSavingChange, onValidChange }, ref) => {
   const t = useTranslations('pages.invoices');
   
   const [formData, setFormData] = useState<InvoiceFormData>({
@@ -163,15 +163,11 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
       </div>
 
       <div>
-        <SelectWithAdd
-          id="client-select"
+        <SearchSelect
           label={t('form.client')}
           value={formData.client_id}
           onChange={(value) => handleInputChange('client_id', value)}
-          options={clients.map(client => ({
-            value: client.id,
-            label: `${client.name} (${client.code})`
-          }))}
+          onSearch={onSearchClients}
           placeholder={t('form.clientPlaceholder')}
           required
           disabled={isSaving}

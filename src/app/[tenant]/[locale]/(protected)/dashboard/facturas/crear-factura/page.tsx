@@ -1,17 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import Loading from "@/components/Loading/Loading";
-import { Client } from '@/types/client';
 import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
 import InvoiceForm, { InvoiceFormRef } from '@/components/Invoice/InvoiceForm';
 import { Btn } from '@/components/atoms';
 import { usePermissions } from '@/hooks/usePermissions';
+import { SearchSelectOption } from '@/components/atoms/SearchSelect';
 
 export default function CreateInvoicePage() {
   const t = useTranslations('pages.invoices');
@@ -20,27 +19,24 @@ export default function CreateInvoicePage() {
   const locale = useLocale();
   const { can } = usePermissions();
   
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   
   const formRef = useRef<InvoiceFormRef>(null);
 
-  useEffect(() => {
-    loadClients();
-  }, []);
-
-  const loadClients = async () => {
+  // Función de búsqueda de clientes para SearchSelect
+  const searchClients = async (term: string): Promise<SearchSelectOption[]> => {
     try {
-      setLoading(true);
-      const response = await clientsService.getClients();
-      setClients(response.data || []);
+      const response = await clientsService.getClients(undefined, term);
+      return (response.data || []).map(client => ({
+        id: client.id,
+        label: client.name,
+        subtitle: `${client.code} - ${client.tax_id || 'Sin RFC'}`
+      }));
     } catch (error) {
-      console.error('Error loading clients:', error);
+      console.error('Error searching clients:', error);
       toastService.error(t('messages.errorLoadingClients'));
-    } finally {
-      setLoading(false);
+      return [];
     }
   };
 
@@ -65,14 +61,6 @@ export default function CreateInvoicePage() {
 
   if (!can(["invoice_create"])) {
     return <div>{t('noPermissionDesc')}</div>;
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loading size="lg" />
-      </div>
-    );
   }
 
   return (
@@ -110,7 +98,7 @@ export default function CreateInvoicePage() {
       <div className="max-w-4xl">
         <InvoiceForm
           ref={formRef}
-          clients={clients}
+          onSearchClients={searchClients}
           onSuccess={handleSuccess}
           onSavingChange={setIsSaving}
           onValidChange={setIsFormValid}

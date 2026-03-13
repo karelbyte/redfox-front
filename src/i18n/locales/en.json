@@ -376,6 +376,8 @@
       "noProducts": "No products",
       "noProductsDesc": "Click on 'New Product' to add one.",
       "noResultsDesc": "No results found",
+      "importFromPack": "Import from Pack",
+      "importingFromPack": "Importing...",
       "form": {
         "name": "Name",
         "slug": "Slug",
@@ -391,6 +393,9 @@
         "category": "Category",
         "brand": "Brand",
         "tax": "Tax",
+        "taxes": "Taxes",
+        "selectTax": "Select tax...",
+        "taxesHelp": "Hold Ctrl (Cmd on Mac) to select multiple taxes",
         "type": "Type",
         "status": "Status",
         "active": "Active",
@@ -493,7 +498,9 @@
         "pdfGenerated": "PDF generated successfully",
         "errorGeneratingPDF": "Error generating PDF",
         "packSyncFailedCreate": "Product saved in Redfox. Attention: it was not registered in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}",
-        "packSyncFailedUpdate": "Product saved in Redfox. Attention: it was not updated in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}"
+        "packSyncFailedUpdate": "Product saved in Redfox. Attention: it was not updated in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}",
+        "importFromPackSuccess": "Import completed: {created} created, {updated} updated, {skipped} skipped",
+        "importFromPackError": "Error importing products from pack"
       },
       "pdf": {
         "title": "Product Catalog",
@@ -3998,5 +4005,60 @@
       "confirmError": "Error confirming payment",
       "paymentSuccess": "Payment processed successfully!"
     }
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to Nitro!",
+      "description": "We'll guide you through a few simple steps to set up your account and start using the platform."
+    },
+    "company": {
+      "title": "Company Information",
+      "description": "Complete your company's general information. You can update this later.",
+      "legalName": "Legal Name",
+      "legalNamePlaceholder": "Your company's legal name",
+      "taxId": "Tax ID",
+      "taxIdPlaceholder": "Tax identification number",
+      "email": "Email",
+      "emailPlaceholder": "email@company.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 123 456 7890"
+    },
+    "pack": {
+      "title": "Billing Configuration",
+      "description": "Select the billing provider you want to use. You can configure this later."
+    },
+    "packConfig": {
+      "title": "Configure {packName}",
+      "description": "Enter your billing provider credentials.",
+      "facturaApi": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "sk_live_...",
+        "apiKeyHelp": "Get your API Key from your FacturaAPI account"
+      },
+      "facturaGreen": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "BDI5e07d9c59c5a5297058e32d6b9883dce92b175104",
+        "apiKeyHelp": "Your Factura Green API Key (x-application-key)",
+        "tenantId": "Tenant ID",
+        "tenantIdPlaceholder": "https://api.alpha.tpa.factura.green",
+        "tenantIdHelp": "Your tenant base URL",
+        "businessUuid": "Business UUID",
+        "businessUuidPlaceholder": "e-business-160625973100059788268-4a7c-44f8-a3b1-8346a22b9061",
+        "businessUuidHelp": "Business (issuer) UUID registered in Factura Green",
+        "accountUuid": "Account UUID",
+        "accountUuidPlaceholder": "0000",
+        "accountUuidHelp": "Account UUID (default: 0000)"
+      }
+    },
+    "complete": {
+      "title": "All Set!",
+      "description": "Your account is configured. You can now start using all of Nitro's features.",
+      "button": "Start Using Nitro"
+    },
+    "skipForNow": "Skip for now",
+    "getStarted": "Get Started",
+    "continue": "Continue",
+    "back": "Back",
+    "noPack": "Don't use billing for now"
   }
 }

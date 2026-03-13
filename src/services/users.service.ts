@@ -33,6 +33,14 @@ class UsersService {
   async deleteUser(id: string): Promise<void> {
     await api.delete(`/users/${id}`);
   }
+
+  async getOnboardingStatus(): Promise<{ onboarding_completed: boolean }> {
+    return await api.get<{ onboarding_completed: boolean }>('/users/onboarding/status');
+  }
+
+  async completeOnboarding(): Promise<{ message: string }> {
+    return await api.post<{ message: string }>('/users/onboarding/complete', {});
+  }
 }
 
 export const usersService = new UsersService(); 

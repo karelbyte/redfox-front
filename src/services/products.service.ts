@@ -105,6 +105,18 @@ class ProductService {
     const response = await api.get<ProductKeySuggestion[]>(`/products/search-from-pack?term=${encodeURIComponent(term.trim())}`);
     return response;
   }
+
+  async importFromPack(): Promise<{
+    totalFromPack: number;
+    created: number;
+    updated: number;
+    skipped: number;
+  }> {
+    if (!navigator.onLine) {
+      throw new Error('Import from pack requires internet connection');
+    }
+    return api.post(`/products/import-from-pack`, {});
+  }
 }
 
-export const productService = new ProductService(); 
+export const productService = new ProductService();

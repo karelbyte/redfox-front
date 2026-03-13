@@ -160,12 +160,12 @@ export default function ProductTable({
               )}
               {isVisible('brand') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {typeof product.brand === 'object' ? product.brand.code : product.brand}
+                  {product.brand && typeof product.brand === 'object' ? product.brand.code : product.brand}
                 </td>
               )}
               {isVisible('category') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {typeof product.category === 'object' ? product.category.name : product.category}
+                  {product.category &&  typeof product.category === 'object' ? product.category.name : product.category}
                 </td>
               )}
               {isVisible('price') && (

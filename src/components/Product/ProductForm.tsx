@@ -95,7 +95,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       measurement_unit_id: "",
       category_id: "",
       brand_id: "",
-      tax_id: "",
+      tax_ids: [],
       is_active: true,
       type: ProductType.TANGIBLE,
       inventory_strategy: InventoryStrategy.AVERAGE,
@@ -220,19 +220,24 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           height: Number(product.height) || 0,
           length: Number(product.length) || 0,
           measurement_unit_id:
-            typeof product.measurement_unit === "object"
+            typeof product.measurement_unit === "object"  
               ? product.measurement_unit.id
               : product.measurement_unit,
           category_id:
-            typeof product.category === "object"
+            product.category && typeof product.category === "object"
               ? product.category.id
-              : product.category,
+              : '',
           brand_id:
-            typeof product.brand === "object"
+            product.brand && typeof product.brand === "object"
               ? product.brand.id
-              : product.brand,
-          tax_id:
-            typeof product.tax === "object" ? product.tax.id : product.tax,
+              : '',
+          tax_ids: product.taxes && product.taxes.length > 0
+            ? product.taxes.map(t => typeof t === "object" ? t.id : t)
+            : product.tax && typeof product.tax === "object"
+              ? [product.tax.id]
+              : product.tax
+                ? [product.tax]
+                : [],
           is_active: product.is_active,
           type: product.type || ProductType.TANGIBLE,
           inventory_strategy: product.inventory_strategy || InventoryStrategy.AVERAGE,
@@ -255,7 +260,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           measurement_unit_id: "",
           category_id: "",
           brand_id: "",
-          tax_id: "",
+          tax_ids: [],
           is_active: true,
           type: ProductType.TANGIBLE,
           inventory_strategy: InventoryStrategy.AVERAGE,
@@ -299,7 +304,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         isValid = false;
       }
 
-      if (!formData.tax_id) {
+      if (!formData.tax_ids || formData.tax_ids.length === 0) {
         newErrors.tax_id = t('form.errors.taxRequired');
         isValid = false;
       }
@@ -339,6 +344,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           slug:
             formData.slug.trim() ||
             formData.name.trim().toLowerCase().replace(/\s+/g, "-"),
+          tax_ids: formData.tax_ids,
         };
 
         if (product) {
@@ -450,7 +456,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           measurement_unit_id: "",
           category_id: "",
           brand_id: "",
-          tax_id: "",
+          tax_ids: [],
           is_active: true,
           type: ProductType.TANGIBLE,
           inventory_strategy: InventoryStrategy.AVERAGE,
@@ -490,7 +496,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               error={errors.name}
             />
 
-              <div>
+            <div>
               <label
                 htmlFor="code"
                 className="block text-sm font-medium mb-2"
@@ -703,21 +709,63 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               error={errors.measurement_unit_id}
             />
 
-            <SelectWithAddScrolled
-              id="tax_id"
-              label={t('form.tax')}
-              value={formData.tax_id}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, tax_id: e.target.value }))
-              }
-              options={taxes.map((tax) => ({
-                value: tax.id.toString(),
-                label: `${tax.name} (${tax.value}%)`,
-              }))}
-              showAddButton={true}
-              onAddClick={() => setShowTaxDrawer(true)}
-              error={errors.tax_id}
-            />
+            <div>
+              <SelectWithAddScrolled
+                id="tax_select"
+                label={t('form.taxes')}
+                value=""
+                onChange={(e) => {
+                  const selectedTaxId = e.target.value;
+                  if (selectedTaxId && !formData.tax_ids?.includes(selectedTaxId)) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      tax_ids: [...(prev.tax_ids || []), selectedTaxId],
+                    }));
+                  }
+                }}
+                options={[
+                  { value: '', label: t('form.selectTax', { default: 'Seleccionar impuesto...' }) },
+                  ...taxes.map((tax) => ({
+                    value: tax.id.toString(),
+                    label: `${tax.name} (${tax.value}%)`,
+                  }))
+                ]}
+                showAddButton={true}
+                onAddClick={() => setShowTaxDrawer(true)}
+                error={errors.tax_id}
+              />
+              {formData.tax_ids && formData.tax_ids.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {formData.tax_ids.map((taxId) => {
+                    const tax = taxes.find(t => t.id === taxId);
+                    return tax ? (
+                      <span
+                        key={taxId}
+                        className="inline-flex items-center gap-1 px-3 py-1 rounded-md text-sm"
+                        style={{
+                          backgroundColor: `rgb(var(--color-primary-100))`,
+                          color: `rgb(var(--color-primary-700))`,
+                        }}
+                      >
+                        {tax.name} ({tax.value}%)
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              tax_ids: prev.tax_ids?.filter(id => id !== taxId) || [],
+                            }));
+                          }}
+                          className="ml-1 hover:text-red-600 font-bold"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+              )}
+            </div>
 
             <Checkbox
               id="is_active"
