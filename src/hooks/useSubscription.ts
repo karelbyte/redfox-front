@@ -21,7 +21,7 @@ export function useSubscription() {
     try {
       const data = await subscriptionService.getStatus();
       setSubscription(data);
-      // Si la suscripción no está activa y no estamos en la página de suscripción
+      // Solo redirigir si no está activa Y no estamos ya en una ruta de suscripción
       if (!data.isActive && !pathname?.includes('/suscripcion')) {
         router.push(`/${tenant}/${locale}/dashboard/suscripcion/pago`);
       }

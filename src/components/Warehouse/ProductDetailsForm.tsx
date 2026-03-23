@@ -172,7 +172,7 @@ const ProductDetailsForm = forwardRef<
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
-                {typeof product.brand === "object"
+                {product.brand && typeof product.brand === "object"
                   ? product.brand.description
                   : product.brand}
               </div>
@@ -189,7 +189,7 @@ const ProductDetailsForm = forwardRef<
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
-                {typeof product.category === "object"
+                {product.category && typeof product.category === "object"
                   ? product.category.name
                   : product.category}
               </div>
@@ -206,7 +206,7 @@ const ProductDetailsForm = forwardRef<
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
-                {typeof product.measurement_unit === "object"
+                {product.measurement_unit && typeof product.measurement_unit === "object"
                   ? `${product.measurement_unit.description} (${product.measurement_unit.code})`
                   : product.measurement_unit}
               </div>
@@ -227,9 +227,14 @@ const ProductDetailsForm = forwardRef<
                 className="text-sm text-gray-900 bg-gray-50 px-4 py-3 rounded-lg border"
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
-                {typeof product.tax === "object"
-                  ? `${product.tax.name} (${product.tax.type})`
-                  : product.tax}
+                {product.taxes && product.taxes.length > 0
+                  ? product.taxes.map((tax, i) => (
+                      <span key={tax.id ?? i} className="inline-block mr-2">
+                        {tax.name} ({tax.value}%)
+                        {i < product.taxes!.length - 1 && ','}
+                      </span>
+                    ))
+                  : '—'}
               </div>
             </div>
 

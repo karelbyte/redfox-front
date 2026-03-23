@@ -83,7 +83,7 @@ export interface SaleDetail {
       name: string;
       description: string;
     };
-    tax: {
+    taxes: {
       id: string;
       code: string;
       name: string;
@@ -91,7 +91,7 @@ export interface SaleDetail {
       type: string;
       isActive: boolean;
       createdAt: string;
-    };
+    }[];
     measurement_unit: {
       id: string;
       code: string;

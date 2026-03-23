@@ -26,12 +26,10 @@ export function PaymentForm({ planId }: PaymentFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('[PaymentForm] Submit started', { planId, stripe: !!stripe, elements: !!elements });
     setLoading(true);
     setError(null);
 
     if (!stripe || !elements) {
-      console.error('[PaymentForm] Stripe or elements not loaded');
       setError(t('stripeNotLoaded'));
       setLoading(false);
       return;
@@ -41,58 +39,50 @@ export function PaymentForm({ planId }: PaymentFormProps) {
       const cardElement = elements.getElement(CardElement);
 
       if (!cardElement) {
-        console.error('[PaymentForm] Card element not found');
         setError(t('formNotLoaded'));
         setLoading(false);
         return;
       }
 
-      console.log('[PaymentForm] Creating payment method...');
       const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
       });
 
       if (stripeError) {
-        console.error('[PaymentForm] Stripe error:', stripeError);
         setError(stripeError.message || t('paymentError'));
         setLoading(false);
         return;
       }
 
       if (paymentMethod) {
-        console.log('[PaymentForm] Payment method created:', paymentMethod.id);
-        console.log('[PaymentForm] Converting trial with planId:', planId);
         const result = await subscriptionService.convertTrial(paymentMethod.id, planId);
-        console.log('[PaymentForm] Convert trial result:', result);
 
         if (result && typeof result === 'object' && 'clientSecret' in result && 'subscriptionId' in result) {
-          console.log('[PaymentForm] Confirming card payment...');
-          // Confirmar el pago en Stripe
-          const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(result.clientSecret as string);
+          const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(result.clientSecret as string, {
+            payment_method: paymentMethod.id,
+          });
 
           if (confirmError) {
-            console.error('[PaymentForm] Confirm error:', confirmError);
             setError(confirmError.message || t('confirmError'));
             setLoading(false);
             return;
           }
 
-          // Si el pago fue exitoso, confirmar en el backend
           if (paymentIntent && paymentIntent.status === 'succeeded') {
-            console.log('[PaymentForm] Payment succeeded, confirming in backend...');
             await subscriptionService.confirmPayment(result.subscriptionId as string);
             toastService.success(t('paymentSuccess'));
             router.push(`/${tenant}/${locale}/dashboard/suscripcion`);
           } else {
-            console.error('[PaymentForm] Payment intent status:', paymentIntent?.status);
             setError(t('paymentError'));
             setLoading(false);
           }
+        } else {
+          setError(t('paymentError'));
+          setLoading(false);
         }
       }
     } catch (err: any) {
-      console.error('[PaymentForm] Error:', err);
       setError(err.message || t('paymentError'));
       toastService.error(t('paymentError'));
     } finally {
@@ -147,7 +137,7 @@ export function PaymentForm({ planId }: PaymentFormProps) {
       {/* Debug info */}
       {!stripe && (
         <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-          <p className="text-sm text-yellow-800">⚠️ Stripe is loading... Please wait.</p>
+          <p className="text-sm text-yellow-800">⚠️ {t('stripeNotLoaded')}</p>
         </div>
       )}
 
@@ -157,7 +147,6 @@ export function PaymentForm({ planId }: PaymentFormProps) {
           disabled={!stripe || loading}
           className="flex-1 px-6 py-3 rounded-lg font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: 'rgb(var(--color-primary-500))' }}
-          onClick={() => console.log('[PaymentForm] Button clicked', { stripe: !!stripe, loading })}
         >
           {loading ? (
             <span className="flex items-center justify-center">

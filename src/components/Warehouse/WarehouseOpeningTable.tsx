@@ -145,14 +145,14 @@ export default function WarehouseOpeningTable({
               )}
               {isVisible('brand') && (
                 <td className={`${tdBase} ${hiddenMd}`}>
-                  {typeof opening.product.brand === 'object'
+                  {opening.product.brand && typeof opening.product.brand === 'object'
                     ? opening.product.brand.description
                     : opening.product.brand}
                 </td>
               )}
               {isVisible('category') && (
                 <td className={`${tdBase} ${hiddenMd}`}>
-                  {typeof opening.product.category === 'object'
+                  {opening.product.category && typeof opening.product.category === 'object'
                     ? opening.product.category.name
                     : opening.product.category}
                 </td>

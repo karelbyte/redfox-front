@@ -172,7 +172,10 @@ export class TicketPrinterService {
       const quantity = Number(detail.quantity);
       const price = Number(detail.price);
       const itemTotal = Number(quantity) * Number(price);
-      const itemTax = itemTotal * (Number(detail.product.tax.value) / 100);
+      const itemTax = (detail.product.taxes ?? []).reduce(
+        (acc, tax) => acc + itemTotal * (Number(tax.value) / 100),
+        0,
+      );
       
       subtotal += itemTotal;
       totalTax += itemTax;
