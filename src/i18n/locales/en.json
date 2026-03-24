@@ -1852,6 +1852,14 @@
         "client": "Client",
         "amount": "Amount",
         "status": "Status",
+        "paymentMethod": "Payment Method",
+        "paymentMethods": {
+          "cash": "Cash",
+          "card": "Card",
+          "credit": "Credit",
+          "creditLimit": "Credit limit",
+          "days": "days"
+        },
         "placeholders": {
           "code": "Ex: SAL-2024-001",
           "destination": "Ex: Central Store - Main St 123"
@@ -2146,7 +2154,9 @@
         "cancel": "Cancel",
         "confirm": "Confirm Payment",
         "processing": "Processing...",
-        "downloadTicket": "Download Ticket"
+        "downloadTicket": "Download Ticket",
+        "generateInvoice": "Generate fiscal invoice (CFDI)",
+        "generateInvoiceHint": "Will be automatically stamped upon confirmation"
       },
       "messages": {
         "saleCompleted": "Sale completed successfully",
@@ -2168,7 +2178,9 @@
         "ticketPrinted": "Ticket printed successfully",
         "ticketPrintError": "Error printing ticket, but sale was completed",
         "ticketDownloaded": "Ticket downloaded successfully",
-        "ticketDownloadError": "Error downloading ticket"
+        "ticketDownloadError": "Error downloading ticket",
+        "invoiceGenerated": "Fiscal invoice generated successfully",
+        "invoiceGenerationError": "Sale completed but there was an error generating the fiscal invoice"
       },
       "ticket": {
         "ticket": "Ticket",

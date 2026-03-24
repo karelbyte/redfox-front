@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowSummary as CashFlowSummaryType, CashFlowMovement } from '@/types/cash-flow';
 import { jsPDF } from 'jspdf';
 import type { jsPDF as jsPDFType } from 'jspdf';
@@ -22,13 +23,7 @@ interface CashFlowExportProps {
 
 export default function CashFlowExport({ summary, movements, isLoading }: CashFlowExportProps) {
   const t = useTranslations('cashFlow');
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-    }).format(amount);
-  };
+  const { formatCurrency } = useLocaleUtils();
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('es-MX');

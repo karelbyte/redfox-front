@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowSummary as CashFlowSummaryType } from '@/types/cash-flow';
 import { cashFlowService } from '@/services/cash-flow.service';
 import { toastService } from '@/services/toast.service';
@@ -14,6 +15,7 @@ interface CashFlowComparisonProps {
 
 export default function CashFlowComparison({ currentSummary, isLoading }: CashFlowComparisonProps) {
   const t = useTranslations('cashFlow');
+  const { formatCurrency } = useLocaleUtils();
   const [previousSummary, setPreviousSummary] = useState<CashFlowSummaryType | null>(null);
   const [isLoadingComparison, setIsLoadingComparison] = useState(false);
 
@@ -41,13 +43,6 @@ export default function CashFlowComparison({ currentSummary, isLoading }: CashFl
   const calculateVariation = (current: number, previous: number) => {
     if (previous === 0) return 0;
     return ((current - previous) / Math.abs(previous)) * 100;
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-    }).format(amount);
   };
 
   const getVariationColor = (variation: number) => {

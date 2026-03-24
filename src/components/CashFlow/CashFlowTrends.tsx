@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowMovement } from '@/types/cash-flow';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 
@@ -11,6 +12,7 @@ interface CashFlowTrendsProps {
 
 export default function CashFlowTrends({ movements, isLoading }: CashFlowTrendsProps) {
   const t = useTranslations('cashFlow');
+  const { formatCurrency } = useLocaleUtils();
 
   if (isLoading) {
     return (
@@ -63,12 +65,7 @@ export default function CashFlowTrends({ movements, isLoading }: CashFlowTrendsP
   const avgDaily = calculateAverageDaily();
   const volatility = calculateVolatility();
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-    }).format(amount);
-  };
+
 
   const getTrendColor = (direction: string) => {
     switch (direction) {

@@ -1,4 +1,5 @@
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { Reception } from '@/types/reception';
 import { PencilIcon, TrashIcon, EyeIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
@@ -29,20 +30,10 @@ export default function ReceptionTable({
   onSelectAllChange
 }: ReceptionTableProps) {
   const t = useTranslations('pages.receptions');
-  
-  if (!Array.isArray(receptions)) {
-    return null;
-  }
+  const { formatCurrency } = useLocaleUtils();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES');
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
   };
 
   const isColumnVisible = (column: string) => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { ReturnCloseResponse } from '@/types/return';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 
@@ -11,8 +12,7 @@ interface ReturnCloseResultModalProps {
 
 export default function ReturnCloseResultModal({ closeResult, onClose }: ReturnCloseResultModalProps) {
   const t = useTranslations('pages.returns.closeResult');
-  
-  if (!closeResult) return null;
+  const { formatCurrency } = useLocaleUtils();
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -25,16 +25,10 @@ export default function ReturnCloseResultModal({ closeResult, onClose }: ReturnC
     });
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
+  const totalQuantity = closeResult?.details.reduce((sum, detail) => sum + detail.quantity, 0) ?? 0;
+  const totalAmount = closeResult?.details.reduce((sum, detail) => sum + (detail.quantity * detail.price), 0) ?? 0;
 
-  const totalQuantity = closeResult.details.reduce((sum, detail) => sum + detail.quantity, 0);
-  const totalAmount = closeResult.details.reduce((sum, detail) => sum + (detail.quantity * detail.price), 0);
+  if (!closeResult) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">

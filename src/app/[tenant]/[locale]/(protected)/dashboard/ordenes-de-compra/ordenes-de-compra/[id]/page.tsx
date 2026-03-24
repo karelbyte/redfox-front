@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { PurchaseOrder, PurchaseOrderDetail } from '@/types/purchase-order';
 import { purchaseOrdersService } from '@/services';
 import { toastService } from '@/services';
@@ -15,12 +15,13 @@ import { Btn } from '@/components/atoms';
 import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 export default function PurchaseOrderDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const locale = useLocale();
   const t = useTranslations('pages.purchaseOrders');
+  const { locale, formatCurrency, formatDate } = useLocaleUtils();
   const { can } = usePermissions();
   const [purchaseOrder, setPurchaseOrder] = useState<PurchaseOrder | null>(null);
   const [products, setProducts] = useState<PurchaseOrderDetail[]>([]);
@@ -180,22 +181,6 @@ export default function PurchaseOrderDetailsPage() {
         toastService.error(t('approveOrder.error'));
       }
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('es-ES', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }).format(date);
   };
 
   const getStatusColor = (status: string) => {

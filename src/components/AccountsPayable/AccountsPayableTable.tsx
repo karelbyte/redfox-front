@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { AccountPayable, AccountPayableStatus } from '@/types/account-payable';
 import { PencilIcon, TrashIcon, BanknotesIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
@@ -34,6 +35,7 @@ export default function AccountsPayableTable({
   const t = useTranslations('accountsPayable');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const { formatCurrency } = useLocaleUtils();
 
   const isVisible = (key: string) => {
     if (!visibleColumns) return true;
@@ -59,13 +61,6 @@ export default function AccountsPayableTable({
 
   const getStatusLabel = (status: AccountPayableStatus) => {
     return t(`status.${status.toLowerCase()}`);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
-    }).format(amount);
   };
 
   const formatDate = (date: string) => {

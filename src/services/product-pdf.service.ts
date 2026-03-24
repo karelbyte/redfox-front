@@ -88,12 +88,12 @@ export class ProductPDFService {
         ? product.name.substring(0, 37) + '...'
         : product.name;
 
-      const brand = typeof product.brand === 'object' ? product.brand.code : product.brand;
-      const category = typeof product.category === 'object' ? product.category.name : product.category;
-      const measurementUnit = typeof product.measurement_unit === 'object' 
-        ? product.measurement_unit.code 
-        : product.measurement_unit;
-      const tax = typeof product.tax === 'object' ? product.tax.code : product.tax;
+      const brand = (typeof product.brand === 'object' ? product.brand?.code : product.brand) || '';
+      const category = (typeof product.category === 'object' ? product.category?.name : product.category) || '';
+      const measurementUnit = (typeof product.measurement_unit === 'object' 
+        ? product.measurement_unit?.code 
+        : product.measurement_unit) || '';
+      const tax = (typeof product.tax === 'object' ? product.tax?.code : product.tax) || '';
       const status = product.is_active ? translations.active : translations.inactive;
 
       return [

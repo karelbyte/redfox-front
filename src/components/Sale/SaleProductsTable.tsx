@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { SaleDetail } from '@/types/sale';
 import { Btn } from '@/components/atoms';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
@@ -23,18 +24,9 @@ export default function SaleProductsTable({
   const t = useTranslations('pages.sales.productsTable');
   const deleteT = useTranslations('pages.sales.deleteProduct');
   const commonT = useTranslations('common');
-  const locale = useLocale();
+  const { formatCurrency } = useLocaleUtils();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<SaleDetail | null>(null);
-
-  const formatCurrency = (amount: number, currencyCode?: string) => {
-    const code = currencyCode || 'MXN';
-    const localeStr = code === 'MXN' ? 'es-MX' : locale === 'es' ? 'es-ES' : 'en-US';
-    return new Intl.NumberFormat(localeStr, {
-      style: 'currency',
-      currency: code,
-    }).format(amount);
-  };
 
   const calcTaxAmount = (detail: SaleDetail): number => {
     const subtotal = Number(detail.quantity) * Number(detail.price);

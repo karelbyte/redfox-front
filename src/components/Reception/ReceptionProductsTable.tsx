@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { ReceptionDetail } from '@/types/reception';
 import { Btn } from '@/components/atoms';
@@ -23,16 +24,9 @@ export default function ReceptionProductsTable({
   const t = useTranslations('pages.receptions.productsTable');
   const deleteT = useTranslations('pages.receptions.deleteProduct');
   const commonT = useTranslations('common');
+  const { formatCurrency } = useLocaleUtils();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<ReceptionDetail | null>(null);
-
-  const formatCurrency = (amount: string | number) => {
-    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(numAmount);
-  };
 
   const handleDeleteClick = (product: ReceptionDetail) => {
     setProductToDelete(product);

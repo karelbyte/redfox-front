@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowMovement } from '@/types/cash-flow';
 
 interface CashFlowTableProps {
@@ -10,13 +11,7 @@ interface CashFlowTableProps {
 
 export default function CashFlowTable({ movements, isLoading }: CashFlowTableProps) {
   const t = useTranslations('cashFlow');
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
-    }).format(amount);
-  };
+  const { formatCurrency } = useLocaleUtils();
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('es-MX');

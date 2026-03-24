@@ -11,6 +11,7 @@ import Drawer from "@/components/Drawer/Drawer";
 import { Btn } from "@/components/atoms";
 import Loading from "@/components/Loading/Loading";
 import { ArrowLeftIcon, PencilIcon, BanknotesIcon, CalendarDaysIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { useLocaleUtils } from "@/hooks/useLocale";
 
 export default function ProviderCreditPage() {
     const t = useTranslations("pages.providers");
@@ -19,6 +20,7 @@ export default function ProviderCreditPage() {
     const router = useRouter();
     const providerId = params.id as string;
     const locale = params.locale as string;
+    const { formatCurrency } = useLocaleUtils();
 
     const [provider, setProvider] = useState<Provider | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -44,13 +46,6 @@ export default function ProviderCreditPage() {
             fetchProvider();
         }
     }, [providerId]);
-
-    const formatCurrency = (amount: number, currencyCode?: string) => {
-        return new Intl.NumberFormat('es-MX', {
-            style: 'currency',
-            currency: currencyCode || 'MXN',
-        }).format(amount);
-    };
 
     if (isLoading) {
         return (

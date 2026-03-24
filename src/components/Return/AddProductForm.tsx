@@ -2,6 +2,7 @@
 
 import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { ReturnDetailFormData, ReturnDetail } from '@/types/return';
 import { Input, SearchSelect } from '@/components/atoms';
 import { inventoryService } from '@/services';
@@ -23,6 +24,7 @@ interface AddProductFormProps {
 const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
   ({ sourceWarehouseId, returnDetail, onValidChange }, ref) => {
     const t = useTranslations('pages.returns.addProduct');
+    const { formatCurrency } = useLocaleUtils();
     const [formData, setFormData] = useState<ReturnDetailFormData>({
       productId: '',
       quantity: 0,
@@ -124,14 +126,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       setErrors(validationResult.errors);
       onValidChange(validationResult.isValid);
     }, [validationResult, onValidChange]);
-
-    const formatCurrency = (amount: number) => {
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-      }).format(amount);
-    };
 
     const handleSubmit = useCallback(async (): Promise<ReturnDetailFormData | null> => {
       if (!validationResult.isValid) {

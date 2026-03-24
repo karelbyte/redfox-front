@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations, useLocale } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { PurchaseOrder } from '@/types/purchase-order';
 import ActionsMenu from '@/components/atoms/ActionsMenu';
 import { PurchaseOrderActionsMenu } from './PurchaseOrderActionsMenu';
@@ -30,17 +31,11 @@ export default function PurchaseOrderTable({
 }: PurchaseOrderTableProps) {
   const t = useTranslations('pages.purchaseOrders');
   const locale = useLocale();
+  const { formatCurrency } = useLocaleUtils();
 
   const isVisible = (key: string) => {
     if (!visibleColumns) return true;
     return visibleColumns.includes(key);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale === 'es' ? 'es-ES' : 'en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
   };
 
   const formatDate = (dateString: string) => {

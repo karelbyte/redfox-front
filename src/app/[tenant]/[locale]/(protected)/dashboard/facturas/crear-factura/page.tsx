@@ -31,7 +31,7 @@ export default function CreateInvoicePage() {
       return (response.data || []).map(client => ({
         id: client.id,
         label: client.name,
-        subtitle: `${client.code} - ${client.tax_id || 'Sin RFC'}`
+        subtitle: `${client.code} - ${client.tax_document || 'Sin RFC'}`
       }));
     } catch (error) {
       console.error('Error searching clients:', error);

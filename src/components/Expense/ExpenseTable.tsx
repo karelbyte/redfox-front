@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { Expense, ExpenseCategory, ExpenseStatus } from '@/types/expense';
 import { PencilIcon, TrashIcon, CurrencyDollarIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
@@ -42,6 +43,7 @@ export default function ExpenseTable({
   const t = useTranslations('expenses');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const { formatCurrency } = useLocaleUtils();
 
   const isVisible = (key: string) => {
     if (!visibleColumns) return true;
@@ -66,13 +68,6 @@ export default function ExpenseTable({
       default:
         return 'bg-gray-100 text-gray-800';
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
-    }).format(amount);
   };
 
   const formatDate = (date: string) => {

@@ -2,20 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ArrowLeftIcon, BanknotesIcon, CalendarIcon, UserIcon, DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { accountsPayableService } from '@/services/accounts-payable.service';
 import { toastService } from '@/services/toast.service';
 import { AccountPayable } from '@/types/account-payable';
 import { Btn } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 export default function AccountPayableDetailsPage() {
     const router = useRouter();
     const params = useParams();
-    const locale = useLocale();
     const t = useTranslations('accountsPayable');
     const tCommon = useTranslations('common');
+    const { locale, formatCurrency: fmtCurrency } = useLocaleUtils();
+
+    const formatCurrency = (amount: number | string) => {
+        const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+        return fmtCurrency(num || 0);
+    };
 
     const [account, setAccount] = useState<AccountPayable | null>(null);
     const [loading, setLoading] = useState(true);
@@ -39,14 +45,6 @@ export default function AccountPayableDetailsPage() {
             fetchAccount();
         }
     }, [params.id]);
-
-    const formatCurrency = (amount: number | string) => {
-        const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-        return new Intl.NumberFormat('es-MX', {
-            style: 'currency',
-            currency: 'MXN'
-        }).format(num || 0);
-    };
 
     const formatDate = (date: string) => {
         return new Date(date).toLocaleDateString('es-MX', {

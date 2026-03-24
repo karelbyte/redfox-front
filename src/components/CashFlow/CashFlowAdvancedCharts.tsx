@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowMovement } from '@/types/cash-flow';
 import {
   PieChart,
@@ -23,6 +24,7 @@ interface CashFlowAdvancedChartsProps {
 
 export default function CashFlowAdvancedCharts({ movements, isLoading }: CashFlowAdvancedChartsProps) {
   const t = useTranslations('cashFlow');
+  const { formatCurrency } = useLocaleUtils();
 
   if (isLoading) {
     return (
@@ -72,13 +74,7 @@ export default function CashFlowAdvancedCharts({ movements, isLoading }: CashFlo
 
   const COLORS = ['#10b981', '#ef4444', '#3b82f6', '#f59e0b'];
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-      notation: 'compact',
-    }).format(value);
-  };
+  const formatCurrencyCompact = (value: number) => formatCurrency(value, 'MXN', true);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

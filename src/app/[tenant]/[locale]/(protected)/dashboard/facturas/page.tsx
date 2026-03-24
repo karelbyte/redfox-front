@@ -303,7 +303,18 @@ export default function InvoicesPage() {
               tax_rate: detail.tax_rate
             }))
           } : undefined}
-          clients={clients}
+          onSearchClients={async (term: string) => {
+            try {
+              const response = await clientsService.getClients(undefined, term);
+              return (response.data || []).map(c => ({
+                id: c.id,
+                label: c.name,
+                subtitle: `${c.code} - ${c.tax_document || 'Sin RFC'}`
+              }));
+            } catch {
+              return [];
+            }
+          }}
           onSuccess={() => {
             setIsDrawerOpen(false);
             loadInvoices();

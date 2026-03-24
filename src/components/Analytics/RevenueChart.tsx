@@ -69,7 +69,7 @@ export default function RevenueChart({ data, themeColors }: RevenueChartProps) {
           <YAxis 
             stroke="#666" 
             fontSize={12}
-            tickFormatter={(value) => formatCurrency(value, true)}
+            tickFormatter={(value) => formatCurrency(value, 'MXN', true)}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend 

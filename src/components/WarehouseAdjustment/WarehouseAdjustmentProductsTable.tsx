@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { WarehouseAdjustmentDetail } from '@/types/warehouse-adjustment';
 import { Btn } from '@/components/atoms';
@@ -23,15 +24,9 @@ export default function WarehouseAdjustmentProductsTable({
   const t = useTranslations('pages.warehouseAdjustments.products');
   const deleteT = useTranslations('pages.warehouseAdjustments.deleteProduct');
   const commonT = useTranslations('common');
+  const { formatCurrency } = useLocaleUtils();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<WarehouseAdjustmentDetail | null>(null);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
 
   const handleDeleteClick = (product: WarehouseAdjustmentDetail) => {
     setProductToDelete(product);

@@ -9,12 +9,14 @@ import { toastService } from '@/services/toast.service';
 import Loading from "@/components/Loading/Loading";
 import { Btn } from '@/components/atoms';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 export default function InvoiceDetailsPage() {
   const t = useTranslations('pages.invoices');
   const router = useRouter();
   const params = useParams();
   const invoiceId = params.id as string;
+  const { formatCurrency, formatDate } = useLocaleUtils();
   
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,16 +40,9 @@ export default function InvoiceDetailsPage() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES');
-  };
+  const invoiceCurrency = invoice?.details?.[0]?.product?.currency?.code || 'MXN';
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
+  const fmt = (amount: number) => formatCurrency(amount, invoiceCurrency);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -212,16 +207,16 @@ export default function InvoiceDetailsPage() {
                         {detail.quantity}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatCurrency(detail.price)}
+                        {fmt(detail.price)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatCurrency(detail.subtotal)}
+                        {fmt(detail.subtotal)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatCurrency(detail.tax_amount)}
+                        {fmt(detail.tax_amount)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatCurrency(detail.total)}
+                        {fmt(detail.total)}
                       </td>
                     </tr>
                   ))}
@@ -242,16 +237,16 @@ export default function InvoiceDetailsPage() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">{t('details.subtotal')}</span>
-                <span className="text-sm font-medium text-gray-900">{formatCurrency(invoice.subtotal)}</span>
+                <span className="text-sm font-medium text-gray-900">{fmt(invoice.subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">{t('details.tax')}</span>
-                <span className="text-sm font-medium text-gray-900">{formatCurrency(invoice.tax_amount)}</span>
+                <span className="text-sm font-medium text-gray-900">{fmt(invoice.tax_amount)}</span>
               </div>
               <div className="border-t border-gray-200 pt-3">
                 <div className="flex justify-between">
                   <span className="text-base font-medium text-gray-900">{t('details.total')}</span>
-                  <span className="text-base font-bold text-gray-900">{formatCurrency(invoice.total_amount)}</span>
+                  <span className="text-base font-bold text-gray-900">{fmt(invoice.total_amount)}</span>
                 </div>
               </div>
             </div>

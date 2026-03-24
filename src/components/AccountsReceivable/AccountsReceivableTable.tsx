@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { AccountReceivable, AccountReceivableStatus } from '@/types/account-receivable';
 import { Client } from '@/types/client';
 import { ClockIcon } from '@heroicons/react/24/outline';
@@ -39,6 +40,7 @@ export default function AccountsReceivableTable({
   const t = useTranslations('accountsReceivable');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const { formatCurrency } = useLocaleUtils();
 
   const isVisible = (key: string) => {
     if (!visibleColumns) return true;
@@ -65,13 +67,6 @@ export default function AccountsReceivableTable({
       default:
         return 'bg-gray-100 text-gray-800';
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
-    }).format(amount);
   };
 
   const formatDate = (date: string) => {

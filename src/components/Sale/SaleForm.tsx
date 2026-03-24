@@ -5,9 +5,10 @@ import { useTranslations } from 'next-intl';
 import { saleService } from '@/services/sales.service';
 import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
-import { Sale, SaleFormData } from '@/types/sale';
+import { Sale, SaleFormData, PaymentMethod } from '@/types/sale';
 import { Client } from '@/types/client';
 import { Input, SelectWithAdd } from '@/components/atoms';
+import { BanknotesIcon, CreditCardIcon, ClockIcon } from '@heroicons/react/24/outline';
 import Drawer from '@/components/Drawer/Drawer';
 import ClientForm from '@/components/Client/ClientForm';
 import { ClientFormRef } from '@/components/Client/ClientForm';
@@ -39,6 +40,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
       type: 'WITHDRAWAL',
       client_id: '',
       amount: 0,
+      payment_method: PaymentMethod.CASH,
     });
 
     const [clients, setClients] = useState<Client[]>([]);
@@ -62,6 +64,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
           destination: sale.destination,
           client_id: sale.client.id,
           amount: parseFloat(sale.amount),
+          payment_method: sale.payment_method || PaymentMethod.CASH,
         });
       } else {
         setFormData({
@@ -70,6 +73,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
           destination: '',
           client_id: '',
           amount: 0,
+          payment_method: PaymentMethod.CASH,
         });
       }
     }, [sale]);
@@ -88,10 +92,6 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
 
       if (!formData.code.trim()) {
         newErrors.code = t('form.errors.codeRequired');
-      }
-
-      if (!formData.destination.trim()) {
-        newErrors.destination = t('form.errors.destinationRequired');
       }
 
       if (!formData.client_id) {
@@ -175,17 +175,6 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
             error={errors.code}
           />
 
-          <Input
-            type="text"
-            id="destination"
-            label={t('form.destination')}
-            required
-            value={formData.destination}
-            onChange={(e) => setFormData(prev => ({ ...prev, destination: e.target.value }))}
-            placeholder={t('form.placeholders.destination')}
-            error={errors.destination}
-          />
-
           <SelectWithAdd
             id="client"
             label={t('form.client')}
@@ -201,6 +190,64 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
             showAddButton
             onAddClick={() => setShowClientDrawer(true)}
             addButtonTitle={t('actions.createNewClient')}
+          />
+
+          {/* Método de pago */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('form.paymentMethod')}
+            </label>
+            <div className="space-y-2">
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="radio"
+                  value={PaymentMethod.CASH}
+                  checked={formData.payment_method === PaymentMethod.CASH}
+                  onChange={() => setFormData(prev => ({ ...prev, payment_method: PaymentMethod.CASH }))}
+                />
+                <BanknotesIcon className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">{t('form.paymentMethods.cash')}</span>
+              </label>
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="radio"
+                  value={PaymentMethod.CARD}
+                  checked={formData.payment_method === PaymentMethod.CARD}
+                  onChange={() => setFormData(prev => ({ ...prev, payment_method: PaymentMethod.CARD }))}
+                />
+                <CreditCardIcon className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">{t('form.paymentMethods.card')}</span>
+              </label>
+              {(() => {
+                const selectedClient = clients.find(c => c.id === formData.client_id);
+                return selectedClient?.credit?.is_active ? (
+                  <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      value={PaymentMethod.CREDIT}
+                      checked={formData.payment_method === PaymentMethod.CREDIT}
+                      onChange={() => setFormData(prev => ({ ...prev, payment_method: PaymentMethod.CREDIT }))}
+                    />
+                    <ClockIcon className="h-4 w-4 text-gray-500" />
+                    <div>
+                      <span className="text-sm block">{t('form.paymentMethods.credit')}</span>
+                      <span className="text-xs text-gray-400">
+                        {t('form.paymentMethods.creditLimit')}: ${selectedClient.credit.credit_limit.toFixed(2)} | {selectedClient.credit.credit_days} {t('form.paymentMethods.days')}
+                      </span>
+                    </div>
+                  </label>
+                ) : null;
+              })()}
+            </div>
+          </div>
+
+          <Input
+            type="text"
+            id="destination"
+            label={t('form.destination')}
+            value={formData.destination}
+            onChange={(e) => setFormData(prev => ({ ...prev, destination: e.target.value }))}
+            placeholder={t('form.placeholders.destination')}
           />
         </form>
 

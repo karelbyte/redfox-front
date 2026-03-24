@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowSummary as CashFlowSummaryType } from '@/types/cash-flow';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 
@@ -11,13 +12,7 @@ interface CashFlowSummaryProps {
 
 export default function CashFlowSummary({ data, isLoading }: CashFlowSummaryProps) {
   const t = useTranslations('cashFlow');
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
-    }).format(amount);
-  };
+  const { formatCurrency } = useLocaleUtils();
 
   const getBalanceColor = (amount: number) => {
     if (amount > 0) return 'text-green-600';

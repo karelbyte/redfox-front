@@ -67,14 +67,6 @@ function CertificationPackFormInner(
       );
     }
 
-    if (formData.type === CertificationPackType.SAT) {
-      return (
-        !!String(cfg.certificate || '').trim() &&
-        !!String(cfg.key || '').trim() &&
-        !!String(cfg.password || '').trim()
-      );
-    }
-
     return true;
   }, [formData.config, formData.type]);
 
@@ -225,49 +217,6 @@ function CertificationPackFormInner(
               <li>El CSD debe estar cargado en tu business</li>
               <li>Los clientes y productos se sincronizarán automáticamente</li>
             </ul>
-          </div>
-        </div>
-      );
-    }
-
-    if (formData.type === CertificationPackType.SAT) {
-      return (
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Certificado (Base64)
-            </label>
-            <textarea
-              value={formData.config?.certificate || ''}
-              onChange={(e) => updateConfig('certificate', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-              placeholder="-----BEGIN CERTIFICATE-----..."
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Key (Base64)
-            </label>
-            <textarea
-              value={formData.config?.key || ''}
-              onChange={(e) => updateConfig('key', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-              placeholder="-----BEGIN PRIVATE KEY-----..."
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Contraseña del Certificado
-            </label>
-            <input
-              type="password"
-              value={formData.config?.password || ''}
-              onChange={(e) => updateConfig('password', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Contraseña del certificado"
-            />
           </div>
         </div>
       );

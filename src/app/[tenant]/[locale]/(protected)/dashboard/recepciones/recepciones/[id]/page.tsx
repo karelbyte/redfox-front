@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ArrowLeftIcon, PlusIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { receptionService } from '@/services/receptions.service';
 import { toastService } from '@/services/toast.service';
@@ -14,12 +14,13 @@ import ReceptionProductsTable from '@/components/Reception/ReceptionProductsTabl
 import CloseReceptionModal from '@/components/Reception/CloseReceptionModal';
 import ReceptionCloseResultModal from '@/components/Reception/ReceptionCloseResultModal';
 import Loading from '@/components/Loading/Loading';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 export default function ReceptionDetailsPage() {
   const router = useRouter();
   const params = useParams();
-  const locale = useLocale();
   const t = useTranslations('pages.receptions');
+  const { locale, formatCurrency } = useLocaleUtils();
   const [reception, setReception] = useState<Reception | null>(null);
   const [products, setProducts] = useState<ReceptionDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -185,13 +186,6 @@ export default function ReceptionDetailsPage() {
     } finally {
       setIsClosingReception(false);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
   };
 
   if (loading) {

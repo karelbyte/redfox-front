@@ -7,6 +7,7 @@ import { clientsService } from '@/services/clients.service';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { cashRegisterService } from '@/services/cash-register.service';
 import { ticketPrinterService } from '@/services/ticket-printer.service';
+import { invoiceService } from '@/services/invoices.service';
 import { toastService } from '@/services/toast.service';
 import { SaleFormData, PaymentMethod } from '@/types/sale';
 import { Client } from '@/types/client';
@@ -314,7 +315,7 @@ export default function POSPage() {
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (generateInvoice: boolean = false) => {
     if (cart.length === 0) {
       toastService.error(t('messages.emptyCart'));
       return;
@@ -354,6 +355,23 @@ export default function POSPage() {
       }
 
       await saleService.closeSale(sale.id);
+
+      // Si se solicitó factura fiscal, convertir la venta a factura y generar CFDI
+      if (generateInvoice && selectedClient) {
+        try {
+          const invoiceCode = `FAC-${sale.code}`;
+          const invoice = await invoiceService.convertWithdrawalToInvoice({
+            withdrawal_id: sale.id,
+            invoice_code: invoiceCode,
+          });
+          await invoiceService.generateCFDI(invoice.id);
+          toastService.success(t('messages.invoiceGenerated'));
+        } catch (invoiceError) {
+          console.error('Error generating invoice:', invoiceError);
+          toastService.warning(t('messages.invoiceGenerationError'));
+          // La venta ya está guardada, no bloqueamos el flujo
+        }
+      }
 
       // Obtener los detalles de la venta para el ticket
       const saleDetails = await saleService.getSaleDetails(sale.id);

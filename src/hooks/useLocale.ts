@@ -23,10 +23,12 @@ export function useLocaleUtils() {
     });
   };
 
-  const formatCurrency = (amount: number, compact: boolean = false, currencyCode: string = 'USD') => {
+  const formatCurrency = (amount: number, currencyCode: string = 'MXN', compact: boolean = false) => {
+    const code = currencyCode || 'MXN';
+    const localeStr = code === 'MXN' ? 'es-MX' : locale === 'es' ? 'es-MX' : 'en-US';
     const options: Intl.NumberFormatOptions = {
       style: 'currency',
-      currency: currencyCode,
+      currency: code,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     };
@@ -36,7 +38,7 @@ export function useLocaleUtils() {
       options.compactDisplay = 'short';
     }
 
-    return new Intl.NumberFormat(locale, options).format(amount);
+    return new Intl.NumberFormat(localeStr, options).format(amount);
   };
 
   const formatNumber = (number: number, options?: Intl.NumberFormatOptions) => {

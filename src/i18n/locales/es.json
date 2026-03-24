@@ -1828,6 +1828,14 @@
         "client": "Cliente",
         "amount": "Monto",
         "status": "Estado",
+        "paymentMethod": "Método de Pago",
+        "paymentMethods": {
+          "cash": "Efectivo",
+          "card": "Tarjeta",
+          "credit": "Crédito",
+          "creditLimit": "Límite de crédito",
+          "days": "días"
+        },
         "placeholders": {
           "code": "Ej: SAL-2024-001",
           "destination": "Ej: Tienda Central - Av. Principal 123"
@@ -2141,7 +2149,9 @@
         "cancel": "Cancelar",
         "confirm": "Confirmar Pago",
         "processing": "Procesando...",
-        "downloadTicket": "Descargar Ticket"
+        "downloadTicket": "Descargar Ticket",
+        "generateInvoice": "Generar factura fiscal (CFDI)",
+        "generateInvoiceHint": "Se generará y timbará automáticamente al confirmar"
       },
       "messages": {
         "saleCompleted": "Venta completada exitosamente",
@@ -2163,7 +2173,9 @@
         "ticketPrinted": "Ticket impreso exitosamente",
         "ticketPrintError": "Error al imprimir el ticket, pero la venta se completó",
         "ticketDownloaded": "Ticket descargado exitosamente",
-        "ticketDownloadError": "Error al descargar el ticket"
+        "ticketDownloadError": "Error al descargar el ticket",
+        "invoiceGenerated": "Factura fiscal generada exitosamente",
+        "invoiceGenerationError": "La venta se completó pero hubo un error al generar la factura fiscal"
       },
       "ticket": {
         "ticket": "Ticket",

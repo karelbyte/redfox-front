@@ -1,4 +1,5 @@
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { Invoice } from '@/types/invoice';
 import ActionsMenu from '@/components/atoms/ActionsMenu';
 import { InvoiceActionsMenu } from './InvoiceActionsMenu';
@@ -24,6 +25,7 @@ export default function InvoiceTable({
   visibleColumns = ['code', 'date', 'client', 'subtotal', 'tax', 'total', 'status', 'actions']
 }: InvoiceTableProps) {
   const t = useTranslations('pages.invoices');
+  const { formatCurrency } = useLocaleUtils();
   
   if (!Array.isArray(invoices)) {
     return null;
@@ -31,14 +33,6 @@ export default function InvoiceTable({
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('es-ES');
-  };
-
-  const formatCurrency = (amount: number, currencyCode?: string) => {
-    const code = currencyCode || 'MXN';
-    return new Intl.NumberFormat(code === 'MXN' ? 'es-MX' : 'en-US', {
-      style: 'currency',
-      currency: code,
-    }).format(amount);
   };
 
   const getInvoiceCurrency = (invoice: Invoice) =>

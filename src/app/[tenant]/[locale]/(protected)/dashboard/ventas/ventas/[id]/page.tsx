@@ -2,27 +2,28 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, DocumentArrowDownIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { saleService } from '@/services/sales.service';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { toastService } from '@/services/toast.service';
 import { SalePDFService } from '@/services/sale-pdf.service';
 import { Sale, SaleDetail, SaleCloseResponse, SaleStatus } from '@/types/sale';
-import { Btn, Input } from '@/components/atoms';
+import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AddProductForm, { AddProductFormRef } from '@/components/Sale/AddProductForm';
 import SaleProductsTable from '@/components/Sale/SaleProductsTable';
 import CloseSaleModal from '@/components/Sale/CloseSaleModal';
 import SaleCloseResultModal from '@/components/Sale/SaleCloseResultModal';
 import Loading from '@/components/Loading/Loading';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 export default function SaleDetailsPage() {
   const router = useRouter();
   const params = useParams();
-  const locale = useLocale();
   const t = useTranslations('pages.sales');
   const tPdf = useTranslations('pages.sales.pdf');
+  const { locale, formatCurrency } = useLocaleUtils();
   const [sale, setSale] = useState<Sale | null>(null);
   const [products, setProducts] = useState<SaleDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +123,7 @@ export default function SaleDetailsPage() {
         product_id: inventoryProduct.product.id,
         quantity: 1,
         price: inventoryProduct.product.base_price,
-        warehouse_id: inventoryProduct.warehouse.id
+        warehouse_id: inventoryProduct.warehouse?.id ?? ''
       });
       toastService.success(t('addProduct.messages.productAdded'));
       fetchSale();
@@ -301,14 +302,6 @@ export default function SaleDetailsPage() {
   };
 
 
-  const formatCurrency = (amount: string) => {
-    const numericAmount = parseFloat(amount);
-    return new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-      style: 'currency',
-      currency: locale === 'es' ? 'MXN' : 'USD'
-    }).format(numericAmount);
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -409,7 +402,7 @@ export default function SaleDetailsPage() {
             </div>
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.totalAmount')}:</span>
-              <p className="text-sm font-semibold text-gray-900">{formatCurrency(sale.amount)}</p>
+              <p className="text-sm font-semibold text-gray-900">{formatCurrency(parseFloat(sale.amount))}</p>
             </div>
             {sale.pack_fiscal_status && (
               <div className="col-span-2">
@@ -546,7 +539,7 @@ export default function SaleDetailsPage() {
                           Stock: {inventoryProduct.quantity}
                         </p>
                         <p className="text-sm font-bold mt-1" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                          {formatCurrency(inventoryProduct.product.base_price.toString())}
+                          {formatCurrency(inventoryProduct.product.base_price)}
                         </p>
                       </div>
                     ))}

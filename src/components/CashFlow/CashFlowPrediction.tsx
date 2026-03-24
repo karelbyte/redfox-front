@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowMovement } from '@/types/cash-flow';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { LightBulbIcon } from '@heroicons/react/24/outline';
@@ -12,6 +13,7 @@ interface CashFlowPredictionProps {
 
 export default function CashFlowPrediction({ movements, isLoading }: CashFlowPredictionProps) {
   const t = useTranslations('cashFlow');
+  const { formatCurrency } = useLocaleUtils();
 
   if (isLoading) {
     return (
@@ -81,13 +83,7 @@ export default function CashFlowPrediction({ movements, isLoading }: CashFlowPre
 
   const insights = calculateInsights();
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-      notation: 'compact',
-    }).format(value);
-  };
+  const formatCurrencyCompact = (value: number) => formatCurrency(value, 'MXN', true);
 
   return (
     <div className="space-y-6">

@@ -1,8 +1,8 @@
 'use client'
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { BanknotesIcon, CreditCardIcon, XMarkIcon, DocumentArrowDownIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { BanknotesIcon, CreditCardIcon, XMarkIcon, DocumentArrowDownIcon, ClockIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { Input, Btn } from '@/components/atoms';
 import { Client } from '@/types/client';
 import { PaymentMethod } from '@/types/sale';
@@ -10,7 +10,7 @@ import { PaymentMethod } from '@/types/sale';
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (generateInvoice: boolean) => void;
   paymentMethod: PaymentMethod;
   cashAmount: number;
   total: number;
@@ -37,20 +37,24 @@ const PaymentModal = React.memo(({
   selectedClient
 }: PaymentModalProps) => {
   const t = useTranslations('pages.pos');
+  const [generateInvoice, setGenerateInvoice] = useState(false);
 
   if (!isOpen) return null;
 
   const handleConfirm = () => {
     if (paymentMethod === PaymentMethod.CASH && cashAmount < total) {
-      return; // No permitir confirmar si el efectivo es insuficiente
+      return;
     }
-    onConfirm();
+    onConfirm(generateInvoice);
   };
 
   const isCashInsufficient = paymentMethod === PaymentMethod.CASH && cashAmount < total;
   const hasActiveCredit = selectedClient?.credit?.is_active === true;
   const creditLimit = selectedClient?.credit?.credit_limit || 0;
   const creditDays = selectedClient?.credit?.credit_days || 0;
+
+  // El cliente puede facturar si está sincronizado con el PAC y tiene datos fiscales
+  const canGenerateInvoice = !!(selectedClient?.pack_client_id && selectedClient?.taxData?.length);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -151,6 +155,25 @@ const PaymentModal = React.memo(({
                   {t('payment.insufficientCash')}
                 </p>
               )}
+            </div>
+          )}
+
+          {/* Toggle generar factura fiscal */}
+          {canGenerateInvoice && (
+            <div className="mb-6 p-3 border rounded-lg bg-gray-50">
+              <label className="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={generateInvoice}
+                  onChange={(e) => setGenerateInvoice(e.target.checked)}
+                  className="rounded text-primary-600"
+                />
+                <DocumentTextIcon className="h-5 w-5 text-gray-500" />
+                <div>
+                  <span className="font-medium text-sm block">{t('payment.generateInvoice')}</span>
+                  <span className="text-xs text-gray-500">{t('payment.generateInvoiceHint')}</span>
+                </div>
+              </label>
             </div>
           )}
 

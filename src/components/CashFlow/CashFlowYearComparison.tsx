@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { CashFlowSummary as CashFlowSummaryType } from '@/types/cash-flow';
 import { cashFlowService } from '@/services/cash-flow.service';
 import { toastService } from '@/services/toast.service';
@@ -15,6 +16,7 @@ interface CashFlowYearComparisonProps {
 
 export default function CashFlowYearComparison({ currentSummary, isLoading }: CashFlowYearComparisonProps) {
   const t = useTranslations('cashFlow');
+  const { formatCurrency } = useLocaleUtils();
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
   const [isLoadingComparison, setIsLoadingComparison] = useState(false);
 
@@ -69,13 +71,7 @@ export default function CashFlowYearComparison({ currentSummary, isLoading }: Ca
     };
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-      notation: 'compact',
-    }).format(value);
-  };
+  const formatCurrencyCompact = (value: number) => formatCurrency(value, 'MXN', true);
 
   const yearTrend = calculateYearTrend();
 

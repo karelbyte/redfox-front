@@ -1,10 +1,10 @@
 'use client'
 
-import { useTranslations, useLocale } from 'next-intl';
-import { Sale } from '@/types/sale';
+import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
+import { Sale, SaleStatus } from '@/types/sale';
 import ActionsMenu from '@/components/atoms/ActionsMenu';
 import { SaleActionsMenu } from './SaleActionsMenu';
-import { SaleStatus } from '@/types/sale';
 
 interface SaleTableProps {
   sales: Sale[];
@@ -21,30 +21,11 @@ interface SaleTableProps {
 
 export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onRefund, onPrintTicket, onInvoice, visibleColumns, hideClientColumn = false }: SaleTableProps) {
   const t = useTranslations('pages.sales');
-  const locale = useLocale();
+  const { formatCurrency, formatDate } = useLocaleUtils();
 
   const isVisible = (key: string) => {
     if (!visibleColumns) return true;
     return visibleColumns.includes(key);
-  };
-
-  const formatCurrency = (amount: string) => {
-    const numericAmount = parseFloat(amount);
-    return new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-      style: 'currency',
-      currency: locale === 'es' ? 'MXN' : 'USD'
-    }).format(numericAmount);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat(locale === 'es' ? 'es-ES' : 'en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
   };
 
   return (
@@ -133,7 +114,7 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
               )}
               {isVisible('date') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(sale.created_at)}
+                  {formatDate(sale.created_at, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                 </td>
               )}
               {isVisible('destination') && (
@@ -148,7 +129,7 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
               )}
               {isVisible('amount') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatCurrency(sale.amount)}
+                  {formatCurrency(parseFloat(sale.amount))}
                 </td>
               )}
               {isVisible('status') && (
@@ -209,4 +190,4 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
       </table>
     </div>
   );
-} 
+}

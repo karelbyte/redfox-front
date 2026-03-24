@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { PurchaseOrderDetail } from '@/types/purchase-order';
 import { Btn } from '@/components/atoms';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -17,13 +18,7 @@ export default function PurchaseOrderProductsTable({
   onDelete 
 }: PurchaseOrderProductsTableProps) {
   const t = useTranslations('pages.purchaseOrders');
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
+  const { formatCurrency } = useLocaleUtils();
 
   if (!products || products.length === 0) {
     return (

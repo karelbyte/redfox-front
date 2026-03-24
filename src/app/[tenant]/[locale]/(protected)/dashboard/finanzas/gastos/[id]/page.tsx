@@ -2,20 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ArrowLeftIcon, BanknotesIcon, CalendarIcon, UserIcon, DocumentTextIcon, TagIcon } from '@heroicons/react/24/outline';
 import { expensesService } from '@/services/expenses.service';
 import { toastService } from '@/services/toast.service';
 import { Expense, ExpensePayment } from '@/types/expense';
 import { Btn } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 export default function ExpenseDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const locale = useLocale();
   const t = useTranslations('expenses');
   const tCommon = useTranslations('common');
+  const { locale, formatCurrency: fmtCurrency } = useLocaleUtils();
+
+  const formatCurrency = (amount: number | string) => {
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return fmtCurrency(num || 0);
+  };
   
   const [expense, setExpense] = useState<Expense | null>(null);
   const [payments, setPayments] = useState<ExpensePayment[]>([]);
@@ -45,14 +51,6 @@ export default function ExpenseDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatCurrency = (amount: number | string) => {
-    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
-    }).format(num || 0);
   };
 
   const formatDate = (date: string) => {
