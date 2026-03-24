@@ -33,12 +33,16 @@ export default function InvoiceTable({
     return new Date(dateString).toLocaleDateString('es-ES');
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
+  const formatCurrency = (amount: number, currencyCode?: string) => {
+    const code = currencyCode || 'MXN';
+    return new Intl.NumberFormat(code === 'MXN' ? 'es-MX' : 'en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: code,
     }).format(amount);
   };
+
+  const getInvoiceCurrency = (invoice: Invoice) =>
+    invoice.details?.[0]?.product?.currency?.code || 'MXN';
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -170,17 +174,17 @@ export default function InvoiceTable({
               )}
               {visibleColumns.includes('subtotal') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatCurrency(invoice.subtotal)}
+                  {formatCurrency(invoice.subtotal, getInvoiceCurrency(invoice))}
                 </td>
               )}
               {visibleColumns.includes('tax') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatCurrency(invoice.tax_amount)}
+                  {formatCurrency(invoice.tax_amount, getInvoiceCurrency(invoice))}
                 </td>
               )}
               {visibleColumns.includes('total') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatCurrency(invoice.total_amount)}
+                  {formatCurrency(invoice.total_amount, getInvoiceCurrency(invoice))}
                 </td>
               )}
               {visibleColumns.includes('status') && (

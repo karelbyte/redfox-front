@@ -300,11 +300,12 @@ export default function SaleDetailsPage() {
     }
   };
 
+
   const formatCurrency = (amount: string) => {
     const numericAmount = parseFloat(amount);
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: locale === 'es' ? 'MXN' : 'USD'
     }).format(numericAmount);
   };
 

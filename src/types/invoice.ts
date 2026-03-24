@@ -123,6 +123,7 @@ export interface Product {
   is_active: boolean;
   type: 'digital' | 'service' | 'tangible';
   images: string[];
+  currency?: { id: string; code: string; name: string } | null;
   created_at: string;
 }
 

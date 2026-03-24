@@ -97,6 +97,11 @@ export interface SaleDetail {
       code: string;
       description: string;
     };
+    currency?: {
+      id: string;
+      code: string;
+      name: string;
+    } | null;
     is_active: boolean;
     type: string;
     images: string[];

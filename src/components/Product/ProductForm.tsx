@@ -22,6 +22,7 @@ import { categoriesService } from "@/services/categories.service";
 import { measurementUnitsService } from "@/services/measurement-units.service";
 import { taxesService } from "@/services/taxes.service";
 import { Tax } from "@/types/tax";
+import { currenciesService } from "@/services/currencies.service";
 import ImageCarousel from "@/components/ImageCarousel/ImageCarousel";
 import Drawer from "@/components/Drawer/Drawer";
 import BrandForm from "@/components/Brand/BrandForm";
@@ -101,6 +102,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       inventory_strategy: InventoryStrategy.AVERAGE,
       base_price: 0,
       prices: [],
+      currency_id: "",
     });
 
     const [images, setImages] = useState<(File | string)[]>([]);
@@ -110,6 +112,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       []
     );
     const [taxes, setTaxes] = useState<Tax[]>([]);
+    const [currencies, setCurrencies] = useState<{ id: string; code: string; name: string }[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
     const initialFetchDone = useRef(false);
     const [showSearchCodeModal, setShowSearchCodeModal] = useState(false);
@@ -185,18 +188,20 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
         initialFetchDone.current = true;
         const fetchData = async () => {
           try {
-            const [brandsData, categoriesData, measurementUnitsData, taxesData] =
+            const [brandsData, categoriesData, measurementUnitsData, taxesData, currenciesData] =
               await Promise.all([
                 brandService.getBrands(),
                 categoriesService.getCategories(),
                 measurementUnitsService.getMeasurementUnits(),
                 taxesService.getTaxes(),
+                currenciesService.getCurrencies(),
               ]);
 
             setBrands(brandsData.data);
             setCategories(categoriesData.data);
             setMeasurementUnits(measurementUnitsData.data);
             setTaxes(taxesData.data);
+            setCurrencies(currenciesData.data);
           } catch (error) {
             console.error("Error fetching data:", error);
           }
@@ -243,6 +248,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           inventory_strategy: product.inventory_strategy || InventoryStrategy.AVERAGE,
           base_price: Number(product.base_price) || 0,
           prices: product.prices ? product.prices.map(p => ({ id: p.id, name: p.name, price: Number(p.price) })) : [],
+          currency_id: product.currency?.id || "",
         });
         setImages(product.images || []);
       } else {
@@ -286,16 +292,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
       if (!formData.sku.trim()) {
         newErrors.sku = t('form.errors.skuRequired');
-        isValid = false;
-      }
-
-      if (!formData.brand_id) {
-        newErrors.brand_id = t('form.errors.brandRequired');
-        isValid = false;
-      }
-
-      if (!formData.category_id) {
-        newErrors.category_id = t('form.errors.categoryRequired');
         isValid = false;
       }
 
@@ -345,6 +341,10 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
             formData.slug.trim() ||
             formData.name.trim().toLowerCase().replace(/\s+/g, "-"),
           tax_ids: formData.tax_ids,
+          // Enviar undefined si están vacíos para que el backend no los valide como UUID
+          brand_id: formData.brand_id || undefined,
+          category_id: formData.category_id || undefined,
+          currency_id: formData.currency_id || undefined,
         };
 
         if (product) {
@@ -648,6 +648,23 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               error={errors.type}
             />
 
+            {/* Moneda — solo para service/digital */}
+            {(formData.type === ProductType.SERVICE || formData.type === ProductType.DIGITAL) && (
+              <Select
+                id="currency_id"
+                label={t('form.currency')}
+                value={formData.currency_id || ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, currency_id: e.target.value }))
+                }
+                placeholder={t('form.selectCurrency')}
+                options={currencies.map((c) => ({
+                  value: c.id,
+                  label: `${c.code} — ${c.name}`,
+                }))}
+              />
+            )}
+
             <Select
               id="inventory_strategy"
               label={t('form.inventoryStrategy')}
@@ -671,7 +688,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               }))}
               showAddButton={true}
               onAddClick={() => setShowBrandDrawer(true)}
-              error={errors.brand_id}
             />
 
             <SelectWithAddScrolled
@@ -687,7 +703,6 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               }))}
               showAddButton={true}
               onAddClick={() => setShowCategoryDrawer(true)}
-              error={errors.category_id}
             />
 
             <SelectWithAddScrolled

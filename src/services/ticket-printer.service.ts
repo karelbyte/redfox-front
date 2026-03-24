@@ -155,9 +155,12 @@ export class TicketPrinterService {
     lines.push(
       `${labels.cashier}: ${data.cashierName || labels.posSystem}`
     );
-    lines.push(
-      `${labels.client}: ${data.client?.name || labels.walkIn}`
-    );
+
+    // Truncar nombre del cliente al espacio disponible después del label
+    const clientLabel = `${labels.client}: `;
+    const clientName = data.client?.name || labels.walkIn;
+    const clientMaxLen = this.LINE_WIDTH - clientLabel.length;
+    lines.push(clientLabel + this.truncateText(clientName, clientMaxLen));
     lines.push('');
     lines.push(this.repeatChar('-', this.LINE_WIDTH));
     

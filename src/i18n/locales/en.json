@@ -452,7 +452,9 @@
           "searchError": "Error searching codes. Please try again.",
           "close": "Close"
         },
-        "searchCode": "Search code"
+        "searchCode": "Search code",
+        "currency": "Currency",
+        "selectCurrency": "Select currency..."
       },
       "table": {
         "name": "Name",
@@ -2052,11 +2054,16 @@
           "quantity": "Quantity",
           "price": "Price",
           "subtotal": "Subtotal",
+          "tax": "Tax",
+          "total": "Total",
           "actions": "Actions"
         },
         "noProducts": "No products in this sale",
         "noProductsDesc": "Add products to start recording the sale",
-        "noProductsCompletedDesc": "This sale has no registered products"
+        "noProductsCompletedDesc": "This sale has no registered products",
+        "summary": {
+          "subtotal": "Subtotal"
+        }
       },
       "deleteProduct": {
         "title": "Delete Product",

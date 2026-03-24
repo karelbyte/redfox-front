@@ -306,8 +306,8 @@ export class PDFService {
         rows.push([
           detail.product.name,
           detail.product.sku,
-          detail.product.brand.description,
-          detail.product.category.name,
+          detail.product.brand?.description || "",
+          detail.product.category?.name || "",
           quantity.toString(),
           `$${price.toFixed(2)}`,
           `$${subtotal.toFixed(2)}`
@@ -473,8 +473,8 @@ export class PDFService {
         rows.push([
           detail.product.name,
           detail.product.sku,
-          detail.product.brand.description,
-          detail.product.category.name,
+          detail.product.brand?.description || "",
+          detail.product.category?.name || "",
           quantity.toString(),
           `$${price.toFixed(2)}`,
           `$${subtotal.toFixed(2)}`
@@ -628,8 +628,8 @@ export class PDFService {
         rows.push([
           detail.product.name,
           detail.product.sku,
-          detail.product.brand.name,
-          detail.product.category.name,
+          detail.product.brand?.name || "",
+          detail.product.category?.name || "",
           detail.quantity.toString(),
           `$${detail.price.toFixed(2)}`,
           `$${subtotal.toFixed(2)}`

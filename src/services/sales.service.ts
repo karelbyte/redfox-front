@@ -66,7 +66,7 @@ class SaleService {
       product_id: data.product_id,
       quantity: data.quantity,
       price: data.price,
-      warehouse_id: data.warehouse_id
+      ...(data.warehouse_id ? { warehouse_id: data.warehouse_id } : {}),
     };
     const response = await api.post<SaleDetail>(`/withdrawals/${saleId}/details`, requestData);
     return response;
@@ -77,7 +77,7 @@ class SaleService {
       product_id: data.product_id,
       quantity: data.quantity,
       price: data.price,
-      warehouse_id: data.warehouse_id
+      ...(data.warehouse_id ? { warehouse_id: data.warehouse_id } : {}),
     };
     const response = await api.put<SaleDetail>(`/withdrawals/${saleId}/details/${detailId}`, requestData);
     return response;

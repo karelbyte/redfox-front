@@ -36,7 +36,7 @@ class ProductService {
 
     // Agregar campos de texto
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
+      if (value !== undefined && value !== null && value !== '') {
         if (typeof value === 'boolean') {
           formData.append(key, value.toString());
         } else if (typeof value === 'object') {
@@ -63,7 +63,7 @@ class ProductService {
 
     // Agregar campos de texto
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
+      if (value !== undefined && value !== null && value !== '') {
         if (typeof value === 'boolean') {
           formData.append(key, value.toString());
         } else if (typeof value === 'object') {

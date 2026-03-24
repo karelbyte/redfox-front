@@ -82,11 +82,11 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
             setSelectedInventoryProduct(inventoryProduct);
             setFormData(prev => ({
               ...prev,
-              warehouse_id: inventoryProduct.warehouse.id
+              warehouse_id: inventoryProduct.warehouse?.id ?? ''
             }));
             setProductDrawerData(prev => ({
               ...prev,
-              warehouse_id: inventoryProduct.warehouse.id
+              warehouse_id: inventoryProduct.warehouse?.id ?? ''
             }));
           }
         };
@@ -102,7 +102,11 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
         return (response.data || []).map(inventoryProduct => ({
           id: inventoryProduct.product.id,
           label: inventoryProduct.product.name,
-          subtitle: `SKU: ${inventoryProduct.product.sku} | Stock: ${inventoryProduct.quantity}`
+          subtitle: `SKU: ${inventoryProduct.product.sku} | Stock: ${
+            inventoryProduct.product.type === 'service' || inventoryProduct.product.type === 'digital'
+              ? '∞'
+              : inventoryProduct.quantity
+          }`
         }));
       } catch (error) {
         console.error('Error buscando productos en inventario:', error);
@@ -132,18 +136,20 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
         if (inventoryProduct) {
           setSelectedInventoryProduct(inventoryProduct);
           // Establecer el precio base como precio por defecto y el warehouse_id
+          // Para service/digital, warehouse puede ser null
+          const warehouseId = inventoryProduct.warehouse?.id ?? '';
           setFormData(prev => ({ 
             ...prev, 
             product_id: productId,
             price: inventoryProduct.product.base_price,
-            warehouse_id: inventoryProduct.warehouse.id
+            warehouse_id: warehouseId
           }));
           setProductDrawerData(prev => ({
             ...prev,
             product_id: productId,
             price_id: 'base',
             custom_price: 0,
-            warehouse_id: inventoryProduct.warehouse.id
+            warehouse_id: warehouseId
           }));
         }
       } else {
@@ -283,20 +289,29 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
               </div>
               <div>
                 <span className="text-gray-500">{t('inventoryInfo.stockAvailable')}:</span>
-                <p className="font-medium">{selectedInventoryProduct.quantity} {selectedInventoryProduct.product.measurement_unit.symbol}</p>
+                <p className="font-medium">
+                  {selectedInventoryProduct.product.type === 'service' || selectedInventoryProduct.product.type === 'digital'
+                    ? '∞'
+                    : `${selectedInventoryProduct.quantity} ${selectedInventoryProduct.product.measurement_unit.symbol}`
+                  }
+                </p>
               </div>
               <div>
                 <span className="text-gray-500">{t('inventoryInfo.inventoryPrice')}:</span>
                 <p className="font-medium">{formatCurrency(selectedInventoryProduct.price)}</p>
               </div>
-              <div>
-                <span className="text-gray-500">{t('inventoryInfo.warehouse')}:</span>
-                <p className="font-medium">{selectedInventoryProduct.warehouse.name}</p>
-              </div>
-              <div>
-                <span className="text-gray-500">{t('inventoryInfo.category')}:</span>
-                <p className="font-medium">{selectedInventoryProduct.product.category.name}</p>
-              </div>
+              {selectedInventoryProduct.warehouse && (
+                <div>
+                  <span className="text-gray-500">{t('inventoryInfo.warehouse')}:</span>
+                  <p className="font-medium">{selectedInventoryProduct.warehouse.name}</p>
+                </div>
+              )}
+              {selectedInventoryProduct.product.category && (
+                <div>
+                  <span className="text-gray-500">{t('inventoryInfo.category')}:</span>
+                  <p className="font-medium">{selectedInventoryProduct.product.category.name}</p>
+                </div>
+              )}
             </div>
           </div>
         )}

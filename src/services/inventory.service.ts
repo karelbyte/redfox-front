@@ -57,8 +57,8 @@ export interface InventoryProduct {
       name: string;
     };
     created_at: string;
-  };
-  quantity: number;
+  } | null;
+  quantity: number | null;
   price: number;
   createdAt: string;
 }

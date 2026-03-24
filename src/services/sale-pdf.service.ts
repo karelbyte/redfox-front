@@ -39,23 +39,21 @@ export class SalePDFService {
     this.locale = locale || 'es';
   }
 
-  private formatCurrency(value: number): string {
-    const localeMap: Record<string, string> = {
-      'es': 'es-PE',
-      'en': 'en-US'
-    };
-    return new Intl.NumberFormat(localeMap[this.locale] || 'es-PE', {
+  private formatCurrency(value: number, currencyCode?: string): string {
+    const code = currencyCode || 'MXN';
+    const localeStr = code === 'MXN' ? 'es-MX' : this.locale === 'es' ? 'es-MX' : 'en-US';
+    return new Intl.NumberFormat(localeStr, {
       style: 'currency',
-      currency: 'PEN'
+      currency: code,
     }).format(value);
   }
 
   private formatDate(date: string): string {
     const localeMap: Record<string, string> = {
-      'es': 'es-PE',
+      'es': 'es-MX',
       'en': 'en-US'
     };
-    return new Date(date).toLocaleDateString(localeMap[this.locale] || 'es-PE', {
+    return new Date(date).toLocaleDateString(localeMap[this.locale] || 'es-MX', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -135,23 +133,30 @@ export class SalePDFService {
 
   private addProductsTable(details: SaleDetail[], translations: PDFTranslations) {
     const tableData = details.map(detail => {
-      // Truncar nombre del producto si es muy largo
-      const productName = detail.product.name.length > 35 
-        ? detail.product.name.substring(0, 32) + '...'
+      const productName = detail.product.name.length > 30
+        ? detail.product.name.substring(0, 27) + '...'
         : detail.product.name;
 
       const quantity = Number(detail.quantity);
       const price = Number(detail.price);
       const subtotal = quantity * price;
+      const currencyCode = detail.product.currency?.code;
+
+      const taxRate = (detail.product.taxes || []).reduce((acc, tax) => {
+        if (tax.type === 'PERCENTAGE') return acc + Number(tax.value) / 100;
+        return acc;
+      }, 0);
+      const taxAmount = subtotal * taxRate;
+      const total = subtotal + taxAmount;
 
       return [
         productName,
         detail.product.sku,
-        detail.product.brand.description,
-        detail.product.category.name,
         `${quantity} ${detail.product.measurement_unit?.code || ''}`,
-        this.formatCurrency(price),
-        this.formatCurrency(subtotal)
+        this.formatCurrency(price, currencyCode),
+        this.formatCurrency(subtotal, currencyCode),
+        taxAmount > 0 ? this.formatCurrency(taxAmount, currencyCode) : '—',
+        this.formatCurrency(total, currencyCode),
       ];
     });
 
@@ -160,16 +165,16 @@ export class SalePDFService {
       head: [[
         translations.product,
         translations.sku,
-        translations.brand,
-        translations.category,
         translations.quantity,
         translations.price,
-        translations.subtotal
+        translations.subtotal,
+        'IVA',
+        translations.total,
       ]],
       body: tableData,
       theme: 'striped',
       headStyles: {
-        fillColor: [59, 130, 246], // Color primario
+        fillColor: [59, 130, 246],
         textColor: 255,
         fontStyle: 'bold',
         fontSize: 9,
@@ -180,13 +185,13 @@ export class SalePDFService {
         cellPadding: 2
       },
       columnStyles: {
-        0: { cellWidth: 'auto', halign: 'left' },   // Producto - ancho automático
-        1: { cellWidth: 20, halign: 'center' },      // SKU - 20mm
-        2: { cellWidth: 22, halign: 'left' },        // Marca - 22mm
-        3: { cellWidth: 22, halign: 'left' },        // Categoría - 22mm
-        4: { cellWidth: 20, halign: 'center' },      // Cantidad - 20mm
-        5: { cellWidth: 25, halign: 'right' },       // Precio - 25mm
-        6: { cellWidth: 28, halign: 'right' }        // Subtotal - 28mm
+        0: { cellWidth: 'auto', halign: 'left' },
+        1: { cellWidth: 18, halign: 'center' },
+        2: { cellWidth: 18, halign: 'center' },
+        3: { cellWidth: 24, halign: 'right' },
+        4: { cellWidth: 24, halign: 'right' },
+        5: { cellWidth: 22, halign: 'right' },
+        6: { cellWidth: 26, halign: 'right' },
       },
       margin: { left: this.margin, right: this.margin },
       tableWidth: 'auto',
@@ -196,24 +201,45 @@ export class SalePDFService {
       }
     });
 
-    this.currentY = (this.doc as any).lastAutoTable.finalY + 10;
+    this.currentY = (this.doc as any).lastAutoTable.finalY + 6;
   }
 
   private addTotal(details: SaleDetail[], translations: PDFTranslations) {
     const rightAlign = this.pageWidth - this.margin;
-    const labelX = rightAlign - 50;
+    const labelX = rightAlign - 45;
     const valueX = rightAlign;
 
-    // Calcular total
-    const total = details.reduce((sum, detail) => {
-      return sum + (Number(detail.quantity) * Number(detail.price));
-    }, 0);
+    const currencyCode = details[0]?.product.currency?.code;
 
-    // Total
+    const grandSubtotal = details.reduce((sum, d) => sum + Number(d.quantity) * Number(d.price), 0);
+    const grandTax = details.reduce((sum, d) => {
+      const subtotal = Number(d.quantity) * Number(d.price);
+      const taxRate = (d.product.taxes || []).reduce((acc, tax) => {
+        if (tax.type === 'PERCENTAGE') return acc + Number(tax.value) / 100;
+        return acc;
+      }, 0);
+      return sum + subtotal * taxRate;
+    }, 0);
+    const grandTotal = grandSubtotal + grandTax;
+
+    this.doc.setFontSize(9);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text(`${translations.subtotal}:`, labelX, this.currentY, { align: 'right' });
+    this.doc.text(this.formatCurrency(grandSubtotal, currencyCode), valueX, this.currentY, { align: 'right' });
+
+    this.currentY += 6;
+    this.doc.text('IVA:', labelX, this.currentY, { align: 'right' });
+    this.doc.text(grandTax > 0 ? this.formatCurrency(grandTax, currencyCode) : '—', valueX, this.currentY, { align: 'right' });
+
+    this.currentY += 6;
+    // Línea separadora
+    this.doc.setDrawColor(200, 200, 200);
+    this.doc.line(labelX - 20, this.currentY - 2, valueX, this.currentY - 2);
+
     this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${translations.total}:`, labelX, this.currentY, { align: 'right' });
-    this.doc.text(this.formatCurrency(total), valueX, this.currentY, { align: 'right' });
+    this.doc.text(`${translations.total}:`, labelX, this.currentY + 2, { align: 'right' });
+    this.doc.text(this.formatCurrency(grandTotal, currencyCode), valueX, this.currentY + 2, { align: 'right' });
 
     this.currentY += 12;
   }

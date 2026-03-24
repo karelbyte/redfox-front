@@ -27,12 +27,33 @@ export default function SaleProductsTable({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<SaleDetail | null>(null);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale === 'es' ? 'es-ES' : 'en-US', {
+  const formatCurrency = (amount: number, currencyCode?: string) => {
+    const code = currencyCode || 'MXN';
+    const localeStr = code === 'MXN' ? 'es-MX' : locale === 'es' ? 'es-ES' : 'en-US';
+    return new Intl.NumberFormat(localeStr, {
       style: 'currency',
-      currency: 'USD'
+      currency: code,
     }).format(amount);
   };
+
+  const calcTaxAmount = (detail: SaleDetail): number => {
+    const subtotal = Number(detail.quantity) * Number(detail.price);
+    const taxRate = (detail.product.taxes || []).reduce((acc, tax) => {
+      if (tax.type === 'PERCENTAGE') return acc + Number(tax.value) / 100;
+      return acc;
+    }, 0);
+    return subtotal * taxRate;
+  };
+
+  const calcTotal = (detail: SaleDetail): number => {
+    const subtotal = Number(detail.quantity) * Number(detail.price);
+    return subtotal + calcTaxAmount(detail);
+  };
+
+  const grandSubtotal = products.reduce((s, d) => s + Number(d.quantity) * Number(d.price), 0);
+  const grandTax = products.reduce((s, d) => s + calcTaxAmount(d), 0);
+  const grandTotal = grandSubtotal + grandTax;
+  const currencyCode = products[0]?.product.currency?.code || 'MXN';
 
   const handleDeleteClick = (product: SaleDetail) => {
     setProductToDelete(product);
@@ -122,6 +143,18 @@ export default function SaleProductsTable({
               >
                 {t('headers.subtotal')}
               </th>
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.tax')}
+              </th>
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.total')}
+              </th>
               {isSaleOpen && (
                 <th 
                   className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
@@ -149,10 +182,18 @@ export default function SaleProductsTable({
                   {detail.quantity}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatCurrency(detail.price)}
+                  {formatCurrency(detail.price, detail.product.currency?.code)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(detail.quantity * detail.price)}
+                  {formatCurrency(detail.quantity * detail.price, detail.product.currency?.code)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {calcTaxAmount(detail) > 0
+                    ? formatCurrency(calcTaxAmount(detail), detail.product.currency?.code)
+                    : '—'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold" style={{ color: 'rgb(var(--color-primary-700))' }}>
+                  {formatCurrency(calcTotal(detail), detail.product.currency?.code)}
                 </td>
                 {isSaleOpen && (
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -178,6 +219,23 @@ export default function SaleProductsTable({
               </tr>
             ))}
           </tbody>
+          <tfoot className="bg-gray-50 border-t-2 border-gray-200">
+            <tr>
+              <td colSpan={isSaleOpen ? 3 : 3} className="px-6 py-3 text-sm font-medium text-gray-500 text-right">
+                {t('summary.subtotal')}
+              </td>
+              <td className="px-6 py-3 text-sm font-medium text-gray-900">
+                {formatCurrency(grandSubtotal, currencyCode)}
+              </td>
+              <td className="px-6 py-3 text-sm font-medium text-gray-900">
+                {grandTax > 0 ? formatCurrency(grandTax, currencyCode) : '—'}
+              </td>
+              <td className="px-6 py-3 text-sm font-bold" style={{ color: 'rgb(var(--color-primary-700))' }}>
+                {formatCurrency(grandTotal, currencyCode)}
+              </td>
+              {isSaleOpen && <td />}
+            </tr>
+          </tfoot>
         </table>
       </div>
 

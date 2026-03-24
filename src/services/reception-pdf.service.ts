@@ -168,8 +168,8 @@ export class ReceptionPDFService {
       return [
         productName,
         detail.product.sku,
-        detail.product.brand.description,
-        detail.product.category.name,
+        detail.product.brand?.description || '',
+        detail.product.category?.name || '',
         `${quantity} ${detail.product.measurement_unit?.code || ''}`,
         this.formatCurrency(price),
         this.formatCurrency(subtotal)

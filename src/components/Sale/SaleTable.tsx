@@ -30,9 +30,9 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
 
   const formatCurrency = (amount: string) => {
     const numericAmount = parseFloat(amount);
-    return new Intl.NumberFormat(locale === 'es' ? 'es-ES' : 'en-US', {
+    return new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: locale === 'es' ? 'MXN' : 'USD'
     }).format(numericAmount);
   };
 

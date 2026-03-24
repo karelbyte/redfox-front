@@ -45,6 +45,7 @@ export interface Product {
   total_stock: number;
   prices: ProductPrice[];
   images: string[];
+  currency?: { id: string; code: string; name: string } | null;
   created_at: string;
 }
 
@@ -68,4 +69,5 @@ export interface ProductFormData {
   inventory_strategy?: InventoryStrategy;
   base_price: number;
   prices: Partial<ProductPrice>[];
+  currency_id?: string;
 }

@@ -41,7 +41,7 @@ const ProductCard = React.memo(({ product, onAddToCart }: ProductCardProps) => {
         <h3 className="font-medium text-sm truncate">{product.product.name}</h3>
         <p className="text-xs text-gray-500">{product.product.sku}</p>
         <p className="text-sm font-semibold mt-1">${product.price || 0}</p>
-        <p className="text-xs text-gray-400">{t('products.stock')}: {product.quantity}</p>
+        <p className="text-xs text-gray-400">{t('products.stock')}: {product.quantity ?? '∞'}</p>
       </div>
     </div>
   );
