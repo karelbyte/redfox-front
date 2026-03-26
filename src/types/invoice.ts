@@ -93,7 +93,30 @@ export enum PaymentMethod {
   CASH = 'cash',
   CARD = 'card',
   TRANSFER = 'transfer',
-  CHECK = 'check'
+  CHECK = 'check',
+  CREDIT = 'credit',
+}
+
+export enum InvoicePaymentStatus {
+  PENDING = 'pending',
+  STAMPED = 'stamped',
+  CANCELLED = 'cancelled',
+}
+
+export interface InvoicePayment {
+  id: string;
+  invoice_id: string;
+  payment_number: number;
+  amount: number;
+  payment_date: string;
+  payment_form: string;
+  balance_before: number;
+  balance_after: number;
+  status: InvoicePaymentStatus;
+  pack_complement_id: string | null;
+  cfdi_complement_uuid: string | null;
+  notes: string | null;
+  created_at: string;
 }
 
 export interface Withdrawal {

@@ -14,6 +14,7 @@ interface SaleActionsMenuProps {
   onRefund: (sale: Sale) => void;
   onPrintTicket: (sale: Sale) => void;
   onInvoice?: (sale: Sale) => void;
+  onInvoiceAndStamp?: (sale: Sale) => void;
 }
 
 export function SaleActionsMenu({
@@ -25,6 +26,7 @@ export function SaleActionsMenu({
   onRefund,
   onPrintTicket,
   onInvoice,
+  onInvoiceAndStamp,
 }: SaleActionsMenuProps) {
   const t = useTranslations('pages.sales');
   const tCommon = useTranslations('common');
@@ -42,12 +44,21 @@ export function SaleActionsMenu({
     },
   ];
 
-  if (sale.status === SaleStatus.CLOSED && onInvoice) {
+  if (sale.status === SaleStatus.CLOSED && !sale.invoice_id && onInvoice) {
     items.push({
       icon: <DocumentTextIcon className="h-4 w-4" />,
       label: t('actions.invoice'),
       color: '#059669',
       onClick: () => onInvoice(sale),
+    });
+  }
+
+  if (sale.status === SaleStatus.CLOSED && !sale.invoice_id && !sale.cfdi_uuid && onInvoiceAndStamp) {
+    items.push({
+      icon: <DocumentTextIcon className="h-4 w-4" />,
+      label: t('actions.invoiceAndStamp'),
+      color: '#7c3aed',
+      onClick: () => onInvoiceAndStamp(sale),
     });
   }
 
@@ -61,13 +72,16 @@ export function SaleActionsMenu({
   }
 
   if (sale.status === SaleStatus.CLOSED) {
-    const canRefund = !sale.pack_fiscal_status || (sale.pack_fiscal_status !== 'INVOICED_DIRECT' && !sale.cfdi_uuid);
-    items.push({
-      icon: <ArrowUturnLeftIcon className="h-4 w-4" />,
-      label: t('actions.refund'),
-      color: canRefund ? '#dc2626' : '#9ca3af',
-      onClick: () => onRefund(sale),
-    });
+    // Solo se puede devolver si no tiene factura activa con CFDI timbrado
+    const hasActiveInvoice = sale.invoice_id && sale.pack_fiscal_status === 'INVOICED_DIRECT' && sale.cfdi_uuid;
+    if (!hasActiveInvoice) {
+      items.push({
+        icon: <ArrowUturnLeftIcon className="h-4 w-4" />,
+        label: t('actions.refund'),
+        color: '#dc2626',
+        onClick: () => onRefund(sale),
+      });
+    }
   }
 
   if (sale.status === SaleStatus.OPEN) {

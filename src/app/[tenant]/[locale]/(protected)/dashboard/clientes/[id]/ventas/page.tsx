@@ -185,7 +185,7 @@ export default function ClientSalesPage() {
         saleDetails: details,
         client: sale.client,
         cashierName: 'POS System',
-        paymentMethod: 'cash' as const,
+        paymentMethod: (sale.payment_method as 'cash' | 'card' | 'credit') || 'cash',
         locale,
         labels: {
           ticket: tPos('ticket.ticket', { default: 'Ticket' }),

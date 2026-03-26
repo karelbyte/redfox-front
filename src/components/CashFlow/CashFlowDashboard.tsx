@@ -33,12 +33,14 @@ export default function CashFlowDashboard() {
     loadData();
   }, []);
 
-  const loadData = async () => {
+  const loadData = async (start?: string, end?: string) => {
     try {
       setIsLoading(true);
+      const s = start !== undefined ? start : startDate;
+      const e = end !== undefined ? end : endDate;
       const [summaryData, movementsData, projectionsData] = await Promise.all([
-        cashFlowService.getSummary(startDate || undefined, endDate || undefined),
-        cashFlowService.getMovements(startDate || undefined, endDate || undefined),
+        cashFlowService.getSummary(s || undefined, e || undefined),
+        cashFlowService.getMovements(s || undefined, e || undefined),
         cashFlowService.getProjection(3),
       ]);
 
@@ -60,6 +62,7 @@ export default function CashFlowDashboard() {
   const handleClearDates = () => {
     setStartDate('');
     setEndDate('');
+    loadData('', '');
   };
 
   return (

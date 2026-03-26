@@ -49,6 +49,7 @@ export default function VentasPage() {
   const [isPrintingTicket, setIsPrintingTicket] = useState(false);
   const [showGlobalInvoiceModal, setShowGlobalInvoiceModal] = useState(false);
   const [isCreatingGlobalInvoice, setIsCreatingGlobalInvoice] = useState(false);
+  const [stampingInvoiceId, setStampingInvoiceId] = useState<string | null>(null);
   const formRef = useRef<SaleFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -161,7 +162,7 @@ export default function VentasPage() {
         saleDetails: details,
         client: sale.client,
         cashierName: 'POS System',
-        paymentMethod: 'cash' as const,
+        paymentMethod: (sale.payment_method as 'cash' | 'card' | 'credit') || 'cash',
         locale,
         labels: {
           ticket: tPos('ticket.ticket', { default: 'Ticket' }),
@@ -207,6 +208,40 @@ export default function VentasPage() {
     } catch (error) {
       console.error('Error creating invoice:', error);
       toastService.error(t('messages.errorCreatingInvoice'));
+    }
+  };
+
+  const handleInvoiceAndStamp = async (sale: Sale) => {
+    setStampingInvoiceId(sale.id);
+    try {
+      // Paso 1: convertir venta a factura borrador
+      const invoiceCode = `INV-${sale.code}`;
+      const invoice = await invoiceService.convertWithdrawalToInvoice({
+        withdrawal_id: sale.id,
+        invoice_code: invoiceCode,
+        status: 'DRAFT' as any,
+      });
+
+      // Paso 2: timbrar
+      try {
+        await invoiceService.generateCFDI(invoice.id);
+        toastService.success(t('messages.invoiceStamped'));
+        fetchSales(currentPage);
+        router.push(`/${locale}/dashboard/facturas/facturas/${invoice.id}`);
+      } catch (stampError) {
+        // La factura se creó pero no se timbró — llevar al usuario a la factura para que reintente
+        toastService.warning(t('messages.invoiceCreatedStampFailed'));
+        router.push(`/${locale}/dashboard/facturas/facturas/${invoice.id}`);
+      }
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      if (error instanceof Error) {
+        toastService.error(error.message);
+      } else {
+        toastService.error(t('messages.errorCreatingInvoice'));
+      }
+    } finally {
+      setStampingInvoiceId(null);
     }
   };
 
@@ -355,6 +390,7 @@ export default function VentasPage() {
               onRefund={openRefundModal}
               onPrintTicket={handlePrintTicket}
               onInvoice={handleInvoice}
+              onInvoiceAndStamp={handleInvoiceAndStamp}
               visibleColumns={visibleColumns}
             />
           </div>
@@ -430,6 +466,16 @@ export default function VentasPage() {
           closeResult={closeResult}
           onClose={() => setCloseResult(null)}
         />
+      )}
+
+      {/* Overlay de timbrado en progreso */}
+      {stampingInvoiceId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl px-8 py-6 flex flex-col items-center gap-4 max-w-sm w-full mx-4">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200" style={{ borderTopColor: `rgb(var(--color-primary-600))` }} />
+            <p className="text-sm font-medium text-gray-700 text-center">{t('messages.stampingInProgress')}</p>
+          </div>
+        </div>
       )}
     </div>
   );

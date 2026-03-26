@@ -66,10 +66,10 @@ export default function CashFlowExport({ summary, movements, isLoading }: CashFl
       yPosition += 10;
 
       doc.setFontSize(9);
-      const tableData = movements.slice(0, 20).map((movement) => [
+      const tableData = movements.map((movement) => [
         formatDate(movement.date),
         t(`movements.type.${movement.type}`),
-        movement.description.substring(0, 30),
+        movement.description.substring(0, 40),
         formatCurrency(movement.amount),
         formatCurrency(movement.balance),
       ]);
@@ -181,7 +181,8 @@ export default function CashFlowExport({ summary, movements, isLoading }: CashFl
       <button
         onClick={exportToPDF}
         disabled={isLoading}
-        className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors text-sm"
+        className="flex items-center gap-2 px-4 py-2 text-white rounded-lg disabled:opacity-50 transition-colors text-sm"
+        style={{ backgroundColor: `rgb(var(--color-primary-600))` }}
         title="Export to PDF"
       >
         <DocumentArrowDownIcon className="w-4 h-4" />
@@ -190,7 +191,8 @@ export default function CashFlowExport({ summary, movements, isLoading }: CashFl
       <button
         onClick={exportToCSV}
         disabled={isLoading}
-        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors text-sm"
+        className="flex items-center gap-2 px-4 py-2 text-white rounded-lg disabled:opacity-50 transition-colors text-sm"
+        style={{ backgroundColor: `rgb(var(--color-primary-700))` }}
         title="Export to CSV"
       >
         <DocumentArrowDownIcon className="w-4 h-4" />
@@ -199,7 +201,8 @@ export default function CashFlowExport({ summary, movements, isLoading }: CashFl
       <button
         onClick={exportToJSON}
         disabled={isLoading}
-        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
+        className="flex items-center gap-2 px-4 py-2 text-white rounded-lg disabled:opacity-50 transition-colors text-sm"
+        style={{ backgroundColor: `rgb(var(--color-primary-800))` }}
         title="Export to JSON"
       >
         <DocumentArrowDownIcon className="w-4 h-4" />

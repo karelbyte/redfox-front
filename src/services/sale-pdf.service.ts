@@ -97,7 +97,7 @@ export class SalePDFService {
     this.doc.setFont('helvetica', 'bold');
     this.doc.text(`${translations.status}:`, rightColumn, this.currentY);
     this.doc.setFont('helvetica', 'normal');
-    const statusText = sale.status ? translations.statusOpen : translations.statusClosed;
+    const statusText = sale.status === 'CLOSED' ? translations.statusClosed : translations.statusOpen;
     this.doc.text(statusText.toUpperCase(), rightColumn + 20, this.currentY);
 
     this.currentY += 12;

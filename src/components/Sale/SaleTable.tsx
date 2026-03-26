@@ -15,11 +15,12 @@ interface SaleTableProps {
   onRefund: (sale: Sale) => void;
   onPrintTicket: (sale: Sale) => void;
   onInvoice?: (sale: Sale) => void;
+  onInvoiceAndStamp?: (sale: Sale) => void;
   visibleColumns?: string[];
   hideClientColumn?: boolean;
 }
 
-export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onRefund, onPrintTicket, onInvoice, visibleColumns, hideClientColumn = false }: SaleTableProps) {
+export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose, onRefund, onPrintTicket, onInvoice, onInvoiceAndStamp, visibleColumns, hideClientColumn = false }: SaleTableProps) {
   const t = useTranslations('pages.sales');
   const { formatCurrency, formatDate } = useLocaleUtils();
 
@@ -180,6 +181,7 @@ export default function SaleTable({ sales, onEdit, onDelete, onDetails, onClose,
                       onRefund,
                       onPrintTicket,
                       onInvoice,
+                      onInvoiceAndStamp,
                     })}
                   />
                 </td>

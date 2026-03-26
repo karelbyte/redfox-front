@@ -7,7 +7,8 @@ import {
   PaginatedInvoiceResponse,
   PaginatedInvoiceDetailsResponse,
   InvoiceDetailFormData,
-  InvoiceDetail
+  InvoiceDetail,
+  InvoicePayment,
 } from '@/types/invoice';
 
 class InvoiceService {
@@ -96,6 +97,23 @@ class InvoiceService {
       responseType: 'blob'
     });
     return response as Blob;
+  }
+
+  async getInvoicePayments(invoiceId: string): Promise<InvoicePayment[]> {
+    return await api.get<InvoicePayment[]>(`/invoices/${invoiceId}/payments`);
+  }
+
+  async registerPayment(invoiceId: string, data: {
+    amount: number;
+    payment_date: string;
+    payment_form: string;
+    notes?: string;
+  }): Promise<InvoicePayment> {
+    return await api.post<InvoicePayment>(`/invoices/${invoiceId}/payments`, data as unknown as Record<string, unknown>);
+  }
+
+  async cancelPayment(invoiceId: string, paymentId: string): Promise<void> {
+    await api.delete(`/invoices/${invoiceId}/payments/${paymentId}`);
   }
 }
 
