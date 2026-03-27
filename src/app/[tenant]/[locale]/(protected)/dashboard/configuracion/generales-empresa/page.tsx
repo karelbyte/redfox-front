@@ -12,7 +12,7 @@ import Loading from '@/components/Loading/Loading';
 
 // Misma base que la API (sin /api) para que las imágenes en /uploads se carguen desde el servidor correcto
 const getApiOrigin = (): string =>
-  process.env.NEXT_PUBLIC_URL_API || 'https://nitrocore.fly.dev';
+  process.env.NEXT_PUBLIC_URL_API || 'nitrocore.up.railway.app';
 
 const getLogoFullUrl = (logoUrl: string | null): string | null => {
   if (!logoUrl) return null;

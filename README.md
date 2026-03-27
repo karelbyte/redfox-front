@@ -1,4 +1,4 @@
-This is the RedFox POS frontend: a [Next.js](https://nextjs.org) application with multi-language support (es/en) and integration to the RedFox API.
+This is the RedFox POS frontend: a [Next.js](https://nextjs.org) application with multi-language support (es/en) and integration to the Nitro API.
 
 ![Nitro](https://i.imgur.com/EyDykIP.png)
 

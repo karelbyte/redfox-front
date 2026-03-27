@@ -52,7 +52,7 @@ El archivo `fly.toml` ya está configurado con:
 ```bash
 # Crear archivo .env.production.local (no commitear)
 cat > .env.production.local << EOF
-NEXT_PUBLIC_URL_API=https://nitrocore.fly.dev
+NEXT_PUBLIC_URL_API=nitrocore.up.railway.app
 NODE_ENV=production
 NEXT_TELEMETRY_DISABLED=1
 EOF
@@ -74,11 +74,11 @@ fly launch --name nitrocore-front --region mex --no-deploy
 
 ```bash
 # Establecer variables públicas
-fly config set env.NEXT_PUBLIC_URL_API=https://nitrocore.fly.dev
+fly config set env.NEXT_PUBLIC_URL_API=nitrocore.up.railway.app
 fly config set env.NODE_ENV=production
 fly config set env.NEXT_TELEMETRY_DISABLED=1
 ```
-fly secrets set NEXT_PUBLIC_URL_API=https://nitrocore.fly.dev NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 --app nitroapp
+fly secrets set NEXT_PUBLIC_URL_API=nitrocore.up.railway.app NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 --app nitroapp
 
 ### 3. Desplegar
 
@@ -200,7 +200,7 @@ fly logs | grep -i error
 fly config show | grep NEXT_PUBLIC_URL_API
 
 # Actualizar si es necesario
-fly config set env.NEXT_PUBLIC_URL_API=https://nitrocore.fly.dev
+fly config set env.NEXT_PUBLIC_URL_API=nitrocore.up.railway.app
 ```
 
 ### Problema: Caché de Next.js
@@ -253,7 +253,7 @@ Asegúrate de que la variable `NEXT_PUBLIC_URL_API` apunte al backend correcto:
 fly config show | grep NEXT_PUBLIC_URL_API
 
 # Actualizar si es necesario
-fly config set env.NEXT_PUBLIC_URL_API=https://nitrocore.fly.dev
+fly config set env.NEXT_PUBLIC_URL_API=nitrocore.up.railway.app
 ```
 
 ## 📝 Notas Importantes

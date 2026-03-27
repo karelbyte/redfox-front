@@ -1,5 +1,5 @@
-const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitrocore.fly.dev') + '/api';
-//const baseURL = 'https://nitro-api-app-production-4b41.up.railway.app/api';
+const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'nitrocore.up.railway.app') + '/api';
+console.log("DEBUG API URL:", process.env.NEXT_PUBLIC_URL_API);
 const handleUnauthorized = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('token');
