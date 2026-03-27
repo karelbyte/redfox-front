@@ -2,6 +2,13 @@ import { useTranslations } from 'next-intl';
 import { Invoice } from '@/types/invoice';
 import { useState } from 'react';
 
+const CANCEL_REASONS = [
+  { k: '01', label: 'Comprobante emitido con errores con relación' },
+  { k: '02', label: 'Comprobante emitido con errores sin relación' },
+  { k: '03', label: 'No se llevó a cabo la operación' },
+  { k: '04', label: 'Operación nominativa relacionada en la factura global' },
+];
+
 interface CancelCFDIModalProps {
   invoice: Invoice | null;
   onClose: () => void;
@@ -11,15 +18,9 @@ interface CancelCFDIModalProps {
 
 export default function CancelCFDIModal({ invoice, onClose, onConfirm, isLoading }: CancelCFDIModalProps) {
   const t = useTranslations('pages.invoices');
-  const [reason, setReason] = useState('');
+  const [reason, setReason] = useState('01');
 
   if (!invoice) return null;
-
-  const handleConfirm = () => {
-    if (reason.trim()) {
-      onConfirm(reason.trim());
-    }
-  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -40,18 +41,19 @@ export default function CancelCFDIModal({ invoice, onClose, onConfirm, isLoading
                   {t('cancelCFDIModal.message', { code: invoice.code })}
                 </p>
                 <div className="mt-4">
-                  <label htmlFor="reason" className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t('cancelCFDIModal.reasonLabel')}
                   </label>
-                  <textarea
-                    id="reason"
-                    rows={3}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                    placeholder={t('cancelCFDIModal.reasonPlaceholder')}
+                  <select
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     disabled={isLoading}
-                  />
+                  >
+                    {CANCEL_REASONS.map((r) => (
+                      <option key={r.k} value={r.k}>{r.k} — {r.label}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
@@ -60,8 +62,8 @@ export default function CancelCFDIModal({ invoice, onClose, onConfirm, isLoading
             <button
               type="button"
               className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto disabled:opacity-50"
-              onClick={handleConfirm}
-              disabled={isLoading || !reason.trim()}
+              onClick={() => onConfirm(reason)}
+              disabled={isLoading}
             >
               {isLoading ? t('cancelCFDIModal.cancelling') : t('cancelCFDIModal.confirm')}
             </button>

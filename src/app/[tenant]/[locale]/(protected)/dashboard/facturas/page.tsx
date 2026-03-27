@@ -139,9 +139,10 @@ export default function InvoicesPage() {
       toastService.success(t('messages.cfdiCancelled'));
       setCancelCFDIModal(null);
       loadInvoices();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error cancelling CFDI:', error);
-      toastService.error(t('errors.cancelCFDI'));
+      // Mostrar el mensaje exacto del backend al usuario
+      toastService.error(error?.message || t('errors.cancelCFDI'));
     } finally {
       setIsCFDILoading(false);
     }

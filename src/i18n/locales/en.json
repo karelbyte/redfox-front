@@ -2364,7 +2364,9 @@
         "paymentMethod": "Payment Method",
         "paymentMethodPlaceholder": "Select payment method",
         "paymentConditions": "Payment Conditions",
-        "paymentConditionsPlaceholder": "Enter payment conditions",
+        "paymentConditionsPlaceholder": "Or type a custom condition",
+        "paymentConditionsSelect": "Select...",
+        "paymentConditionsCustom": "Custom",
         "notes": "Notes",
         "notesPlaceholder": "Enter additional notes",
         "paymentMethods": {
@@ -2461,7 +2463,15 @@
           "stamped": "Stamped",
           "cancelled": "Cancelled"
         },
-        "statusLabel": "Status"
+        "statusLabel": "Status",
+        "cancelSuccess": "Payment complement cancelled successfully",
+        "cancelError": "Error cancelling payment complement",
+        "cancelComplement": "Cancel complement",
+        "cancelComplementTitle": "Cancel payment complement",
+        "cancelComplementMessage": "This action will cancel the complement at the SAT. Select the cancellation reason.",
+        "cancelReason": "SAT cancellation reason",
+        "cancelling": "Cancelling...",
+        "confirmCancel": "Cancel complement"
       },
       "empty": {
         "title": "No invoices",

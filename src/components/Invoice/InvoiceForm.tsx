@@ -189,13 +189,41 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
       </div>
 
       <div>
-        <Input
-          label={t('form.paymentConditions')}
-          value={formData.payment_conditions || ''}
-          onChange={(e) => handleInputChange('payment_conditions', e.target.value)}
-          placeholder={t('form.paymentConditionsPlaceholder')}
-          disabled={isSaving}
-        />
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          {t('form.paymentConditions')}
+        </label>
+        <div className="flex gap-2">
+          <select
+            value={[
+              'CONTADO', 'CREDITO', '15 DIAS', '30 DIAS', '45 DIAS', '60 DIAS', '90 DIAS',
+            ].includes(formData.payment_conditions || '') ? (formData.payment_conditions || '') : '__custom__'}
+            onChange={(e) => {
+              if (e.target.value !== '__custom__') {
+                handleInputChange('payment_conditions', e.target.value);
+              }
+            }}
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 w-40 flex-shrink-0"
+            style={{ '--tw-ring-color': `rgb(var(--color-primary-500))` } as React.CSSProperties}
+            disabled={isSaving}
+          >
+            <option value="">{t('form.paymentConditionsSelect')}</option>
+            <option value="CONTADO">Contado</option>
+            <option value="CREDITO">Crédito</option>
+            <option value="15 DIAS">15 días</option>
+            <option value="30 DIAS">30 días</option>
+            <option value="45 DIAS">45 días</option>
+            <option value="60 DIAS">60 días</option>
+            <option value="90 DIAS">90 días</option>
+            <option value="__custom__">{t('form.paymentConditionsCustom')}</option>
+          </select>
+          <Input
+            value={formData.payment_conditions || ''}
+            onChange={(e) => handleInputChange('payment_conditions', e.target.value)}
+            placeholder={t('form.paymentConditionsPlaceholder')}
+            disabled={isSaving}
+            className="flex-1"
+          />
+        </div>
       </div>
 
       <div>

@@ -2359,7 +2359,9 @@
         "paymentMethod": "Método de Pago",
         "paymentMethodPlaceholder": "Seleccione el método de pago",
         "paymentConditions": "Condiciones de Pago",
-        "paymentConditionsPlaceholder": "Ingrese las condiciones de pago",
+        "paymentConditionsPlaceholder": "O escribe condición personalizada",
+        "paymentConditionsSelect": "Seleccionar...",
+        "paymentConditionsCustom": "Personalizado",
         "notes": "Notas",
         "notesPlaceholder": "Ingrese notas adicionales",
         "paymentMethods": {
@@ -2456,7 +2458,15 @@
           "stamped": "Timbrado",
           "cancelled": "Cancelado"
         },
-        "statusLabel": "Estado"
+        "statusLabel": "Estado",
+        "cancelSuccess": "Complemento de pago cancelado exitosamente",
+        "cancelError": "Error al cancelar el complemento de pago",
+        "cancelComplement": "Cancelar complemento",
+        "cancelComplementTitle": "Cancelar complemento de pago",
+        "cancelComplementMessage": "Esta acción cancelará el complemento en el SAT. Selecciona el motivo de cancelación.",
+        "cancelReason": "Motivo de cancelación SAT",
+        "cancelling": "Cancelando...",
+        "confirmCancel": "Cancelar complemento"
       },
       "empty": {
         "title": "No hay facturas",

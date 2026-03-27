@@ -112,8 +112,8 @@ class InvoiceService {
     return await api.post<InvoicePayment>(`/invoices/${invoiceId}/payments`, data as unknown as Record<string, unknown>);
   }
 
-  async cancelPayment(invoiceId: string, paymentId: string): Promise<void> {
-    await api.delete(`/invoices/${invoiceId}/payments/${paymentId}`);
+  async cancelPayment(invoiceId: string, paymentId: string, reason?: string): Promise<void> {
+    await api.delete(`/invoices/${invoiceId}/payments/${paymentId}`, { data: { reason } } as any);
   }
 }
 

@@ -11,6 +11,7 @@ import { Btn } from '@/components/atoms';
 import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, ClockIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { useLocaleUtils } from '@/hooks/useLocale';
 import PaymentComplementModal from '@/components/Invoice/PaymentComplementModal';
+import CancelPaymentComplementModal from '@/components/Invoice/CancelPaymentComplementModal';
 
 export default function InvoiceDetailsPage() {
   const t = useTranslations('pages.invoices');
@@ -24,6 +25,8 @@ export default function InvoiceDetailsPage() {
   const [payments, setPayments] = useState<InvoicePayment[]>([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [registeringPayment, setRegisteringPayment] = useState(false);
+  const [cancellingPaymentId, setCancellingPaymentId] = useState<string | null>(null);
+  const [paymentToCancel, setPaymentToCancel] = useState<InvoicePayment | null>(null);
 
   useEffect(() => {
     if (invoiceId) {
@@ -59,6 +62,20 @@ export default function InvoiceDetailsPage() {
       toastService.error(error?.message || t('payments.error'));
     } finally {
       setRegisteringPayment(false);
+    }
+  };
+
+  const handleCancelPayment = async (paymentId: string, reason: string) => {
+    try {
+      setCancellingPaymentId(paymentId);
+      await invoiceService.cancelPayment(invoiceId, paymentId, reason);
+      toastService.success(t('payments.cancelSuccess'));
+      setPaymentToCancel(null);
+      await loadInvoiceDetails();
+    } catch (error: any) {
+      toastService.error(error?.message || t('payments.cancelError'));
+    } finally {
+      setCancellingPaymentId(null);
     }
   };
 
@@ -345,6 +362,7 @@ export default function InvoiceDetailsPage() {
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('payments.paymentForm')}</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">CFDI Complemento</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('payments.statusLabel')}</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -369,6 +387,21 @@ export default function InvoiceDetailsPage() {
                           {t(`payments.status.${payment.status}`)}
                         </span>
                       </td>
+                      <td className="px-4 py-3">
+                        {payment.status === InvoicePaymentStatus.STAMPED && invoice.status !== 'CANCELLED' && (
+                          <button
+                            onClick={() => setPaymentToCancel(payment)}
+                            disabled={cancellingPaymentId === payment.id}
+                            className="text-xs text-red-600 hover:text-red-800 disabled:opacity-50 flex items-center gap-1"
+                            title={t('payments.cancelComplement')}
+                          >
+                            {cancellingPaymentId === payment.id
+                              ? <ClockIcon className="h-3 w-3 animate-spin" />
+                              : <XCircleIcon className="h-3 w-3" />}
+                            {t('payments.cancel')}
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -387,6 +420,13 @@ export default function InvoiceDetailsPage() {
           onConfirm={handleRegisterPayment}
         />
       )}
+
+      <CancelPaymentComplementModal
+        payment={paymentToCancel}
+        loading={cancellingPaymentId !== null}
+        onClose={() => setPaymentToCancel(null)}
+        onConfirm={handleCancelPayment}
+      />
     </div>
   );
 }
