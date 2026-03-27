@@ -24,7 +24,6 @@ export default function proxy(request: NextRequest) {
         return NextResponse.redirect(url);
     };
 
-    // 0. Detect and correct multiple locale segments
     const segmentLocales = segments.filter(segment => locales.includes(segment as any));
     if (segmentLocales.length > 1) {
         const firstLocaleIndex = segments.findIndex(segment => locales.includes(segment as any));
