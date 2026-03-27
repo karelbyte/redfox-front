@@ -53,7 +53,7 @@ export interface InvoiceDetailFormData {
 export interface ConvertWithdrawalData {
   withdrawal_id: string;
   invoice_code: string;
-  status: InvoiceStatus;
+  status?: InvoiceStatus;
 }
 
 export interface GlobalInvoiceFormData {

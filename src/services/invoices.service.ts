@@ -113,7 +113,7 @@ class InvoiceService {
   }
 
   async cancelPayment(invoiceId: string, paymentId: string, reason?: string): Promise<void> {
-    await api.delete(`/invoices/${invoiceId}/payments/${paymentId}`, { data: { reason } } as any);
+    await api.delete(`/invoices/${invoiceId}/payments/${paymentId}`, reason ? { reason } : undefined);
   }
 }
 

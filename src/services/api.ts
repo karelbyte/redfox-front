@@ -157,11 +157,12 @@ export const api = {
     }
   },
 
-  delete: async (url: string): Promise<void> => {
+  delete: async (url: string, body?: Record<string, unknown>): Promise<void> => {
     try {
       const response = await fetch(`${baseURL}${url}`, {
         method: 'DELETE',
         headers: getHeaders(),
+        ...(body ? { body: JSON.stringify(body) } : {}),
       });
 
       if (response.status === 401) {
