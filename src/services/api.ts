@@ -1,4 +1,4 @@
-const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'nitrocore.up.railway.app') + '/api';
+const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitrocore.up.railway.app') + '/api';
 console.log("DEBUG API URL:", process.env.NEXT_PUBLIC_URL_API);
 const handleUnauthorized = () => {
   if (typeof window !== 'undefined') {
