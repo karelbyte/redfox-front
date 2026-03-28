@@ -1295,6 +1295,8 @@
         "quantity": "Cantidad",
         "price": "Precio",
         "date": "Fecha",
+        "stock": "Stock",
+        "tax": "Impuestos",
         "close": "Cerrar"
       },
       "productMessages": {

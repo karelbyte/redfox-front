@@ -1,5 +1,6 @@
 import { api } from './api';
 import { InventoryResponse, InventoryItem } from '@/types/inventory';
+import { Tax } from '@/types/tax';
 
 export interface InventoryProduct {
   id: string;
@@ -36,6 +37,7 @@ export interface InventoryProduct {
       name: string;
       percentage: number;
     };
+    taxes: Tax[];
     measurement_unit: {
       id: string;
       name: string;

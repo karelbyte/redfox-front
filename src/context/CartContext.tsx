@@ -8,6 +8,8 @@ interface CartItem {
   quantity: number;
   price: number;
   subtotal: number;
+  tax_amount: number;
+  subtotal_no_tax: number;
 }
 
 interface CartContextType {
@@ -107,6 +109,35 @@ class CartStateManager {
     }
   }
 
+  private calculateItemTotals(product: InventoryProduct, quantity: number, price: number): { subtotal: number, tax_amount: number, subtotal_no_tax: number } {
+    const subtotalNoTax = quantity * price;
+    let totalTax = 0;
+
+    // Calcular impuestos desde el array modern taxes[]
+    if (product.product.taxes && product.product.taxes.length > 0) {
+      product.product.taxes.forEach(tax => {
+        if (tax.type === 'PERCENTAGE') {
+          totalTax += subtotalNoTax * (tax.value / 100);
+        } else if (tax.type === 'FIXED') {
+          totalTax += tax.value * quantity;
+        }
+      });
+    } 
+    // Fallback al campo legacy tax (si no hay array de taxes)
+    else if (product.product.tax) {
+      const tax = product.product.tax;
+      // En el legacy a veces el campo es 'percentage' en lugar de 'value' según inventory.service.ts
+      const percentage = (tax as any).percentage ?? (tax as any).value ?? 0;
+      totalTax += subtotalNoTax * (percentage / 100);
+    }
+
+    return {
+      subtotal_no_tax: subtotalNoTax,
+      tax_amount: totalTax,
+      subtotal: subtotalNoTax + totalTax
+    };
+  }
+
   subscribe(listener: (cart: CartItem[], selectedClient: string) => void) {
     this.listeners.add(listener);
     // Notificar inmediatamente con el estado actual solo en el cliente
@@ -153,22 +184,26 @@ class CartStateManager {
       }
       
       if (existingItem) {
-        this.cart = this.cart.map(item =>
-          item.product.id === product.id
-            ? { 
-                ...item, 
-                quantity: item.quantity + quantity, 
-                price: productPrice,
-                subtotal: (item.quantity + quantity) * productPrice 
-              }
-            : item
-        );
+        this.cart = this.cart.map(item => {
+          if (item.product.id === product.id) {
+            const newQuantity = item.quantity + quantity;
+            const totals = this.calculateItemTotals(product, newQuantity, productPrice);
+            return { 
+              ...item, 
+              quantity: newQuantity, 
+              price: productPrice,
+              ...totals
+            };
+          }
+          return item;
+        });
       } else {
+        const totals = this.calculateItemTotals(product, quantity, productPrice);
         const newItem: CartItem = {
           product,
           quantity,
           price: productPrice,
-          subtotal: quantity * productPrice
+          ...totals
         };
         this.cart = [...this.cart, newItem];
       }
@@ -187,15 +222,18 @@ class CartStateManager {
         return;
       }
 
-      this.cart = this.cart.map(item =>
-        item.product.id === productId
-          ? { 
-              ...item, 
-              quantity, 
-              subtotal: quantity * (typeof item.price === 'string' ? parseFloat(item.price) : (typeof item.price === 'number' ? item.price : 0)) 
-            }
-          : item
-      );
+      this.cart = this.cart.map(item => {
+        if (item.product.id === productId) {
+          const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : (typeof item.price === 'number' ? item.price : 0);
+          const totals = this.calculateItemTotals(item.product, quantity, itemPrice);
+          return { 
+            ...item, 
+            quantity, 
+            ...totals
+          };
+        }
+        return item;
+      });
       
       this.saveToStorage();
       this.notifyListeners();
@@ -207,15 +245,17 @@ class CartStateManager {
   updatePrice(productId: string, price: number) {
     try {
       const validPrice = typeof price === 'number' ? price : 0;
-      this.cart = this.cart.map(item =>
-        item.product.id === productId
-          ? { 
-              ...item, 
-              price: validPrice, 
-              subtotal: item.quantity * validPrice 
-            }
-          : item
-      );
+      this.cart = this.cart.map(item => {
+        if (item.product.id === productId) {
+          const totals = this.calculateItemTotals(item.product, item.quantity, validPrice);
+          return { 
+            ...item, 
+            price: validPrice, 
+            ...totals
+          };
+        }
+        return item;
+      });
       
       this.saveToStorage();
       this.notifyListeners();

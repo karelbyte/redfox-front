@@ -11,6 +11,8 @@ interface CartItemProps {
     quantity: number;
     price: number;
     subtotal: number;
+    tax_amount: number;
+    subtotal_no_tax: number;
   };
   onUpdateQuantity: (productId: string, quantity: number) => void;
   onUpdatePrice: (productId: string, price: number) => void;
@@ -106,8 +108,13 @@ export default function CartItem({
         </div>
         
         {/* Subtotal */}
-        <div className="w-20 text-right">
+        <div className="w-24 text-right">
           <p className="text-sm font-semibold">${item.subtotal.toFixed(2)}</p>
+          {item.tax_amount > 0 && (
+            <p className="text-[10px] text-gray-400">
+              inc. ${item.tax_amount.toFixed(2)} tax
+            </p>
+          )}
         </div>
         
         {/* Botón eliminar */}

@@ -1308,6 +1308,7 @@
         "description": "Description",
         "quantity": "Quantity",
         "price": "Price",
+        "date": "Date",
         "stock": "Stock",
         "tax": "Tax",
         "close": "Close"
