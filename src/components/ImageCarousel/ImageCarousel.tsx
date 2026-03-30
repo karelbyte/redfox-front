@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { XMarkIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
+import { API_BASE_URL } from '@/lib/config';
 
 interface ImageCarouselProps {
   images: (File | string)[];
@@ -40,7 +41,7 @@ export default function ImageCarousel({ images, onChange }: ImageCarouselProps) 
 
   const getImageUrl = (image: File | string) => {
     if (typeof image === 'string') {
-      return `${process.env.NEXT_PUBLIC_URL_API}${image}`;
+      return `${API_BASE_URL}${image}`;
     }
     return URL.createObjectURL(image);
   };

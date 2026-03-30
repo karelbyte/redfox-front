@@ -3,6 +3,7 @@ import { Brand } from '@/types/brand';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
+import { API_BASE_URL } from '@/lib/config';
 
 interface BrandTableProps {
   brands: Brand[];
@@ -90,7 +91,7 @@ export default function BrandTable({ brands, onEdit, onDelete, visibleColumns }:
                 <td className="px-6 py-4 whitespace-nowrap">
                   {brand.img && (
                     <img
-                      src={`${process.env.NEXT_PUBLIC_URL_API}${brand.img}`}
+                      src={`${API_BASE_URL}${brand.img}`}
                       alt={brand.code}
                       width={80}
                       height={80}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toastService } from '@/services/toast.service';
+import { API_BASE_URL } from '@/lib/config';
 
 export const useInvoicePDF = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,7 +10,7 @@ export const useInvoicePDF = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const apiUrl = process.env.NEXT_PUBLIC_URL_API || '';
+      const apiUrl = API_BASE_URL;
       const response = await fetch(`${apiUrl}/api/invoices/${invoiceId}/pdf`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -58,7 +59,7 @@ export const useInvoiceXML = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const apiUrl = process.env.NEXT_PUBLIC_URL_API || '';
+      const apiUrl = API_BASE_URL;
       const response = await fetch(`${apiUrl}/api/invoices/${invoiceId}/xml`, {
         headers: {
           'Authorization': `Bearer ${token}`,

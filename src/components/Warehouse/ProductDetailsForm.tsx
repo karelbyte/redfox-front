@@ -4,6 +4,7 @@ import { forwardRef, useImperativeHandle } from "react";
 import { useTranslations } from 'next-intl';
 import { WarehouseOpening } from "@/types/warehouse-opening";
 import { Warehouse } from "@/types/warehouse";
+import { API_BASE_URL } from "@/lib/config";
 
 export interface ProductDetailsFormProps {
   opening: WarehouseOpening | null;
@@ -340,7 +341,7 @@ const ProductDetailsForm = forwardRef<
             {product.images.map((image, index) => (
               <div key={index} className="relative aspect-square group">
                 <img
-                  src={`${process.env.NEXT_PUBLIC_URL_API}${image}`}
+                  src={`${API_BASE_URL}${image}`}
                   alt={`${product.name} - Imagen ${index + 1}`}
                   className="w-full h-full object-cover rounded-lg border group-hover:opacity-90 transition-opacity"
                   style={{ borderColor: `rgb(var(--color-primary-200))` }}

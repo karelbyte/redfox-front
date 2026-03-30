@@ -1,20 +1,56 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, ThemeType } from "@/context/ThemeContext";
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState(""); // "admin@nitro.com"
-  const [password, setPassword] = useState(""); //"admin123"
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, loginWithToken } = useAuth();
+  const searchParams = useSearchParams();
   const locale = useLocale();
   const { currentTheme, setTheme, themes } = useTheme();
   const t = useTranslations('pages.login');
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (token) {
+      handleAutoLogin(token);
+    }
+  }, [searchParams]);
+
+  const handleAutoLogin = async (token: string) => {
+    const userParam = searchParams.get('user');
+    let userData = null;
+    
+    if (userParam) {
+      try {
+        // El usuario viene codificado en Base64 para evitar problemas con caracteres especiales en la URL
+        const decodedUser = atob(userParam);
+        userData = JSON.parse(decodedUser);
+        console.log('[LoginPage] Datos de usuario decodificados:', userData.email);
+      } catch (e) {
+        console.error('[LoginPage] Error al decodificar datos de usuario:', e);
+      }
+    }
+
+    console.log('[LoginPage] Iniciando auto-login con token:', token.substring(0, 10) + '...');
+    setLoading(true);
+    try {
+      await loginWithToken(token, userData);
+      console.log('[LoginPage] Auto-login exitoso');
+    } catch (error) {
+      console.error('[LoginPage] Error en auto-login:', error);
+      // Si falla el auto-login, simplemente seguimos en la página de login
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +58,6 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      // No necesitamos hacer router.push aquí porque el login ya lo hace
     } catch {
       // El error ya se maneja en el servicio de autenticación
     } finally {

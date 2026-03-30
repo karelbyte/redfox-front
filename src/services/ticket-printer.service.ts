@@ -2,6 +2,7 @@ import { Sale, SaleDetail } from '@/types/sale';
 import { Client } from '@/types/client';
 import { companySettingsService } from '@/services/company-settings.service';
 import type { CompanySettings } from '@/types/company-settings';
+import { API_BASE_URL } from '@/lib/config';
 
 export interface TicketData {
   sale: Sale;
@@ -47,9 +48,7 @@ export class TicketPrinterService {
   private getLogoFullUrl(logoUrl: string | null): string | null {
     if (!logoUrl) return null;
     if (logoUrl.startsWith('http')) return logoUrl;
-    const base =
-      (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_URL_API) ||
-      'https://nitrocore.up.railway.app';
+    const base = API_BASE_URL;
     const baseClean = base.replace(/\/$/, '');
     const path = logoUrl.startsWith('/') ? logoUrl : `/${logoUrl}`;
     return `${baseClean}${path}`;

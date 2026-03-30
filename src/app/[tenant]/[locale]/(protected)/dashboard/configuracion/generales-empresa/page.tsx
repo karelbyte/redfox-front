@@ -9,15 +9,13 @@ import { companySettingsService } from '@/services/company-settings.service';
 import { toastService } from '@/services/toast.service';
 import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
+import { API_BASE_URL } from '@/lib/config';
 
-// Misma base que la API (sin /api) para que las imágenes en /uploads se carguen desde el servidor correcto
-const getApiOrigin = (): string =>
-  process.env.NEXT_PUBLIC_URL_API || 'https://nitrocore.up.railway.app';
-
+// Usar la base de la API centralizada
 const getLogoFullUrl = (logoUrl: string | null): string | null => {
   if (!logoUrl) return null;
   if (logoUrl.startsWith('http')) return logoUrl;
-  const base = getApiOrigin().replace(/\/$/, '');
+  const base = API_BASE_URL.replace(/\/$/, '');
   const path = logoUrl.startsWith('/') ? logoUrl : `/${logoUrl}`;
   return `${base}${path}`;
 };

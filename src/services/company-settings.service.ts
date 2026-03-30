@@ -1,7 +1,8 @@
+import { API_BASE_URL } from '@/lib/config';
 import { api } from './api';
 import { CompanySettings, UpdateCompanySettingsData } from '@/types/company-settings';
 
-const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitrocore.up.railway.app') + '/api';
+const baseURL = API_BASE_URL + '/api';
 
 export const companySettingsService = {
   async get(): Promise<CompanySettings> {

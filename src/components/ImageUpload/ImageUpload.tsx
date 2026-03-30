@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { API_BASE_URL } from '@/lib/config';
 
 interface ImageUploadProps {
   value?: string;
@@ -14,7 +15,7 @@ export default function ImageUpload({ value, onChange, error }: ImageUploadProps
   const t = useTranslations('forms.components.image.upload');
   
   const getImageUrl = (value: string | undefined) => {
-    return value ? `${process.env.NEXT_PUBLIC_URL_API}${value}` : null;
+    return value ? `${API_BASE_URL}${value}` : null;
   }
   const [preview, setPreview] = useState<string | null>(getImageUrl(value) || null);
   const fileInputRef = useRef<HTMLInputElement>(null);

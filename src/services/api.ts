@@ -1,5 +1,7 @@
-const baseURL = (process.env.NEXT_PUBLIC_URL_API || 'https://nitrocore.up.railway.app') + '/api';
-console.log("DEBUG API URL:", process.env.NEXT_PUBLIC_URL_API);
+import { API_BASE_URL } from '@/lib/config';
+
+const baseURL = API_BASE_URL + '/api';
+console.log("DEBUG API URL:", API_BASE_URL);
 const handleUnauthorized = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('token');

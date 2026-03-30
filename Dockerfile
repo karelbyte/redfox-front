@@ -1,6 +1,11 @@
 # Usamos Slim para evitar problemas de Alpine
 FROM node:22-slim AS base
 
+
+ARG NEXT_PUBLIC_URL_API
+
+# (Opcional) Si la necesitas también en ejecución:
+ENV NEXT_PUBLIC_URL_API=$NEXT_PUBLIC_URL_API
 # 1. Dependencias
 FROM base AS deps
 RUN apt-get update && apt-get install -y libc6 python3 make g++ && rm -rf /var/lib/apt/lists/*

@@ -6,6 +6,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Btn } from '@/components/atoms';
 import { usePermissions } from '@/hooks/usePermissions';
+import { API_BASE_URL } from '@/lib/config';
 
 interface CategoryTableProps {
   categories: Category[];
@@ -83,7 +84,7 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
             <td className="px-6 py-4 whitespace-nowrap">
               {category.image && (
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_URL_API}${category.image}`}
+                  src={`${API_BASE_URL}${category.image}`}
                   alt={category.name}
                   width={80}
                   height={80}

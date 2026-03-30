@@ -8,6 +8,7 @@ import { saleService } from '@/services/sales.service';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { toastService } from '@/services/toast.service';
 import { SalePDFService } from '@/services/sale-pdf.service';
+import { API_BASE_URL } from '@/lib/config';
 import { Sale, SaleDetail, SaleCloseResponse, SaleStatus } from '@/types/sale';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
@@ -521,7 +522,7 @@ export default function SaleDetailsPage() {
                         <div className="aspect-square bg-gray-100 rounded-md mb-2 flex items-center justify-center overflow-hidden">
                           {inventoryProduct.product.images && inventoryProduct.product.images.length > 0 ? (
                             <img
-                              src={process.env.NEXT_PUBLIC_URL_API + inventoryProduct.product.images[0]}
+                              src={API_BASE_URL + inventoryProduct.product.images[0]}
                               alt={inventoryProduct.product.name}
                               className="w-full h-full object-cover"
                             />

@@ -4,6 +4,7 @@ import React from 'react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import { InventoryProduct } from '@/services/inventory.service';
+import { API_BASE_URL } from '@/lib/config';
 
 interface ProductCardProps {
   product: InventoryProduct;
@@ -13,7 +14,7 @@ interface ProductCardProps {
 const ProductCard = React.memo(({ product, onAddToCart }: ProductCardProps) => {
   const t = useTranslations('pages.pos');
   const hasImage = product.product.images && product.product.images.length > 0;
-  const imageUrl = hasImage ? `${process.env.NEXT_PUBLIC_URL_API}${product.product.images[0]}` : '';
+  const imageUrl = hasImage ? `${API_BASE_URL}${product.product.images[0]}` : '';
 
   const handleClick = () => {
     onAddToCart(product);
