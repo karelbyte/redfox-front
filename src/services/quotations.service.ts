@@ -38,8 +38,8 @@ class QuotationService {
     await api.delete(`/quotations/${id}`);
   }
 
-  async convertToSale(id: string): Promise<ConvertToSaleResponse> {
-    const response = await api.post<ConvertToSaleResponse>(`/quotations/${id}/convert-to-sale`, {});
+  async convertToSale(id: string, warehouseId: string): Promise<ConvertToSaleResponse> {
+    const response = await api.post<ConvertToSaleResponse>(`/quotations/${id}/convert-to-sale`, { warehouse_id: warehouseId });
     return response;
   }
 

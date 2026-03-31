@@ -7,6 +7,7 @@ export interface InventoryProduct {
   product: {
     id: string;
     sku: string;
+    barcode?: string;
     name: string;
     description: string;
     price: number;
@@ -62,6 +63,8 @@ export interface InventoryProduct {
   } | null;
   quantity: number | null;
   price: number;
+  batch_number?: string;
+  expiration_date?: string;
   createdAt: string;
 }
 

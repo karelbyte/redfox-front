@@ -4,6 +4,7 @@ import { ProviderTaxData } from "@/types/provider";
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
 import { Input, Checkbox, Select } from "@/components/atoms";
+import CustomSelect from "@/components/atoms/CustomSelect";
 
 export interface ProviderTaxDataFormRef {
     submit: () => void;
@@ -57,10 +58,30 @@ const REGIME_INVOICE_USE_MAP: Record<string, string[]> = {
     "CN01": ["605"]
 };
 
+const REGIME_TYPES: Record<string, string[]> = {
+    "MORAL": ["601", "603", "609", "620", "622", "623", "624", "628", "610", "626"],
+    "FISICA": ["605", "606", "608", "611", "612", "614", "616", "621", "607", "629", "630", "615", "625", "610", "626"]
+};
+
 const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFormProps>(
     ({ providerId, taxData, onSuccess, onSavingChange }, ref) => {
         const t = useTranslations('pages.providers.taxData');
         const t2 = useTranslations('pages.clients.taxData');    
+
+        const [formData, setFormData] = useState<FormData>({
+            tax_document: taxData?.tax_document || "",
+            tax_name: taxData?.tax_name || "",
+            tax_system: taxData?.tax_system || "601",
+            default_invoice_use: taxData?.default_invoice_use || "",
+            is_main: taxData?.is_main || false,
+        });
+
+        const personType = useMemo(() => {
+            const cleanRfc = formData.tax_document.trim();
+            if (cleanRfc.length === 12) return "MORAL";
+            if (cleanRfc.length === 13) return "FISICA";
+            return "BOTH";
+        }, [formData.tax_document]);
 
         const regimeOptions = useMemo(() => {
             const regimes = [
@@ -68,26 +89,31 @@ const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFo
                 "616", "620", "621", "622", "623", "624", "628", "607", "629", "630",
                 "615", "625", "626"
             ];
-            return regimes.map(code => ({
+
+            const filtered = regimes.filter(code => {
+                if (personType === "BOTH") return true;
+                return REGIME_TYPES[personType]?.includes(code);
+            });
+
+            return filtered.map(code => ({
                 value: code,
                 label: `${code} - ${t2(`regimes.${code}`)}`
             }));
-        }, [t2]);
+        }, [t2, personType]);
 
-        const initialRegime = taxData?.tax_system || "601";
-        const firstValidUse = useMemo(() => {
-            return Object.keys(REGIME_INVOICE_USE_MAP).find(k =>
-                REGIME_INVOICE_USE_MAP[k].includes(initialRegime)
-            ) || "";
-        }, [initialRegime]);
-
-        const [formData, setFormData] = useState<FormData>({
-            tax_document: taxData?.tax_document || "",
-            tax_name: taxData?.tax_name || "",
-            tax_system: initialRegime,
-            default_invoice_use: taxData?.default_invoice_use || firstValidUse,
-            is_main: taxData?.is_main || false,
-        });
+        // Auto-adjust tax system when person type changes
+        useEffect(() => {
+            if (personType === "BOTH") return;
+            
+            const isValid = REGIME_TYPES[personType]?.includes(formData.tax_system);
+            if (!isValid) {
+                const defaultRegime = personType === "MORAL" ? "601" : "605";
+                setFormData(prev => ({
+                    ...prev,
+                    tax_system: defaultRegime
+                }));
+            }
+        }, [personType]);
 
         const invoiceUseOptions = useMemo(() => {
             return Object.entries(REGIME_INVOICE_USE_MAP)
@@ -97,6 +123,25 @@ const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFo
                     label: `${code} - ${t2(`invoiceUses.${code}`)}`
                 }));
         }, [formData.tax_system, t2]);
+
+        // Ensure default_invoice_use is valid for the current regime
+        useEffect(() => {
+            const availableUses = Object.entries(REGIME_INVOICE_USE_MAP)
+                .filter(([_, regimes]) => regimes.includes(formData.tax_system))
+                .map(([code]) => code);
+            
+            if (formData.default_invoice_use && !availableUses.includes(formData.default_invoice_use)) {
+                setFormData(prev => ({
+                    ...prev,
+                    default_invoice_use: availableUses[0] || ""
+                }));
+            } else if (!formData.default_invoice_use && availableUses.length > 0) {
+                setFormData(prev => ({
+                    ...prev,
+                    default_invoice_use: availableUses[0]
+                }));
+            }
+        }, [formData.tax_system]);
 
         const [errors, setErrors] = useState<FormErrors>({});
 
@@ -177,7 +222,7 @@ const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFo
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Select
+                    <CustomSelect
                         label={t('taxSystem')}
                         value={formData.tax_system}
                         options={regimeOptions}
@@ -193,7 +238,7 @@ const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFo
                             }));
                         }}
                     />
-                    <Select
+                    <CustomSelect
                         label={t('defaultInvoiceUse')}
                         value={formData.default_invoice_use}
                         options={invoiceUseOptions}

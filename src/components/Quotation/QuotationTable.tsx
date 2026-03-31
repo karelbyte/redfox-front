@@ -11,6 +11,7 @@ import ActionsMenu from '@/components/atoms/ActionsMenu';
 import { QuotationActionsMenu } from './QuotationActionsMenu';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
 import { QuotationPDFService } from '@/services/quotation-pdf.service';
+import ConvertToSaleModal from './ConvertToSaleModal';
 
 interface QuotationTableProps {
   quotations: Quotation[];
@@ -86,12 +87,12 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
     }
   };
 
-  const handleConvertConfirm = async () => {
+  const handleConvertConfirm = async (warehouseId: string) => {
     if (!selectedQuotation) return;
 
     try {
       setLoadingActions(prev => ({ ...prev, [`convert-${selectedQuotation.id}`]: true }));
-      const result = await quotationService.convertToSale(selectedQuotation.id);
+      const result = await quotationService.convertToSale(selectedQuotation.id, warehouseId);
       toastService.success(result.message);
       setConvertModalOpen(false);
       setSelectedQuotation(null);
@@ -198,7 +199,7 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
               )}
               {isColumnVisible('warehouse') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {quotation.warehouse.name}
+                  {quotation.warehouse?.name ?? '—'}
                 </td>
               )}
               {isColumnVisible('total') && (
@@ -247,19 +248,16 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
       confirmButtonStyle={{ backgroundColor: '#dc2626' }}
     />
 
-    {/* Convert to Sale Confirmation Modal */}
-    <ConfirmModal
+    {/* Convert to Sale Modal */}
+    <ConvertToSaleModal
       isOpen={convertModalOpen}
+      quotationCode={selectedQuotation?.code || ''}
       onClose={() => {
         setConvertModalOpen(false);
         setSelectedQuotation(null);
       }}
       onConfirm={handleConvertConfirm}
-      title={t('messages.confirmConvertTitle')}
-      message={t('messages.confirmConvertToSale', { code: selectedQuotation?.code || '' })}
-      confirmText={t('actions.convertToSale')}
-      cancelText={tCommon('actions.cancel')}
-      confirmButtonStyle={{ backgroundColor: '#059669' }}
+      isLoading={loadingActions[`convert-${selectedQuotation?.id}`] || false}
     />
   </>
   );

@@ -233,88 +233,6 @@ export default function POSPage() {
     }
   };
 
-  const handleDownloadTicket = async () => {
-    if (cart.length === 0) {
-      toastService.error(t('messages.emptyCart'));
-      return;
-    }
-
-    if (!selectedClient) {
-      toastService.error(t('messages.selectClient'));
-      return;
-    }
-
-    try {
-      // Crear una venta temporal para generar el ticket
-      const saleData: SaleFormData = {
-        code: `TEMP-${Date.now()}`,
-        destination: 'Venta POS',
-        client_id: selectedClient,
-        type: 'POS',
-        amount: getTotal()
-      };
-
-      const sale = await saleService.createSale(saleData);
-
-      for (const item of cart) {
-        await saleService.addProductToSale(sale.id, {
-          product_id: item.product.product.id,
-          quantity: item.quantity,
-          price: item.price,
-          warehouse_id: item.product.warehouse?.id ?? ''
-        });
-      }
-
-      await saleService.closeSale(sale.id);
-
-      // Obtener los detalles de la venta para el ticket
-      const saleDetails = await saleService.getSaleDetails(sale.id);
-      
-      // Obtener información del cliente
-      const selectedClientData = clients.find(client => client.id === selectedClient);
-      
-      // Generar y descargar el ticket
-      const ticketData = {
-        sale: sale,
-        saleDetails: saleDetails.data || [],
-        client: selectedClientData || null,
-        cashierName: 'POS System',
-        paymentMethod: paymentMethod,
-        cashAmount: paymentMethod === 'cash' ? cashAmount : undefined,
-        change: paymentMethod === 'cash' ? getChange() : undefined,
-        locale,
-        labels: {
-          ticket: t('ticket.ticket', { default: 'Ticket' }),
-          date: t('ticket.date', { default: 'Date' }),
-          cashier: t('ticket.cashier', { default: 'Cashier' }),
-          client: t('ticket.client', { default: 'Client' }),
-          products: t('ticket.products', { default: 'PRODUCTS:' }),
-          subtotal: t('ticket.subtotal', { default: 'Subtotal:' }),
-          tax: t('ticket.tax', { default: 'Tax:' }),
-          total: t('ticket.total', { default: 'TOTAL:' }),
-          paymentMethod: t('ticket.paymentMethod', { default: 'Payment Method:' }),
-          cashReceived: t('ticket.cashReceived', { default: 'Cash Received:' }),
-          change: t('ticket.change', { default: 'Change:' }),
-          thanks: t('ticket.thanks', { default: 'Thank you for your purchase!' }),
-          comeBack: t('ticket.comeBack', { default: 'Please come back soon' }),
-          powered: t('ticket.powered', { default: 'Powered by RedFox POS' }),
-          walkIn: t('ticket.walkIn', { default: 'Walk-in Customer' }),
-          posSystem: t('ticket.posSystem', { default: 'POS System' }),
-        },
-      };
-      
-      await ticketPrinterService.downloadTicket(ticketData);
-      toastService.success(t('messages.ticketDownloaded'));
-
-      // Eliminar la venta temporal
-      await saleService.deleteSale(sale.id);
-      
-    } catch (error) {
-      console.error('Error downloading ticket:', error);
-      toastService.error(t('messages.ticketDownloadError'));
-    }
-  };
-
   const handleCheckout = async (generateInvoice: boolean = false) => {
     if (cart.length === 0) {
       toastService.error(t('messages.emptyCart'));
@@ -580,7 +498,6 @@ export default function POSPage() {
         onPaymentMethodChange={setPaymentMethod}
         onCashAmountChange={setCashAmount}
         getChange={getChange}
-        onDownloadTicket={handleDownloadTicket}
         selectedClient={clients.find(c => c.id === selectedClient)}
       />
 

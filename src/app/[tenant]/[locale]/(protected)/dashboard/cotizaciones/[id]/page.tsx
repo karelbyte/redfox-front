@@ -16,6 +16,7 @@ import Loading from '@/components/Loading/Loading';
 import { Btn, Input, Select } from '@/components/atoms';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
+import ConvertToSaleModal from '@/components/Quotation/ConvertToSaleModal';
 
 interface ProductDrawerData {
   product_id: string;
@@ -59,6 +60,10 @@ const QuotationDetailsPage = () => {
   // Delete confirmation modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [detailToDelete, setDetailToDelete] = useState<QuotationDetail | null>(null);
+
+  // Convert to sale modal
+  const [convertModalOpen, setConvertModalOpen] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
 
   useEffect(() => {
     if (quotationId) {
@@ -273,23 +278,23 @@ const QuotationDetailsPage = () => {
     }
   };
 
-  const handleConvertToSale = async () => {
+  const handleConvertToSale = async (warehouseId: string) => {
     if (!quotation) return;
 
-    if (!confirm(t('messages.confirmConvertToSale', { code: quotation.code }))) {
-      return;
-    }
-
     try {
-      const result = await quotationService.convertToSale(quotationId);
+      setIsConverting(true);
+      const result = await quotationService.convertToSale(quotationId, warehouseId);
       toastService.success(result.message);
-      loadQuotation(); // Reload to get updated status
+      setConvertModalOpen(false);
+      loadQuotation();
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
         toastService.error(t('messages.errorConverting'));
       }
+    } finally {
+      setIsConverting(false);
     }
   };
 
@@ -350,7 +355,7 @@ const QuotationDetailsPage = () => {
           {canConvertToSale && (
             <Btn
               variant="primary"
-              onClick={handleConvertToSale}
+              onClick={() => setConvertModalOpen(true)}
               leftIcon={<BoltIcon className="h-5 w-5" />}
               className="!bg-green-600 hover:!bg-green-700"
             >
@@ -415,7 +420,9 @@ const QuotationDetailsPage = () => {
           <div className="space-y-3">
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.name')}:</span>
-              <p className="text-sm text-gray-900">{quotation.warehouse.name}</p>
+              <p className="text-sm text-gray-900">
+                {quotation.warehouse?.name ?? <span className="text-gray-400 italic">{t('details.labels.noWarehouse')}</span>}
+              </p>
             </div>
             <div className="pt-2 border-t border-gray-50">
               <div className="flex justify-between items-center text-sm font-medium text-gray-500 mb-1">
@@ -788,6 +795,15 @@ const QuotationDetailsPage = () => {
         confirmText={t('actions.delete')}
         cancelText={t('actions.cancel')}
         confirmButtonStyle={{ backgroundColor: '#dc2626' }}
+      />
+
+      {/* Convert to Sale Modal */}
+      <ConvertToSaleModal
+        isOpen={convertModalOpen}
+        quotationCode={quotation?.code || ''}
+        onClose={() => setConvertModalOpen(false)}
+        onConfirm={handleConvertToSale}
+        isLoading={isConverting}
       />
     </div>
   );

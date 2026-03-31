@@ -168,7 +168,7 @@ export default function SaleDetailsPage() {
       
       // Generar el PDF usando el nuevo servicio
       const pdfService = new SalePDFService(locale);
-      pdfService.generatePDF(sale, products, translations);
+      await pdfService.generatePDF(sale, products, translations);
       
       toastService.success(t('messages.pdfGenerated'));
     } catch (error) {

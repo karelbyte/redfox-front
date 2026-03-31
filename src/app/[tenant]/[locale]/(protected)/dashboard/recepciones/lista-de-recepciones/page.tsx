@@ -201,7 +201,7 @@ export default function RecepcionesPage() {
       
       // Generar el PDF usando el nuevo servicio
       const pdfService = new ReceptionPDFService(locale);
-      pdfService.generatePDF(reception, details, translations);
+      await pdfService.generatePDF(reception, details, translations);
       
       toastService.success(t('messages.pdfGenerated'));
     } catch (error) {

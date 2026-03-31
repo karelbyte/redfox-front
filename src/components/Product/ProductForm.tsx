@@ -103,6 +103,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
       base_price: 0,
       prices: [],
       currency_id: "",
+      min_stock: 0,
     });
 
     const [images, setImages] = useState<(File | string)[]>([]);
@@ -249,6 +250,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           base_price: Number(product.base_price) || 0,
           prices: product.prices ? product.prices.map(p => ({ id: p.id, name: p.name, price: Number(p.price) })) : [],
           currency_id: product.currency?.id || "",
+          min_stock: Number(product.min_stock) || 0,
         });
         setImages(product.images || []);
       } else {
@@ -272,6 +274,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           inventory_strategy: InventoryStrategy.AVERAGE,
           base_price: 0,
           prices: [],
+          min_stock: 0,
         });
       }
     }, [product]);
@@ -462,6 +465,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
           inventory_strategy: InventoryStrategy.AVERAGE,
           base_price: 0,
           prices: [],
+          min_stock: 0,
         });
         setImages([]);
       },
@@ -621,6 +625,21 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
                     }))
                   }
                   error={errors.length}
+                />
+
+                <Input
+                  type="number"
+                  step="0.01"
+                  id="min_stock"
+                  label={t('form.minStock')}
+                  value={formData.min_stock}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      min_stock: parseFloat(e.target.value),
+                    }))
+                  }
+                  placeholder={t('form.placeholders.minStock')}
                 />
               </div>
             </div>

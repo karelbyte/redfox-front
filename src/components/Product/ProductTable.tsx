@@ -174,8 +174,19 @@ export default function ProductTable({
                 </td>
               )}
               {isVisible('stock') && (
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  {product.total_stock}
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div className="flex items-center">
+                    <span className={`${
+                      product.min_stock && product.min_stock > 0 && Number(product.total_stock) <= Number(product.min_stock)
+                        ? 'text-red-600 font-bold flex items-center gap-1'
+                        : 'text-gray-900'
+                    }`}>
+                      {Number(product.total_stock)}
+                      {product.min_stock && product.min_stock > 0 && Number(product.total_stock) <= Number(product.min_stock) && (
+                        <span title={t('table.lowStockWarning', { default: 'Stock bajo' })}>⚠️</span>
+                      )}
+                    </span>
+                  </div>
                 </td>
               )}
               {isVisible('status') && (

@@ -238,6 +238,7 @@ export default function AuditLogsPage() {
                           <div>
                             <div className="font-medium">{log.entityType}</div>
                             <div className="text-xs text-gray-500">{log.entityId.slice(0, 8)}...</div>
+                            
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

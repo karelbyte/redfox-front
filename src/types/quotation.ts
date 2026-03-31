@@ -43,7 +43,7 @@ export interface Quotation {
   date: string;
   valid_until: string;
   client: Client;
-  warehouse: Warehouse;
+  warehouse: Warehouse | null;
   notes: string;
   subtotal: number;
   tax: number;
@@ -58,7 +58,7 @@ export interface QuotationFormData {
   date: string;
   valid_until?: string;
   client_id: string;
-  warehouse_id: string;
+  warehouse_id?: string;
   notes?: string;
 }
 

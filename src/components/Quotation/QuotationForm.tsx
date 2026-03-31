@@ -4,12 +4,10 @@ import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 're
 import { useTranslations } from 'next-intl';
 import { quotationService } from '@/services/quotations.service';
 import { clientsService } from '@/services/clients.service';
-import { warehousesService } from '@/services/warehouses.service';
 import { toastService } from '@/services/toast.service';
 import { Quotation, QuotationFormData } from '@/types/quotation';
 import { Client } from '@/types/client';
-import { Warehouse } from '@/types/warehouse';
-import { Input, Select, SelectWithAdd, TextArea } from '@/components/atoms';
+import { Input, SelectWithAdd, TextArea } from '@/components/atoms';
 import { SurrogateInput } from '@/components/atoms/SurrogateInput';
 import Drawer from '@/components/Drawer/Drawer';
 import ClientForm from '@/components/Client/ClientForm';
@@ -32,7 +30,6 @@ interface FormErrors {
   date?: string;
   valid_until?: string;
   client_id?: string;
-  warehouse_id?: string;
 }
 
 const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
@@ -43,15 +40,12 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
       date: '',
       valid_until: '',
       client_id: '',
-      warehouse_id: '',
       notes: '',
     });
 
     const [clients, setClients] = useState<Client[]>([]);
-    const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
 
-    // Estados para el drawer de clientes
     const [showClientDrawer, setShowClientDrawer] = useState(false);
     const [isSavingClient, setIsSavingClient] = useState(false);
     const [isClientFormValid, setIsClientFormValid] = useState(false);
@@ -59,7 +53,6 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
 
     useEffect(() => {
       loadClients();
-      loadWarehouses();
     }, []);
 
     useEffect(() => {
@@ -69,20 +62,17 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
           date: quotation.date,
           valid_until: quotation.valid_until || '',
           client_id: quotation.client.id,
-          warehouse_id: quotation.warehouse.id,
           notes: quotation.notes || '',
         });
       } else {
         const today = new Date().toISOString().split('T')[0];
         const validUntil = new Date();
-        validUntil.setDate(validUntil.getDate() + 30); // 30 días de validez por defecto
-        
+        validUntil.setDate(validUntil.getDate() + 30);
         setFormData({
           code: '',
           date: today,
           valid_until: validUntil.toISOString().split('T')[0],
           client_id: '',
-          warehouse_id: '',
           notes: '',
         });
       }
@@ -97,34 +87,18 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
       }
     };
 
-    const loadWarehouses = async () => {
-      try {
-        const response = await warehousesService.getWarehouses({isClosed:true});
-        setWarehouses(response.data || []);
-      } catch (error) {
-        console.error('Error loading warehouses:', error);
-      }
-    };
-
     const validateForm = (): boolean => {
       const newErrors: FormErrors = {};
 
       if (!formData.code.trim()) {
         newErrors.code = t('form.errors.codeRequired');
       }
-
       if (!formData.date) {
         newErrors.date = t('form.errors.dateRequired');
       }
-
       if (!formData.client_id) {
         newErrors.client_id = t('form.errors.clientRequired');
       }
-
-      if (!formData.warehouse_id) {
-        newErrors.warehouse_id = t('form.errors.warehouseRequired');
-      }
-
       if (formData.valid_until && formData.date && formData.valid_until < formData.date) {
         newErrors.valid_until = t('form.errors.validUntilMustBeAfterDate');
       }
@@ -141,9 +115,7 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
     }, [formData]);
 
     const handleSubmit = async () => {
-      if (!validateForm()) {
-        return;
-      }
+      if (!validateForm()) return;
 
       try {
         onSavingChange?.(true);
@@ -171,7 +143,6 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
       }
     };
 
-    // Handlers para el drawer de clientes
     const handleClientDrawerClose = () => {
       setShowClientDrawer(false);
       setIsSavingClient(false);
@@ -179,7 +150,7 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
 
     const handleClientFormSuccess = () => {
       handleClientDrawerClose();
-      loadClients(); // Recargar clientes
+      loadClients();
     };
 
     const handleClientSave = () => {
@@ -188,9 +159,7 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
       }
     };
 
-    useImperativeHandle(ref, () => ({
-      submit: handleSubmit,
-    }));
+    useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
     return (
       <>
@@ -241,20 +210,6 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
             addButtonTitle={t('actions.createNewClient')}
           />
 
-          <Select
-            id="warehouse"
-            label={t('form.warehouse')}
-            value={formData.warehouse_id}
-            onChange={(e) => setFormData(prev => ({ ...prev, warehouse_id: e.target.value }))}
-            options={warehouses.map((warehouse) => ({
-              value: warehouse.id,
-              label: `${warehouse.code} - ${warehouse.name}`
-            }))}
-            placeholder={t('form.placeholders.selectWarehouse')}
-            required
-            error={errors.warehouse_id}
-          />
-
           <TextArea
             id="notes"
             label={t('form.notes')}
@@ -265,7 +220,6 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
           />
         </form>
 
-        {/* Drawer para crear clientes */}
         <Drawer
           id="client-drawer"
           parentId="quotation-drawer"

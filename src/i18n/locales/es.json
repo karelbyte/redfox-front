@@ -102,7 +102,8 @@
       "en": "Inglés"
     },
     "table": {
-      "columns": "Columnas"
+      "columns": "Columnas",
+      "lowStockWarning": "Stock bajo"
     }
   },
   "navigation": {
@@ -406,6 +407,7 @@
         "basePrice": "Precio Base (Precio de Venta Estándar)",
         "alternativePrices": "Listas de Precios Alternativas",
         "addPrice": "Añadir Precio Alternativo",
+        "minStock": "Stock Mínimo",
         "images": "Imágenes",
         "placeholders": {
           "name": "Ej: Producto XYZ",
@@ -414,6 +416,7 @@
           "code": "Ej: 12345678",
           "sku": "Ej: SKU001",
           "barcode": "Ej: 1234567890123",
+          "minStock": "Ej: 5",
           "weight": "Ej: 1.5",
           "width": "Ej: 10",
           "height": "Ej: 5",
@@ -444,7 +447,8 @@
           "invalidWeight": "El peso debe ser un número válido",
           "invalidWidth": "El ancho debe ser un número válido",
           "invalidHeight": "El alto debe ser un número válido",
-          "invalidLength": "El largo debe ser un número válido"
+          "invalidLength": "El largo debe ser un número válido",
+          "invalidMinStock": "El stock mínimo debe ser un número válido"
         },
         "searchCodeModal": {
           "title": "Buscar código de producto",
@@ -471,7 +475,8 @@
         "tax": "Impuesto",
         "status": "Estado",
         "actions": "Acciones",
-        "inPack": "Registrado en PAC"
+        "inPack": "Registrado en PAC",
+        "lowStockWarning": "Stock bajo"
       },
       "actions": {
         "generateBarcode": "Generar Código de Barras"
@@ -1719,6 +1724,7 @@
         "confirmDeleteTitle": "Eliminar Cotización",
         "confirmConvertToSale": "¿Estás seguro de que deseas convertir la cotización \"{code}\" a venta? Esta acción no se puede deshacer.",
         "confirmConvertTitle": "Convertir a Venta",
+        "warehouseForSaleHint": "Los productos se despacharán desde este almacén.",
         "confirmDeleteProduct": "¿Estás seguro de que deseas eliminar el producto \"{name}\" de esta cotización? Esta acción no se puede deshacer.",
         "confirmDeleteProductTitle": "Eliminar Producto",
         "pdfGenerated": "PDF generado exitosamente",
@@ -1763,7 +1769,8 @@
           "totalAmount": "Monto Total",
           "subtotal": "Subtotal",
           "tax": "Impuestos",
-          "notes": "Notas"
+          "notes": "Notas",
+          "noWarehouse": "Sin almacén asignado"
         }
       }
     },
@@ -4134,5 +4141,29 @@
     "continue": "Continuar",
     "back": "Atrás",
     "noPack": "No usar facturación por ahora"
+  },
+  "inventoryAlerts": {
+    "title": "Alertas de Inventario",
+    "close": "Cerrar",
+    "noAlerts": "Sin alertas de inventario",
+    "expiringProducts": "Próximos a Vencer",
+    "lowStockProducts": "Stock Bajo",
+    "viewAllAlerts": "Ver todas las alertas",
+    "priority": {
+      "urgent": "Urgente",
+      "high": "Alta",
+      "medium": "Media"
+    },
+    "expiry": {
+      "expired": "Vencido hace {days} día(s)",
+      "today": "Vence hoy",
+      "tomorrow": "Vence mañana",
+      "inDays": "Vence en {days} día(s)"
+    },
+    "stock": {
+      "outOfStock": "Sin stock",
+      "critical": "Stock crítico",
+      "low": "Stock bajo"
+    }
   }
 }

@@ -102,7 +102,8 @@
       "en": "English"
     },
     "table": {
-      "columns": "Columns"
+      "columns": "Columns",
+      "lowStockWarning": "Low stock"
     }
   },
   "navigation": {
@@ -469,7 +470,8 @@
         "tax": "Tax",
         "status": "Status",
         "actions": "Actions",
-        "inPack": "Registered in PAC"
+        "inPack": "Registered in PAC",
+        "lowStockWarning": "Low stock"
       },
       "actions": {
         "generateBarcode": "Generate Barcode"
@@ -1742,6 +1744,7 @@
         "confirmDeleteTitle": "Delete Quotation",
         "confirmConvertToSale": "Are you sure you want to convert quotation \"{code}\" to sale? This action cannot be undone.",
         "confirmConvertTitle": "Convert to Sale",
+        "warehouseForSaleHint": "Products will be dispatched from this warehouse.",
         "confirmDeleteProduct": "Are you sure you want to delete product \"{name}\" from this quotation? This action cannot be undone.",
         "confirmDeleteProductTitle": "Delete Product",
         "pdfGenerated": "PDF generated successfully",
@@ -1786,7 +1789,8 @@
           "totalAmount": "Total Amount",
           "subtotal": "Subtotal",
           "tax": "Tax",
-          "notes": "Notes"
+          "notes": "Notes",
+          "noWarehouse": "No warehouse assigned"
         }
       }
     },
@@ -4124,5 +4128,29 @@
     "continue": "Continue",
     "back": "Back",
     "noPack": "Don't use billing for now"
+  },
+  "inventoryAlerts": {
+    "title": "Inventory Alerts",
+    "close": "Close",
+    "noAlerts": "No inventory alerts",
+    "expiringProducts": "Expiring Soon",
+    "lowStockProducts": "Low Stock",
+    "viewAllAlerts": "View all alerts",
+    "priority": {
+      "urgent": "Urgent",
+      "high": "High",
+      "medium": "Medium"
+    },
+    "expiry": {
+      "expired": "Expired {days} day(s) ago",
+      "today": "Expires today",
+      "tomorrow": "Expires tomorrow",
+      "inDays": "Expires in {days} day(s)"
+    },
+    "stock": {
+      "outOfStock": "Out of stock",
+      "critical": "Critical stock",
+      "low": "Low stock"
+    }
   }
 }

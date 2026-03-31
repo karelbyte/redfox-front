@@ -43,6 +43,7 @@ export interface Product {
   inventory_strategy: InventoryStrategy;
   base_price: number;
   total_stock: number;
+  min_stock?: number;
   prices: ProductPrice[];
   images: string[];
   currency?: { id: string; code: string; name: string } | null;
@@ -68,6 +69,7 @@ export interface ProductFormData {
   type: ProductType;
   inventory_strategy?: InventoryStrategy;
   base_price: number;
+  min_stock?: number;
   prices: Partial<ProductPrice>[];
   currency_id?: string;
 }

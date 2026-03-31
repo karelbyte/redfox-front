@@ -1,6 +1,9 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Reception, ReceptionDetail } from '@/types/reception';
+import { companySettingsService } from '@/services/company-settings.service';
+import type { CompanySettings } from '@/types/company-settings';
+import { API_BASE_URL } from '@/lib/config';
 
 interface PDFTranslations {
   title: string;
@@ -32,12 +35,84 @@ export class ReceptionPDFService {
   private margin: number = 20;
   private currentY: number = 20;
   private locale: string = 'es';
+  private companySettings: CompanySettings | null = null;
 
   constructor(locale?: string) {
     this.doc = new jsPDF();
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.locale = locale || 'es';
+  }
+
+  private async loadCompanySettings(): Promise<void> {
+    try {
+      this.companySettings = await companySettingsService.get();
+    } catch (error) {
+      console.warn('No se pudieron cargar los datos de la empresa:', error);
+      this.companySettings = null;
+    }
+  }
+
+  private getLogoFullUrl(logoUrl: string | null): string | null {
+    if (!logoUrl) return null;
+    if (logoUrl.startsWith('http')) return logoUrl;
+    const base = API_BASE_URL;
+    const baseClean = base.replace(/\/$/, '');
+    const path = logoUrl.startsWith('/') ? logoUrl : `/${logoUrl}`;
+    return `${baseClean}${path}`;
+  }
+
+  private async addLogo(): Promise<void> {
+    if (!this.companySettings?.logoUrl) return;
+
+    try {
+      const logoUrl = this.getLogoFullUrl(this.companySettings.logoUrl);
+      if (!logoUrl) return;
+
+      // Crear una imagen temporal para obtener las dimensiones
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => {
+          try {
+            // Calcular dimensiones manteniendo proporción
+            const maxWidth = 40;
+            const maxHeight = 25;
+            let width = img.width;
+            let height = img.height;
+
+            // Escalar manteniendo proporción
+            if (width > maxWidth) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            }
+            if (height > maxHeight) {
+              width = (width * maxHeight) / height;
+              height = maxHeight;
+            }
+
+            // Posicionar en la esquina superior derecha
+            const x = this.pageWidth - this.margin - width;
+            const y = this.currentY;
+
+            // Agregar la imagen al PDF
+            this.doc.addImage(img, 'JPEG', x, y, width, height);
+            resolve();
+          } catch (error) {
+            console.warn('Error al agregar logo al PDF:', error);
+            resolve(); // No fallar si hay error con el logo
+          }
+        };
+        img.onerror = () => {
+          console.warn('Error al cargar el logo para el PDF');
+          resolve(); // No fallar si hay error con el logo
+        };
+        img.src = logoUrl;
+      });
+    } catch (error) {
+      console.warn('Error al procesar el logo:', error);
+    }
   }
 
   private formatCurrency(value: number): string {
@@ -63,7 +138,46 @@ export class ReceptionPDFService {
     });
   }
 
-  private addHeader(reception: Reception, translations: PDFTranslations) {
+  private async addHeader(reception: Reception, translations: PDFTranslations) {
+    // Agregar logo si existe
+    await this.addLogo();
+
+    // Información de la empresa si está disponible
+    if (this.companySettings) {
+      this.doc.setFontSize(12);
+      this.doc.setFont('helvetica', 'bold');
+      
+      // Nombre de la empresa
+      if (this.companySettings.name) {
+        this.doc.text(this.companySettings.name, this.margin, this.currentY);
+        this.currentY += 6;
+      }
+      
+      // Información adicional de la empresa
+      this.doc.setFontSize(8);
+      this.doc.setFont('helvetica', 'normal');
+      this.doc.setTextColor(100, 100, 100);
+      
+      if (this.companySettings.address) {
+        this.doc.text(this.companySettings.address, this.margin, this.currentY);
+        this.currentY += 4;
+      }
+      
+      if (this.companySettings.phone) {
+        this.doc.text(`Tel: ${this.companySettings.phone}`, this.margin, this.currentY);
+        this.currentY += 4;
+      }
+      
+      if (this.companySettings.taxId) {
+        const taxLabel = this.locale === 'es' ? 'RFC' : 'Tax ID';
+        this.doc.text(`${taxLabel}: ${this.companySettings.taxId}`, this.margin, this.currentY);
+        this.currentY += 4;
+      }
+      
+      this.doc.setTextColor(0, 0, 0);
+      this.currentY += 8;
+    }
+
     // Título usando traducción
     this.doc.setFontSize(18);
     this.doc.setFont('helvetica', 'bold');
@@ -260,13 +374,16 @@ export class ReceptionPDFService {
     this.doc.setTextColor(0, 0, 0);
   }
 
-  public generatePDF(
+  public async generatePDF(
     reception: Reception,
     details: ReceptionDetail[],
     translations: PDFTranslations
-  ): void {
+  ): Promise<void> {
+    // Cargar configuración de la empresa
+    await this.loadCompanySettings();
+
     // Generar el contenido del PDF
-    this.addHeader(reception, translations);
+    await this.addHeader(reception, translations);
     this.addProviderInfo(reception, translations);
     this.addWarehouseInfo(reception, translations);
     this.addProductsTable(details, translations);
@@ -278,13 +395,16 @@ export class ReceptionPDFService {
     this.doc.save(fileName);
   }
 
-  public openPDF(
+  public async openPDF(
     reception: Reception,
     details: ReceptionDetail[],
     translations: PDFTranslations
-  ): void {
+  ): Promise<void> {
+    // Cargar configuración de la empresa
+    await this.loadCompanySettings();
+
     // Generar el contenido del PDF
-    this.addHeader(reception, translations);
+    await this.addHeader(reception, translations);
     this.addProviderInfo(reception, translations);
     this.addWarehouseInfo(reception, translations);
     this.addProductsTable(details, translations);

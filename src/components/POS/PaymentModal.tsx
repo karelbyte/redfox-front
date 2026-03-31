@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { BanknotesIcon, CreditCardIcon, XMarkIcon, DocumentArrowDownIcon, ClockIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { BanknotesIcon, CreditCardIcon, XMarkIcon, ClockIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { Input, Btn } from '@/components/atoms';
 import { Client } from '@/types/client';
 import { PaymentMethod } from '@/types/sale';
@@ -18,7 +18,6 @@ interface PaymentModalProps {
   onPaymentMethodChange: (method: PaymentMethod) => void;
   onCashAmountChange: (amount: number) => void;
   getChange: () => number;
-  onDownloadTicket?: () => void;
   selectedClient?: Client | null;
 }
 
@@ -33,7 +32,6 @@ const PaymentModal = React.memo(({
   onPaymentMethodChange,
   onCashAmountChange,
   getChange,
-  onDownloadTicket,
   selectedClient
 }: PaymentModalProps) => {
   const t = useTranslations('pages.pos');
@@ -187,16 +185,6 @@ const PaymentModal = React.memo(({
             >
               {t('payment.cancel')}
             </Btn>
-            {onDownloadTicket && (
-              <Btn
-                variant="outline"
-                onClick={onDownloadTicket}
-                leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
-                disabled={loading}
-              >
-                {t('payment.downloadTicket')}
-              </Btn>
-            )}
             <Btn
               onClick={handleConfirm}
               loading={loading}
