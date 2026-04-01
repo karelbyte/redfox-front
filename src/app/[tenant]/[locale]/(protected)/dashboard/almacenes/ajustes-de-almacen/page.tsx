@@ -20,6 +20,8 @@ import { warehousesService } from '@/services/warehouses.service';
 import { Warehouse } from '@/types/warehouse';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ColumnSelector from '@/components/Table/ColumnSelector';
+import HelpButton from "@/components/Help/HelpButton";
+import { warehouseAdjustmentsHelp } from "@/components/Help/configs/warehouse-adjustments.help";
 
 export default function WarehouseAdjustmentsPage() {
   const t = useTranslations('pages.warehouseAdjustments');
@@ -181,9 +183,12 @@ export default function WarehouseAdjustmentsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={warehouseAdjustmentsHelp} />
+        </div>
         <Btn
           onClick={() => {
             setEditingAdjustment(null);

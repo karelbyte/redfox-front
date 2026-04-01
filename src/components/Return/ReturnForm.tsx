@@ -15,7 +15,7 @@ interface ReturnFormProps {
   warehouses: Warehouse[];
   initialData?: ReturnFormData;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (id?: string) => void;
   onSavingChange: (saving: boolean) => void;
   onValidChange: (valid: boolean) => void;
 }
@@ -113,12 +113,12 @@ const ReturnForm = forwardRef<ReturnFormRef, ReturnFormProps>(
         if (initialData && 'id' in initialData) {
           // Actualizar devolución existente
           await returnService.updateReturn((initialData as ReturnFormData & { id: string }).id, data);
+          onSuccess();
         } else {
-          // Crear nueva devolución
-          await returnService.createReturn(data);
+          // Crear nueva devolución — navegar al detalle
+          const created = await returnService.createReturn(data);
+          onSuccess(created.id);
         }
-
-        onSuccess();
       } catch (error) {
         if (error instanceof Error) {
           toastService.error(error.message);

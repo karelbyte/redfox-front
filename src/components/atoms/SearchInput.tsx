@@ -64,14 +64,11 @@ const SearchInput = ({
           onChange={handleChange}
           className="pr-20"
         />
-        
-        {/* Botón de búsqueda o limpiar */}
         <button
-          type={hasText ? 'button' : 'button'}
+          type="button"
           onClick={hasText ? handleClear : handleSearch}
           className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-md hover:bg-gray-100 transition-colors"
           style={{ color: `rgb(var(--color-primary-500))` }}
-          title={hasText ? 'Limpiar búsqueda' : 'Buscar'}
         >
           {hasText ? (
             <XMarkIcon className="h-5 w-5" />
@@ -86,4 +83,4 @@ const SearchInput = ({
 
 SearchInput.displayName = 'SearchInput';
 
-export default SearchInput; 
+export default SearchInput;

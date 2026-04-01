@@ -1,9 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { ReturnDetail } from '@/types/return';
 import { Btn } from '@/components/atoms';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import ConfirmModal from '@/components/Modal/ConfirmModal';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface ReturnProductsTableProps {
   products: ReturnDetail[];
@@ -19,113 +23,193 @@ export default function ReturnProductsTable({
   isReturnOpen,
 }: ReturnProductsTableProps) {
   const t = useTranslations('pages.returns.products');
+  const deleteT = useTranslations('pages.returns.deleteProduct');
+  const commonT = useTranslations('common');
+  const { formatCurrency } = useLocaleUtils();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<ReturnDetail | null>(null);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(price);
+  const handleDeleteClick = (product: ReturnDetail) => {
+    setProductToDelete(product);
+    setDeleteModalOpen(true);
   };
 
-  if (products.length === 0) {
+  const handleConfirmDelete = () => {
+    if (!productToDelete) return;
+    onDeleteProduct(productToDelete.id);
+    setDeleteModalOpen(false);
+    setProductToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModalOpen(false);
+    setProductToDelete(null);
+  };
+
+  if (!Array.isArray(products) || products.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-gray-500">
-          <p className="text-lg font-medium">{t('noProducts')}</p>
-          <p className="text-sm mt-2">
-            {isReturnOpen ? t('noProductsDesc') : t('noProductsClosedDesc')}
-          </p>
-        </div>
+        <svg
+          className="mx-auto h-12 w-12 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+          />
+        </svg>
+        <h3 className="mt-2 text-sm font-medium text-gray-900">{t('noProducts')}</h3>
+        <p className="mt-1 text-sm text-gray-500">
+          {isReturnOpen ? t('noProductsDesc') : t('noProductsClosedDesc')}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('headers.product')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('headers.sku')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('headers.brand')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('headers.category')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('headers.quantity')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('headers.price')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-              {t('headers.subtotal')}
-            </th>
-            {isReturnOpen && (
-              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                {t('headers.actions')}
+    <>
+      <div
+        className="bg-white rounded-lg overflow-hidden"
+        style={{
+          boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`,
+        }}
+      >
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.product')}
               </th>
-            )}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {products.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{product.product.name}</div>
-                <div className="text-sm text-gray-500">{product.product.description}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {product.product.sku}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {product.product.brand?.name || '-'}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {product.product.category?.name || '-'}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <span className="font-medium">{product.quantity}</span>
-                <span className="text-gray-500 ml-1">
-                  {product.product.measurement_unit?.code || 'pz'}
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                {formatPrice(product.price)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                {formatPrice(product.quantity * product.price)}
-              </td>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.sku')}
+              </th>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.brand')}
+              </th>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.category')}
+              </th>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.quantity')}
+              </th>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.price')}
+              </th>
+              <th
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                style={{ color: `rgb(var(--color-primary-600))` }}
+              >
+                {t('headers.subtotal')}
+              </th>
               {isReturnOpen && (
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEditProduct(product)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={t('actions.edit')}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDeleteProduct(product.id)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={t('actions.delete')}
-                      style={{ color: '#dc2626' }}
-                    />
-                  </div>
-                </td>
+                <th
+                  className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                  style={{ color: `rgb(var(--color-primary-600))` }}
+                >
+                  {t('headers.actions')}
+                </th>
               )}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {products.map((detail) => (
+              <tr key={detail.id} className="hover:bg-primary-50 transition-colors">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {detail.product.name}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {detail.product.description}
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {detail.product.sku}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {detail.product.brand?.name || '-'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {detail.product.category?.name || '-'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <span className="font-medium">{detail.quantity}</span>
+                  {detail.product.measurement_unit?.code && (
+                    <span className="text-gray-500 ml-1">
+                      {detail.product.measurement_unit.code}
+                    </span>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatCurrency(detail.price)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {formatCurrency(detail.quantity * detail.price)}
+                </td>
+                {isReturnOpen && (
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
+                      <Tooltip content={commonT('actions.edit')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEditProduct(detail)}
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                        />
+                      </Tooltip>
+                      <Tooltip content={commonT('actions.delete')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteClick(detail)}
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          style={{ color: '#dc2626' }}
+                        />
+                      </Tooltip>
+                    </div>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Modal de confirmación para eliminar */}
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title={deleteT('title')}
+        message={deleteT('message', {
+          productName: productToDelete?.product.name || '',
+        })}
+        confirmText={commonT('actions.delete')}
+        cancelText={commonT('actions.cancel')}
+      />
+    </>
   );
-} 
+}

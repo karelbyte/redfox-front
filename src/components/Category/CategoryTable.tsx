@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Btn } from '@/components/atoms';
 import { usePermissions } from '@/hooks/usePermissions';
 import { API_BASE_URL } from '@/lib/config';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface CategoryTableProps {
   categories: Category[];
@@ -110,23 +111,25 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <div className="flex justify-end space-x-2">
                 {can(['category_update']) && (
-                  <Btn
-                    onClick={() => onEdit(category)}
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={<PencilIcon className="h-4 w-4" />}
-                    title={commonT('actions.edit')}
-                  />
+                  <Tooltip content={commonT('actions.edit')} placement="top">
+                    <Btn
+                      onClick={() => onEdit(category)}
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<PencilIcon className="h-4 w-4" />}
+                    />
+                  </Tooltip>
                 )}
                 {can(['category_delete']) && (
-                  <Btn
-                    onClick={() => onDelete(category)}
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={<TrashIcon className="h-4 w-4" />}
-                    title={commonT('actions.delete')}
-                    style={{ color: '#dc2626' }}
-                  />
+                  <Tooltip content={commonT('actions.delete')} placement="top">
+                    <Btn
+                      onClick={() => onDelete(category)}
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<TrashIcon className="h-4 w-4" />}
+                      style={{ color: '#dc2626' }}
+                    />
+                  </Tooltip>
                 )}
               </div>
             </td>

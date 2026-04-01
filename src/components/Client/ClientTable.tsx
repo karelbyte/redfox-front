@@ -4,6 +4,7 @@ import { PencilIcon, TrashIcon, CheckCircleIcon, MapPinIcon, IdentificationIcon,
 import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter, useParams } from 'next/navigation';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface ClientTableProps {
   clients: Client[];
@@ -151,12 +152,12 @@ export default function ClientTable({
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <span className="inline-flex items-center gap-1.5">
                     {client.pack_client_id && (
-                      <span title={t('table.inPack')} className="inline-flex">
+                      <Tooltip content={t('table.inPack')} placement="right">
                         <CheckCircleIcon
                           className="h-4 w-4 shrink-0 text-green-600"
                           aria-label={t('table.inPack')}
                         />
-                      </span>
+                      </Tooltip>
                     )}
                     {client.name}
                   </span>

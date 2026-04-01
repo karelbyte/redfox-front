@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { usePermissions } from '@/hooks/usePermissions';
 import { returnService } from '@/services';
@@ -20,12 +20,16 @@ import { warehousesService } from '@/services';
 import { toastService } from '@/services/toast.service';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ColumnSelector from '@/components/Table/ColumnSelector';
+import HelpButton from "@/components/Help/HelpButton";
+import { returnsHelp } from "@/components/Help/configs/returns.help";
 
 export default function ReturnsPage() {
   const t = useTranslations('pages.returns');
   const tCommon = useTranslations('common');
   const router = useRouter();
   const locale = useLocale();
+  const params = useParams();
+  const tenant = params?.tenant as string;
   const { can } = usePermissions();
 
   const [returns, setReturns] = useState<Return[]>([]);
@@ -139,9 +143,14 @@ export default function ReturnsPage() {
     setIsSaving(false);
   };
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = (id?: string) => {
     handleDrawerClose();
-    loadReturns();
+    if (id && !editingReturn) {
+      // Navegar al detalle de la devolución recién creada
+      router.push(`/${tenant}/${locale}/dashboard/almacenes/devoluciones/devoluciones/${id}`);
+    } else {
+      loadReturns();
+    }
   };
 
   const handleSave = () => {
@@ -182,9 +191,12 @@ export default function ReturnsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: `rgb(var(--color-primary-800))` }}>
-            {t('title')}
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold" style={{ color: `rgb(var(--color-primary-800))` }}>
+              {t('title')}
+            </h1>
+            <HelpButton config={returnsHelp} />
+          </div>
           <p className="text-sm text-gray-500 mt-1">
             {t('subtitle')}
           </p>

@@ -17,6 +17,8 @@ import Loading from "@/components/Loading/Loading";
 import EmptyState from "@/components/atoms/EmptyState";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
+import HelpButton from "@/components/Help/HelpButton";
+import { inventoryHelp } from "@/components/Help/configs/inventory.help";
 
 export default function InventariosPage() {
   const router = useRouter();
@@ -181,12 +183,15 @@ export default function InventariosPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1
-          className="text-xl font-semibold"
-          style={{ color: `rgb(var(--color-primary-700))` }}
-        >
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: `rgb(var(--color-primary-700))` }}
+          >
+            {t('title')}
+          </h1>
+          <HelpButton config={inventoryHelp} />
+        </div>
       </div>
 
       <div className="mt-6">

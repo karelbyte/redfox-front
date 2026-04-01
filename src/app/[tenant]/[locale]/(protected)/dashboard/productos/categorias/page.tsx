@@ -18,6 +18,8 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
+import HelpButton from "@/components/Help/HelpButton";
+import { categoriesHelp } from "@/components/Help/configs/categories.help";
 
 export default function CategoriesPage() {
   const t = useTranslations('pages.categories');
@@ -127,9 +129,12 @@ export default function CategoriesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: 'rgb(var(--color-primary-800))' }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: 'rgb(var(--color-primary-800))' }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={categoriesHelp} />
+        </div>
         {can(["category_create"]) && (
           <Btn
             onClick={() => {

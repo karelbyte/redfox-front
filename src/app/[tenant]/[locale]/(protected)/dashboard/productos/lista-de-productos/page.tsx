@@ -25,6 +25,8 @@ import { useBulkSelection, BulkAction } from "@/hooks/useBulkSelection";
 import AdvancedFilters, { FilterField } from "@/components/atoms/AdvancedFilters";
 import ExportButton from "@/components/atoms/ExportButton";
 import { ProductType } from "@/types/product";
+import HelpButton from "@/components/Help/HelpButton";
+import { productsHelp } from "@/components/Help/configs/products.help";
 
 export default function ListProductsPage() {
   const t = useTranslations("pages.products");
@@ -262,12 +264,15 @@ export default function ListProductsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1
-          className="text-xl font-semibold"
-          style={{ color: `rgb(var(--color-primary-800))` }}
-        >
-          {t("title")}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: `rgb(var(--color-primary-800))` }}
+          >
+            {t("title")}
+          </h1>
+          <HelpButton config={productsHelp} />
+        </div>
         {can(["product_create"]) && (
           <div className="flex gap-2">
             <Btn

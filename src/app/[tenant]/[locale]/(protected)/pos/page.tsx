@@ -22,6 +22,8 @@ import CashRegisterModal from '@/components/POS/CashRegisterModal';
 import CashDrawerModal from '@/components/POS/CashDrawerModal';
 import CashBalance from '@/components/POS/CashBalance';
 import { useCart } from '@/context/CartContext';
+import HelpButton from '@/components/Help/HelpButton';
+import { posHelp } from '@/components/Help/configs/pos.help';
 
 export default function POSPage() {
   const t = useTranslations('pages.pos');
@@ -439,6 +441,9 @@ export default function POSPage() {
 
           {/* Panel derecho - Productos */}
           <div className="lg:col-span-2">
+            <div className="flex justify-end mb-2">
+              <HelpButton config={posHelp} />
+            </div>
             <ProductsGrid
               products={filteredProducts}
               searchTerm={searchTerm}

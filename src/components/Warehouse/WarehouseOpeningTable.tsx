@@ -7,6 +7,7 @@ import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 import { API_BASE_URL } from '@/lib/config';
+import Tooltip from "@/components/atoms/Tooltip";
 
 interface WarehouseOpeningTableProps {
   openings: WarehouseOpening[];
@@ -176,28 +177,21 @@ export default function WarehouseOpeningTable({
               {isVisible('actions') && (
                 <td className="px-4 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    {can(["warehouse_opening_update"]) && <Btn
-                      onClick={() => onEdit(opening)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={t('actions.edit')}
-                    />}
-                    {can(["warehouse_opening_read"]) && <Btn
-                      onClick={() => onViewDetails(opening)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />}
-                    {can(["warehouse_opening_delete"]) && <Btn
-                      onClick={() => onDelete(opening)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={t('actions.delete')}
-                      style={{ color: '#dc2626' }}
-                    />}
+                    {can(["warehouse_opening_update"]) && (
+                      <Tooltip content={t('actions.edit')} placement="top">
+                        <Btn onClick={() => onEdit(opening)} variant="ghost" size="sm" leftIcon={<PencilIcon className="h-4 w-4" />} />
+                      </Tooltip>
+                    )}
+                    {can(["warehouse_opening_read"]) && (
+                      <Tooltip content={t('actions.viewDetails')} placement="top">
+                        <Btn onClick={() => onViewDetails(opening)} variant="ghost" size="sm" leftIcon={<EyeIcon className="h-4 w-4" />} />
+                      </Tooltip>
+                    )}
+                    {can(["warehouse_opening_delete"]) && (
+                      <Tooltip content={t('actions.delete')} placement="top">
+                        <Btn onClick={() => onDelete(opening)} variant="ghost" size="sm" leftIcon={<TrashIcon className="h-4 w-4" />} style={{ color: '#dc2626' }} />
+                      </Tooltip>
+                    )}
                   </div>
                 </td>
               )}

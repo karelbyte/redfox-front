@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { WarehouseAdjustment } from '@/types/warehouse-adjustment';
 import { Btn } from '@/components/atoms';
 import { EyeIcon, TrashIcon, CheckCircleIcon, PencilIcon } from '@heroicons/react/24/outline';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface WarehouseAdjustmentTableProps {
   adjustments: WarehouseAdjustment[];
@@ -154,42 +155,31 @@ export function WarehouseAdjustmentTable({
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDetails(adjustment)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />
+                    <Tooltip content={t('actions.viewDetails')} placement="top">
+                      <Btn variant="ghost" size="sm" onClick={() => onDetails(adjustment)} leftIcon={<EyeIcon className="h-4 w-4" />} />
+                    </Tooltip>
                     {!adjustment.status && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onClose(adjustment)}
-                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                        title={t('actions.close')}
-                        style={{ color: '#dc2626' }}
-                      />
+                      <Tooltip content={t('actions.close')} placement="top">
+                        <Btn variant="ghost" size="sm" onClick={() => onClose(adjustment)} leftIcon={<CheckCircleIcon className="h-4 w-4" />} style={{ color: '#dc2626' }} />
+                      </Tooltip>
                     )}
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(adjustment)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={adjustment.status ? t('actions.cannotEditClosed') : t('actions.edit')}
-                      disabled={adjustment.status}
-                      className={adjustment.status ? 'opacity-50 cursor-not-allowed' : ''}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(adjustment)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={adjustment.status ? t('actions.cannotDeleteClosed') : t('actions.delete')}
-                      disabled={adjustment.status}
-                      className={adjustment.status ? 'opacity-50 cursor-not-allowed' : ''}
-                      style={{ color: adjustment.status ? '#9ca3af' : '#dc2626' }}
-                    />
+                    <Tooltip content={adjustment.status ? t('actions.cannotEditClosed') : t('actions.edit')} placement="top">
+                      <Btn
+                        variant="ghost" size="sm" onClick={() => onEdit(adjustment)}
+                        leftIcon={<PencilIcon className="h-4 w-4" />}
+                        disabled={adjustment.status}
+                        className={adjustment.status ? 'opacity-50 cursor-not-allowed' : ''}
+                      />
+                    </Tooltip>
+                    <Tooltip content={adjustment.status ? t('actions.cannotDeleteClosed') : t('actions.delete')} placement="top">
+                      <Btn
+                        variant="ghost" size="sm" onClick={() => onDelete(adjustment)}
+                        leftIcon={<TrashIcon className="h-4 w-4" />}
+                        disabled={adjustment.status}
+                        className={adjustment.status ? 'opacity-50 cursor-not-allowed' : ''}
+                        style={{ color: adjustment.status ? '#9ca3af' : '#dc2626' }}
+                      />
+                    </Tooltip>
                   </div>
                 </td>
               )}

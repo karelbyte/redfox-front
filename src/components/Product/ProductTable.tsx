@@ -3,6 +3,7 @@ import { Product } from '@/types/product';
 import { PencilIcon, TrashIcon, QrCodeIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface ProductTableProps {
   products: Product[];
@@ -183,7 +184,9 @@ export default function ProductTable({
                     }`}>
                       {Number(product.total_stock)}
                       {product.min_stock && product.min_stock > 0 && Number(product.total_stock) <= Number(product.min_stock) && (
-                        <span title={t('table.lowStockWarning', { default: 'Stock bajo' })}>⚠️</span>
+                        <Tooltip content={t('table.lowStockWarning', { default: 'Stock bajo' })} placement="right">
+                          <span>⚠️</span>
+                        </Tooltip>
                       )}
                     </span>
                   </div>
@@ -202,34 +205,36 @@ export default function ProductTable({
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onGenerateBarcode(product)}
-                      leftIcon={<QrCodeIcon className="h-4 w-4" />}
-                      title={t('actions.generateBarcode')}
-                      style={{ color: '#059669' }}
-                    />
-                    {can(["product_update"]) && (
+                    <Tooltip content={t('actions.generateBarcode')} placement="top">
                       <Btn
                         variant="ghost"
                         size="sm"
-                        onClick={() => onEdit(product)}
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={tCommon('actions.edit')}
+                        onClick={() => onGenerateBarcode(product)}
+                        leftIcon={<QrCodeIcon className="h-4 w-4" />}
+                        style={{ color: '#059669' }}
                       />
+                    </Tooltip>
+                    {can(["product_update"]) && (
+                      <Tooltip content={tCommon('actions.edit')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(product)}
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                        />
+                      </Tooltip>
                     )}
                     {can(["product_delete"]) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(product)}
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        title={tCommon('actions.delete')}
-                        style={{ color: '#dc2626' }}
-                      />
+                      <Tooltip content={tCommon('actions.delete')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(product)}
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          style={{ color: '#dc2626' }}
+                        />
+                      </Tooltip>
                     )}
-
                   </div>
                 </td>
               )}

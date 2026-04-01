@@ -17,6 +17,8 @@ import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ColumnSelector from '@/components/Table/ColumnSelector';
+import HelpButton from "@/components/Help/HelpButton";
+import { brandsHelp } from "@/components/Help/configs/brands.help";
 
 
 export default function BrandsPage() {
@@ -129,9 +131,12 @@ export default function BrandsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={brandsHelp} />
+        </div>
         {can(["brand_create"]) && (
           <Btn
             onClick={() => {

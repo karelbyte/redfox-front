@@ -161,10 +161,10 @@ export default function WarehouseAdjustmentProductsTable({
                   {detail.product.sku}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {detail.product.brand.description}
+                  {detail.product.brand ? detail.product.brand.description : ''}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {detail.product.category.name}
+                  {detail.product.category ? detail.product.category.name : ''}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {detail.quantity}

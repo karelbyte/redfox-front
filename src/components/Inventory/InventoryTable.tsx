@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { InventoryItem } from "@/types/inventory";
 import { EyeIcon, ClockIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { Btn } from "@/components/atoms";
+import Tooltip from "@/components/atoms/Tooltip";
 
 interface InventoryTableProps {
   inventoryItems: InventoryItem[];
@@ -168,28 +169,31 @@ export default function InventoryTable({
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <Btn
-                      onClick={() => onViewProduct(item)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewProduct')}
-                    />
-                    <Btn
-                      onClick={() => onViewHistory(item)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<ClockIcon className="h-4 w-4" />}
-                      title={t('actions.viewHistory')}
-                    />
-                    {onSyncPack && (
+                    <Tooltip content={t('actions.viewProduct')} placement="top">
                       <Btn
-                        onClick={() => onSyncPack(item)}
+                        onClick={() => onViewProduct(item)}
                         variant="ghost"
                         size="sm"
-                        leftIcon={<ArrowPathIcon className="h-4 w-4" />}
-                        title={t('actions.syncWithPack')}
+                        leftIcon={<EyeIcon className="h-4 w-4" />}
                       />
+                    </Tooltip>
+                    <Tooltip content={t('actions.viewHistory')} placement="top">
+                      <Btn
+                        onClick={() => onViewHistory(item)}
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={<ClockIcon className="h-4 w-4" />}
+                      />
+                    </Tooltip>
+                    {onSyncPack && (
+                      <Tooltip content={t('actions.syncWithPack')} placement="top">
+                        <Btn
+                          onClick={() => onSyncPack(item)}
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<ArrowPathIcon className="h-4 w-4" />}
+                        />
+                      </Tooltip>
                     )}
                   </div>
                 </td>

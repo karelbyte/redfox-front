@@ -7,6 +7,7 @@ import { LanguageSelectorCompact } from "@/components/LanguageSelectorCompact";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import Tooltip from "@/components/atoms/Tooltip";
 
 const USER_MENU_STORAGE_KEY = 'nitro-user-menu-open';
 
@@ -84,21 +85,22 @@ export function UserMenu() {
   return (
     <div className="flex items-center space-x-3">
       {/* Botón de POS */}
-      <button
-        onClick={handlePOSClick}
-        className="p-2 rounded-lg transition-colors hover:bg-gray-100 focus:outline-none"
-        title="Point of Sale (POS)"
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
-          e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.color = "#6b7280";
-        }}
-      >
-        <ShoppingCartIcon className="h-6 w-6" />
-      </button>
+      <Tooltip content="Point of Sale (POS)" placement="bottom">
+        <button
+          onClick={handlePOSClick}
+          className="p-2 rounded-lg transition-colors hover:bg-gray-100 focus:outline-none"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+            e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#6b7280";
+          }}
+        >
+          <ShoppingCartIcon className="h-6 w-6" />
+        </button>
+      </Tooltip>
 
       {/* Menú de usuario */}
       <div className="relative" ref={menuRef}>

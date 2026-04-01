@@ -119,16 +119,6 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
         isValid = false;
       }
 
-      if (!formData.address.trim()) {
-        newErrors.address = t('form.errors.addressRequired');
-        isValid = false;
-      }
-
-      if (!formData.phone.trim()) {
-        newErrors.phone = t('form.errors.phoneRequired');
-        isValid = false;
-      }
-
       // Solo validar currency_id si no estamos editando o si estamos creando
       if (!formData.currency_id && !warehouse) {
         newErrors.currency_id = t('form.errors.currencyRequired');
@@ -227,7 +217,6 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
           <TextArea
             id="address"
             label={t('form.address')}
-            required
             value={formData.address}
             onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
             placeholder={t('form.placeholders.address')}
@@ -238,7 +227,6 @@ const WarehouseForm = forwardRef<WarehouseFormRef, WarehouseFormProps>(
             type="text"
             id="phone"
             label={t('form.phone')}
-            required
             value={formData.phone}
             onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
             placeholder={t('form.placeholders.phone')}

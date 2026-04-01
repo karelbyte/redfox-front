@@ -23,6 +23,8 @@ import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
 import BulkActionsBar from "@/components/atoms/BulkActionsBar";
+import HelpButton from "@/components/Help/HelpButton";
+import { clientsHelp } from "@/components/Help/configs/clients.help";
 import { useBulkSelection, BulkAction } from "@/hooks/useBulkSelection";
 
 export default function ClientsPage() {
@@ -219,12 +221,15 @@ export default function ClientsPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1
-          className="text-xl font-semibold"
-          style={{ color: `rgb(var(--color-primary-800))` }}
-        >
-          {t("title")}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: `rgb(var(--color-primary-800))` }}
+          >
+            {t("title")}
+          </h1>
+          <HelpButton config={clientsHelp} />
+        </div>
         <div className="flex items-center gap-2">
 
           {can(["client_create"]) && (

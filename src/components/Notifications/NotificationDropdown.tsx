@@ -182,6 +182,48 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ onClose }) 
             >
               {t('types.inventory')}
             </button>
+
+            <button
+              onClick={() => handleFilterChange(NotificationType.SALE)}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                activeFilter === NotificationType.SALE
+                  ? 'text-white'
+                  : 'text-gray-600 bg-white hover:bg-gray-100'
+              }`}
+              style={{
+                backgroundColor: activeFilter === NotificationType.SALE ? `rgb(var(--color-primary-600))` : undefined,
+              }}
+            >
+              {t('types.sale')}
+            </button>
+
+            <button
+              onClick={() => handleFilterChange(NotificationType.INVOICE)}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                activeFilter === NotificationType.INVOICE
+                  ? 'text-white'
+                  : 'text-gray-600 bg-white hover:bg-gray-100'
+              }`}
+              style={{
+                backgroundColor: activeFilter === NotificationType.INVOICE ? `rgb(var(--color-primary-600))` : undefined,
+              }}
+            >
+              {t('types.invoice')}
+            </button>
+
+            <button
+              onClick={() => handleFilterChange(NotificationType.WARNING)}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                activeFilter === NotificationType.WARNING
+                  ? 'text-white'
+                  : 'text-gray-600 bg-white hover:bg-gray-100'
+              }`}
+              style={{
+                backgroundColor: activeFilter === NotificationType.WARNING ? `rgb(var(--color-primary-600))` : undefined,
+              }}
+            >
+              {t('types.warning')}
+            </button>
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@ import { MeasurementUnit } from '@/types/measurement-unit';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface MeasurementUnitTableProps {
   units: MeasurementUnit[];
@@ -92,23 +93,25 @@ export default function MeasurementUnitTable({ units, onEdit, onDelete, visibleC
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
                     {can(["measurement_unit_update"]) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(unit)}
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={commonT('actions.edit')}
-                      />
+                      <Tooltip content={commonT('actions.edit')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(unit)}
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                        />
+                      </Tooltip>
                     )}
                     {can(["measurement_unit_delete"]) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(unit)}
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        title={commonT('actions.delete')}
-                        style={{ color: '#dc2626' }}
-                      />
+                      <Tooltip content={commonT('actions.delete')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(unit)}
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          style={{ color: '#dc2626' }}
+                        />
+                      </Tooltip>
                     )}
                   </div>
                 </td>

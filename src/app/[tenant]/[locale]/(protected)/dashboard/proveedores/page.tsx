@@ -18,6 +18,8 @@ import BulkActionsBar from "@/components/atoms/BulkActionsBar";
 import { useBulkSelection, BulkAction } from "@/hooks/useBulkSelection";
 import AdvancedFilters, { FilterField } from "@/components/atoms/AdvancedFilters";
 import Loading from '@/components/Loading/Loading';
+import HelpButton from "@/components/Help/HelpButton";
+import { providersHelp } from "@/components/Help/configs/providers.help";
 import Pagination from "@/components/Pagination/Pagination";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
@@ -178,9 +180,12 @@ export default function ProvidersPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={providersHelp} />
+        </div>
         <div className="flex items-center gap-2">
 
           {can(["provider_create"]) && (

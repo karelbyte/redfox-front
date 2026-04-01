@@ -4,6 +4,7 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 import { API_BASE_URL } from '@/lib/config';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface BrandTableProps {
   brands: Brand[];
@@ -114,23 +115,25 @@ export default function BrandTable({ brands, onEdit, onDelete, visibleColumns }:
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
                     {can(['brand_update']) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onEdit(brand)}
-                        leftIcon={<PencilIcon className="h-4 w-4" />}
-                        title={commonT('actions.edit')}
-                      />
+                      <Tooltip content={commonT('actions.edit')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(brand)}
+                          leftIcon={<PencilIcon className="h-4 w-4" />}
+                        />
+                      </Tooltip>
                     )}
                     {can(['brand_delete']) && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(brand)}
-                        leftIcon={<TrashIcon className="h-4 w-4" />}
-                        title={commonT('actions.delete')}
-                        style={{ color: '#dc2626' }}
-                      />
+                      <Tooltip content={commonT('actions.delete')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(brand)}
+                          leftIcon={<TrashIcon className="h-4 w-4" />}
+                          style={{ color: '#dc2626' }}
+                        />
+                      </Tooltip>
                     )}
                   </div>
                 </td>

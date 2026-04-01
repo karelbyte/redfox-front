@@ -179,7 +179,10 @@
       "registering": "Signing up...",
       "loginLink": "Already have an account? Sign in",
       "success": "Registration successful. Please check your email to activate your account.",
-      "passwordMismatch": "Passwords do not match"
+      "passwordMismatch": "Passwords do not match",
+      "companyNameInvalid": "Organization name can only contain letters and spaces, no numbers or special characters.",
+      "companyNameTooShort": "Organization name must be at least 3 characters.",
+      "slugPreview": "Your identifier will be"
     },
     "activate": {
       "activating": "Activating your account...",
@@ -2895,6 +2898,7 @@
           "product": "Product",
           "quantity": "Quantity",
           "price": "Price",
+          "selectPrice": "Select price",
           "selectProduct": "Select product",
           "placeholders": {
             "quantity": "Enter quantity",
@@ -4128,6 +4132,10 @@
     "continue": "Continue",
     "back": "Back",
     "noPack": "Don't use billing for now"
+  },
+  "help": {
+    "button": "Help",
+    "footer": "Still have questions? Contact support."
   },
   "inventoryAlerts": {
     "title": "Inventory Alerts",

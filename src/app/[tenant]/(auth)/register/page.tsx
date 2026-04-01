@@ -36,12 +36,36 @@ export default function RegisterPage() {
         formData.password_confirmation.length > 0 &&
         formData.password !== formData.password_confirmation;
 
+    // Validación de nombre de organización: solo letras y espacios simples
+    const COMPANY_NAME_REGEX = /^[a-zA-ZÀ-ÿ\s]+$/;
+    const companyNameError =
+        formData.companyName.length > 0 && !COMPANY_NAME_REGEX.test(formData.companyName)
+            ? t('companyNameInvalid')
+            : formData.companyName.length > 0 && formData.companyName.trim().length < 3
+            ? t('companyNameTooShort')
+            : '';
+
+    // Preview del slug que se generará
+    const slugPreview = formData.companyName
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         if (formData.password !== formData.password_confirmation) {
             toastService.error(t('passwordMismatch'));
+            setLoading(false);
+            return;
+        }
+
+        if (companyNameError) {
+            toastService.error(companyNameError);
             setLoading(false);
             return;
         }
@@ -138,10 +162,18 @@ export default function RegisterPage() {
                         <input
                             id="companyName" name="companyName" type="text" required
                             className="appearance-none block w-full px-4 py-3 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors"
-                            style={inputStyle(false)}
+                            style={inputStyle(!!companyNameError)}
                             value={formData.companyName}
                             onChange={handleChange}
                         />
+                        {companyNameError && (
+                            <p className="mt-1 text-xs text-red-600">{companyNameError}</p>
+                        )}
+                        {!companyNameError && slugPreview.length >= 3 && (
+                            <p className="mt-1 text-xs text-gray-400">
+                                {t('slugPreview')}: <span className="font-mono text-gray-600">{slugPreview}</span>
+                            </p>
+                        )}
                     </div>
 
                     <div>

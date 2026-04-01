@@ -179,7 +179,10 @@
       "registering": "Registrando...",
       "loginLink": "¿Ya tienes cuenta? Inicia sesión",
       "success": "Registro exitoso. Por favor revisa tu correo para activar tu cuenta.",
-      "passwordMismatch": "Las contraseñas no coinciden"
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "companyNameInvalid": "El nombre de la organización solo puede contener letras y espacios, sin números ni caracteres especiales.",
+      "companyNameTooShort": "El nombre de la organización debe tener al menos 3 caracteres.",
+      "slugPreview": "Tu identificador será"
     },
     "activate": {
       "activating": "Activando tu cuenta...",
@@ -3060,6 +3063,7 @@
           "product": "Producto",
           "quantity": "Cantidad",
           "price": "Precio",
+          "selectPrice": "Seleccionar precio",
           "selectProduct": "Seleccionar producto",
           "placeholders": {
             "quantity": "Ingrese cantidad",
@@ -4141,6 +4145,10 @@
     "continue": "Continuar",
     "back": "Atrás",
     "noPack": "No usar facturación por ahora"
+  },
+  "help": {
+    "button": "Ayuda",
+    "footer": "¿Tienes dudas adicionales? Contacta a soporte."
   },
   "inventoryAlerts": {
     "title": "Alertas de Inventario",

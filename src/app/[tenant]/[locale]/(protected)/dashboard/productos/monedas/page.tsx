@@ -16,6 +16,8 @@ import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ColumnSelector from '@/components/Table/ColumnSelector';
+import HelpButton from "@/components/Help/HelpButton";
+import { currenciesHelp } from "@/components/Help/configs/currencies.help";
 
 export default function CurrenciesPage() {
   const t = useTranslations('pages.currencies');
@@ -129,9 +131,12 @@ export default function CurrenciesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={currenciesHelp} />
+        </div>
         {can(["currency_create"]) && (
           <Btn
             onClick={() => {

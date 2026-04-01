@@ -5,6 +5,7 @@ import { Btn } from "@/components/atoms";
 import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter, useParams } from 'next/navigation';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface ProviderTableProps {
   providers: Provider[];
@@ -143,13 +144,12 @@ export default function ProviderTable({
                   <div className="flex items-center gap-2">
                     <span>{provider.name}</span>
                     {provider.id.startsWith('temp_') && (
-                      <span
-                        className="inline-flex items-center gap-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full"
-                        title={tOffline('pendingSync')}
-                      >
-                        <ClockIcon className="h-3 w-3" />
-                        {tOffline('pendingSync')}
-                      </span>
+                      <Tooltip content={tOffline('pendingSync')} placement="right">
+                        <span className="inline-flex items-center gap-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                          <ClockIcon className="h-3 w-3" />
+                          {tOffline('pendingSync')}
+                        </span>
+                      </Tooltip>
                     )}
                   </div>
                 </td>

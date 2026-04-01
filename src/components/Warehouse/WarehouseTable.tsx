@@ -16,6 +16,7 @@ import ConfirmModal from "../Modal/ConfirmModal";
 import WarehouseCloseResultModal from "./WarehouseCloseResultModal";
 import { Btn } from "@/components/atoms";
 import { usePermissions } from "@/hooks/usePermissions";
+import Tooltip from "@/components/atoms/Tooltip";
 
 interface WarehouseTableProps {
   warehouses: Warehouse[];
@@ -230,56 +231,52 @@ export default function WarehouseTable({
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end gap-2">
                       {warehouse.is_open &&
-                        can([
-                          "warehouse_opening_module_view",
-                          "warehouse_opening_create",
-                        ]) && (
-                          <Btn
-                            onClick={() => handleOpenAperturas(warehouse)}
-                            variant="ghost"
-                            size="sm"
-                            leftIcon={<EyeIcon className="h-4 w-4 mr-2" />}
-                            title={t("actions.open")}
-                            style={{ color: "#059669" }}
-                          />
+                        can(["warehouse_opening_module_view", "warehouse_opening_create"]) && (
+                          <Tooltip content={t("actions.open")} placement="top">
+                            <Btn
+                              onClick={() => handleOpenAperturas(warehouse)}
+                              variant="ghost"
+                              size="sm"
+                              leftIcon={<EyeIcon className="h-4 w-4 mr-2" />}
+                              style={{ color: "#059669" }}
+                            />
+                          </Tooltip>
                         )}
                       {warehouse.is_open && can(["warehouse_close"]) && (
-                        <Btn
-                          onClick={() => handleCloseWarehouse(warehouse)}
-                          variant="ghost"
-                          size="sm"
-                          leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                          title={t("actions.close")}
-                          style={{ color: "#dc2626" }}
-                        />
+                        <Tooltip content={t("actions.close")} placement="top">
+                          <Btn
+                            onClick={() => handleCloseWarehouse(warehouse)}
+                            variant="ghost"
+                            size="sm"
+                            leftIcon={<CheckCircleIcon className="h-4 w-4" />}
+                            style={{ color: "#dc2626" }}
+                          />
+                        </Tooltip>
                       )}
                       {can(["warehouse_update"]) && (
-                        <Btn
-                          onClick={() => onEdit(warehouse)}
-                          variant="ghost"
-                          size="sm"
-                          leftIcon={<PencilIcon className="h-4 w-4" />}
-                          title={t("actions.edit")}
-                        />
+                        <Tooltip content={t("actions.edit")} placement="top">
+                          <Btn
+                            onClick={() => onEdit(warehouse)}
+                            variant="ghost"
+                            size="sm"
+                            leftIcon={<PencilIcon className="h-4 w-4" />}
+                          />
+                        </Tooltip>
                       )}
                       {can(["warehouse_delete"]) && (
-                        <Btn
-                          onClick={() => warehouse.is_open && onDelete(warehouse)}
-                          variant="ghost"
-                          size="sm"
-                          leftIcon={<TrashIcon className="h-4 w-4" />}
-                          title={
-                            !warehouse.is_open
-                              ? t("actions.cannotDeleteClosed")
-                              : t("actions.delete")
-                          }
-                          disabled={!warehouse.is_open}
-                          style={
-                            !warehouse.is_open
-                              ? { color: "#9ca3af" }
-                              : { color: "#dc2626" }
-                          }
-                        />
+                        <Tooltip
+                          content={!warehouse.is_open ? t("actions.cannotDeleteClosed") : t("actions.delete")}
+                          placement="top"
+                        >
+                          <Btn
+                            onClick={() => warehouse.is_open && onDelete(warehouse)}
+                            variant="ghost"
+                            size="sm"
+                            leftIcon={<TrashIcon className="h-4 w-4" />}
+                            disabled={!warehouse.is_open}
+                            style={!warehouse.is_open ? { color: "#9ca3af" } : { color: "#dc2626" }}
+                          />
+                        </Tooltip>
                       )}
                     </div>
                   </td>

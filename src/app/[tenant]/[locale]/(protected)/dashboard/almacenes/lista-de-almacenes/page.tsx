@@ -17,6 +17,8 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
+import HelpButton from "@/components/Help/HelpButton";
+import { warehousesHelp } from "@/components/Help/configs/warehouses.help";
 
 export default function WarehousesPage() {
   const t = useTranslations("pages.warehouses");
@@ -129,12 +131,15 @@ export default function WarehousesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1
-          className="text-xl font-semibold"
-          style={{ color: "rgb(var(--color-primary-800))" }}
-        >
-          {t("title")}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: "rgb(var(--color-primary-800))" }}
+          >
+            {t("title")}
+          </h1>
+          <HelpButton config={warehousesHelp} />
+        </div>
         {can(["warehouse_create"]) && (
           <Btn
             onClick={() => {

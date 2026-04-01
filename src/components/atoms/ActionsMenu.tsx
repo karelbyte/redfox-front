@@ -16,6 +16,7 @@ import {
 } from '@floating-ui/react'; // Importa desde Floating UI
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
+import Tooltip from './Tooltip';
 
 export interface ActionMenuItem {
   icon: React.ReactNode;
@@ -61,17 +62,16 @@ export default function ActionsMenu({ items, title }: ActionsMenuProps) {
   }
 
   return (
-    // No necesitamos clases de posicionamiento relativo aquí
     <div className="inline-block text-left">
-      {/* Botón de referencia (el que abre el menú) */}
-      <button
-        ref={refs.setReference}
-        {...getReferenceProps()}
-        className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        title={title || tCommon('actions.more')}
-      >
-        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
-      </button>
+      <Tooltip content={title || tCommon('actions.more')} placement="top">
+        <button
+          ref={refs.setReference}
+          {...getReferenceProps()}
+          className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+        >
+          <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+        </button>
+      </Tooltip>
 
       {/* Menú flotante renderizado dentro de un Portal real */}
       <FloatingPortal>

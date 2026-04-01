@@ -28,6 +28,8 @@ import {
 import { usePermissions } from "@/hooks/usePermissions";
 import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
+import HelpButton from "@/components/Help/HelpButton";
+import { warehouseOpeningsHelp } from "@/components/Help/configs/warehouse-openings.help";
 
 export default function OpeningsPage() {
   const t = useTranslations("pages.warehouseOpenings");
@@ -265,12 +267,15 @@ export default function OpeningsPage() {
             {t("actions.back")}
           </Btn>
           <div>
-            <h1
-              className="text-xl font-semibold"
-              style={{ color: `rgb(var(--color-primary-800))` }}
-            >
-              {t("title")}
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1
+                className="text-xl font-semibold"
+                style={{ color: `rgb(var(--color-primary-800))` }}
+              >
+                {t("title")}
+              </h1>
+              <HelpButton config={warehouseOpeningsHelp} />
+            </div>
             {(warehouseName || warehouse) && (
               <p
                 className="text-sm mt-1"

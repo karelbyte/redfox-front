@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Return } from '@/types/return';
 import { Btn } from '@/components/atoms';
 import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface ReturnTableProps {
   returns: Return[];
@@ -120,42 +121,31 @@ export default function ReturnTable({
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDetails(returnItem)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />
+                    <Tooltip content={t('actions.viewDetails')} placement="top">
+                      <Btn variant="ghost" size="sm" onClick={() => onDetails(returnItem)} leftIcon={<EyeIcon className="h-4 w-4" />} />
+                    </Tooltip>
                     {!returnItem.status && (
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onClose(returnItem)}
-                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                        title={t('actions.close')}
-                        style={{ color: '#dc2626' }}
-                      />
+                      <Tooltip content={t('actions.close')} placement="top">
+                        <Btn variant="ghost" size="sm" onClick={() => onClose(returnItem)} leftIcon={<CheckCircleIcon className="h-4 w-4" />} style={{ color: '#dc2626' }} />
+                      </Tooltip>
                     )}
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(returnItem)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={returnItem.status ? t('actions.cannotEditClosed') : t('actions.edit')}
-                      disabled={returnItem.status}
-                      className={returnItem.status ? 'opacity-50 cursor-not-allowed' : ''}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(returnItem)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={returnItem.status ? t('actions.cannotDeleteClosed') : t('actions.delete')}
-                      disabled={returnItem.status}
-                      className={returnItem.status ? 'opacity-50 cursor-not-allowed' : ''}
-                      style={{ color: returnItem.status ? '#9ca3af' : '#dc2626' }}
-                    />
+                    <Tooltip content={returnItem.status ? t('actions.cannotEditClosed') : t('actions.edit')} placement="top">
+                      <Btn
+                        variant="ghost" size="sm" onClick={() => onEdit(returnItem)}
+                        leftIcon={<PencilIcon className="h-4 w-4" />}
+                        disabled={returnItem.status}
+                        className={returnItem.status ? 'opacity-50 cursor-not-allowed' : ''}
+                      />
+                    </Tooltip>
+                    <Tooltip content={returnItem.status ? t('actions.cannotDeleteClosed') : t('actions.delete')} placement="top">
+                      <Btn
+                        variant="ghost" size="sm" onClick={() => onDelete(returnItem)}
+                        leftIcon={<TrashIcon className="h-4 w-4" />}
+                        disabled={returnItem.status}
+                        className={returnItem.status ? 'opacity-50 cursor-not-allowed' : ''}
+                        style={{ color: returnItem.status ? '#9ca3af' : '#dc2626' }}
+                      />
+                    </Tooltip>
                   </div>
                 </td>
               )}
