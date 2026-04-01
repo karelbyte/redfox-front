@@ -10,6 +10,8 @@ import ExportButton from '@/components/atoms/ExportButton';
 import Pagination from '@/components/Pagination/Pagination';
 import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
+import HelpButton from '@/components/Help/HelpButton';
+import { auditLogsHelp } from '@/components/Help/configs/audit-logs.help';
 
 const ACTION_COLORS: Record<AuditAction, string> = {
   [AuditAction.CREATE]: 'bg-green-100 text-green-800',
@@ -103,9 +105,12 @@ export default function AuditLogsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-            {t('title')}
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+              {t('title')}
+            </h1>
+            <HelpButton config={auditLogsHelp} />
+          </div>
           <p className="text-sm text-gray-500 mt-1">{t('subtitle')}</p>
         </div>
       </div>
@@ -238,7 +243,7 @@ export default function AuditLogsPage() {
                           <div>
                             <div className="font-medium">{log.entityType}</div>
                             <div className="text-xs text-gray-500">{log.entityId.slice(0, 8)}...</div>
-                            
+
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

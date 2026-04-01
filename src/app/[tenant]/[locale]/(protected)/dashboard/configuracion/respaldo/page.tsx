@@ -3,12 +3,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, ArrowPathIcon, CloudArrowDownIcon, DocumentArrowDownIcon, ClockIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ArrowPathIcon, CloudArrowDownIcon, DocumentArrowDownIcon, ClockIcon, Cog6ToothIcon, ServerIcon } from '@heroicons/react/24/outline';
 import { Btn, Input, EmptyState } from '@/components/atoms';
 import { backupService, toastService } from '@/services';
 import { BackupConfig, BackupLog } from '@/types/backup';
 import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
+import HelpButton from '@/components/Help/HelpButton';
+import { backupHelp } from '@/components/Help/configs/backup.help';
+import { api } from '@/services/api';
 
 export default function BackupPage() {
   const t = useTranslations('pages.backup');
@@ -22,6 +25,7 @@ export default function BackupPage() {
   const [loading, setLoading] = useState(true);
   const [savingConfig, setSavingConfig] = useState(false);
   const [runningBackup, setRunningBackup] = useState(false);
+  const [isLocalEnv, setIsLocalEnv] = useState<boolean | null>(null);
 
   // Check permissions
   if (!can(['backup_module_view'])) {
@@ -47,6 +51,11 @@ export default function BackupPage() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
+      // Check if running in local environment
+      const health = await api.get<{ environment: string }>('/health');
+      setIsLocalEnv(health.environment === 'development');
+      if (health.environment !== 'development') return;
+
       const configData = await backupService.getConfig();
       setConfig(configData);
       await fetchLogs();
@@ -109,6 +118,37 @@ export default function BackupPage() {
     );
   }
 
+  if (isLocalEnv === false) {
+    return (
+      <div className="p-6 max-w-7xl mx-auto">
+        <div className="flex items-center space-x-4 mb-8">
+          <Btn
+            variant="ghost"
+            onClick={() => router.push(`/${locale}/dashboard/configuracion`)}
+            leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+          >
+            {tCommon('actions.back')}
+          </Btn>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+            <HelpButton config={backupHelp} />
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-sm border border-blue-100 p-10 text-center max-w-lg mx-auto">
+          <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-5">
+            <ServerIcon className="h-8 w-8 text-blue-500" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            {t('cloudNotAvailable.title')}
+          </h2>
+          <p className="text-gray-500 text-sm leading-relaxed">
+            {t('cloudNotAvailable.description')}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
       {/* Header */}
@@ -122,7 +162,10 @@ export default function BackupPage() {
             {tCommon('actions.back')}
           </Btn>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+              <HelpButton config={backupHelp} />
+            </div>
             <p className="text-gray-500 text-sm">{t('subtitle')}</p>
           </div>
         </div>

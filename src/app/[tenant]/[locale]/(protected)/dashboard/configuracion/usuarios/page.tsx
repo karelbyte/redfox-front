@@ -18,6 +18,8 @@ import Pagination from '@/components/Pagination/Pagination';
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import { usePermissions } from '@/hooks/usePermissions';
+import HelpButton from '@/components/Help/HelpButton';
+import { usersHelp } from '@/components/Help/configs/users.help';
 
 export default function UsersPage() {
   const t = useTranslations('pages.users');
@@ -126,12 +128,15 @@ export default function UsersPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1
-          className="text-xl font-semibold"
-          style={{ color: `rgb(var(--color-primary-800))` }}
-        >
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: `rgb(var(--color-primary-800))` }}
+          >
+            {t('title')}
+          </h1>
+          <HelpButton config={usersHelp} />
+        </div>
         <Btn
           onClick={() => {
             setSelectedUser(null);

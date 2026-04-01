@@ -18,6 +18,8 @@ import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import { QuotationPDFService } from '@/services/quotation-pdf.service';
+import HelpButton from "@/components/Help/HelpButton";
+import { quotationsHelp } from "@/components/Help/configs/quotations.help";
 
 const QuotationListPage = () => {
   const t = useTranslations('pages.quotations');
@@ -158,9 +160,12 @@ const QuotationListPage = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={quotationsHelp} />
+        </div>
         <Btn
           onClick={handleCreate}
           leftIcon={<PlusIcon className="h-5 w-5" />}

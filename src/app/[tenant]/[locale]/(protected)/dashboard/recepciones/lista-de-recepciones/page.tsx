@@ -25,6 +25,8 @@ import { useBulkSelection, BulkAction } from '@/hooks/useBulkSelection';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
+import HelpButton from "@/components/Help/HelpButton";
+import { receptionsHelp } from "@/components/Help/configs/receptions.help";
 
 export default function RecepcionesPage() {
   const router = useRouter();
@@ -257,9 +259,12 @@ export default function RecepcionesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={receptionsHelp} />
+        </div>
         <Btn
           onClick={() => {
             setEditingReception(null);

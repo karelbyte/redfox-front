@@ -18,6 +18,8 @@ import Loading from '@/components/Loading/Loading';
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
+import HelpButton from '@/components/Help/HelpButton';
+import { accountsPayableHelp } from '@/components/Help/configs/accounts-payable.help';
 
 export default function AccountsPayableList() {
   const router = useRouter();
@@ -202,7 +204,10 @@ export default function AccountsPayableList() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+            <HelpButton config={accountsPayableHelp} />
+          </div>
           <p className="mt-1 text-sm text-gray-500">
             {t('subtitle', { count: total })}
           </p>

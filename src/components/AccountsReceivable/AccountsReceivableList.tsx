@@ -17,6 +17,8 @@ import PaymentDrawer from './PaymentDrawer';
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import AdvancedFilters from '@/components/atoms/AdvancedFilters';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import HelpButton from '@/components/Help/HelpButton';
+import { accountsReceivableHelp } from '@/components/Help/configs/accounts-receivable.help';
 
 export default function AccountsReceivableList() {
   const [accounts, setAccounts] = useState<AccountReceivable[]>([]);
@@ -181,7 +183,10 @@ export default function AccountsReceivableList() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+            <HelpButton config={accountsReceivableHelp} />
+          </div>
           <p className="mt-1 text-sm text-gray-500">
             {t('subtitle', { count: total })}
           </p>

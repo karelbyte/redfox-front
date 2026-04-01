@@ -17,6 +17,8 @@ import RoleTable from '@/components/Role/RoleTable';
 import DeleteRoleModal from '@/components/Role/DeleteRoleModal';
 import Pagination from '@/components/Pagination/Pagination';
 import { usePermissions } from '@/hooks/usePermissions';
+import HelpButton from '@/components/Help/HelpButton';
+import { rolesHelp } from '@/components/Help/configs/roles.help';
 
 export default function RolesPage() {
   const t = useTranslations('pages.roles');
@@ -150,7 +152,10 @@ export default function RolesPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+                <HelpButton config={rolesHelp} />
+              </div>
               <p className="text-gray-600">{t('subtitle')}</p>
             </div>
             <Btn

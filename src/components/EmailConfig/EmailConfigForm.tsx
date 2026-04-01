@@ -8,6 +8,8 @@ import { Input, Btn, EmptyState } from '@/components/atoms';
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
+import HelpButton from '@/components/Help/HelpButton';
+import { emailConfigHelp } from '@/components/Help/configs/email-config.help';
 
 export default function EmailConfigForm() {
   const t = useTranslations('emailConfig');
@@ -133,7 +135,10 @@ export default function EmailConfigForm() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('title')}</h2>
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">{t('title')}</h2>
+          <HelpButton config={emailConfigHelp} />
+        </div>
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

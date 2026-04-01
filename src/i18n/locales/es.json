@@ -2584,6 +2584,10 @@
         "backupError": "Error al realizar el respaldo",
         "errorLoadingHistory": "Error al cargar el historial",
         "errorDownloading": "Error al descargar el archivo"
+      },
+      "cloudNotAvailable": {
+        "title": "No disponible en este entorno",
+        "description": "El módulo de respaldo solo funciona en instalaciones locales. En entornos cloud (Railway, Heroku, etc.) los backups son gestionados directamente por el proveedor de base de datos."
       }
     },
     "roles": {

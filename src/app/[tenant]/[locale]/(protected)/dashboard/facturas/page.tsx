@@ -23,6 +23,8 @@ import CancelCFDIModal from '@/components/Invoice/CancelCFDIModal';
 import Drawer from "@/components/Drawer/Drawer";
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
+import HelpButton from "@/components/Help/HelpButton";
+import { invoicesHelp } from "@/components/Help/configs/invoices.help";
 export default function InvoicesPage() {
   const t = useTranslations('pages.invoices');
   const router = useRouter();
@@ -161,9 +163,12 @@ export default function InvoicesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={invoicesHelp} />
+        </div>
         <Btn
           onClick={handleCreateInvoice}
           leftIcon={<PlusIcon className="h-5 w-5" />}

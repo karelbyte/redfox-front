@@ -3,6 +3,7 @@ import { useLocaleUtils } from '@/hooks/useLocale';
 import { Reception } from '@/types/reception';
 import { PencilIcon, TrashIcon, EyeIcon, CheckCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import Tooltip from '@/components/atoms/Tooltip';
 
 interface ReceptionTableProps {
   receptions: Reception[];
@@ -189,49 +190,54 @@ export default function ReceptionTable({
               {isColumnVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDetails(reception)}
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onGeneratePDF(reception)}
-                      leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
-                      title={t('actions.generatePDF')}
-                    />
-                    {reception.status && (
+                    <Tooltip content={t('actions.viewDetails')} placement="top">
                       <Btn
                         variant="ghost"
                         size="sm"
-                        onClick={() => onClose(reception)}
-                        leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                        title={t('actions.closeReception')}
-                        style={{ color: '#dc2626' }}
+                        onClick={() => onDetails(reception)}
+                        leftIcon={<EyeIcon className="h-4 w-4" />}
                       />
+                    </Tooltip>
+                    <Tooltip content={t('actions.generatePDF')} placement="top">
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onGeneratePDF(reception)}
+                        leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
+                      />
+                    </Tooltip>
+                    {reception.status && (
+                      <Tooltip content={t('actions.closeReception')} placement="top">
+                        <Btn
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onClose(reception)}
+                          leftIcon={<CheckCircleIcon className="h-4 w-4" />}
+                          style={{ color: '#dc2626' }}
+                        />
+                      </Tooltip>
                     )}
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(reception)}
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={reception.status ? t('actions.edit') : t('actions.cannotEditClosed')}
-                      disabled={!reception.status}
-                      className={!reception.status ? 'opacity-50 cursor-not-allowed' : ''}
-                    />
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(reception)}
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={reception.status ? t('actions.delete') : t('actions.cannotDeleteClosed')}
-                      disabled={!reception.status}
-                      className={!reception.status ? 'opacity-50 cursor-not-allowed' : ''}
-                      style={{ color: reception.status ? '#dc2626' : '#9ca3af' }}
-                    /> 
+                    <Tooltip content={reception.status ? t('actions.edit') : t('actions.cannotEditClosed')} placement="top">
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEdit(reception)}
+                        leftIcon={<PencilIcon className="h-4 w-4" />}
+                        disabled={!reception.status}
+                        className={!reception.status ? 'opacity-50 cursor-not-allowed' : ''}
+                      />
+                    </Tooltip>
+                    <Tooltip content={reception.status ? t('actions.delete') : t('actions.cannotDeleteClosed')} placement="top">
+                      <Btn
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDelete(reception)}
+                        leftIcon={<TrashIcon className="h-4 w-4" />}
+                        disabled={!reception.status}
+                        className={!reception.status ? 'opacity-50 cursor-not-allowed' : ''}
+                        style={{ color: reception.status ? '#dc2626' : '#9ca3af' }}
+                      />
+                    </Tooltip>
                   </div>
                 </td>
               )}

@@ -28,6 +28,8 @@ import Loading from '@/components/Loading/Loading';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ColumnSelector from '@/components/Table/ColumnSelector';
+import HelpButton from "@/components/Help/HelpButton";
+import { purchaseOrdersHelp } from "@/components/Help/configs/purchase-orders.help";
 
 export default function PurchaseOrdersPage() {
   const router = useRouter();
@@ -273,9 +275,12 @@ export default function PurchaseOrdersPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={purchaseOrdersHelp} />
+        </div>
         {can(["purchase_order_create"]) && (
           <Btn
             onClick={() => {
@@ -289,30 +294,32 @@ export default function PurchaseOrdersPage() {
         )}
       </div>
 
-      {/* Segunda fila con el selector de columnas y búsqueda */}
-      <div className="mt-6 flex justify-between items-center gap-4">
-        <div className="flex-1">
-          <SearchInput
-            placeholder={t('searchPurchaseOrders')}
-            value={searchTerm}
-            onSearch={(term: string) => {
-              setSearchTerm(term);
-              setSearchPurchaseOrder(term);
-              fetchPurchaseOrders(1, term);
-            }}
-            onClear={() => {
-              setSearchTerm("");
-              setSearchPurchaseOrder("");
-              fetchPurchaseOrders(1, "");
-            }}
+      {/* Segunda fila con el selector de columnas y búsqueda — solo si hay datos o se está buscando */}
+      {(purchaseOrders && purchaseOrders.length > 0 || searchTerm) && (
+        <div className="mt-6 flex justify-between items-center gap-4">
+          <div className="flex-1">
+            <SearchInput
+              placeholder={t('searchPurchaseOrders')}
+              value={searchTerm}
+              onSearch={(term: string) => {
+                setSearchTerm(term);
+                setSearchPurchaseOrder(term);
+                fetchPurchaseOrders(1, term);
+              }}
+              onClear={() => {
+                setSearchTerm("");
+                setSearchPurchaseOrder("");
+                fetchPurchaseOrders(1, "");
+              }}
+            />
+          </div>
+          <ColumnSelector
+            columns={availableColumns}
+            visibleColumns={visibleColumns}
+            onChange={toggleColumn}
           />
         </div>
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
-      </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">

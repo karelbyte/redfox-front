@@ -10,6 +10,8 @@ import { toastService } from '@/services/toast.service';
 import { usePermissions } from '@/hooks/usePermissions';
 import Loading from '@/components/Loading/Loading';
 import { API_BASE_URL } from '@/lib/config';
+import HelpButton from '@/components/Help/HelpButton';
+import { companySettingsHelp } from '@/components/Help/configs/company-settings.help';
 
 // Usar la base de la API centralizada
 const getLogoFullUrl = (logoUrl: string | null): string | null => {
@@ -145,12 +147,15 @@ export default function GeneralesEmpresaPage() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1
-          className="text-xl font-semibold"
-          style={{ color: 'rgb(var(--color-primary-800))' }}
-        >
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: 'rgb(var(--color-primary-800))' }}
+          >
+            {t('title')}
+          </h1>
+          <HelpButton config={companySettingsHelp} />
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-6xl">

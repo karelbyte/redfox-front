@@ -17,6 +17,8 @@ import {
     EyeIcon
 } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
+import HelpButton from '@/components/Help/HelpButton';
+import { cashRegisterHelp } from '@/components/Help/configs/cash-register.help';
 
 export default function CashRegisterPage() {
     const t = useTranslations('pages.pos');
@@ -230,9 +232,12 @@ export default function CashRegisterPage() {
         <div className="p-6 max-w-7xl mx-auto">
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold" style={{ color: `rgb(var(--color-primary-800))` }}>
-                    {tCash('title')}
-                </h1>
+                <div className="flex items-center gap-3">
+                    <h1 className="text-3xl font-bold" style={{ color: `rgb(var(--color-primary-800))` }}>
+                        {tCash('title')}
+                    </h1>
+                    <HelpButton config={cashRegisterHelp} />
+                </div>
                 <p className="text-gray-600 mt-2">
                     {tCash('subtitle')}
                 </p>

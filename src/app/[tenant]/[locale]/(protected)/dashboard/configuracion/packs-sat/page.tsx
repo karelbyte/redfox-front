@@ -13,6 +13,8 @@ import Drawer from '@/components/Drawer/Drawer';
 import CertificationPackForm, { CertificationPackFormRef } from '@/components/CertificationPack/CertificationPackForm';
 import CertificationPackTable from '@/components/CertificationPack/CertificationPackTable';
 import DeleteCertificationPackModal from '@/components/CertificationPack/DeleteCertificationPackModal';
+import HelpButton from '@/components/Help/HelpButton';
+import { certificationPacksHelp } from '@/components/Help/configs/certification-packs.help';
 
 export default function CertificationPacksPage() {
   const t = useTranslations('pages.certificationPacks');
@@ -122,12 +124,15 @@ export default function CertificationPacksPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1
-          className="text-xl font-semibold"
-          style={{ color: `rgb(var(--color-primary-800))` }}
-        >
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: `rgb(var(--color-primary-800))` }}
+          >
+            {t('title')}
+          </h1>
+          <HelpButton config={certificationPacksHelp} />
+        </div>
         <div className="flex items-center gap-2">
           <Btn
             onClick={handleCreatePack}

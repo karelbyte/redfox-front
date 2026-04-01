@@ -27,12 +27,18 @@ export default function PaymentPage() {
       setSubscription(subscriptionData);
       setPlans(plansData);
       
-      // Seleccionar el plan actual o el primero por defecto
+      // Preseleccionar: primero buscar plan default, luego el actual, luego el primero
       if (subscriptionData.plan) {
         const currentPlan = plansData.find((p: Plan) => p.id === subscriptionData.plan!.id);
-        setSelectedPlan(currentPlan || plansData[0]);
+        if (currentPlan) {
+          setSelectedPlan(currentPlan);
+        } else {
+          const defaultPlan = plansData.find((p: Plan) => p.is_default) || plansData[0];
+          setSelectedPlan(defaultPlan);
+        }
       } else {
-        setSelectedPlan(plansData[0]);
+        const defaultPlan = plansData.find((p: Plan) => p.is_default) || plansData[0];
+        setSelectedPlan(defaultPlan);
       }
     } catch (error) {
       toastService.error(t('errorLoading'));
@@ -82,7 +88,14 @@ export default function PaymentPage() {
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="text-xl font-bold">{plan.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-bold">{plan.name}</h3>
+                    {plan.is_default && (
+                      <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-primary-100 text-primary-700">
+                        Recomendado
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm mt-1" style={{ color: 'rgb(var(--color-secondary-600))' }}>
                     {plan.description}
                   </p>
@@ -151,16 +164,24 @@ export default function PaymentPage() {
             style={{ borderTop: `1px solid rgb(var(--color-secondary-200))` }}
           >
             <h4 className="font-semibold mb-2">{t('includes')}</h4>
-            <ul className="space-y-1 text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
-              <li>✓ {t('feature1')}</li>
-              <li>✓ {t('feature2')}</li>
-              <li>✓ {t('feature3')}</li>
-              <li>✓ {t('feature4')}</li>
-              <li>✓ {t('feature5')}</li>
-              <li>✓ {t('feature6')}</li>
-              <li>✓ {t('feature7')}</li>
-              <li>✓ {t('feature8')}</li>
-            </ul>
+            {selectedPlan.features && selectedPlan.features.length > 0 ? (
+              <ul className="space-y-1 text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
+                {selectedPlan.features.map((feature, i) => (
+                  <li key={i}>✓ {feature}</li>
+                ))}
+              </ul>
+            ) : (
+              <ul className="space-y-1 text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
+                <li>✓ {t('feature1')}</li>
+                <li>✓ {t('feature2')}</li>
+                <li>✓ {t('feature3')}</li>
+                <li>✓ {t('feature4')}</li>
+                <li>✓ {t('feature5')}</li>
+                <li>✓ {t('feature6')}</li>
+                <li>✓ {t('feature7')}</li>
+                <li>✓ {t('feature8')}</li>
+              </ul>
+            )}
           </div>
         </div>
       )}

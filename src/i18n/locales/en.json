@@ -2585,6 +2585,10 @@
         "backupError": "Error performing backup",
         "errorLoadingHistory": "Error loading backup history",
         "errorDownloading": "Error downloading file"
+      },
+      "cloudNotAvailable": {
+        "title": "Not available in this environment",
+        "description": "The backup module only works on local installations. In cloud environments (Railway, Heroku, etc.) backups are managed directly by the database provider."
       }
     },
     "roles": {

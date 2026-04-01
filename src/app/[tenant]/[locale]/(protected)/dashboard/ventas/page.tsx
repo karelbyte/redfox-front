@@ -25,6 +25,8 @@ import Loading from '@/components/Loading/Loading';
 import { GlobalInvoiceFormData } from '@/types/invoice';
 import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ColumnSelector from '@/components/Table/ColumnSelector';
+import HelpButton from "@/components/Help/HelpButton";
+import { salesHelp } from "@/components/Help/configs/sales.help";
 
 export default function VentasPage() {
   const router = useRouter();
@@ -310,17 +312,22 @@ export default function VentasPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
-          {t('title')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold" style={{ color: `rgb(var(--color-primary-800))` }}>
+            {t('title')}
+          </h1>
+          <HelpButton config={salesHelp} />
+        </div>
         <div className="flex gap-2">
-          <Btn
-            onClick={() => setShowGlobalInvoiceModal(true)}
-            leftIcon={<DocumentTextIcon className="h-5 w-5" />}
-            variant="outline"
-          >
-            {t('globalInvoice')}
-          </Btn>
+          {sales && sales.length > 0 && (
+            <Btn
+              onClick={() => setShowGlobalInvoiceModal(true)}
+              leftIcon={<DocumentTextIcon className="h-5 w-5" />}
+              variant="outline"
+            >
+              {t('globalInvoice')}
+            </Btn>
+          )}
           <Btn
             onClick={() => {
               setEditingSale(null);
@@ -333,14 +340,16 @@ export default function VentasPage() {
         </div>
       </div>
 
-      {/* Segunda fila con el selector de columnas */}
-      <div className="mt-6 flex justify-end">
-        <ColumnSelector
-          columns={availableColumns}
-          visibleColumns={visibleColumns}
-          onChange={toggleColumn}
-        />
-      </div>
+      {/* Segunda fila con el selector de columnas — solo si hay ventas */}
+      {sales && sales.length > 0 && (
+        <div className="mt-6 flex justify-end">
+          <ColumnSelector
+            columns={availableColumns}
+            visibleColumns={visibleColumns}
+            onChange={toggleColumn}
+          />
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
