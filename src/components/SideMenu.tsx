@@ -12,11 +12,13 @@ import { useFavorites } from "@/hooks/useFavorites";
 
 interface MenuItem {
   name: string;
+  translationKey: string;
   path: string;
   icon: React.ReactNode;
   howCan?: string[];
   subItems?: {
     name: string;
+    translationKey: string;
     path: string;
     icon: React.ReactNode;
     howCan?: string[];
@@ -143,6 +145,7 @@ export function SideMenu() {
     () => [
       {
         name: t("dashboard"),
+        translationKey: "dashboard",
         path: getLocalizedPath("/dashboard"),
         icon: (
           <svg
@@ -162,6 +165,7 @@ export function SideMenu() {
       },
       {
         name: t("entities"),
+        translationKey: "entities",
         path: getLocalizedPath("/dashboard/entidades"),
         howCan: ["client_module_view", "provider_module_view"],
         icon: (
@@ -182,6 +186,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("clients"),
+            translationKey: "clients",
             path: getLocalizedPath("/dashboard/clientes"),
             howCan: ["client_module_view"],
             icon: (
@@ -202,6 +207,7 @@ export function SideMenu() {
           },
           {
             name: t("providers"),
+            translationKey: "providers",
             path: getLocalizedPath("/dashboard/proveedores"),
             howCan: ["provider_module_view"],
             icon: (
@@ -224,6 +230,7 @@ export function SideMenu() {
       },
       {
         name: t("products"),
+        translationKey: "products",
         path: getLocalizedPath("/dashboard/productos"),
         howCan: ["product_module_view", "category_module_view", "brand_module_view", "tax_module_view", "currency_module_view", "measurement_unit_module_view"],
         icon: (
@@ -244,6 +251,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("addProduct"),
+            translationKey: "addProduct",
             path: getLocalizedPath("/dashboard/productos/agregar-producto"),
             howCan: ["product_module_view"],
             icon: (
@@ -264,6 +272,7 @@ export function SideMenu() {
           },
           {
             name: t("productList"),
+            translationKey: "productList",
             path: getLocalizedPath("/dashboard/productos/lista-de-productos"),
             howCan: ["product_module_view"],
             icon: (
@@ -284,6 +293,7 @@ export function SideMenu() {
           },
           {
             name: t("measurementUnits"),
+            translationKey: "measurementUnits",
             path: getLocalizedPath("/dashboard/productos/unidades-medida"),
             howCan: ["measurement_unit_module_view"],
             icon: (
@@ -304,6 +314,7 @@ export function SideMenu() {
           },
           {
             name: t("categories"),
+            translationKey: "categories",
             path: getLocalizedPath("/dashboard/productos/categorias"),
             howCan: ["category_module_view"],
             icon: (
@@ -324,6 +335,7 @@ export function SideMenu() {
           },
           {
             name: t("brands"),
+            translationKey: "brands",
             path: getLocalizedPath("/dashboard/productos/marcas"),
             howCan: ["brand_module_view"],
             icon: (
@@ -344,6 +356,7 @@ export function SideMenu() {
           },
           {
             name: t("taxes"),
+            translationKey: "taxes",
             path: getLocalizedPath("/dashboard/productos/impuestos"),
             howCan: ["tax_module_view"],
             icon: (
@@ -364,6 +377,7 @@ export function SideMenu() {
           },
           {
             name: t("currencies"),
+            translationKey: "currencies",
             path: getLocalizedPath("/dashboard/productos/monedas"),
             howCan: ["currency_module_view"],
             icon: (
@@ -386,6 +400,7 @@ export function SideMenu() {
       },
       {
         name: t("warehouses"),
+        translationKey: "warehouses",
         path: getLocalizedPath("/dashboard/almacenes"),
         howCan: ["warehouse_module_view"],
         icon: (
@@ -397,6 +412,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("addWarehouse"),
+            translationKey: "addWarehouse",
             path: getLocalizedPath("/dashboard/almacenes/agregar-almacen"),
             howCan: ["warehouse_create"],
             icon: (
@@ -417,6 +433,7 @@ export function SideMenu() {
           },
           {
             name: t("warehouseList"),
+            translationKey: "warehouseList",
             path: getLocalizedPath("/dashboard/almacenes/lista-de-almacenes"),
             howCan: ["warehouse_read"],
             icon: (
@@ -437,6 +454,7 @@ export function SideMenu() {
           },
           {
             name: t("warehouseAdjustments"),
+            translationKey: "warehouseAdjustments",
             path: getLocalizedPath("/dashboard/almacenes/ajustes-de-almacen"),
             howCan: ["warehouse_adjustment_module_view"],
             icon: (
@@ -457,6 +475,7 @@ export function SideMenu() {
           },
           {
             name: t("returns"),
+            translationKey: "returns",
             path: getLocalizedPath("/dashboard/almacenes/devoluciones"),
             howCan: ["return_module_view"],
             icon: (
@@ -479,6 +498,7 @@ export function SideMenu() {
       },
       {
         name: t("inventory"),
+        translationKey: "inventory",
         path: getLocalizedPath("/dashboard/inventarios"),
         howCan: ["inventory_module_view"],
         icon: (
@@ -499,6 +519,7 @@ export function SideMenu() {
       },
       {
         name: t("receptions"),
+        translationKey: "receptions",
         path: getLocalizedPath("/dashboard/recepciones"),
         howCan: ["reception_module_view"],
         icon: (
@@ -519,6 +540,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("createReception"),
+            translationKey: "createReception",
             path: getLocalizedPath("/dashboard/recepciones/crear-recepcion"),
             howCan: ["reception_module_view"],
             icon: (
@@ -539,6 +561,7 @@ export function SideMenu() {
           },
           {
             name: t("receptionList"),
+            translationKey: "receptionList",
             path: getLocalizedPath(
               "/dashboard/recepciones/lista-de-recepciones"
             ),
@@ -563,6 +586,7 @@ export function SideMenu() {
       },
       {
         name: t("quotations"),
+        translationKey: "quotations",
         path: getLocalizedPath("/dashboard/cotizaciones"),
         howCan: ["quotation_module_view"],
         icon: (
@@ -574,6 +598,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("createQuotation"),
+            translationKey: "createQuotation",
             path: getLocalizedPath("/dashboard/cotizaciones/crear-cotizacion"),
             howCan: ["quotation_create"],
             icon: (
@@ -594,6 +619,7 @@ export function SideMenu() {
           },
           {
             name: t("quotationList"),
+            translationKey: "quotationList",
             path: getLocalizedPath("/dashboard/cotizaciones/lista-de-cotizaciones"),
             howCan: ["quotation_read"],
             icon: (
@@ -616,6 +642,7 @@ export function SideMenu() {
       },
       {
         name: t("purchaseOrders"),
+        translationKey: "purchaseOrders",
         path: getLocalizedPath("/dashboard/ordenes-de-compra"),
         howCan: ["purchase_order_module_view"],
         icon: (
@@ -627,6 +654,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("createPurchaseOrder"),
+            translationKey: "createPurchaseOrder",
             path: getLocalizedPath("/dashboard/ordenes-de-compra/crear-orden-compra"),
             howCan: ["purchase_order_create"],
             icon: (
@@ -647,6 +675,7 @@ export function SideMenu() {
           },
           {
             name: t("purchaseOrderList"),
+            translationKey: "purchaseOrderList",
             path: getLocalizedPath("/dashboard/ordenes-de-compra"),
             howCan: ["purchase_order_module_view"],
             icon: (
@@ -669,6 +698,7 @@ export function SideMenu() {
       },
       {
         name: t("sales"),
+        translationKey: "sales",
         path: getLocalizedPath("/dashboard/ventas"),
         howCan: ["withdrawal_module_view"],
         icon: (
@@ -689,6 +719,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("addSale"),
+            translationKey: "addSale",
             path: getLocalizedPath("/dashboard/ventas/agregar-venta"),
             howCan: ["withdrawal_module_view"],
             icon: (
@@ -709,6 +740,7 @@ export function SideMenu() {
           },
           {
             name: t("cashRegister"),
+            translationKey: "cashRegister",
             path: getLocalizedPath("/dashboard/ventas/caja"),
             howCan: ["withdrawal_module_view"],
             icon: (
@@ -729,6 +761,7 @@ export function SideMenu() {
           },
           {
             name: t("pos"),
+            translationKey: "pos",
             path: getLocalizedPath("/pos"),
             howCan: ["withdrawal_module_view"],
             icon: (
@@ -749,6 +782,7 @@ export function SideMenu() {
           },
           {
             name: t("salesList"),
+            translationKey: "salesList",
             path: getLocalizedPath("/dashboard/ventas"),
             howCan: ["withdrawal_module_view"],
             icon: (
@@ -771,6 +805,7 @@ export function SideMenu() {
       },
       {
         name: t("invoices"),
+        translationKey: "invoices",
         path: getLocalizedPath("/dashboard/facturas"),
         howCan: ["invoice_module_view"],
         icon: (
@@ -791,6 +826,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("createInvoice"),
+            translationKey: "createInvoice",
             path: getLocalizedPath("/dashboard/facturas/crear-factura"),
             howCan: ["invoice_module_view"],
             icon: (
@@ -811,6 +847,7 @@ export function SideMenu() {
           },
           {
             name: t("invoiceList"),
+            translationKey: "invoiceList",
             path: getLocalizedPath("/dashboard/facturas"),
             howCan: ["invoice_module_view"],
             icon: (
@@ -833,6 +870,7 @@ export function SideMenu() {
       },
       {
         name: t("finance"),
+        translationKey: "finance",
         path: getLocalizedPath("/dashboard/finanzas"),
         howCan: ["expense_module_view", "account_receivable_module_view"],
         icon: (
@@ -844,6 +882,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("expenses"),
+            translationKey: "expenses",
             path: getLocalizedPath("/dashboard/finanzas/gastos"),
             howCan: ["expense_module_view"],
             icon: (
@@ -864,6 +903,7 @@ export function SideMenu() {
           },
           {
             name: t("accountsReceivable"),
+            translationKey: "accountsReceivable",
             path: getLocalizedPath("/dashboard/finanzas/cuentas-por-cobrar"),
             howCan: ["account_receivable_module_view"],
             icon: (
@@ -884,6 +924,7 @@ export function SideMenu() {
           },
           {
             name: t("accountsPayable"),
+            translationKey: "accountsPayable",
             path: getLocalizedPath("/dashboard/finanzas/cuentas-por-pagar"),
             howCan: ["account_payable_module_view"],
             icon: (
@@ -904,6 +945,7 @@ export function SideMenu() {
           },
           {
             name: t("cashFlow"),
+            translationKey: "cashFlow",
             path: getLocalizedPath("/dashboard/finanzas/flujo-de-caja"),
             howCan: ["cash_flow_module_view"],
             icon: (
@@ -926,6 +968,7 @@ export function SideMenu() {
       },
       {
         name: t("settings"),
+        translationKey: "settings",
         path: getLocalizedPath("/dashboard/configuracion"),
         howCan: ["role_module_view", "user_module_view", "system_module_view"],
         icon: (
@@ -952,6 +995,7 @@ export function SideMenu() {
         subItems: [
           {
             name: t("companySettings"),
+            translationKey: "companySettings",
             path: getLocalizedPath("/dashboard/configuracion/generales-empresa"),
             howCan: ["company_settings_module_view"],
             icon: (
@@ -972,6 +1016,7 @@ export function SideMenu() {
           },
           {
             name: t("subscription"),
+            translationKey: "subscription",
             path: getLocalizedPath("/dashboard/suscripcion"),
             howCan: [],
             icon: (
@@ -983,6 +1028,7 @@ export function SideMenu() {
           },
           {
             name: t("roles"),
+            translationKey: "roles",
             path: getLocalizedPath("/dashboard/configuracion/roles"),
             howCan: ["role_module_view"],
             icon: (
@@ -1003,6 +1049,7 @@ export function SideMenu() {
           },
           {
             name: t("users"),
+            translationKey: "users",
             path: getLocalizedPath("/dashboard/configuracion/usuarios"),
             howCan: ["user_module_view"],
             icon: (
@@ -1023,6 +1070,7 @@ export function SideMenu() {
           },
           {
             name: t("emailConfig"),
+            translationKey: "emailConfig",
             path: getLocalizedPath("/dashboard/configuracion/correo"),
             howCan: ["email_config_module_view"],
             icon: (
@@ -1043,6 +1091,7 @@ export function SideMenu() {
           },
           {
             name: t("paymentGateway"),
+            translationKey: "paymentGateway",
             path: getLocalizedPath("/dashboard/configuracion/pasarela-pago"),
             howCan: ["payment_gateway_module_view"],
             icon: (
@@ -1054,6 +1103,7 @@ export function SideMenu() {
           },
           {
             name: t("backup"),
+            translationKey: "backup",
             path: getLocalizedPath("/dashboard/configuracion/respaldo"),
             howCan: ["backup_module_view"],
             icon: (
@@ -1074,6 +1124,7 @@ export function SideMenu() {
           },
           {
             name: t("certificationPacks"),
+            translationKey: "certificationPacks",
             path: getLocalizedPath("/dashboard/configuracion/packs-sat"),
             howCan: ["certification_pack_module_view"],
             icon: (
@@ -1085,6 +1136,7 @@ export function SideMenu() {
           },
           {
             name: t("auditLogs"),
+            translationKey: "auditLogs",
             path: getLocalizedPath("/dashboard/configuracion/logs-auditoria"),
             howCan: ["audit_log_module_view"],
             icon: (
@@ -1285,7 +1337,7 @@ export function SideMenu() {
                   )}
                   {showPopover && (
                     <div
-                      className="absolute left-full z-50 py-1 min-w-[180px] bg-white rounded-lg shadow-lg border border-gray-200 -ml-px"
+                      className="absolute left-full z-50 py-1 min-w-[220px] bg-white rounded-lg shadow-lg border border-gray-200 -ml-px"
                       style={{
                         borderColor: "rgb(var(--color-primary-100))",
                         ...(popoverPosition.top !== undefined ? { top: popoverPosition.top } : {}),
@@ -1297,7 +1349,7 @@ export function SideMenu() {
                         <div key={opt.path} className="flex items-center mx-1 group/popitem">
                           <Link
                             href={opt.path}
-                            className="flex items-center flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors"
+                            className="flex items-center flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors min-w-0"
                             style={{
                               backgroundColor:
                                 pathname === opt.path
@@ -1340,7 +1392,7 @@ export function SideMenu() {
                           </Link>
                           <button
                             type="button"
-                            onClick={(e) => { e.stopPropagation(); toggle({ path: opt.path, name: opt.name }); }}
+                            onClick={(e) => { e.stopPropagation(); toggle({ path: opt.path, name: opt.name, translationKey: (opt as any).translationKey }); }}
                             className="p-1 mr-1 rounded flex-shrink-0"
                             title={isFavorite(opt.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
                           >
@@ -1359,18 +1411,30 @@ export function SideMenu() {
             return (
               <div key={item.path}>
                 {item.subItems ? (
-                  <button
+                  <div
                     onClick={() => handleMenuClick(item)}
-                    className={itemClassName}
+                    className={itemClassName + " cursor-pointer"}
                     style={itemStyle}
-                    onMouseEnter={(e) => itemHover(e, isActive)}
-                    onMouseLeave={(e) => itemHoverLeave(e, isActive)}
+                    onMouseEnter={(e) => itemHover(e as any, isActive)}
+                    onMouseLeave={(e) => itemHoverLeave(e as any, isActive)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => e.key === 'Enter' && handleMenuClick(item)}
                   >
                     {iconContent}
-                    {item.name}
+                    <span className="flex-1 text-left">{item.name}</span>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: item.path, name: item.name, translationKey: item.translationKey }); }}
+                      className="p-0.5 rounded mr-1 flex-shrink-0"
+                      title={isFavorite(item.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                    >
+                      {isFavorite(item.path)
+                        ? <StarSolid className="h-3.5 w-3.5 text-yellow-400" />
+                        : <StarIcon className="h-3.5 w-3.5 text-gray-300 hover:text-yellow-400" />}
+                    </button>
                     <svg
-                      className={`ml-auto w-4 h-4 transform transition-transform ${isExpanded ? "rotate-180" : ""
-                        }`}
+                      className={`w-4 h-4 flex-shrink-0 transform transition-transform ${isExpanded ? "rotate-180" : ""}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1382,7 +1446,7 @@ export function SideMenu() {
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
-                  </button>
+                  </div>
                 ) : (
                   <Link
                     href={item.path}
@@ -1395,7 +1459,7 @@ export function SideMenu() {
                     <span className="flex-1">{item.name}</span>
                     <button
                       type="button"
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: item.path, name: item.name }); }}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: item.path, name: item.name, translationKey: item.translationKey }); }}
                       className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity"
                       title={isFavorite(item.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
                     >
@@ -1451,7 +1515,7 @@ export function SideMenu() {
                           <span className="flex-1">{subItem.name}</span>
                           <button
                             type="button"
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: subItem.path, name: subItem.name }); }}
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: subItem.path, name: subItem.name, translationKey: subItem.translationKey }); }}
                             className="ml-1 p-0.5 rounded transition-opacity"
                             title={isFavorite(subItem.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
                           >

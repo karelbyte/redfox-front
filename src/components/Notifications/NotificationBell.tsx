@@ -22,6 +22,8 @@ const NotificationBell: React.FC = () => {
 
   const tooltipText = locale === 'en'
     ? `Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`
+    : locale === 'zh'
+    ? `通知${unreadCount > 0 ? `（${unreadCount} 条未读）` : ''}`
     : `Notificaciones${unreadCount > 0 ? ` (${unreadCount} sin leer)` : ''}`;
 
   useEffect(() => {

@@ -99,7 +99,8 @@
     },
     "languages": {
       "es": "Español",
-      "en": "Inglés"
+      "en": "Inglés",
+      "zh": "中文"
     },
     "table": {
       "columns": "Columnas",

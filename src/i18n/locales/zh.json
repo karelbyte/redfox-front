@@ -1,0 +1,4193 @@
+{
+  "common": {
+    "components": {
+      "exportButton": {
+        "export": "导出",
+        "excel": "导出到 Excel",
+        "csv": "导出到 CSV",
+        "json": "导出到 JSON"
+      },
+      "advancedFilters": {
+        "title": "高级筛选",
+        "filters": "筛选",
+        "apply": "应用筛选",
+        "clear": "清除",
+        "min": "最小",
+        "max": "最大",
+        "select": "选择...",
+        "surrogateInput": {
+          "useSuggestion": "使用建议：{code}",
+          "refreshSuggestion": "刷新建议",
+          "suggestionLabel": "建议：{code}",
+          "useAction": "使用",
+          "loadingSuggestion": "加载建议中..."
+        }
+      }
+    },
+    "bulkActions": {
+      "selectedCount": "已选择 {count} 项",
+      "confirmTitle": "删除 {count} 项？",
+      "confirmMessage": "确定要删除 {count} 项吗？此操作无法撤销。",
+      "processing": "处理中..."
+    },
+    "actions": {
+      "save": "保存",
+      "cancel": "取消",
+      "delete": "删除",
+      "edit": "编辑",
+      "create": "创建",
+      "update": "更新",
+      "close": "关闭",
+      "back": "返回",
+      "add": "添加",
+      "view": "查看",
+      "search": "搜索",
+      "clear": "清除",
+      "apply": "应用",
+      "filters": "筛选",
+      "confirm": "确认",
+      "loading": "加载中...",
+      "saving": "保存中...",
+      "deleting": "删除中...",
+      "logout": "退出登录",
+      "viewColumns": "查看列",
+      "export": "导出",
+      "more": "更多"
+    },
+    "status": {
+      "active": "启用",
+      "inactive": "禁用",
+      "open": "开启",
+      "closed": "关闭",
+      "opened": "已开启",
+      "closed_female": "已关闭"
+    },
+    "messages": {
+      "confirmDelete": "确定要删除 {item} 吗？此操作无法撤销。",
+      "confirmClose": "确定要关闭 {item} 吗？此操作无法撤销。",
+      "noData": "暂无数据",
+      "noResults": "未找到结果",
+      "errorLoading": "加载数据出错",
+      "successCreated": "{item} 创建成功",
+      "successUpdated": "{item} 更新成功",
+      "successDeleted": "{item} 删除成功",
+      "successClosed": "{item} 关闭成功"
+    },
+    "noPermission": "无权限",
+    "noPermissionDescription": "您没有访问此页面的权限。如果您认为这是错误，请联系管理员。",
+    "labels": {
+      "code": "编码",
+      "name": "名称",
+      "description": "描述",
+      "date": "日期",
+      "amount": "金额",
+      "price": "价格",
+      "quantity": "数量",
+      "status": "状态",
+      "actions": "操作",
+      "select": "选择",
+      "searchPlaceholder": "搜索...",
+      "noDataMessage": "暂无数据",
+      "noResultsMessage": "未找到符合搜索条件的结果"
+    },
+    "userMenu": {
+      "selectTheme": "选择主题",
+      "selectLanguage": "选择语言",
+      "user": "用户",
+      "role": "角色",
+      "subscription": "我的订阅"
+    },
+    "languages": {
+      "es": "西班牙语",
+      "en": "英语",
+      "zh": "中文"
+    },
+    "table": {
+      "columns": "列",
+      "lowStockWarning": "库存不足"
+    }
+  },
+  "navigation": {
+    "dashboard": "仪表盘",
+    "warehouses": "仓库",
+    "products": "产品",
+    "categories": "分类",
+    "brands": "品牌",
+    "taxes": "税务",
+    "currencies": "货币",
+    "measurementUnits": "计量单位",
+    "providers": "供应商",
+    "clients": "客户",
+    "inventory": "库存",
+    "purchases": "采购",
+    "receptions": "收货",
+    "quotations": "报价单",
+    "warehouseOpenings": "仓库开仓",
+    "entities": "实体",
+    "purchaseOrders": "采购订单",
+    "sales": "销售",
+    "settings": "设置",
+    "addProduct": "添加产品",
+    "productList": "产品列表",
+    "addWarehouse": "创建仓库",
+    "warehouseList": "仓库列表",
+    "warehouseAdjustments": "仓库调拨",
+    "createPurchase": "创建采购",
+    "purchaseList": "采购列表",
+    "createReception": "创建收货",
+    "receptionList": "收货列表",
+    "createQuotation": "创建报价单",
+    "quotationList": "报价单列表",
+    "createPurchaseOrder": "创建采购订单",
+    "purchaseOrderList": "采购订单列表",
+    "salesList": "销售列表",
+    "addSale": "添加销售",
+    "pos": "POS",
+    "cashRegister": "收银机",
+    "users": "用户",
+    "companySettings": "公司设置",
+    "subscription": "订阅",
+    "roles": "角色",
+    "emailConfig": "邮件配置",
+    "paymentGateway": "支付网关",
+    "backup": "备份",
+    "returns": "退货",
+    "invoices": "发票",
+    "createInvoice": "创建发票",
+    "invoiceList": "发票列表",
+    "certificationPacks": "SAT 套餐",
+    "auditLogs": "审计日志",
+    "finance": "财务",
+    "expenses": "费用",
+    "accountsReceivable": "应收账款",
+    "accountsPayable": "应付账款",
+    "accountsPayableDescription": "管理应付账款和供应商付款",
+    "cashFlow": "现金流",
+    "cashFlowDescription": "监控现金流、收入、支出和财务预测",
+    "collapseMenu": "折叠菜单（仅图标）",
+    "expandMenu": "展开菜单"
+  },
+  "pages": {
+    "register": {
+      "title": "创建账户",
+      "subtitle": "注册以开始使用 Nitro",
+      "name": "全名",
+      "companyName": "公司名称",
+      "email": "电子邮件地址",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "registerButton": "注册",
+      "registering": "注册中...",
+      "loginLink": "已有账户？立即登录",
+      "success": "注册成功，请查收邮件以激活账户。",
+      "passwordMismatch": "两次密码不一致",
+      "companyNameInvalid": "组织名称只能包含字母和空格，不能包含数字或特殊字符。",
+      "companyNameTooShort": "组织名称至少需要 3 个字符。",
+      "slugPreview": "您的标识符将是"
+    },
+    "activate": {
+      "activating": "正在激活您的账户...",
+      "successTitle": "账户已激活！",
+      "successMessage": "您的账户已成功激活，现在可以登录了。",
+      "successToast": "账户激活成功",
+      "alreadyActiveTitle": "账户已激活",
+      "alreadyActiveMessage": "您的账户之前已激活，现在可以登录了。",
+      "errorTitle": "激活错误",
+      "errorMessage": "激活链接无效或已过期。",
+      "loginButton": "前往登录",
+      "backToLogin": "返回登录"
+    },
+    "dashboard": {
+      "title": "仪表盘",
+      "description": "主控制面板",
+      "userInfo": "用户信息",
+      "logout": "退出登录",
+      "userName": "姓名",
+      "userEmail": "邮箱",
+      "userRole": "角色",
+      "welcome": "欢迎",
+      "stats": {
+        "totalSales": "总销售额",
+        "salesToday": "今日",
+        "totalRevenue": "总收入",
+        "revenueToday": "今日",
+        "activeWarehouses": "活跃仓库",
+        "operationalWarehouses": "运营中的仓库",
+        "products": "产品",
+        "lowStock": "库存不足",
+        "pendingReceptions": "待处理收货",
+        "toProcess": "待处理"
+      },
+      "warehouses": {
+        "status": "仓库状态",
+        "active": "启用",
+        "inactive": "禁用",
+        "products": "产品",
+        "lowStock": "库存不足"
+      },
+      "analytics": {
+        "noData": "暂无数据",
+        "totalSales": "总销售额",
+        "totalRevenue": "总收入",
+        "totalProducts": "产品总数",
+        "inventoryValue": "库存价值",
+        "averageTicket": "平均客单价",
+        "lowStock": "库存不足",
+        "outOfStock": "缺货",
+        "salesTrend": "销售趋势",
+        "inventoryByCategory": "按分类库存",
+        "monthlyRevenue": "月度收入",
+        "topProducts": "热销产品",
+        "lowStockAlert": "库存不足预警",
+        "sales": "销售",
+        "revenue": "收入",
+        "products": "产品",
+        "value": "价值",
+        "invoiced": "已开票",
+        "collected": "已收款",
+        "totalSold": "总销售量",
+        "warehouse": "仓库",
+        "stock": "库存",
+        "noSalesData": "过去 30 天内无销售数据",
+        "noInventoryData": "库存中无产品",
+        "noRevenueData": "过去 12 个月内无收入数据",
+        "noProductsData": "无已售产品数据"
+      }
+    },
+    "auditLogs": {
+      "title": "审计日志",
+      "subtitle": "系统变更完整历史",
+      "table": {
+        "date": "日期",
+        "action": "操作",
+        "entity": "实体",
+        "user": "用户",
+        "description": "描述",
+        "details": "详情",
+        "showDetails": "显示详情",
+        "hideDetails": "隐藏详情",
+        "oldValues": "旧值",
+        "newValues": "新值"
+      },
+      "filters": {
+        "action": "操作",
+        "entityType": "实体类型",
+        "startDate": "开始日期",
+        "endDate": "结束日期"
+      },
+      "empty": {
+        "title": "无审计日志",
+        "description": "系统中尚未记录任何变更",
+        "noResults": "未找到符合搜索条件的日志"
+      },
+      "messages": {
+        "errorLoading": "加载审计日志出错"
+      }
+    },
+    "warehouses": {
+      "title": "仓库列表",
+      "newWarehouse": "新建仓库",
+      "editWarehouse": "编辑仓库",
+      "deleteWarehouse": "删除仓库",
+      "searchWarehouses": "搜索仓库...",
+      "noWarehouses": "暂无仓库",
+      "noWarehousesDesc": "点击「新建仓库」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "noPermission": "您没有权限查看此页面",
+      "form": {
+        "title": "仓库信息",
+        "subtitle": "填写信息以创建新仓库",
+        "code": "编码",
+        "name": "名称",
+        "address": "地址",
+        "phone": "电话",
+        "currency": "货币",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：WH-001",
+          "name": "例：中央仓库",
+          "address": "例：主街 123 号",
+          "phone": "例：+1234567890"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "nameRequired": "名称为必填项",
+          "addressRequired": "地址为必填项",
+          "phoneRequired": "电话为必填项",
+          "currencyRequired": "货币为必填项"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "address": "地址",
+        "phone": "电话",
+        "currency": "货币",
+        "status": "状态",
+        "opening": "开仓",
+        "actions": "操作"
+      },
+      "status": {
+        "active": "启用",
+        "inactive": "禁用",
+        "open": "开启",
+        "closed": "关闭"
+      },
+      "actions": {
+        "back": "返回",
+        "open": "开启",
+        "close": "关闭开仓",
+        "edit": "编辑",
+        "delete": "删除",
+        "cannotDeleteClosed": "无法删除已关闭的仓库"
+      },
+      "messages": {
+        "warehouseCreated": "仓库创建成功",
+        "warehouseUpdated": "仓库更新成功",
+        "warehouseDeleted": "仓库删除成功",
+        "errorLoading": "加载仓库出错",
+        "errorCreating": "创建仓库出错",
+        "errorUpdating": "更新仓库出错",
+        "errorDeleting": "删除仓库出错",
+        "confirmDelete": "确定要删除仓库「{name}」吗？此操作无法撤销。",
+        "confirmClose": "确定要关闭仓库 {name} 的开仓吗？此操作将把所有产品转入库存且无法撤销。",
+        "errorClosing": "关闭仓库开仓出错"
+      },
+      "currency": {
+        "newCurrency": "新建货币",
+        "createNewCurrency": "创建新货币",
+        "selectCurrency": "选择货币...",
+        "errorLoading": "加载货币出错",
+        "cannotModifyClosed": "（仓库关闭时无法修改）"
+      },
+      "closeResult": {
+        "title": "开仓关闭成功",
+        "warehouse": "仓库：",
+        "transferredProducts": "已转移产品：",
+        "totalQuantity": "总数量：",
+        "closeDate": "关闭日期：",
+        "accept": "确认"
+      }
+    },
+    "products": {
+      "title": "产品",
+      "newProduct": "新建产品",
+      "editProduct": "编辑产品",
+      "deleteProduct": "删除产品",
+      "addNewProduct": "添加新产品",
+      "productInfo": "产品信息",
+      "searchProducts": "搜索产品...",
+      "noProducts": "暂无产品",
+      "noProductsDesc": "点击「新建产品」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "importFromPack": "从套餐导入",
+      "importingFromPack": "导入中...",
+      "form": {
+        "name": "名称",
+        "slug": "别名",
+        "description": "描述",
+        "sku": "SKU",
+        "code": "SAT 编码",
+        "barcode": "条形码",
+        "weight": "重量",
+        "width": "宽度",
+        "height": "高度",
+        "length": "长度",
+        "measurementUnit": "计量单位",
+        "category": "分类",
+        "brand": "品牌",
+        "tax": "税务",
+        "taxes": "税务",
+        "selectTax": "选择税务...",
+        "taxesHelp": "按住 Ctrl（Mac 上为 Cmd）可选择多个税务",
+        "type": "类型",
+        "status": "状态",
+        "active": "启用",
+        "inventoryStrategy": "库存策略",
+        "pricing": "定价",
+        "basePrice": "基础价格（标准售价）",
+        "alternativePrices": "备选价格列表",
+        "addPrice": "添加备选价格",
+        "images": "图片",
+        "placeholders": {
+          "name": "例：产品 XYZ",
+          "slug": "例：product-xyz",
+          "description": "例：产品描述",
+          "code": "例：12345678",
+          "sku": "例：SKU001",
+          "barcode": "例：1234567890123",
+          "weight": "例：1.5",
+          "width": "例：10",
+          "height": "例：5",
+          "length": "例：15",
+          "priceName": "例：批发价"
+        },
+        "types": {
+          "digital": "数字",
+          "service": "服务",
+          "tangible": "实物"
+        },
+        "strategies": {
+          "fifo": "FIFO（先进先出）",
+          "fefo": "FEFO（先到期先出）",
+          "average": "加权平均"
+        },
+        "errors": {
+          "nameRequired": "名称为必填项",
+          "slugRequired": "别名为必填项",
+          "descriptionRequired": "描述为必填项",
+          "codeRequired": "SAT 编码为必填项",
+          "skuRequired": "SKU 为必填项",
+          "categoryRequired": "分类为必填项",
+          "brandRequired": "品牌为必填项",
+          "measurementUnitRequired": "计量单位为必填项",
+          "taxRequired": "税务为必填项",
+          "typeRequired": "产品类型为必填项",
+          "invalidWeight": "重量必须是有效数字",
+          "invalidWidth": "宽度必须是有效数字",
+          "invalidHeight": "高度必须是有效数字",
+          "invalidLength": "长度必须是有效数字"
+        },
+        "searchCodeModal": {
+          "title": "搜索产品编码",
+          "placeholder": "输入关键词搜索...",
+          "noResults": "未找到结果",
+          "noPackError": "未配置有效的认证套餐",
+          "searchError": "搜索编码出错，请重试。",
+          "close": "关闭"
+        },
+        "searchCode": "搜索编码",
+        "currency": "货币",
+        "selectCurrency": "选择货币..."
+      },
+      "table": {
+        "name": "名称",
+        "sku": "SKU",
+        "code": "SAT 编码",
+        "brand": "品牌",
+        "category": "分类",
+        "measurementUnit": "计量单位",
+        "type": "类型",
+        "price": "价格",
+        "stock": "库存",
+        "tax": "税务",
+        "status": "状态",
+        "actions": "操作",
+        "inPack": "已在 PAC 注册",
+        "lowStockWarning": "库存不足"
+      },
+      "actions": {
+        "generateBarcode": "生成条形码"
+      },
+      "barcodeGenerator": {
+        "title": "生成条形码",
+        "productInfo": "产品信息",
+        "productCode": "条形码",
+        "quantityLabel": "编码数量",
+        "quantityHelp": "每次最多生成 100 个编码",
+        "generate": "生成",
+        "cancel": "取消",
+        "generatedTitle": "已生成条形码",
+        "barcodes": "条形码",
+        "print": "打印",
+        "back": "返回"
+      },
+      "messages": {
+        "productCreated": "产品创建成功",
+        "productUpdated": "产品更新成功",
+        "productDeleted": "产品删除成功",
+        "errorLoading": "加载产品出错",
+        "errorCreating": "创建产品出错",
+        "errorUpdating": "更新产品出错",
+        "errorDeleting": "删除产品出错",
+        "confirmDelete": "确定要删除产品「{name}」吗？此操作无法撤销。",
+        "noProductsToExport": "没有可导出的产品",
+        "pdfGenerated": "PDF 生成成功",
+        "errorGeneratingPDF": "生成 PDF 出错",
+        "packSyncFailedCreate": "产品已保存到 Redfox。注意：未在 PAC 注册。在修复此问题之前，您将无法用于开票。详情：{detail}",
+        "packSyncFailedUpdate": "产品已保存到 Redfox。注意：未在 PAC 更新。在修复此问题之前，您将无法用于开票。详情：{detail}",
+        "importFromPackSuccess": "导入完成：已创建 {created}，已更新 {updated}，已跳过 {skipped}",
+        "importFromPackError": "从套餐导入产品出错"
+      },
+      "pdf": {
+        "title": "产品目录",
+        "subtitle": "完整产品列表",
+        "export": "导出 PDF",
+        "generating": "生成 PDF 中...",
+        "product": "产品",
+        "code": "SAT 编码",
+        "sku": "SKU",
+        "brand": "品牌",
+        "category": "分类",
+        "measurementUnit": "单位",
+        "type": "类型",
+        "tax": "税务",
+        "basePrice": "基础价格",
+        "status": "状态",
+        "total": "产品总数",
+        "footer": "自动生成的文档",
+        "generatedOn": "生成于",
+        "page": "页"
+      }
+    },
+    "categories": {
+      "title": "分类",
+      "newCategory": "新建分类",
+      "editCategory": "编辑分类",
+      "deleteCategory": "删除分类",
+      "searchCategories": "搜索分类...",
+      "noCategories": "暂无分类",
+      "noCategoriesDesc": "点击「新建分类」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "form": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "slug": "别名",
+        "image": "图片",
+        "position": "位置",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：CAT001",
+          "name": "例：电子产品",
+          "description": "例：电子产品和技术",
+          "slug": "例：electronics",
+          "position": "例：1"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "nameRequired": "名称为必填项",
+          "descriptionRequired": "描述为必填项",
+          "slugRequired": "别名为必填项"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "messages": {
+        "categoryCreated": "分类创建成功",
+        "categoryUpdated": "分类更新成功",
+        "categoryDeleted": "分类删除成功",
+        "errorLoading": "加载分类出错",
+        "errorCreating": "创建分类出错",
+        "errorUpdating": "更新分类出错",
+        "errorDeleting": "删除分类出错",
+        "confirmDelete": "确定要删除分类「{name}」吗？此操作无法撤销。"
+      }
+    },
+    "brands": {
+      "title": "品牌",
+      "newBrand": "新建品牌",
+      "editBrand": "编辑品牌",
+      "deleteBrand": "删除品牌",
+      "searchBrands": "搜索品牌...",
+      "noBrands": "暂无品牌",
+      "noBrandsDesc": "点击「新建品牌」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "form": {
+        "code": "名称",
+        "name": "名称",
+        "description": "描述（可选）",
+        "image": "图片",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：Samsung",
+          "name": "例：Samsung",
+          "description": "例：领先的科技品牌"
+        },
+        "errors": {
+          "codeRequired": "名称为必填项",
+          "nameRequired": "名称为必填项",
+          "descriptionRequired": "描述为必填项"
+        }
+      },
+      "table": {
+        "code": "名称",
+        "name": "名称",
+        "description": "描述",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "messages": {
+        "brandCreated": "品牌创建成功",
+        "brandUpdated": "品牌更新成功",
+        "brandDeleted": "品牌删除成功",
+        "errorLoading": "加载品牌出错",
+        "errorCreating": "创建品牌出错",
+        "errorUpdating": "更新品牌出错",
+        "errorDeleting": "删除品牌出错",
+        "confirmDelete": "确定要删除品牌「{name}」吗？此操作无法撤销。"
+      }
+    },
+    "taxes": {
+      "title": "税务",
+      "newTax": "新建税务",
+      "editTax": "编辑税务",
+      "deleteTax": "删除税务",
+      "taxType": "税务类型",
+      "searchTaxes": "搜索税务...",
+      "noTaxes": "暂无税务",
+      "noTaxesDesc": "点击「新建税务」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "noPermission": "您没有权限查看此页面",
+      "form": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "rate": "税率",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：VAT",
+          "name": "例：增值税",
+          "description": "例：增值税",
+          "rate": "例：18"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "nameRequired": "名称为必填项",
+          "descriptionRequired": "描述为必填项",
+          "rateRequired": "税率为必填项",
+          "invalidRate": "税率必须是有效数字"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "rate": "税率（%）",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "messages": {
+        "taxCreated": "税务创建成功",
+        "taxUpdated": "税务更新成功",
+        "taxDeleted": "税务删除成功",
+        "errorLoading": "加载税务出错",
+        "errorCreating": "创建税务出错",
+        "errorUpdating": "更新税务出错",
+        "errorDeleting": "删除税务出错",
+        "confirmDelete": "确定要删除税务「{name}」吗？此操作无法撤销。"
+      }
+    },
+    "currencies": {
+      "title": "货币",
+      "newCurrency": "新建货币",
+      "editCurrency": "编辑货币",
+      "deleteCurrency": "删除货币",
+      "currencyCode": "货币代码",
+      "currencyName": "货币名称",
+      "searchCurrencies": "搜索货币...",
+      "noCurrencies": "暂无货币",
+      "noCurrenciesDesc": "点击「新建货币」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "form": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "symbol": "符号",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：USD",
+          "name": "例：美元",
+          "description": "例：美利坚合众国美元",
+          "symbol": "例：$"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "nameRequired": "名称为必填项",
+          "descriptionRequired": "描述为必填项",
+          "symbolRequired": "符号为必填项"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "symbol": "符号",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "messages": {
+        "currencyCreated": "货币创建成功",
+        "currencyUpdated": "货币更新成功",
+        "currencyDeleted": "货币删除成功",
+        "errorLoading": "加载货币出错",
+        "errorCreating": "创建货币出错",
+        "errorUpdating": "更新货币出错",
+        "errorDeleting": "删除货币出错",
+        "confirmDelete": "确定要删除货币「{name}」吗？此操作无法撤销。"
+      }
+    },
+    "measurementUnits": {
+      "title": "计量单位",
+      "newUnit": "新建计量单位",
+      "editUnit": "编辑计量单位",
+      "deleteUnit": "删除计量单位",
+      "unitCode": "单位编码",
+      "unitDescription": "单位描述",
+      "searchUnits": "搜索计量单位...",
+      "noUnits": "暂无计量单位",
+      "noUnitsDesc": "点击「新建单位」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "noPermission": "您没有权限查看此页面",
+      "form": {
+        "code": "编码",
+        "description": "描述",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：Lts",
+          "description": "例：升"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "descriptionRequired": "描述为必填项"
+        },
+        "suggestions": {
+          "note": "必须选择合适的单位",
+          "searching": "搜索建议中..."
+        }
+      },
+      "table": {
+        "code": "编码",
+        "description": "描述",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "messages": {
+        "unitCreated": "计量单位创建成功",
+        "unitUpdated": "计量单位更新成功",
+        "unitDeleted": "计量单位删除成功",
+        "errorLoading": "加载计量单位出错",
+        "errorCreating": "创建计量单位出错",
+        "errorUpdating": "更新计量单位出错",
+        "errorDeleting": "删除计量单位出错",
+        "confirmDelete": "确定要删除计量单位「{description}」吗？此操作无法撤销。"
+      }
+    },
+    "providers": {
+      "title": "供应商",
+      "newProvider": "新建供应商",
+      "editProvider": "编辑供应商",
+      "deleteProvider": "删除供应商",
+      "providerInfo": "供应商信息",
+      "searchProviders": "搜索供应商...",
+      "noProviders": "暂无供应商",
+      "noProvidersDesc": "点击「新建供应商」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "noPermission": "您没有权限查看此页面",
+      "form": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "phone": "电话",
+        "email": "邮箱",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：PROV001",
+          "name": "例：供应商 XYZ",
+          "description": "例：建筑材料供应商",
+          "phone": "例：+51 987654321",
+          "email": "例：contact@provider.com"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "nameRequired": "名称为必填项",
+          "descriptionRequired": "描述为必填项",
+          "invalidEmail": "邮箱格式不正确"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "email": "邮箱",
+        "balance": "余额",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "messages": {
+        "providerCreated": "供应商创建成功",
+        "providerUpdated": "供应商更新成功",
+        "providerDeleted": "供应商删除成功",
+        "errorLoading": "加载供应商出错",
+        "errorCreating": "创建供应商出错",
+        "errorUpdating": "更新供应商出错",
+        "errorDeleting": "删除供应商出错",
+        "confirmDelete": "确定要删除供应商「{name}」吗？此操作无法撤销。",
+        "deleteSuccess": "供应商删除成功"
+      },
+      "actions": {
+        "edit": "编辑",
+        "delete": "删除",
+        "save": "保存",
+        "cancel": "取消"
+      },
+      "status": {
+        "active": "启用",
+        "inactive": "禁用"
+      },
+      "credit": {
+        "title": "信用与收款",
+        "editCredit": "编辑信用条件",
+        "limit": "信用额度",
+        "days": "信用天数",
+        "daysUnit": "天",
+        "isActive": "信用启用",
+        "currency": "额度货币",
+        "portfolioAnalysis": "账期分析",
+        "loadingAnalysis": "加载账期分析中...",
+        "creditNotActive": "该客户未启用信用",
+        "usedCredit": "已用信用",
+        "availableCredit": "可用信用",
+        "currentBalance": "当前余额",
+        "overdueBalance": "逾期余额",
+        "utilized": "已使用",
+        "accountsReceivable": "应收账款",
+        "reference": "参考",
+        "issueDate": "开票日期",
+        "dueDate": "到期日期",
+        "totalAmount": "总金额",
+        "remainingAmount": "剩余余额",
+        "status": "状态",
+        "aging": "账龄",
+        "daysOverdue": "天逾期",
+        "statuses": {
+          "pending": "待处理",
+          "partial": "部分付款",
+          "paid": "已付款",
+          "overdue": "逾期",
+          "cancelled": "已取消"
+        },
+        "analysisTitle": "债务分析（即将推出）",
+        "analysisDescription": "我们正在为您提供强大的洞察功能，以更有效地管理供应商债务。",
+        "placeholders": {
+          "limit": "例：50000.00",
+          "days": "例：30"
+        },
+        "messages": {
+          "updated": "信用条件更新成功"
+        }
+      },
+      "addresses": {
+        "title": "地址",
+        "newAddress": "新建地址",
+        "editAddress": "编辑地址",
+        "street": "街道",
+        "exteriorNumber": "门牌号",
+        "interiorNumber": "内部号",
+        "neighborhood": "街区",
+        "city": "城市",
+        "municipality": "市辖区",
+        "zipCode": "邮政编码",
+        "state": "省/州",
+        "country": "国家",
+        "type": "地址类型",
+        "isMain": "主要地址",
+        "types": {
+          "FISCAL": "财税",
+          "SHIPPING": "收货",
+          "BILLING": "账单",
+          "OTHER": "其他"
+        },
+        "placeholders": {
+          "street": "例：日落大道",
+          "exteriorNumber": "例：142",
+          "interiorNumber": "例：4",
+          "neighborhood": "例：市中心",
+          "city": "例：斯普林菲尔德",
+          "municipality": "例：斯普林菲尔德",
+          "zipCode": "例：86500",
+          "state": "例：伊利诺伊州",
+          "country": "例：USA"
+        },
+        "errors": {
+          "streetRequired": "街道为必填项",
+          "zipCodeRequired": "邮政编码为必填项"
+        },
+        "messages": {
+          "created": "地址添加成功",
+          "updated": "地址更新成功",
+          "deleted": "地址删除成功"
+        },
+        "emptyState": {
+          "title": "未注册地址",
+          "description": "该供应商尚未配置任何地址。"
+        },
+        "table": {
+          "actions": "操作"
+        }
+      },
+      "taxData": {
+        "title": "税务数据",
+        "newTaxData": "新建税务档案",
+        "editTaxData": "编辑税务档案",
+        "taxDocument": "RFC / 税号",
+        "taxName": "法定名称",
+        "taxSystem": "税务制度",
+        "defaultInvoiceUse": "CFDI 用途",
+        "isMain": "主要档案",
+        "placeholders": {
+          "taxDocument": "例：RUC 20123456789",
+          "taxName": "例：Company S.A. de C.V."
+        },
+        "table": {
+          "taxDocument": "RFC / 税号",
+          "taxName": "法定名称",
+          "taxSystem": "税务制度",
+          "defaultInvoiceUse": "CFDI 用途",
+          "isMain": "主要档案",
+          "actions": "操作"
+        },
+        "errors": {
+          "taxDocumentRequired": "RFC 为必填项",
+          "taxNameRequired": "法定名称为必填项"
+        },
+        "messages": {
+          "created": "税务数据添加成功",
+          "updated": "税务数据更新成功",
+          "deleted": "税务数据删除成功"
+        },
+        "emptyState": {
+          "title": "未注册税务数据",
+          "description": "该供应商尚未配置任何税务档案。"
+        }
+      }
+    },
+    "clients": {
+      "title": "客户",
+      "newClient": "新建客户",
+      "importFromPack": "从套餐导入",
+      "importingFromPack": "导入中...",
+      "editClient": "编辑客户",
+      "deleteClient": "删除客户",
+      "clientInfo": "客户信息",
+      "searchClients": "搜索客户...",
+      "noClients": "暂无客户",
+      "noClientsDesc": "点击「新建客户」添加一个。",
+      "noResultsDesc": "未找到结果",
+      "noPermission": "您没有权限查看此页面",
+      "form": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "phone": "电话",
+        "email": "邮箱",
+        "address": "地址",
+        "detailedAddress": "详细地址",
+        "addressStreet": "街道",
+        "addressExterior": "门牌号",
+        "addressInterior": "内部号",
+        "addressNeighborhood": "街区",
+        "addressCity": "城市",
+        "addressMunicipality": "市辖区",
+        "addressZip": "邮政编码",
+        "addressState": "省/州",
+        "addressCountry": "国家",
+        "taxDocument": "税务文件",
+        "taxSystem": "税务制度",
+        "defaultInvoiceUse": "默认发票用途",
+        "status": "状态",
+        "active": "启用",
+        "placeholders": {
+          "code": "例：CLI001",
+          "name": "例：客户 XYZ",
+          "description": "例：普通客户",
+          "phone": "例：+51 987654321",
+          "email": "例：contact@client.com",
+          "address": "例：主街 123 号，利马",
+          "addressStreet": "例：日落大道",
+          "addressExterior": "例：142",
+          "addressInterior": "例：4",
+          "addressNeighborhood": "例：Centro",
+          "addressCity": "例：Huatabampo",
+          "addressMunicipality": "例：Huatabampo",
+          "addressZip": "例：86500",
+          "addressState": "例：Sonora",
+          "addressCountry": "例：MEX",
+          "taxDocument": "例：RUC 20123456789",
+          "taxSystem": "例：601",
+          "defaultInvoiceUse": "例：G01"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "nameRequired": "名称为必填项",
+          "descriptionRequired": "描述为必填项",
+          "taxDocumentRequired": "税务文件为必填项",
+          "invalidEmail": "邮箱格式不正确",
+          "emailRequired": "邮箱为必填项"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "description": "描述",
+        "email": "邮箱",
+        "balance": "余额",
+        "taxDocument": "税务文件",
+        "status": "状态",
+        "actions": "操作",
+        "inPack": "已在 PAC 注册"
+      },
+      "messages": {
+        "clientCreated": "客户创建成功",
+        "clientUpdated": "客户更新成功",
+        "clientDeleted": "客户删除成功",
+        "errorLoading": "加载客户出错",
+        "errorCreating": "创建客户出错",
+        "errorUpdating": "更新客户出错",
+        "errorDeleting": "删除客户出错",
+        "importFromPackSuccess": "导入完成。总计：{total}，已创建：{created}，已更新：{updated}，已关联：{linked}，已跳过：{skipped}。",
+        "importFromPackError": "无法从套餐导入",
+        "packSyncFailedCreate": "客户已保存到 Redfox。注意：未在 PAC 注册。在修复此问题之前，您将无法开票。详情：{detail}",
+        "packSyncFailedUpdate": "客户已保存到 Redfox。注意：未在 PAC 更新。在修复此问题之前，您将无法开票。详情：{detail}",
+        "syncSuccess": "客户已成功与 PAC 重新同步",
+        "syncError": "与 PAC 重新同步客户出错：{error}",
+        "confirmDelete": "确定要删除客户「{name}」吗？此操作无法撤销。"
+      },
+      "actions": {
+        "edit": "编辑",
+        "delete": "删除",
+        "save": "保存",
+        "cancel": "取消",
+        "viewSales": "查看销售",
+        "back": "返回",
+        "syncWithPack": "与 PAC 重新同步"
+      },
+      "status": {
+        "active": "启用",
+        "inactive": "禁用"
+      },
+      "credit": {
+        "title": "信用与收款",
+        "editCredit": "编辑信用条件",
+        "limit": "信用额度",
+        "days": "信用天数",
+        "daysUnit": "天",
+        "isActive": "信用启用",
+        "currency": "额度货币",
+        "portfolioAnalysis": "账期分析",
+        "loadingAnalysis": "加载账期分析中...",
+        "creditNotActive": "该客户未启用信用",
+        "usedCredit": "已用信用",
+        "availableCredit": "可用信用",
+        "currentBalance": "当前余额",
+        "overdueBalance": "逾期余额",
+        "utilized": "已使用",
+        "accountsReceivable": "应收账款",
+        "reference": "参考",
+        "issueDate": "开票日期",
+        "dueDate": "到期日期",
+        "totalAmount": "总金额",
+        "remainingAmount": "剩余余额",
+        "status": "状态",
+        "aging": "账龄",
+        "daysOverdue": "天逾期",
+        "statuses": {
+          "pending": "待处理",
+          "partial": "部分付款",
+          "paid": "已付款",
+          "overdue": "逾期",
+          "cancelled": "已取消"
+        },
+        "analysisTitle": "债务分析（即将推出）",
+        "analysisDescription": "我们正在为您提供强大的洞察功能，以更有效地管理供应商债务。",
+        "placeholders": {
+          "limit": "例：50000.00",
+          "days": "例：30"
+        },
+        "messages": {
+          "updated": "信用条件更新成功"
+        }
+      },
+      "addresses": {
+        "title": "地址",
+        "newAddress": "新建地址",
+        "editAddress": "编辑地址",
+        "street": "街道",
+        "exteriorNumber": "门牌号",
+        "interiorNumber": "内部号",
+        "neighborhood": "街区",
+        "city": "城市",
+        "municipality": "市辖区",
+        "zipCode": "邮政编码",
+        "state": "省/州",
+        "country": "国家",
+        "type": "地址类型",
+        "isMain": "主要地址",
+        "types": {
+          "FISCAL": "财税",
+          "SHIPPING": "收货",
+          "BILLING": "账单",
+          "OTHER": "其他"
+        },
+        "placeholders": {
+          "street": "例：日落大道",
+          "exteriorNumber": "例：142",
+          "interiorNumber": "例：4",
+          "neighborhood": "例：Centro",
+          "city": "例：Huatabampo",
+          "municipality": "例：Huatabampo",
+          "zipCode": "例：86500",
+          "state": "例：Sonora",
+          "country": "例：MEX"
+        },
+        "errors": {
+          "streetRequired": "街道为必填项",
+          "zipCodeRequired": "邮政编码为必填项"
+        },
+        "emptyState": {
+          "title": "未注册地址",
+          "description": "该客户尚未配置任何地址。"
+        },
+        "messages": {
+          "created": "地址添加成功",
+          "updated": "地址更新成功",
+          "deleted": "地址删除成功"
+        },
+        "table": {
+          "actions": "操作"
+        }
+      },
+      "taxData": {
+        "title": "税务数据",
+        "newTaxData": "新建税务档案",
+        "editTaxData": "编辑税务档案",
+        "taxDocument": "RFC / 税号",
+        "taxName": "法定名称",
+        "taxSystem": "财税制度",
+        "defaultInvoiceUse": "CFDI 用途",
+        "isMain": "主要档案",
+        "placeholders": {
+          "taxDocument": "例：RUC 20123456789",
+          "taxName": "例：Empresa S.A. de C.V."
+        },
+        "errors": {
+          "taxDocumentRequired": "税务文件为必填项",
+          "taxNameRequired": "法定名称为必填项"
+        },
+        "emptyState": {
+          "title": "未注册税务数据",
+          "description": "该客户尚未配置任何税务档案。"
+        },
+        "messages": {
+          "created": "税务数据添加成功",
+          "updated": "税务数据更新成功",
+          "deleted": "税务数据删除成功"
+        },
+        "regimes": {
+          "601": "法人一般法",
+          "603": "非营利法人",
+          "605": "工资、薪金及同化收入",
+          "606": "租赁",
+          "607": "财产转让或取得制度",
+          "608": "其他收入",
+          "609": "合并",
+          "610": "在墨西哥无常设机构的外国居民",
+          "611": "股息收入（合伙人和股东）",
+          "612": "从事商业和专业活动的个人",
+          "614": "利息收入",
+          "615": "奖金收入制度",
+          "616": "无纳税义务",
+          "620": "选择递延收入的生产合作社",
+          "621": "财税并入",
+          "622": "农业、畜牧业、林业和渔业活动",
+          "623": "企业集团可选制度",
+          "624": "协调实体",
+          "625": "通过技术平台获得收入的商业活动",
+          "626": "简化信托制度",
+          "628": "碳氢化合物",
+          "629": "优惠税收制度和跨国公司",
+          "630": "证券交易所股票转让"
+        },
+        "invoiceUses": {
+          "G01": "商品采购",
+          "G02": "退货、折扣或奖励",
+          "G03": "一般费用",
+          "I01": "建筑",
+          "I02": "投资用办公家具和设备",
+          "I03": "运输设备",
+          "I04": "计算机设备和配件",
+          "I05": "模具、冲模、铸模、基体和工具",
+          "I06": "电话通信",
+          "I07": "卫星通信",
+          "I08": "其他机械和设备",
+          "D01": "医疗、牙科费用及住院费用",
+          "D02": "因残疾或失能产生的医疗费用",
+          "D03": "丧葬费用",
+          "D04": "捐款",
+          "D05": "抵押贷款（住宅）实际支付的实际利息",
+          "D06": "向 SAR 的自愿缴款",
+          "D07": "医疗费用保险费",
+          "D08": "强制性校车费用",
+          "D09": "储蓄账户存款、养老金计划保费",
+          "D10": "教育服务费用（学费）",
+          "S01": "无税务影响",
+          "CP01": "付款",
+          "CN01": "工资单"
+        },
+        "table": {
+          "actions": "操作"
+        }
+      }
+    },
+    "inventory": {
+      "title": "库存",
+      "selectWarehouse": "选择仓库",
+      "warehouseInventory": "仓库库存",
+      "noClosedWarehouses": "无已关闭仓库",
+      "noClosedWarehousesDesc": "库存仅适用于已关闭的仓库",
+      "productsInInventory": "库存中有 {count} 个产品",
+      "noProductsInInventory": "库存中无产品",
+      "productHistory": "产品历史",
+      "operationTypes": {
+        "WAREHOUSE_OPENING": "仓库开仓",
+        "RECEPTION": "收货",
+        "PURCHASE": "采购",
+        "TRANSFER_IN": "调入",
+        "ADJUSTMENT_IN": "调整入库",
+        "RETURN_IN": "退货入库",
+        "SALE": "销售",
+        "WITHDRAWAL": "出库",
+        "TRANSFER_OUT": "调出",
+        "ADJUSTMENT_OUT": "调整出库",
+        "DETERIORATION": "损耗",
+        "RETURN_OUT": "退货出库",
+        "DAMAGE": "损坏"
+      },
+      "form": {
+        "selectWarehouse": "选择仓库...",
+        "required": "必填"
+      },
+      "table": {
+        "product": "产品",
+        "sku": "SKU",
+        "brand": "品牌",
+        "category": "分类",
+        "quantity": "数量",
+        "price": "价格",
+        "batchNumber": "批次号",
+        "expirationDate": "到期日期",
+        "date": "日期",
+        "actions": "操作"
+      },
+      "actions": {
+        "viewProduct": "查看产品",
+        "viewHistory": "查看历史",
+        "syncWithPack": "与 PAC 重新同步"
+      },
+      "messages": {
+        "errorLoadingClosedWarehouses": "加载已关闭仓库出错",
+        "errorLoadingWarehouseDetails": "加载仓库详情出错",
+        "errorLoadingInventory": "加载库存出错",
+        "errorLoadingHistory": "加载产品历史出错",
+        "syncWithPackSuccess": "产品已成功与 PAC 重新同步",
+        "syncWithPackError": "与 PAC 重新同步出错：{error}"
+      },
+      "history": {
+        "title": "移动历史",
+        "noHistory": "无历史记录",
+        "noHistoryDesc": "该产品无移动记录",
+        "movementsRegistered": "已记录 {count} 次移动",
+        "table": {
+          "date": "日期",
+          "operationType": "操作类型",
+          "quantity": "数量",
+          "currentStock": "当前库存",
+          "operationId": "操作 ID"
+        }
+      },
+      "modal": {
+        "title": "产品详情",
+        "basicInfo": "基本信息",
+        "inventoryInfo": "库存信息",
+        "name": "名称",
+        "sku": "SKU",
+        "description": "描述",
+        "quantity": "数量",
+        "price": "价格",
+        "date": "日期",
+        "stock": "库存",
+        "tax": "税务",
+        "close": "关闭"
+      },
+      "productMessages": {
+        "productAdded": "产品添加成功",
+        "productUpdated": "产品更新成功",
+        "errorAdding": "添加产品出错",
+        "errorUpdating": "更新产品出错"
+      },
+      "inventoryInfo": {
+        "title": "产品库存信息",
+        "product": "产品",
+        "sku": "SKU",
+        "stockAvailable": "可用库存",
+        "inventoryPrice": "库存价格",
+        "warehouse": "仓库",
+        "category": "分类"
+      }
+    },
+    "warehouseOpenings": {
+      "title": "仓库开仓",
+      "newOpening": "新建开仓",
+      "editOpening": "编辑开仓",
+      "deleteOpening": "删除开仓",
+      "productDetailsName": "产品详情",
+      "warehouse": "仓库：",
+      "currency": "货币：",
+      "totalProducts": "共 {count} 个产品",
+      "noOpenings": "未注册开仓",
+      "noOpeningsDesc": "该仓库在开仓时未注册任何产品。",
+      "error": {
+        "title": "错误",
+        "noWarehouseId": "未提供有效的仓库 ID",
+        "warehouseIdRequired": "未提供仓库 ID",
+        "errorLoadingWarehouse": "加载仓库信息出错",
+        "errorLoadingOpenings": "加载开仓出错",
+        "errorDeleting": "删除开仓出错"
+      },
+      "form": {
+        "product": "产品",
+        "quantity": "数量",
+        "price": "价格",
+        "selectPrice": "选择价格",
+        "basePrice": "基础价格",
+        "customPrice": "自定义价格",
+        "selectProduct": "选择产品...",
+        "placeholders": {
+          "quantity": "例：100",
+          "price": "例：25.50"
+        },
+        "errors": {
+          "productRequired": "产品为必填项",
+          "quantityRequired": "数量必须大于 0",
+          "priceRequired": "价格必须大于 0"
+        }
+      },
+      "table": {
+        "product": "产品",
+        "sku": "SKU",
+        "brand": "品牌",
+        "category": "分类",
+        "quantity": "数量",
+        "price": "价格",
+        "creationDate": "创建日期",
+        "actions": "操作"
+      },
+      "actions": {
+        "back": "返回",
+        "edit": "编辑",
+        "viewDetails": "查看详情",
+        "delete": "删除",
+        "close": "关闭开仓"
+      },
+      "messages": {
+        "openingDeleted": "开仓删除成功",
+        "openingCreated": "开仓创建成功",
+        "openingUpdated": "开仓更新成功",
+        "errorLoadingProducts": "加载产品出错",
+        "errorCreating": "创建开仓出错",
+        "errorUpdating": "更新开仓出错",
+        "errorClosing": "关闭仓库开仓出错",
+        "confirmDelete": "确定要删除产品「{name}」的开仓吗？此操作无法撤销。",
+        "confirmClose": "确定要关闭仓库 {name} 的开仓吗？此操作将把所有产品转入库存且无法撤销。"
+      },
+      "productDetails": {
+        "noData": "无数据可显示",
+        "name": "名称",
+        "sku": "SKU",
+        "weight": "重量（千克）",
+        "width": "宽度（米）",
+        "height": "高度（米）",
+        "length": "长度（米）",
+        "brand": "品牌",
+        "category": "分类",
+        "measurementUnit": "计量单位",
+        "tax": "税务",
+        "productType": "产品类型",
+        "description": "描述",
+        "openingInfo": "开仓信息",
+        "openingQuantity": "开仓数量",
+        "openingPrice": "开仓价格",
+        "openingDate": "开仓日期",
+        "images": "图片（{count}）",
+        "image": "图片 {index}",
+        "productStatus": "产品状态",
+        "active": "启用",
+        "inactive": "禁用"
+      }
+    },
+    "receptions": {
+      "title": "收货",
+      "newReception": "新建收货",
+      "editReception": "编辑收货",
+      "deleteReception": "删除收货",
+      "closeReception": "关闭收货",
+      "receptionDetails": "收货详情",
+      "receptionInfo": "收货信息",
+      "provider": "供应商",
+      "document": "单据",
+      "generalInfo": "基本信息",
+      "receptionProducts": "收货产品",
+      "noProducts": "暂无产品",
+      "noProductsDesc": "添加产品以开始收货。",
+      "noProductsClosedDesc": "该收货单无已注册产品。",
+      "addProductTitle": "添加产品",
+      "noReceptions": "暂无收货",
+      "noResultsDesc": "未找到结果",
+      "noReceptionsDesc": "点击「新建收货」添加一个。",
+      "searchReceptions": "搜索收货...",
+      "form": {
+        "title": "收货信息",
+        "subtitle": "填写信息以创建新收货单",
+        "code": "编码",
+        "date": "日期",
+        "provider": "供应商",
+        "warehouse": "仓库",
+        "document": "单据",
+        "amount": "金额",
+        "status": "状态",
+        "placeholders": {
+          "code": "例：REC-2024-001",
+          "document": "例：FACT-001-2024"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "dateRequired": "日期为必填项",
+          "providerRequired": "供应商为必填项",
+          "warehouseRequired": "仓库为必填项",
+          "documentRequired": "单据为必填项"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "date": "日期",
+        "provider": "供应商",
+        "warehouse": "仓库",
+        "document": "单据",
+        "amount": "金额",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "status": {
+        "open": "开启",
+        "closed": "关闭"
+      },
+      "actions": {
+        "viewDetails": "查看详情",
+        "closeReception": "关闭收货",
+        "closing": "关闭中...",
+        "cancel": "取消",
+        "edit": "编辑",
+        "delete": "删除",
+        "cannotEditClosed": "无法编辑已关闭的收货单",
+        "cannotDeleteClosed": "无法删除已关闭的收货单",
+        "createNewProvider": "创建新供应商",
+        "generatePDF": "生成 PDF",
+        "generatingPDF": "生成 PDF 中..."
+      },
+      "messages": {
+        "receptionCreated": "收货单创建成功",
+        "receptionUpdated": "收货单更新成功",
+        "receptionDeleted": "收货单删除成功",
+        "receptionClosed": "收货单关闭成功",
+        "pdfGenerated": "PDF 生成成功",
+        "pdfTitle": "收货单",
+        "errorLoading": "加载收货单出错",
+        "errorCreating": "创建收货单出错",
+        "errorUpdating": "更新收货单出错",
+        "errorDeleting": "删除收货单出错",
+        "errorClosing": "关闭收货单出错",
+        "errorGeneratingPDF": "生成 PDF 出错",
+        "confirmDelete": "确定要删除收货单「{code}」吗？此操作无法撤销。",
+        "confirmClose": "确定要关闭收货单「{code}」吗？此操作无法撤销。",
+        "pdfFooter": "自动生成的文档",
+        "deleteSuccess": "收货单删除成功",
+        "noResultsDesc": "未找到符合搜索条件的收货单"
+      },
+      "pdf": {
+        "code": "编码",
+        "date": "日期",
+        "provider": "供应商",
+        "warehouse": "仓库",
+        "document": "单据",
+        "status": "状态",
+        "product": "产品",
+        "sku": "SKU",
+        "brand": "品牌",
+        "category": "分类",
+        "quantity": "数量",
+        "price": "价格",
+        "subtotal": "小计",
+        "total": "合计",
+        "statusOpen": "开启",
+        "statusClosed": "关闭",
+        "page": "页"
+      },
+      "modals": {
+        "delete": {
+          "title": "删除收货单",
+          "message": "确定要删除收货单「{code}」吗？此操作无法撤销。"
+        },
+        "close": {
+          "title": "关闭收货单",
+          "message": "确定要关闭收货单「{code}」吗？此操作无法撤销。"
+        },
+        "closeResult": {
+          "title": "收货单关闭成功",
+          "details": {
+            "receptionCode": "收货单编码",
+            "transferredProducts": "已转移产品",
+            "totalQuantity": "总数量",
+            "closedAt": "关闭时间"
+          },
+          "actions": {
+            "continue": "继续"
+          }
+        }
+      },
+      "addProduct": {
+        "title": "添加产品",
+        "editTitle": "编辑产品",
+        "form": {
+          "product": "产品",
+          "selectProduct": "选择产品",
+          "searchProduct": "搜索产品...",
+          "searching": "搜索中...",
+          "noProducts": "无可用产品",
+          "noProductsFound": "未找到产品",
+          "quantity": "数量",
+          "price": "价格",
+          "batchNumber": "批次号",
+          "expirationDate": "到期日期",
+          "recommended": "推荐",
+          "optional": "可选",
+          "priceHint": "产品基础价格：{price}",
+          "placeholders": {
+            "quantity": "输入数量",
+            "price": "输入价格",
+            "batchNumber": "输入批次号"
+          },
+          "errors": {
+            "productRequired": "产品为必填项",
+            "quantityRequired": "数量为必填项",
+            "quantityPositive": "数量必须大于 0",
+            "priceRequired": "价格为必填项",
+            "pricePositive": "价格必须大于 0",
+            "expirationDateRequired": "FEFO 产品需要填写到期日期"
+          },
+          "strategyHints": {
+            "fefo": "需要到期日期。系统优先扣减最先到期的批次。",
+            "fifo": "系统优先扣减最早入库的批次。建议填写批次号以便追溯。",
+            "average": "价格按加权平均计算。不使用批次号和到期日期。"
+          }
+        },
+        "messages": {
+          "productAdded": "产品添加成功",
+          "productUpdated": "产品更新成功",
+          "errorAdding": "添加产品出错",
+          "errorUpdating": "更新产品出错"
+        },
+        "inventoryInfo": {
+          "title": "产品库存信息",
+          "product": "产品",
+          "sku": "SKU",
+          "stockAvailable": "可用库存",
+          "inventoryPrice": "库存价格",
+          "warehouse": "仓库",
+          "category": "分类"
+        },
+        "selectedProducts": "已选产品"
+      },
+      "productsTable": {
+        "title": "收货产品",
+        "headers": {
+          "product": "产品",
+          "sku": "SKU",
+          "brand": "品牌",
+          "category": "分类",
+          "quantity": "数量",
+          "price": "价格",
+          "subtotal": "小计",
+          "actions": "操作"
+        },
+        "noProducts": "该收货单无产品",
+        "noProductsDesc": "添加产品以开始记录收货",
+        "noProductsClosedDesc": "该收货单无已注册产品"
+      },
+      "deleteProduct": {
+        "title": "删除产品",
+        "message": "确定要从该收货单中删除产品「{productName}」吗？此操作无法撤销。",
+        "success": "产品删除成功",
+        "error": "删除产品出错"
+      },
+      "editProduct": {
+        "title": "编辑产品"
+      },
+      "details": {
+        "title": "收货单 {code}",
+        "subtitle": "收货单详情",
+        "back": "返回",
+        "notFound": "未找到收货单",
+        "errorLoading": "加载收货单出错",
+        "generalInfo": "基本信息",
+        "provider": "供应商",
+        "warehouse": "仓库",
+        "receptionProducts": "收货产品",
+        "noProducts": "暂无产品",
+        "noProductsDesc": "添加产品以开始收货。",
+        "noProductsClosedDesc": "该收货单无已注册产品。",
+        "addProduct": "添加产品",
+        "labels": {
+          "date": "日期",
+          "code": "编码",
+          "destination": "目的地",
+          "status": "状态",
+          "name": "名称",
+          "document": "单据",
+          "totalAmount": "总金额"
+        }
+      }
+    },
+    "quotations": {
+      "title": "报价单",
+      "subtitle": "管理您的业务报价单",
+      "newQuotation": "新建报价单",
+      "editQuotation": "编辑报价单",
+      "deleteQuotation": "删除报价单",
+      "quotationDetails": "报价单详情",
+      "quotationInfo": "报价单信息",
+      "noQuotations": "暂无报价单",
+      "noQuotationsDesc": "点击「新建报价单」添加一个。",
+      "searchQuotations": "搜索报价单...",
+      "table": {
+        "code": "编码",
+        "date": "日期",
+        "validUntil": "有效期至",
+        "client": "客户",
+        "warehouse": "仓库",
+        "total": "合计",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "status": {
+        "draft": "草稿",
+        "sent": "已发送",
+        "accepted": "已接受",
+        "rejected": "已拒绝",
+        "expired": "已过期",
+        "converted": "已转换"
+      },
+      "form": {
+        "code": "编码",
+        "date": "日期",
+        "validUntil": "有效期至",
+        "client": "客户",
+        "warehouse": "仓库",
+        "notes": "备注",
+        "product": "产品",
+        "quantity": "数量",
+        "price": "价格",
+        "basePrice": "基础价格",
+        "priceList": "价格列表",
+        "customPrice": "自定义价格",
+        "discountPercentage": "折扣（%）",
+        "discountAmount": "折扣（金额）",
+        "placeholders": {
+          "code": "例：COT-2026-001",
+          "selectClient": "选择客户",
+          "selectWarehouse": "选择仓库",
+          "selectProduct": "选择产品",
+          "notes": "关于报价单的附加备注"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "dateRequired": "日期为必填项",
+          "clientRequired": "客户为必填项",
+          "warehouseRequired": "仓库为必填项",
+          "validUntilMustBeAfterDate": "有效期至必须晚于报价单日期",
+          "productRequired": "产品为必填项",
+          "quantityRequired": "数量为必填项且必须大于 0",
+          "priceRequired": "价格为必填项且必须大于或等于 0",
+          "invalidDiscountPercentage": "折扣百分比必须在 0 到 100 之间",
+          "invalidDiscountAmount": "折扣金额必须大于或等于 0"
+        }
+      },
+      "actions": {
+        "create": "创建报价单",
+        "edit": "编辑",
+        "view": "查看",
+        "delete": "删除",
+        "cancel": "取消",
+        "convertToSale": "转换为销售",
+        "downloadPDF": "下载 PDF",
+        "addProduct": "添加产品",
+        "editProduct": "编辑产品",
+        "newClient": "新建客户",
+        "createNewClient": "创建新客户"
+      },
+      "search": {
+        "placeholder": "按编码、客户搜索..."
+      },
+      "messages": {
+        "createSuccess": "报价单创建成功",
+        "updateSuccess": "报价单更新成功",
+        "deleteSuccess": "报价单删除成功",
+        "convertSuccess": "报价单已成功转换为销售",
+        "productAdded": "产品添加成功",
+        "productUpdated": "产品更新成功",
+        "productDeleted": "产品删除成功",
+        "errorLoading": "加载报价单出错",
+        "errorLoadingQuotation": "加载报价单出错",
+        "errorLoadingDetails": "加载详情出错",
+        "errorCreating": "创建报价单出错",
+        "errorUpdating": "更新报价单出错",
+        "errorDeleting": "删除报价单出错",
+        "errorConverting": "转换报价单出错",
+        "errorSavingProduct": "保存产品出错",
+        "errorDeletingProduct": "删除产品出错",
+        "confirmDelete": "确定要删除报价单「{code}」吗？此操作无法撤销。",
+        "confirmDeleteTitle": "删除报价单",
+        "confirmConvertToSale": "确定要将报价单「{code}」转换为销售吗？此操作无法撤销。",
+        "confirmConvertTitle": "转换为销售",
+        "warehouseForSaleHint": "产品将从该仓库发货。",
+        "confirmDeleteProduct": "确定要从该报价单中删除产品「{name}」吗？此操作无法撤销。",
+        "confirmDeleteProductTitle": "删除产品",
+        "pdfGenerated": "PDF 生成成功",
+        "errorGeneratingPDF": "生成 PDF 出错",
+        "pdfFooter": "感谢您的惠顾",
+        "pdfTitle": "报价单",
+        "pdfPage": "页"
+      },
+      "details": {
+        "title": "报价单 {code}",
+        "subtitle": "报价单详情",
+        "back": "返回",
+        "generalInfo": "基本信息",
+        "client": "客户",
+        "warehouse": "仓库",
+        "date": "日期",
+        "validUntil": "有效期至",
+        "status": "状态",
+        "subtotal": "小计",
+        "tax": "税务",
+        "total": "合计",
+        "notes": "备注",
+        "products": "产品",
+        "noProducts": "该报价单无产品",
+        "noProductsDesc": "添加产品以开始记录报价单",
+        "noProductsClosedDesc": "该报价单无已注册产品",
+        "table": {
+          "product": "产品",
+          "quantity": "数量",
+          "price": "价格",
+          "discount": "折扣",
+          "subtotal": "小计",
+          "actions": "操作"
+        },
+        "labels": {
+          "date": "日期",
+          "validUntil": "有效期至",
+          "status": "状态",
+          "name": "名称",
+          "code": "编码",
+          "total": "合计",
+          "totalAmount": "总金额",
+          "subtotal": "小计",
+          "tax": "税务",
+          "notes": "备注",
+          "noWarehouse": "未分配仓库"
+        }
+      }
+    },
+    "login": {
+      "title": "登录",
+      "subtitle": "输入您的凭据以继续",
+      "email": "邮箱",
+      "password": "密码",
+      "loginButton": "登录",
+      "loggingIn": "登录中...",
+      "forgotPassword": "忘记密码？",
+      "registerLink": "没有账户？立即注册"
+    },
+    "forgotPassword": {
+      "title": "找回密码",
+      "subtitle": "输入您的邮箱地址，我们将向您发送重置密码的链接",
+      "email": "邮箱地址",
+      "submit": "发送链接",
+      "sending": "发送中...",
+      "success": "已发送包含重置密码说明的邮件。",
+      "error": "处理您的请求时出错，请重试。",
+      "backToLogin": "返回登录"
+    },
+    "resetPassword": {
+      "title": "新密码",
+      "subtitle": "在下方输入您的新密码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认密码",
+      "submit": "更新密码",
+      "updating": "更新中...",
+      "success": "您的密码已成功更新。",
+      "error": "重置密码时出错，链接可能已过期。",
+      "passwordsDontMatch": "两次密码不一致",
+      "backToLogin": "前往登录"
+    },
+    "construction": {
+      "title": "建设中",
+      "description": "此功能即将推出。",
+      "backToList": "返回列表"
+    },
+    "sales": {
+      "title": "销售",
+      "globalInvoice": "全局发票",
+      "newSale": "新建销售",
+      "editSale": "编辑销售",
+      "deleteSale": "删除销售",
+      "saleDetails": "销售详情",
+      "saleInfo": "销售信息",
+      "client": "客户",
+      "generalInfo": "基本信息",
+      "saleProducts": "销售产品",
+      "noProducts": "暂无产品",
+      "noProductsDesc": "添加产品以开始销售。",
+      "noProductsCompletedDesc": "该销售单无已注册产品。",
+      "addProductTitle": "添加产品",
+      "noSales": "暂无销售",
+      "noSalesDesc": "点击「新建销售」添加一个。",
+      "searchSales": "搜索销售...",
+      "form": {
+        "title": "销售信息",
+        "subtitle": "填写信息以创建新销售单",
+        "code": "编码",
+        "destination": "目的地",
+        "client": "客户",
+        "amount": "金额",
+        "status": "状态",
+        "paymentMethod": "付款方式",
+        "paymentMethods": {
+          "cash": "现金",
+          "card": "刷卡",
+          "credit": "信用",
+          "creditLimit": "信用额度",
+          "days": "天"
+        },
+        "placeholders": {
+          "code": "例：SAL-2024-001",
+          "destination": "例：中央门店 - 主街 123 号",
+          "selectClient": "选择客户"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "destinationRequired": "目的地为必填项",
+          "clientRequired": "客户为必填项"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "date": "日期",
+        "destination": "目的地",
+        "client": "客户",
+        "amount": "金额",
+        "status": "状态",
+        "fiscalStatus": "财税状态",
+        "actions": "操作"
+      },
+      "status": {
+        "pending": "待处理",
+        "completed": "已完成",
+        "returned": "已退货"
+      },
+      "fiscalStatus": {
+        "RECEIPT_ONLY": "仅收据",
+        "INVOICED_DIRECT": "直接开票",
+        "INVOICED_GLOBAL": "全局开票"
+      },
+      "actions": {
+        "viewDetails": "查看详情",
+        "closeSale": "完成销售",
+        "closing": "完成中...",
+        "cancel": "取消",
+        "edit": "编辑",
+        "delete": "删除",
+        "cannotEditCompleted": "无法编辑已完成的销售单",
+        "cannotDeleteCompleted": "无法删除已完成的销售单",
+        "createNewClient": "创建新客户",
+        "generatePDF": "生成 PDF",
+        "generatingPDF": "生成 PDF 中...",
+        "create": "创建销售",
+        "newClient": "新建客户",
+        "invoice": "开票",
+        "invoiceAndStamp": "开票并盖章",
+        "printTicket": "打印小票",
+        "refund": "退款",
+        "refunded": "退款中...",
+        "cannotRefundInvoiced": "无法退款已开具 CFDI 的销售单"
+      },
+      "messages": {
+        "saleCreated": "销售单创建成功",
+        "saleUpdated": "销售单更新成功",
+        "saleDeleted": "销售单删除成功",
+        "saleClosed": "销售单完成成功",
+        "pdfGenerated": "PDF 生成成功",
+        "errorLoading": "加载销售单出错",
+        "errorCreating": "创建销售单出错",
+        "errorUpdating": "更新销售单出错",
+        "errorDeleting": "删除销售单出错",
+        "errorClosing": "完成销售单出错",
+        "errorGeneratingPDF": "生成 PDF 出错",
+        "confirmDelete": "确定要删除销售单「{code}」吗？此操作无法撤销。",
+        "confirmClose": "确定要完成销售单「{code}」吗？此操作无法撤销。",
+        "confirmRefund": "确定要退款销售单「{code}」吗？此操作无法撤销，将影响库存和收银机。",
+        "saleRefunded": "销售单退款成功",
+        "errorRefunded": "退款销售单出错",
+        "invoiceCreated": "发票创建成功",
+        "invoiceStamped": "发票盖章成功",
+        "invoiceCreatedStampFailed": "发票已创建，但盖章失败。您可以从发票中重试。",
+        "stampingInProgress": "正在创建并盖章发票，请稍候...",
+        "errorCreatingInvoice": "创建发票出错",
+        "globalInvoiceCreated": "全局发票创建成功",
+        "errorCreatingGlobalInvoice": "创建全局发票出错",
+        "noEligibleSales": "所选期间内无带收据但未开票的销售单",
+        "pdfTitle": "销售收据",
+        "pdfFooter": "感谢您的购买"
+      },
+      "pdf": {
+        "code": "编码",
+        "date": "日期",
+        "client": "客户",
+        "destination": "目的地",
+        "status": "状态",
+        "product": "产品",
+        "sku": "SKU",
+        "brand": "品牌",
+        "category": "分类",
+        "quantity": "数量",
+        "price": "价格",
+        "subtotal": "小计",
+        "total": "合计",
+        "statusOpen": "开启",
+        "statusClosed": "已完成",
+        "page": "页"
+      },
+      "modals": {
+        "delete": {
+          "title": "删除销售单",
+          "message": "确定要删除销售单「{code}」吗？此操作无法撤销。"
+        },
+        "close": {
+          "title": "完成销售单",
+          "message": "确定要完成销售单「{code}」吗？此操作无法撤销。"
+        },
+        "closeResult": {
+          "title": "销售单完成成功",
+          "details": {
+            "saleCode": "销售单编码",
+            "productsWithdrawn": "已出库产品",
+            "totalQuantity": "总数量",
+            "completedAt": "完成时间"
+          },
+          "actions": {
+            "continue": "继续"
+          }
+        },
+        "globalInvoice": {
+          "title": "创建全局发票",
+          "description": "选择日期范围，为所有带收据且未开票的销售单生成全局发票",
+          "from": "从",
+          "to": "至",
+          "periodicity": "周期",
+          "periodicities": {
+            "day": "每日",
+            "week": "每周",
+            "fortnight": "每两周",
+            "month": "每月",
+            "two_months": "每两月"
+          },
+          "create": "创建",
+          "cancel": "取消",
+          "errors": {
+            "fromRequired": "开始日期为必填项",
+            "toRequired": "结束日期为必填项",
+            "toMustBeAfterFrom": "结束日期必须大于或等于开始日期"
+          }
+        }
+      },
+      "closeSale": {
+        "title": "完成销售单",
+        "message": "确定要完成客户「{clientName}」的销售单「{code}」吗？",
+        "warning": "警告",
+        "warningDesc": "完成销售单后，库存将被处理，您将无法进行进一步更改。"
+      },
+      "closeSaleResult": {
+        "title": "销售单完成成功",
+        "success": "销售单已成功完成",
+        "saleCode": "销售单编码",
+        "productsWithdrawn": "已出库产品",
+        "totalQuantity": "总数量",
+        "completedAt": "完成时间"
+      },
+      "addProduct": {
+        "title": "添加产品",
+        "editTitle": "编辑产品",
+        "form": {
+          "product": "产品",
+          "selectProduct": "选择产品",
+          "searchProduct": "搜索产品...",
+          "searching": "搜索中...",
+          "noProducts": "无可用产品",
+          "noProductsFound": "未找到产品",
+          "quantity": "数量",
+          "price": "价格",
+          "priceList": "价格列表",
+          "basePrice": "基础价格",
+          "customPrice": "自定义价格",
+          "placeholders": {
+            "quantity": "输入数量",
+            "price": "输入价格"
+          },
+          "errors": {
+            "productRequired": "产品为必填项",
+            "quantityRequired": "数量为必填项",
+            "quantityPositive": "数量必须大于 0",
+            "priceRequired": "价格为必填项",
+            "pricePositive": "价格必须大于 0"
+          }
+        },
+        "messages": {
+          "productAdded": "产品添加成功",
+          "productUpdated": "产品更新成功",
+          "errorAdding": "添加产品出错",
+          "errorUpdating": "更新产品出错"
+        },
+        "inventoryInfo": {
+          "title": "产品库存信息",
+          "product": "产品",
+          "sku": "SKU",
+          "stockAvailable": "可用库存",
+          "inventoryPrice": "库存价格",
+          "warehouse": "仓库",
+          "category": "分类"
+        },
+        "selectedProducts": "已选产品"
+      },
+      "productsTable": {
+        "title": "销售产品",
+        "headers": {
+          "product": "产品",
+          "sku": "SKU",
+          "brand": "品牌",
+          "category": "分类",
+          "quantity": "数量",
+          "price": "价格",
+          "subtotal": "小计",
+          "tax": "税务",
+          "total": "合计",
+          "actions": "操作"
+        },
+        "noProducts": "该销售单无产品",
+        "noProductsDesc": "添加产品以开始记录销售",
+        "noProductsCompletedDesc": "该销售单无已注册产品",
+        "summary": {
+          "subtotal": "小计"
+        }
+      },
+      "deleteProduct": {
+        "title": "删除产品",
+        "message": "确定要从该销售单中删除产品「{productName}」吗？此操作无法撤销。",
+        "success": "产品删除成功",
+        "error": "删除产品出错"
+      },
+      "details": {
+        "title": "销售单 {code}",
+        "subtitle": "销售单详情",
+        "back": "返回",
+        "notFound": "未找到销售单",
+        "errorLoading": "加载销售单出错",
+        "generalInfo": "基本信息",
+        "client": "客户",
+        "warehouse": "仓库",
+        "saleProducts": "销售产品",
+        "noProducts": "暂无产品",
+        "noProductsDesc": "添加产品以开始销售。",
+        "noProductsCompletedDesc": "该销售单无已注册产品。",
+        "addProduct": "添加产品",
+        "availableProducts": "可用产品",
+        "showProducts": "显示产品",
+        "hideProducts": "隐藏产品",
+        "searchProducts": "搜索产品...",
+        "noProductsFound": "未找到产品",
+        "noProductsAvailable": "无可用产品",
+        "labels": {
+          "code": "编码",
+          "destination": "目的地",
+          "status": "状态",
+          "name": "名称",
+          "totalAmount": "总金额",
+          "fiscalStatus": "财税状态",
+          "invoice": "发票"
+        }
+      }
+    },
+    "pos": {
+      "title": "销售终端（POS）",
+      "subtitle": "销售终端系统",
+      "backToDashboard": "仪表盘",
+      "total": "合计",
+      "products": {
+        "title": "产品",
+        "searchPlaceholder": "搜索产品...",
+        "loading": "加载产品中...",
+        "noProducts": "未找到产品",
+        "stock": "库存"
+      },
+      "cart": {
+        "title": "购物车",
+        "clear": "清空",
+        "empty": "购物车为空",
+        "client": "客户",
+        "selectClient": "选择客户",
+        "createNewClient": "创建新客户",
+        "quantity": "数量",
+        "price": "价格",
+        "basePrice": "基础价格",
+        "customPrice": "自定义价格",
+        "subtotal": "小计",
+        "total": "合计",
+        "checkout": "完成销售",
+        "processing": "处理中...",
+        "selectedProducts": "已选产品",
+        "cashBalance": "现金余额"
+      },
+      "payment": {
+        "title": "付款方式",
+        "selectMethod": "选择付款方式",
+        "cash": "现金",
+        "card": "刷卡",
+        "credit": "信用",
+        "creditLimit": "信用额度",
+        "days": "天",
+        "cashReceived": "收到现金",
+        "change": "找零",
+        "insufficientCash": "现金金额不足",
+        "cancel": "取消",
+        "confirm": "确认付款",
+        "processing": "处理中...",
+        "downloadTicket": "下载小票",
+        "generateInvoice": "生成财税发票（CFDI）",
+        "generateInvoiceHint": "确认后将自动盖章"
+      },
+      "messages": {
+        "saleCompleted": "销售完成成功",
+        "emptyCart": "购物车为空",
+        "selectClient": "必须选择客户",
+        "errorProcessing": "处理销售出错",
+        "errorLoadingProducts": "加载产品出错",
+        "errorSearchingProducts": "搜索产品出错",
+        "errorLoadingClients": "加载客户出错",
+        "cashRegisterInitialized": "收银机初始化成功",
+        "cashRegisterUpdated": "收银机余额更新成功",
+        "cashRegisterOpened": "收银机开启成功",
+        "cashRegisterCreated": "收银机创建成功",
+        "cashRegisterDeleted": "收银机删除成功",
+        "cashRegisterClosed": "收银机关闭成功",
+        "cashDrawerCompleted": "现金抽屉操作完成成功",
+        "noCashRegister": "无活跃收银机",
+        "noCashRegisterInfo": "当前无开启的收银机。建议初始化收银机以更好地管理现金。",
+        "ticketPrinted": "小票打印成功",
+        "ticketPrintError": "打印小票出错，但销售已完成",
+        "ticketDownloaded": "小票下载成功",
+        "ticketDownloadError": "下载小票出错",
+        "invoiceGenerated": "财税发票生成成功",
+        "invoiceGenerationError": "销售已完成，但生成财税发票时出错"
+      },
+      "ticket": {
+        "ticket": "小票",
+        "date": "日期",
+        "cashier": "收银员",
+        "client": "客户",
+        "products": "产品：",
+        "subtotal": "小计：",
+        "tax": "税务：",
+        "total": "合计：",
+        "paymentMethod": "付款方式：",
+        "cashReceived": "收到现金：",
+        "change": "找零：",
+        "thanks": "感谢您的购买！",
+        "comeBack": "欢迎再次光临",
+        "powered": "由 Nitro POS 提供支持",
+        "walkIn": "散客",
+        "posSystem": "POS 系统"
+      },
+      "cashBalance": {
+        "title": "现金余额",
+        "status": "状态",
+        "open": "开启",
+        "closed": "关闭",
+        "cashRegister": "收银机",
+        "currentBalance": "当前余额",
+        "cashAmount": "现金金额",
+        "initialize": "初始化",
+        "drawer": "抽屉",
+        "updateBalance": "更新余额",
+        "cutDrawer": "现金抽屉",
+        "noCashRegister": "无活跃收银机",
+        "initializeCash": "初始化收银机",
+        "recentTransactions": "近期交易",
+        "refresh": "刷新",
+        "loadingTransactions": "加载交易中...",
+        "loadingBalance": "加载中...",
+        "noTransactions": "无近期交易"
+      },
+      "cashRegister": {
+        "initialize": "初始化收银机",
+        "updateBalance": "更新余额",
+        "currentBalance": "当前余额",
+        "newAmount": "新金额",
+        "initialAmount": "初始金额",
+        "newAmountHelp": "输入收银机的新金额",
+        "initialAmountHelp": "输入收银机的初始金额",
+        "invalidAmount": "金额必须大于或等于 0",
+        "cancel": "取消",
+        "update": "更新",
+        "processing": "处理中...",
+        "cashRegister": "收银机",
+        "selectedRegister": "已选收银机",
+        "status": "状态",
+        "open": "开启",
+        "closed": "关闭",
+        "searchExisting": "搜索现有",
+        "createNew": "创建新",
+        "searchPlaceholder": "搜索收银机...",
+        "loading": "加载收银机中...",
+        "noRegistersFound": "未找到收银机"
+      },
+      "cashDrawer": {
+        "title": "现金抽屉",
+        "currentBalance": "当前余额",
+        "cashRegister": "收银机",
+        "selectType": "选择操作类型",
+        "closing": "收银机关闭",
+        "closingHelp": "关闭收银机并进行最终盘点",
+        "adjustment": "收银机调整",
+        "adjustmentHelp": "对收银机余额进行调整",
+        "closingAmount": "关闭金额",
+        "adjustmentAmount": "调整金额",
+        "difference": "差额",
+        "surplus": "盈余",
+        "shortage": "短缺",
+        "exact": "准确",
+        "description": "描述",
+        "closingDescription": "收银机关闭",
+        "adjustmentDescription": "收银机调整",
+        "invalidAmount": "金额必须大于或等于 0",
+        "cancel": "取消",
+        "processing": "处理中...",
+        "close": "关闭收银机",
+        "adjust": "调整"
+      }
+    },
+    "cashRegister": {
+      "title": "收银机",
+      "subtitle": "收银机管理与控制",
+      "status": {
+        "title": "收银机状态",
+        "label": "状态",
+        "open": "开启",
+        "closed": "关闭"
+      },
+      "balance": {
+        "total": "总余额",
+        "cash": "收银机现金"
+      },
+      "actions": {
+        "updateBalance": "更新余额",
+        "cashDrawer": "现金抽屉",
+        "initializeCash": "初始化收银机"
+      },
+      "transactions": {
+        "title": "交易",
+        "subtitle": "收银机交易历史",
+        "refresh": "刷新",
+        "loading": "加载交易中...",
+        "empty": "无交易",
+        "emptyDescription": "销售完成后交易将显示在此处",
+        "types": {
+          "sale": "销售",
+          "refund": "退款",
+          "adjustment": "调整",
+          "closing": "关闭"
+        },
+        "paymentMethods": {
+          "cash": "现金",
+          "card": "刷卡"
+        }
+      },
+      "noCashRegister": {
+        "title": "无活跃收银机",
+        "description": "要开始管理收银机，您需要用初始金额初始化一台收银机。"
+      },
+      "messages": {
+        "noCashRegisterActive": "无活跃收银机。初始化收银机以开始使用。",
+        "errorFetchingInfo": "获取收银机信息出错"
+      }
+    },
+    "invoices": {
+      "title": "发票",
+      "subtitle": "发票与 CFDI 管理",
+      "searchInvoices": "",
+      "create": {
+        "title": "创建发票",
+        "subtitle": "填写信息以创建新发票"
+      },
+      "table": {
+        "code": "编码",
+        "date": "日期",
+        "client": "客户",
+        "subtotal": "小计",
+        "tax": "税务",
+        "total": "合计",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "status": {
+        "draft": "草稿",
+        "sent": "已发送",
+        "paid": "已付款",
+        "cancelled": "已取消"
+      },
+      "actions": {
+        "createInvoice": "创建发票",
+        "viewDetails": "查看详情",
+        "edit": "编辑",
+        "delete": "删除",
+        "generateCFDI": "生成 CFDI",
+        "cancelCFDI": "取消 CFDI",
+        "downloadPDF": "下载 PDF",
+        "downloadXML": "下载 XML",
+        "downloadingPDF": "下载 PDF 中...",
+        "downloadingXML": "下载 XML 中...",
+        "cannotEdit": "无法编辑",
+        "cannotDelete": "无法删除"
+      },
+      "form": {
+        "code": "发票编码",
+        "codePlaceholder": "输入发票编码",
+        "date": "日期",
+        "client": "客户",
+        "clientPlaceholder": "选择客户",
+        "paymentMethod": "付款方式",
+        "paymentMethodPlaceholder": "选择付款方式",
+        "paymentConditions": "付款条件",
+        "paymentConditionsPlaceholder": "或输入自定义条件",
+        "paymentConditionsSelect": "选择...",
+        "paymentConditionsCustom": "自定义",
+        "notes": "备注",
+        "notesPlaceholder": "输入附加备注",
+        "paymentMethods": {
+          "cash": "现金",
+          "card": "刷卡",
+          "transfer": "转账",
+          "check": "支票"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "dateRequired": "日期为必填项",
+          "clientRequired": "客户为必填项"
+        },
+        "save": "保存",
+        "cancel": "取消",
+        "saving": "保存中..."
+      },
+      "drawer": {
+        "createTitle": "创建发票",
+        "editTitle": "编辑发票"
+      },
+      "deleteModal": {
+        "title": "删除发票",
+        "message": "确定要删除发票 {code} 吗？此操作无法撤销。",
+        "confirm": "删除",
+        "cancel": "取消"
+      },
+      "generateCFDIModal": {
+        "title": "生成 CFDI",
+        "message": "确定要为发票 {code} 生成 CFDI 吗？",
+        "confirm": "生成 CFDI",
+        "cancel": "取消",
+        "generating": "生成中..."
+      },
+      "cancelCFDIModal": {
+        "title": "取消 CFDI",
+        "message": "确定要取消发票 {code} 的 CFDI 吗？",
+        "reasonLabel": "取消原因",
+        "reasonPlaceholder": "输入取消原因",
+        "confirm": "取消 CFDI",
+        "cancel": "取消",
+        "cancelling": "取消中..."
+      },
+      "details": {
+        "title": "发票详情",
+        "subtitle": "发票 {code} 的详细信息",
+        "notFound": "未找到发票",
+        "back": "返回",
+        "invoiceInfo": "发票信息",
+        "code": "编码",
+        "date": "日期",
+        "client": "客户",
+        "paymentMethod": "付款方式",
+        "paymentConditions": "付款条件",
+        "notes": "备注",
+        "products": "产品",
+        "product": "产品",
+        "quantity": "数量",
+        "price": "价格",
+        "subtotal": "小计",
+        "tax": "税务",
+        "total": "合计",
+        "summary": "摘要",
+        "cfdi": "CFDI",
+        "uuid": "UUID",
+        "facturapiId": "FacturaAPI ID",
+        "packInvoiceId": "套餐 ID"
+      },
+      "payments": {
+        "title": "付款补充",
+        "register": "登记付款",
+        "modalTitle": "登记付款补充",
+        "installment": "分期",
+        "paid": "已付款",
+        "remaining": "剩余余额",
+        "balanceAfter": "付款后余额",
+        "fullPayment": "已全额付款",
+        "completed": "已完成",
+        "noPayments": "未登记付款补充",
+        "amount": "付款金额",
+        "date": "付款日期",
+        "paymentForm": "付款形式",
+        "notes": "备注",
+        "notesPlaceholder": "参考、转账号...",
+        "cancel": "取消",
+        "confirm": "登记并盖章",
+        "stamping": "盖章中...",
+        "success": "付款补充盖章成功",
+        "error": "登记付款补充出错",
+        "exceedsBalance": "金额超过剩余余额",
+        "form": "形式",
+        "status": {
+          "pending": "待处理",
+          "stamped": "已盖章",
+          "cancelled": "已取消"
+        },
+        "statusLabel": "状态",
+        "cancelSuccess": "付款补充取消成功",
+        "cancelError": "取消付款补充出错",
+        "cancelComplement": "取消补充",
+        "cancelComplementTitle": "取消付款补充",
+        "cancelComplementMessage": "此操作将在 SAT 取消补充。请选择取消原因。",
+        "cancelReason": "SAT 取消原因",
+        "cancelling": "取消中...",
+        "confirmCancel": "取消补充"
+      },
+      "empty": {
+        "title": "无发票",
+        "description": "从创建第一笔销售开始生成发票。",
+        "action": "创建发票"
+      },
+      "messages": {
+        "invoiceCreated": "发票创建成功",
+        "invoiceUpdated": "发票更新成功",
+        "invoiceDeleted": "发票删除成功",
+        "cfdiGenerated": "CFDI 生成成功",
+        "cfdiCancelled": "CFDI 取消成功",
+        "pdfDownloaded": "PDF 下载成功",
+        "xmlDownloaded": "XML 下载成功",
+        "errorLoadingClients": "加载客户出错"
+      },
+      "errors": {
+        "loadInvoices": "加载发票出错",
+        "loadClients": "加载客户出错",
+        "saveInvoice": "保存发票出错",
+        "createInvoice": "创建发票出错",
+        "deleteInvoice": "删除发票出错",
+        "generateCFDI": "生成 CFDI 出错",
+        "cancelCFDI": "取消 CFDI 出错",
+        "downloadPDF": "下载 PDF 出错",
+        "downloadXML": "下载 XML 出错",
+        "loadInvoiceDetails": "加载发票详情出错"
+      }
+    },
+    "companySettings": {
+      "title": "公司设置",
+      "basicInfo": "基本信息",
+      "contactInfo": "联系信息",
+      "logo": "Logo",
+      "changeLogo": "更换 Logo",
+      "name": "商业名称",
+      "namePlaceholder": "公司名称",
+      "legalName": "法定名称",
+      "legalNamePlaceholder": "法定/财税名称",
+      "taxId": "税号 / RFC",
+      "taxIdPlaceholder": "RFC 或等效",
+      "address": "地址",
+      "addressPlaceholder": "财税地址",
+      "phone": "电话",
+      "phonePlaceholder": "联系电话",
+      "email": "邮箱",
+      "emailPlaceholder": "email@company.com",
+      "website": "网站",
+      "websitePlaceholder": "https://...",
+      "messages": {
+        "saved": "数据保存成功",
+        "logoUpdated": "Logo 已更新",
+        "errorLoading": "加载数据出错",
+        "errorSaving": "保存出错",
+        "errorUploadingLogo": "上传 Logo 出错",
+        "invalidImage": "只允许图片文件",
+        "imageTooBig": "图片不得超过 5 MB"
+      }
+    },
+    "backup": {
+      "title": "数据库备份",
+      "subtitle": "管理数据库备份和自动化任务",
+      "configuration": "备份配置",
+      "autoBackup": "自动备份",
+      "autoBackupDesc": "启用或禁用定时备份任务",
+      "frequency": "频率",
+      "scheduledTime": "计划时间",
+      "retentionCount": "保留备份数",
+      "manualBackup": "手动备份",
+      "manualBackupDesc": "立即创建整个数据库的备份。SQL 文件将保存在服务器上，您可以从历史记录中下载。",
+      "runNow": "立即运行备份",
+      "running": "备份运行中...",
+      "history": "备份历史",
+      "refresh": "刷新",
+      "noLogs": "未找到备份日志",
+      "download": "下载",
+      "table": {
+        "date": "日期",
+        "filename": "文件名",
+        "size": "大小",
+        "type": "类型",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "types": {
+        "manual": "手动",
+        "automatic": "自动"
+      },
+      "status": {
+        "success": "成功",
+        "failure": "失败"
+      },
+      "frequencies": {
+        "daily": "每日",
+        "weekly": "每周",
+        "monthly": "每月"
+      },
+      "messages": {
+        "configLoaded": "配置已加载",
+        "configSaved": "配置保存成功",
+        "backupStarted": "备份已开始",
+        "backupSuccess": "备份完成成功",
+        "backupError": "执行备份出错",
+        "errorLoadingHistory": "加载备份历史出错",
+        "errorDownloading": "下载文件出错"
+      },
+      "cloudNotAvailable": {
+        "title": "此环境中不可用",
+        "description": "备份模块仅在本地安装中有效。在云环境（Railway、Heroku 等）中，备份由数据库提供商直接管理。"
+      }
+    },
+    "roles": {
+      "title": "角色",
+      "subtitle": "用户角色管理",
+      "createTitle": "创建角色",
+      "editTitle": "编辑角色",
+      "searchPlaceholder": "搜索角色...",
+      "noData": "暂无角色",
+      "noDataDesc": "未找到角色。创建第一个角色以开始使用。",
+      "form": {
+        "code": "编码",
+        "description": "描述",
+        "status": "启用状态",
+        "placeholders": {
+          "code": "输入角色编码",
+          "description": "输入角色描述"
+        },
+        "validation": {
+          "codeRequired": "编码为必填项",
+          "descriptionRequired": "描述为必填项"
+        }
+      },
+      "table": {
+        "code": "编码",
+        "description": "描述",
+        "status": "状态",
+        "createdAt": "创建时间",
+        "actions": "操作",
+        "statusActive": "启用",
+        "statusInactive": "禁用"
+      },
+      "actions": {
+        "create": "创建角色",
+        "edit": "编辑",
+        "viewDetails": "查看详情",
+        "delete": "删除"
+      },
+      "messages": {
+        "successCreated": "{item} 创建成功",
+        "successUpdated": "{item} 更新成功",
+        "successDeleted": "{item} 删除成功",
+        "errorLoading": "加载角色出错",
+        "errorCreating": "创建角色出错",
+        "errorUpdating": "更新角色出错",
+        "errorDeleting": "删除角色出错",
+        "roleCreated": "角色创建成功",
+        "roleUpdated": "角色更新成功",
+        "errorLoadingPermissions": "加载权限出错",
+        "errorUpdatingPermissions": "更新权限出错",
+        "permissionsUpdated": "权限更新成功",
+        "roleNotFound": "未找到角色",
+        "errorLoadingAllPermissions": "加载所有可用权限出错",
+        "errorLoadingRolePermissions": "加载角色权限出错"
+      },
+      "deleteModal": {
+        "title": "删除 {item}",
+        "message": "确定要删除 {item}「{name}」吗？此操作无法撤销。"
+      },
+      "permissions": {
+        "title": "角色权限",
+        "save": "保存权限",
+        "noPermissions": "无可用权限",
+        "loadingAllPermissions": "加载所有可用权限中...",
+        "loadingRolePermissions": "加载角色权限中..."
+      },
+      "details": {
+        "title": "角色：{name}",
+        "subtitle": "角色详情和权限管理",
+        "generalInfo": "基本信息"
+      }
+    },
+    "users": {
+      "title": "用户",
+      "subtitle": "系统用户管理",
+      "createTitle": "创建用户",
+      "editTitle": "编辑用户",
+      "newUser": "新建用户",
+      "editUser": "编辑用户",
+      "searchUsers": "搜索用户...",
+      "searchPlaceholder": "搜索用户...",
+      "noUsers": "暂无用户",
+      "noUsersDesc": "未找到用户。创建第一个用户以开始使用。",
+      "noResultsDesc": "未找到符合搜索条件的结果",
+      "form": {
+        "name": "姓名",
+        "email": "邮箱",
+        "password": "密码",
+        "roles": "角色",
+        "status": "启用状态",
+        "placeholders": {
+          "name": "输入全名",
+          "email": "输入邮箱地址",
+          "password": "输入密码",
+          "passwordOptional": "留空以保留当前密码",
+          "roles": "选择角色"
+        },
+        "validation": {
+          "nameRequired": "姓名为必填项",
+          "emailRequired": "邮箱为必填项",
+          "emailInvalid": "请输入有效的邮箱地址",
+          "passwordRequired": "密码为必填项",
+          "passwordMinLength": "密码至少需要 6 个字符",
+          "rolesRequired": "至少需要选择一个角色"
+        }
+      },
+      "table": {
+        "name": "姓名",
+        "email": "邮箱",
+        "roles": "角色",
+        "status": "状态",
+        "createdAt": "创建时间",
+        "actions": "操作",
+        "statusActive": "启用",
+        "statusInactive": "禁用"
+      },
+      "actions": {
+        "create": "创建用户",
+        "edit": "编辑",
+        "viewDetails": "查看详情",
+        "delete": "删除",
+        "deleting": "删除中..."
+      },
+      "messages": {
+        "successCreated": "{item} 创建成功",
+        "successUpdated": "{item} 更新成功",
+        "successDeleted": "{item} 删除成功",
+        "errorLoading": "加载用户出错",
+        "errorCreating": "创建用户出错",
+        "errorUpdating": "更新用户出错",
+        "errorDeleting": "删除用户出错",
+        "userCreated": "用户创建成功",
+        "userUpdated": "用户更新成功",
+        "userDeleted": "用户删除成功",
+        "errorLoadingRoles": "加载角色出错"
+      },
+      "deleteModal": {
+        "title": "删除 {item}",
+        "message": "确定要删除 {item}「{name}」吗？此操作无法撤销。"
+      },
+      "details": {
+        "title": "用户：{name}",
+        "subtitle": "用户详情和权限管理",
+        "generalInfo": "基本信息"
+      },
+      "permissions": {
+        "title": "用户权限",
+        "noPermissions": "未分配权限"
+      },
+      "error": {
+        "title": "错误",
+        "userNotFound": "未找到用户"
+      }
+    },
+    "certificationPacks": {
+      "title": "SAT 套餐",
+      "subtitle": "开票认证套餐管理",
+      "searchPlaceholder": "搜索套餐...",
+      "noData": "暂无套餐",
+      "noDataDesc": "未找到套餐。创建第一个套餐以开始使用。",
+      "form": {
+        "type": "类型",
+        "name": "名称",
+        "description": "描述",
+        "configuration": "配置",
+        "isActive": "启用",
+        "isDefault": "默认"
+      },
+      "table": {
+        "name": "名称",
+        "type": "类型",
+        "status": "状态",
+        "default": "默认",
+        "actions": "操作",
+        "active": "启用",
+        "inactive": "禁用"
+      },
+      "actions": {
+        "create": "创建套餐",
+        "edit": "编辑",
+        "delete": "删除",
+        "setDefault": "设为默认",
+        "cancel": "取消",
+        "update": "更新",
+        "saving": "保存中..."
+      },
+      "messages": {
+        "successCreated": "套餐创建成功",
+        "successUpdated": "套餐更新成功",
+        "successDeleted": "套餐删除成功",
+        "successSetDefault": "套餐已设为默认",
+        "errorLoading": "加载套餐出错",
+        "errorSaving": "保存套餐出错",
+        "errorDeleting": "删除套餐出错",
+        "errorSetDefault": "设置默认套餐出错"
+      },
+      "deleteModal": {
+        "title": "删除套餐",
+        "message": "确定要删除套餐「{type}」吗？此操作无法撤销。"
+      }
+    },
+    "returns": {
+      "title": "退货",
+      "subtitle": "供应商退货管理",
+      "createTitle": "创建退货",
+      "createSubtitle": "创建新的供应商退货",
+      "noReturns": "暂无退货",
+      "noReturnsDesc": "点击「创建退货」添加一个。",
+      "noPermissionDesc": "您没有权限查看此页面",
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "sourceWarehouse": "来源仓库",
+        "targetProvider": "目标供应商",
+        "date": "日期",
+        "description": "描述",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "status": {
+        "open": "开启",
+        "closed": "关闭"
+      },
+      "actions": {
+        "create": "创建退货",
+        "save": "保存",
+        "saving": "保存中...",
+        "cancel": "取消",
+        "delete": "删除",
+        "close": "关闭",
+        "viewDetails": "查看详情",
+        "back": "返回",
+        "edit": "编辑",
+        "add": "添加",
+        "cannotEditClosed": "无法编辑已关闭的退货单",
+        "cannotDeleteClosed": "无法删除已关闭的退货单",
+        "continue": "继续"
+      },
+      "form": {
+        "code": "编码",
+        "sourceWarehouse": "来源仓库",
+        "sourceWarehouseId": "来源仓库",
+        "targetProvider": "目标供应商",
+        "targetProviderId": "目标供应商",
+        "date": "日期",
+        "description": "描述",
+        "placeholders": {
+          "code": "输入退货编码",
+          "sourceWarehouse": "选择来源仓库",
+          "targetProvider": "选择目标供应商",
+          "description": "退货描述"
+        },
+        "validation": {
+          "codeRequired": "编码为必填项",
+          "sourceWarehouseRequired": "来源仓库为必填项",
+          "targetProviderRequired": "目标供应商为必填项",
+          "dateRequired": "日期为必填项",
+          "descriptionRequired": "描述为必填项"
+        }
+      },
+      "messages": {
+        "returnCreated": "退货单创建成功",
+        "returnUpdated": "退货单更新成功",
+        "returnDeleted": "退货单删除成功",
+        "returnClosed": "退货单关闭成功",
+        "errorLoading": "加载退货单出错",
+        "errorCreating": "创建退货单出错",
+        "errorUpdating": "更新退货单出错",
+        "errorDeleting": "删除退货单出错",
+        "errorClosing": "关闭退货单出错",
+        "errorLoadingWarehouses": "加载仓库出错"
+      },
+      "deleteModal": {
+        "title": "删除 {item}",
+        "message": "确定要删除 {item}「{name}」吗？此操作无法撤销。"
+      },
+      "closeModal": {
+        "title": "关闭 {item}",
+        "message": "确定要关闭 {item}「{name}」吗？此操作将处理退货且无法撤销。"
+      },
+      "details": {
+        "title": "退货单 {name}",
+        "subtitle": "退货单详情",
+        "generalInfo": "基本信息"
+      },
+      "products": {
+        "title": "退货产品",
+        "noProducts": "暂无产品",
+        "noProductsDesc": "添加产品以开始退货。",
+        "noProductsClosedDesc": "该退货单无已注册产品。",
+        "headers": {
+          "product": "产品",
+          "sku": "SKU",
+          "code": "编码",
+          "brand": "品牌",
+          "category": "分类",
+          "quantity": "数量",
+          "price": "价格",
+          "subtotal": "小计",
+          "actions": "操作"
+        },
+        "actions": {
+          "edit": "编辑",
+          "delete": "删除"
+        }
+      },
+      "addProduct": {
+        "title": "添加产品",
+        "editTitle": "编辑产品",
+        "form": {
+          "product": "产品",
+          "quantity": "数量",
+          "price": "价格",
+          "selectPrice": "选择价格",
+          "selectProduct": "选择产品",
+          "placeholders": {
+            "quantity": "输入数量",
+            "price": "输入价格"
+          }
+        },
+        "validation": {
+          "productRequired": "产品为必填项",
+          "quantityRequired": "数量为必填项",
+          "quantityPositive": "数量必须大于 0",
+          "quantityExceedsStock": "数量不能超过可用库存（{stock} 件）",
+          "priceRequired": "价格为必填项",
+          "pricePositive": "价格必须大于 0"
+        },
+        "messages": {
+          "productAdded": "产品添加成功",
+          "productUpdated": "产品更新成功",
+          "errorAdding": "添加产品出错",
+          "errorUpdating": "更新产品出错"
+        }
+      },
+      "deleteProduct": {
+        "title": "删除产品",
+        "message": "确定要删除产品「{productName}」吗？此操作无法撤销。",
+        "success": "产品删除成功",
+        "error": "删除产品出错"
+      },
+      "closeResult": {
+        "title": "退货单关闭成功",
+        "message": "退货单已成功关闭。产品已处理并退回供应商。",
+        "returnCode": "退货单编码",
+        "returnedProducts": "已退货产品",
+        "totalQuantity": "总数量",
+        "closedAt": "关闭时间",
+        "actions": {
+          "continue": "继续"
+        }
+      },
+      "error": {
+        "title": "错误",
+        "returnNotFound": "未找到退货单"
+      }
+    },
+    "warehouseAdjustments": {
+      "title": "仓库调拨",
+      "subtitle": "仓库间调拨管理",
+      "createTitle": "创建仓库调拨",
+      "createSubtitle": "创建新的仓库间调拨",
+      "noAdjustments": "暂无仓库调拨",
+      "noAdjustmentsDesc": "点击「创建调拨」添加一个。",
+      "noPermissionDesc": "您没有权限查看此页面",
+      "table": {
+        "code": "编码",
+        "name": "名称",
+        "sourceWarehouse": "来源仓库",
+        "targetWarehouse": "目标仓库",
+        "date": "日期",
+        "description": "描述",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "status": {
+        "open": "开启",
+        "closed": "关闭"
+      },
+      "actions": {
+        "create": "创建调拨",
+        "save": "保存",
+        "saving": "保存中...",
+        "cancel": "取消",
+        "delete": "删除",
+        "close": "关闭",
+        "viewDetails": "查看详情",
+        "back": "返回",
+        "edit": "编辑",
+        "add": "添加",
+        "cannotEditClosed": "无法编辑已关闭的调拨单",
+        "cannotDeleteClosed": "无法删除已关闭的调拨单",
+        "continue": "继续"
+      },
+      "form": {
+        "code": "编码",
+        "sourceWarehouse": "来源仓库",
+        "sourceWarehouseId": "来源仓库",
+        "targetWarehouse": "目标仓库",
+        "targetWarehouseId": "目标仓库",
+        "date": "日期",
+        "description": "描述",
+        "placeholders": {
+          "code": "输入调拨编码",
+          "sourceWarehouse": "选择来源仓库",
+          "targetWarehouse": "选择目标仓库",
+          "description": "调拨描述"
+        },
+        "validation": {
+          "codeRequired": "编码为必填项",
+          "sourceWarehouseRequired": "来源仓库为必填项",
+          "targetWarehouseRequired": "目标仓库为必填项",
+          "differentWarehousesRequired": "仓库必须不同",
+          "sameCurrencyRequired": "仓库必须使用相同货币",
+          "dateRequired": "日期为必填项",
+          "descriptionRequired": "描述为必填项",
+          "currenciesMatch": "货币匹配正确",
+          "currenciesMismatch": "货币不匹配"
+        },
+        "warehouseInfo": "仓库信息"
+      },
+      "messages": {
+        "adjustmentCreated": "仓库调拨创建成功",
+        "adjustmentUpdated": "仓库调拨更新成功",
+        "adjustmentDeleted": "仓库调拨删除成功",
+        "adjustmentClosed": "仓库调拨关闭成功",
+        "errorLoading": "加载调拨单出错",
+        "errorCreating": "创建调拨单出错",
+        "errorUpdating": "更新调拨单出错",
+        "errorDeleting": "删除调拨单出错",
+        "errorClosing": "关闭调拨单出错",
+        "errorLoadingWarehouses": "加载仓库出错"
+      },
+      "deleteModal": {
+        "title": "删除 {item}",
+        "message": "确定要删除 {item}「{name}」吗？此操作无法撤销。"
+      },
+      "closeModal": {
+        "title": "关闭 {item}",
+        "message": "确定要关闭 {item}「{name}」吗？此操作将转移所有产品且无法撤销。"
+      },
+      "details": {
+        "title": "仓库调拨 {name}",
+        "subtitle": "仓库调拨详情",
+        "generalInfo": "基本信息"
+      },
+      "products": {
+        "title": "调拨产品",
+        "noProducts": "暂无产品",
+        "noProductsDesc": "添加产品以开始调拨。",
+        "noProductsClosedDesc": "该调拨单无已注册产品。",
+        "headers": {
+          "product": "产品",
+          "sku": "SKU",
+          "brand": "品牌",
+          "category": "分类",
+          "quantity": "数量",
+          "price": "价格",
+          "subtotal": "小计",
+          "actions": "操作"
+        }
+      },
+      "addProduct": {
+        "title": "添加产品",
+        "editTitle": "编辑产品",
+        "form": {
+          "product": "产品",
+          "quantity": "数量",
+          "price": "价格",
+          "selectProduct": "选择产品",
+          "placeholders": {
+            "quantity": "输入数量",
+            "price": "输入价格"
+          }
+        },
+        "validation": {
+          "productRequired": "产品为必填项",
+          "quantityRequired": "数量为必填项",
+          "quantityPositive": "数量必须大于 0",
+          "quantityExceedsStock": "数量不能超过可用库存（{stock} 件）",
+          "priceRequired": "价格为必填项",
+          "pricePositive": "价格必须大于 0"
+        },
+        "messages": {
+          "productAdded": "产品添加成功",
+          "productUpdated": "产品更新成功",
+          "errorAdding": "添加产品出错",
+          "errorUpdating": "更新产品出错"
+        }
+      },
+      "deleteProduct": {
+        "title": "删除产品",
+        "message": "确定要删除产品「{productName}」吗？此操作无法撤销。",
+        "success": "产品删除成功",
+        "error": "删除产品出错"
+      },
+      "closeResult": {
+        "title": "调拨单关闭成功",
+        "message": "仓库调拨已成功关闭。产品已在仓库间转移。",
+        "adjustmentCode": "调拨单编码",
+        "transferredProducts": "已转移产品",
+        "totalQuantity": "总数量",
+        "closedAt": "关闭时间",
+        "actions": {
+          "continue": "继续"
+        }
+      },
+      "error": {
+        "title": "错误",
+        "adjustmentNotFound": "未找到仓库调拨单"
+      }
+    },
+    "purchaseOrders": {
+      "title": "采购订单",
+      "subtitle": "采购订单管理",
+      "createTitle": "创建采购订单",
+      "createSubtitle": "创建新的采购订单",
+      "noPurchaseOrders": "暂无采购订单",
+      "noPurchaseOrdersDesc": "点击「创建采购订单」添加一个。",
+      "noPermissionDesc": "您没有权限查看此页面",
+      "searchPurchaseOrders": "",
+      "table": {
+        "code": "编码",
+        "date": "日期",
+        "provider": "供应商",
+        "warehouse": "仓库",
+        "document": "单据",
+        "amount": "金额",
+        "status": "状态",
+        "actions": "操作"
+      },
+      "status": {
+        "pending": "待处理",
+        "approved": "已批准",
+        "rejected": "已拒绝",
+        "cancelled": "已取消",
+        "completed": "已完成"
+      },
+      "actions": {
+        "create": "创建采购订单",
+        "createNewProvider": "创建新供应商",
+        "save": "保存",
+        "saving": "保存中...",
+        "cancel": "取消",
+        "delete": "删除",
+        "approve": "批准",
+        "reject": "拒绝",
+        "viewDetails": "查看详情",
+        "back": "返回",
+        "edit": "编辑",
+        "add": "添加",
+        "cannotEditApproved": "无法编辑已批准的订单",
+        "cannotEditRejected": "无法编辑已拒绝的订单",
+        "cannotEditCancelled": "无法编辑已取消的订单",
+        "cannotEditCompleted": "无法编辑已完成的订单",
+        "cannotDeleteApproved": "无法删除已批准的订单",
+        "cannotDeleteRejected": "无法删除已拒绝的订单",
+        "cannotDeleteCancelled": "无法删除已取消的订单",
+        "cannotDeleteCompleted": "无法删除已完成的订单",
+        "continue": "继续",
+        "generatePDF": "生成 PDF",
+        "generatingPDF": "生成 PDF 中..."
+      },
+      "form": {
+        "title": "采购订单信息",
+        "subtitle": "填写信息以创建新采购订单",
+        "description": "创建新采购订单以管理产品采购",
+        "code": "编码",
+        "date": "日期",
+        "provider": "供应商",
+        "providerId": "供应商",
+        "warehouse": "仓库",
+        "warehouseId": "仓库",
+        "warehouseHint": "可选。目标仓库可在添加明细时按产品定义。",
+        "optional": "可选",
+        "document": "单据",
+        "documentHint": "可选。参考编号、报价或供应商单号。",
+        "amount": "金额",
+        "notes": "备注",
+        "expectedDeliveryDate": "预计交货日期",
+        "status": "状态",
+        "placeholders": {
+          "code": "输入订单编码",
+          "date": "选择日期",
+          "provider": "搜索供应商...",
+          "warehouse": "搜索仓库...",
+          "document": "例：FACT-001",
+          "amount": "0.00",
+          "notes": "附加备注",
+          "expectedDeliveryDate": "选择交货日期"
+        },
+        "validation": {
+          "codeRequired": "编码为必填项",
+          "dateRequired": "日期为必填项",
+          "providerRequired": "供应商为必填项",
+          "warehouseRequired": "仓库为必填项",
+          "documentRequired": "单据为必填项",
+          "amountRequired": "金额为必填项",
+          "expectedDeliveryDateRequired": "预计交货日期为必填项"
+        },
+        "errors": {
+          "codeRequired": "编码为必填项",
+          "dateRequired": "日期为必填项",
+          "providerRequired": "供应商为必填项",
+          "warehouseRequired": "仓库为必填项",
+          "documentRequired": "单据为必填项",
+          "amountRequired": "金额为必填项",
+          "expectedDeliveryDateRequired": "预计交货日期为必填项"
+        }
+      },
+      "messages": {
+        "purchaseOrderCreated": "采购订单创建成功",
+        "purchaseOrderUpdated": "采购订单更新成功",
+        "purchaseOrderDeleted": "采购订单删除成功",
+        "purchaseOrderApproved": "采购订单批准成功",
+        "purchaseOrderRejected": "采购订单拒绝成功",
+        "purchaseOrderCancelled": "采购订单取消成功",
+        "errorLoading": "加载采购订单出错",
+        "errorCreating": "创建采购订单出错",
+        "errorUpdating": "更新采购订单出错",
+        "errorDeleting": "删除采购订单出错",
+        "errorApproving": "批准采购订单出错",
+        "errorRejecting": "拒绝采购订单出错",
+        "errorCancelling": "取消采购订单出错",
+        "errorLoadingProviders": "加载供应商出错",
+        "errorLoadingWarehouses": "加载仓库出错",
+        "pdfGenerated": "PDF 生成成功",
+        "errorGeneratingPDF": "生成 PDF 出错"
+      },
+      "approveOrder": {
+        "success": "采购订单批准成功",
+        "error": "批准采购订单出错"
+      },
+      "deleteModal": {
+        "title": "删除 {item}",
+        "message": "确定要删除 {item}「{name}」吗？此操作无法撤销。"
+      },
+      "approveModal": {
+        "title": "批准 {item}",
+        "message": "确定要批准 {item}「{name}」吗？此操作无法撤销。",
+        "emailSection": "通知供应商",
+        "noEmailConfig": "未配置邮件服务器。请在设置 > 邮件中配置以发送通知。",
+        "noProviderEmail": "供应商「{name}」没有邮箱地址。",
+        "sendEmailToProvider": "通过邮件将采购订单发送给供应商（{email}）"
+      },
+      "rejectModal": {
+        "title": "拒绝 {item}",
+        "message": "确定要拒绝 {item}「{name}」吗？此操作无法撤销。"
+      },
+      "cancelModal": {
+        "title": "取消 {item}",
+        "message": "确定要取消 {item}「{name}」吗？此操作无法撤销。"
+      },
+      "details": {
+        "title": "采购订单 {name}",
+        "subtitle": "采购订单详情",
+        "generalInfo": "基本信息",
+        "provider": "供应商",
+        "warehouse": "仓库",
+        "labels": {
+          "code": "编码",
+          "date": "日期",
+          "name": "名称",
+          "provider": "供应商",
+          "warehouse": "仓库",
+          "document": "单据",
+          "amount": "总金额",
+          "status": "状态",
+          "notes": "备注",
+          "expectedDeliveryDate": "预计交货日期"
+        },
+        "addProduct": "添加产品",
+        "productsTable": {
+          "title": "采购订单产品"
+        }
+      },
+      "products": {
+        "title": "采购订单产品",
+        "noProducts": "暂无产品",
+        "noProductsDesc": "添加产品以开始采购订单。",
+        "noProductsCompletedDesc": "该采购订单无已注册产品。",
+        "headers": {
+          "product": "产品",
+          "sku": "SKU",
+          "brand": "品牌",
+          "category": "分类",
+          "quantity": "数量",
+          "price": "价格",
+          "subtotal": "小计",
+          "actions": "操作"
+        },
+        "actions": {
+          "edit": "编辑",
+          "delete": "删除"
+        }
+      },
+      "addProduct": {
+        "title": "添加产品",
+        "editTitle": "编辑产品",
+        "form": {
+          "product": "产品",
+          "quantity": "数量",
+          "price": "价格",
+          "selectProduct": "选择产品",
+          "warehouseDestination": "目标仓库",
+          "warehouseDestinationPlaceholder": "未分配仓库（可选）",
+          "placeholders": {
+            "quantity": "例：10",
+            "price": "例：100.00"
+          },
+          "validation": {
+            "productRequired": "产品为必填项",
+            "quantityRequired": "数量为必填项",
+            "quantityPositive": "数量必须大于 0",
+            "priceRequired": "价格为必填项",
+            "pricePositive": "价格必须大于 0"
+          }
+        },
+        "messages": {
+          "productAdded": "产品添加成功",
+          "productUpdated": "产品更新成功",
+          "errorAdding": "添加产品出错",
+          "errorUpdating": "更新产品出错"
+        }
+      },
+      "deleteProduct": {
+        "title": "删除产品",
+        "message": "确定要删除产品「{productName}」吗？此操作无法撤销。",
+        "success": "产品删除成功",
+        "error": "删除产品出错"
+      },
+      "editProduct": {
+        "title": "编辑产品"
+      },
+      "approvalResult": {
+        "title": "订单批准成功",
+        "message": "采购订单已成功批准。",
+        "purchaseOrderCode": "订单编码",
+        "approvedAt": "批准时间",
+        "actions": {
+          "continue": "继续"
+        }
+      },
+      "rejectionResult": {
+        "title": "订单已拒绝",
+        "message": "采购订单已被拒绝。",
+        "purchaseOrderCode": "订单编码",
+        "rejectedAt": "拒绝时间",
+        "actions": {
+          "continue": "继续"
+        }
+      },
+      "cancellationResult": {
+        "title": "订单已取消",
+        "message": "采购订单已被取消。",
+        "purchaseOrderCode": "订单编码",
+        "cancelledAt": "取消时间",
+        "actions": {
+          "continue": "继续"
+        }
+      },
+      "error": {
+        "title": "错误",
+        "purchaseOrderNotFound": "未找到采购订单"
+      }
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "此字段为必填项",
+      "email": "请输入有效的邮箱地址",
+      "minLength": "最少 {min} 个字符",
+      "maxLength": "最多 {max} 个字符",
+      "numeric": "必须是有效数字",
+      "positive": "必须是正数"
+    },
+    "placeholders": {
+      "enterCode": "输入编码",
+      "enterName": "输入名称",
+      "enterDescription": "输入描述",
+      "enterEmail": "输入邮箱",
+      "enterPassword": "输入密码",
+      "selectOption": "选择选项..."
+    },
+    "components": {
+      "select": {
+        "placeholder": "选择...",
+        "addNew": "新增"
+      },
+      "searchSelect": {
+        "placeholder": "搜索...",
+        "loading": "搜索中...",
+        "noResults": "未找到结果",
+        "noOptions": "无可用选项"
+      },
+      "image": {
+        "carousel": {
+          "title": "产品图片",
+          "addImage": "添加图片",
+          "clickToAdd": "点击「添加图片」上传图片",
+          "imageAlt": "图片 {index}"
+        },
+        "upload": {
+          "clickToSelect": "点击选择图片",
+          "fileTypes": "PNG、JPG、GIF，最大 5MB",
+          "previewAlt": "预览"
+        }
+      }
+    }
+  },
+  "modals": {
+    "delete": {
+      "title": "删除 {item}",
+      "message": "确定要删除 {item}「{name}」吗？此操作无法撤销。"
+    },
+    "close": {
+      "title": "关闭 {item}",
+      "message": "确定要关闭 {item}「{name}」吗？此操作无法撤销。"
+    }
+  },
+  "pagination": {
+    "previous": "上一页",
+    "next": "下一页",
+    "showing": "显示",
+    "of": "共",
+    "pages": "页",
+    "results": "条结果"
+  },
+  "notifications": {
+    "title": "通知",
+    "empty": "无通知",
+    "close": "关闭",
+    "filtersLabel": "筛选",
+    "viewAll": "查看所有通知",
+    "filters": {
+      "all": "全部",
+      "unread": "未读"
+    },
+    "types": {
+      "info": "信息",
+      "success": "成功",
+      "warning": "警告",
+      "error": "错误",
+      "system": "系统",
+      "order": "订单",
+      "inventory": "库存",
+      "sale": "销售",
+      "quotation": "报价单",
+      "invoice": "发票"
+    },
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "紧急"
+    },
+    "actions": {
+      "markAsRead": "标记为已读",
+      "markAllRead": "全部标记为已读",
+      "delete": "删除",
+      "deleteAllRead": "删除所有已读"
+    }
+  },
+  "globalSearch": {
+    "search": "搜索",
+    "searchPlaceholder": "搜索产品、客户、发票...",
+    "placeholder": "搜索产品、客户、发票...",
+    "searching": "搜索中...",
+    "noResults": "无结果",
+    "noResultsDescription": "未找到符合搜索条件的结果。",
+    "startTyping": "开始输入",
+    "startTypingDescription": "至少输入 2 个字符以搜索。",
+    "navigate": "导航",
+    "select": "选择",
+    "close": "关闭",
+    "results": "结果",
+    "types": {
+      "product": "产品",
+      "client": "客户",
+      "provider": "供应商",
+      "invoice": "发票",
+      "purchaseOrder": "采购订单",
+      "expense": "费用",
+      "accountReceivable": "应收账款"
+    }
+  },
+  "expenses": {
+    "title": "费用",
+    "searchExpenses": "",
+    "subtitle": "管理公司费用（{count} 条费用）",
+    "addExpense": "新建费用",
+    "editExpense": "编辑费用",
+    "confirmDelete": "确定要删除此费用吗？",
+    "bulkDelete": "删除所选",
+    "bulkDeleteSuccess": "费用删除成功",
+    "bulkDeleteError": "删除费用出错",
+    "statusLabel": "状态",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "statusPending": "待处理",
+    "statusApproved": "已批准",
+    "statusRejected": "已拒绝",
+    "table": {
+      "description": "描述",
+      "category": "分类",
+      "provider": "供应商",
+      "amount": "金额",
+      "remaining": "剩余",
+      "date": "日期",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "form": {
+      "description": "描述",
+      "amount": "金额",
+      "category": "分类",
+      "provider": "供应商",
+      "reference": "参考",
+      "expenseDate": "费用日期",
+      "status": "状态",
+      "notes": "备注",
+      "placeholders": {
+        "description": "例：办公用品采购",
+        "selectProvider": "选择供应商...",
+        "reference": "例：发票 #123",
+        "selectCategory": "选择分类...",
+        "notes": "附加备注..."
+      },
+      "errors": {
+        "descriptionRequired": "描述为必填项",
+        "amountRequired": "金额为必填项",
+        "invalidAmount": "金额必须是大于 0 的有效数字",
+        "categoryRequired": "分类为必填项",
+        "dateRequired": "日期为必填项"
+      }
+    },
+    "status": {
+      "pending": "待处理",
+      "approved": "已批准",
+      "rejected": "已拒绝",
+      "paid": "已付款"
+    },
+    "filters": {
+      "title": "筛选",
+      "search": "搜索",
+      "searchPlaceholder": "按描述、供应商或参考搜索...",
+      "status": "状态",
+      "category": "分类",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "allStatuses": "所有状态",
+      "allCategories": "所有分类"
+    },
+    "messages": {
+      "expenseCreated": "费用创建成功",
+      "expenseUpdated": "费用更新成功",
+      "expenseDeleted": "费用删除成功",
+      "errorCreating": "创建费用出错",
+      "errorUpdating": "更新费用出错",
+      "errorDeleting": "删除费用出错",
+      "paymentRegistered": "付款登记成功",
+      "errorRegisteringPayment": "登记付款出错"
+    },
+    "empty": {
+      "title": "暂无费用",
+      "description": "点击「新建费用」添加一个。",
+      "noResults": "未找到符合搜索条件的结果"
+    },
+    "details": "费用详情",
+    "notFound": "未找到费用",
+    "deleteModal": {
+      "title": "删除费用",
+      "message": "确定要删除费用 {description} 吗？此操作无法撤销。"
+    },
+    "registerPayment": "登记付款",
+    "actions": {
+      "registerPayment": "登记付款"
+    },
+    "paymentDrawer": {
+      "description": "描述",
+      "totalAmount": "总金额",
+      "remainingAmount": "剩余金额",
+      "amount": "付款金额",
+      "paymentDate": "付款日期",
+      "paymentMethod": "付款方式",
+      "reference": "参考",
+      "notes": "备注",
+      "referencePlaceholder": "参考或交易号",
+      "notesPlaceholder": "关于付款的附加备注",
+      "methods": {
+        "cash": "现金",
+        "creditCard": "信用卡",
+        "debitCard": "借记卡",
+        "bankTransfer": "银行转账",
+        "check": "支票",
+        "other": "其他"
+      },
+      "errors": {
+        "amountRequired": "金额为必填项",
+        "amountExceedsRemaining": "金额超过剩余余额",
+        "dateRequired": "日期为必填项",
+        "methodRequired": "付款方式为必填项"
+      }
+    }
+  },
+  "accountsReceivable": {
+    "title": "应收账款",
+    "subtitle": "管理应收账款（{count} 条账款）",
+    "addAccount": "新建应收账款",
+    "editAccount": "编辑应收账款",
+    "registerPayment": "登记付款",
+    "confirmDelete": "确定要删除此应收账款吗？",
+    "actions": {
+      "registerPayment": "登记付款",
+      "viewPayments": "查看付款"
+    },
+    "paymentDrawer": {
+      "reference": "参考",
+      "totalAmount": "总金额",
+      "remainingAmount": "剩余金额",
+      "amount": "付款金额",
+      "paymentDate": "付款日期",
+      "paymentMethod": "付款方式",
+      "notes": "备注",
+      "referencePlaceholder": "参考或交易号",
+      "notesPlaceholder": "关于付款的附加备注",
+      "methods": {
+        "cash": "现金",
+        "creditCard": "信用卡",
+        "debitCard": "借记卡",
+        "bankTransfer": "银行转账",
+        "check": "支票",
+        "other": "其他"
+      },
+      "errors": {
+        "amountRequired": "金额为必填项",
+        "amountExceedsRemaining": "金额超过剩余余额",
+        "dateRequired": "日期为必填项",
+        "methodRequired": "付款方式为必填项"
+      }
+    },
+    "table": {
+      "reference": "参考",
+      "client": "客户",
+      "totalAmount": "总金额",
+      "remainingAmount": "剩余金额",
+      "dueDate": "到期日期",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "form": {
+      "referenceNumber": "参考编号",
+      "client": "客户",
+      "totalAmount": "总金额",
+      "remainingAmount": "剩余金额",
+      "dueDate": "到期日期",
+      "issueDate": "开票日期",
+      "status": "状态",
+      "description": "描述",
+      "notes": "备注",
+      "placeholders": {
+        "referenceNumber": "例：AR-001",
+        "selectClient": "选择客户...",
+        "description": "例：服务发票",
+        "notes": "附加备注..."
+      },
+      "errors": {
+        "referenceRequired": "参考编号为必填项",
+        "clientRequired": "客户为必填项",
+        "totalAmountRequired": "总金额为必填项",
+        "remainingAmountRequired": "剩余金额为必填项",
+        "invalidAmount": "金额必须是大于或等于 0 的有效数字",
+        "remainingGreaterThanTotal": "剩余金额不能大于总金额",
+        "dueDateRequired": "到期日期为必填项"
+      }
+    },
+    "status": {
+      "pending": "待处理",
+      "partial": "部分付款",
+      "paid": "已付款",
+      "overdue": "逾期",
+      "cancelled": "已取消"
+    },
+    "filters": {
+      "title": "筛选",
+      "search": "搜索",
+      "searchPlaceholder": "按参考或客户搜索...",
+      "status": "状态",
+      "client": "客户",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "allStatuses": "所有状态",
+      "allClients": "所有客户"
+    },
+    "messages": {
+      "accountCreated": "应收账款创建成功",
+      "accountUpdated": "应收账款更新成功",
+      "errorCreating": "创建应收账款出错",
+      "errorUpdating": "更新应收账款出错"
+    },
+    "empty": {
+      "title": "暂无应收账款",
+      "description": "点击「新建应收账款」添加一个。",
+      "noResults": "未找到符合搜索条件的结果"
+    },
+    "paymentHistory": {
+      "title": "付款历史",
+      "accountSummary": "账款摘要",
+      "paymentsTitle": "已登记付款",
+      "noPayments": "该账款无已登记付款",
+      "paidAmount": "已付金额",
+      "registeredBy": "登记人"
+    },
+    "details": {
+      "additionalInfo": "附加信息",
+      "referenceId": "参考 ID",
+      "createdAt": "创建时间",
+      "updatedAt": "最后修改",
+      "accountStatus": "账款状态",
+      "paymentProgress": "付款进度",
+      "viewDetail": "应收账款详情"
+    }
+  },
+  "accountsPayable": {
+    "title": "应付账款",
+    "subtitle": "管理应付账款（{count} 条账款）",
+    "addAccount": "新建应付账款",
+    "editAccount": "编辑应付账款",
+    "confirmDelete": "确定要删除此应付账款吗？",
+    "drawer": {
+      "createTitle": "新建应付账款",
+      "editTitle": "编辑应付账款"
+    },
+    "empty": {
+      "title": "暂无应付账款",
+      "description": "从创建新应付账款开始"
+    },
+    "table": {
+      "referenceNumber": "参考编号",
+      "provider": "供应商",
+      "totalAmount": "总金额",
+      "remainingAmount": "剩余金额",
+      "dueDate": "到期日期",
+      "status": "状态",
+      "actions_title": "操作",
+      "actions": {
+        "edit": "编辑",
+        "delete": "删除",
+        "viewPayments": "查看付款"
+      }
+    },
+    "form": {
+      "referenceNumber": "参考编号",
+      "provider": "供应商",
+      "totalAmount": "总金额",
+      "remainingAmount": "剩余金额",
+      "issueDate": "开票日期",
+      "dueDate": "到期日期",
+      "status": "状态",
+      "notes": "备注",
+      "placeholders": {
+        "referenceNumber": "例：AP-001",
+        "selectProvider": "选择供应商...",
+        "notes": "附加备注..."
+      },
+      "errors": {
+        "referenceRequired": "参考编号为必填项",
+        "providerRequired": "供应商为必填项",
+        "totalAmountRequired": "总金额为必填项",
+        "remainingAmountRequired": "剩余金额为必填项",
+        "invalidAmount": "金额必须是大于或等于 0 的有效数字",
+        "remainingGreaterThanTotal": "剩余金额不能大于总金额",
+        "issueDateRequired": "开票日期为必填项",
+        "dueDateRequired": "到期日期为必填项"
+      }
+    },
+    "status": {
+      "pending": "待处理",
+      "partial": "部分付款",
+      "paid": "已付款",
+      "overdue": "逾期",
+      "cancelled": "已取消"
+    },
+    "messages": {
+      "errorLoading": "加载应付账款出错",
+      "errorDeleting": "删除应付账款出错",
+      "accountDeleted": "应付账款删除成功",
+      "confirmDeleteTitle": "删除应付账款",
+      "confirmDelete": "确定要删除此应付账款吗？",
+      "accountCreated": "应付账款创建成功",
+      "accountUpdated": "应付账款更新成功",
+      "errorCreating": "创建应付账款出错",
+      "errorUpdating": "更新应付账款出错"
+    },
+    "actions": {
+      "create": "新建应付账款",
+      "export": "导出"
+    },
+    "filters": {
+      "title": "筛选",
+      "search": "搜索",
+      "searchPlaceholder": "按参考或供应商搜索...",
+      "status": "状态",
+      "provider": "供应商",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "allStatuses": "所有状态",
+      "allProviders": "所有供应商"
+    },
+    "registerPayment": "登记付款",
+    "paymentDrawer": {
+      "reference": "参考",
+      "totalAmount": "总金额",
+      "remainingAmount": "剩余金额",
+      "amount": "付款金额",
+      "paymentDate": "付款日期",
+      "paymentMethod": "付款方式",
+      "referencePlaceholder": "例：交易 #12345",
+      "notes": "备注",
+      "notesPlaceholder": "附加付款备注...",
+      "methods": {
+        "cash": "现金",
+        "creditCard": "信用卡",
+        "debitCard": "借记卡",
+        "bankTransfer": "银行转账",
+        "check": "支票",
+        "other": "其他"
+      },
+      "errors": {
+        "amountRequired": "金额为必填项",
+        "amountExceedsRemaining": "金额不能超过剩余余额",
+        "dateRequired": "日期为必填项",
+        "methodRequired": "付款方式为必填项"
+      }
+    },
+    "paymentHistory": {
+      "title": "付款历史",
+      "accountSummary": "账款摘要",
+      "paymentsTitle": "已登记付款",
+      "noPayments": "该账款无已登记付款",
+      "paidAmount": "已付金额",
+      "registeredBy": "登记人"
+    },
+    "details": {
+      "additionalInfo": "附加信息",
+      "referenceId": "参考 ID",
+      "createdAt": "创建时间",
+      "updatedAt": "最后修改",
+      "accountStatus": "账款状态",
+      "paymentProgress": "付款进度",
+      "viewDetail": "应付账款详情"
+    }
+  },
+  "cashFlow": {
+    "title": "现金流",
+    "summary": {
+      "totalIncome": "总收入",
+      "totalExpenses": "总支出",
+      "netCashFlow": "净现金流",
+      "projectedBalance": "预计余额"
+    },
+    "table": {
+      "date": "日期",
+      "type": "类型",
+      "description": "描述",
+      "amount": "金额",
+      "balance": "余额"
+    },
+    "movements": {
+      "type": {
+        "income": "收入",
+        "expense": "支出",
+        "receivable": "应收账款",
+        "payable": "应付账款"
+      }
+    },
+    "projection": {
+      "title": "未来预测",
+      "income": "预计收入",
+      "expenses": "预计支出"
+    },
+    "filters": {
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "apply": "应用",
+      "clear": "清除"
+    },
+    "empty": {
+      "noMovements": "该期间内无移动记录",
+      "noProjections": "无可用预测"
+    },
+    "chart": {
+      "balanceTrend": "余额趋势",
+      "incomeVsExpense": "收入与支出",
+      "movementsByType": "按类型移动",
+      "cumulativeFlow": "累计流量",
+      "balance": "余额",
+      "income": "收入",
+      "expense": "支出"
+    },
+    "alerts": {
+      "negativeFlow": {
+        "title": "负现金流",
+        "message": "该期间您的支出超过收入。请考虑审查您的支出。"
+      },
+      "negativeBalance": {
+        "title": "预计余额为负",
+        "message": "您的预计余额为负。这表明可能存在流动性危机。"
+      },
+      "positiveFlow": {
+        "title": "正现金流",
+        "message": "太棒了！您的现金流为正。您的业务正在盈利。"
+      }
+    },
+    "trends": {
+      "trend": "趋势",
+      "improving": "改善中",
+      "declining": "下降中",
+      "stable": "稳定",
+      "averageDaily": "日均",
+      "perDay": "每天",
+      "volatility": "波动性",
+      "variability": "移动变动性"
+    },
+    "comparison": {
+      "title": "期间对比",
+      "loadPrevious": "加载上一期间",
+      "loading": "加载中...",
+      "noPreviousData": "无上一期间数据"
+    },
+    "export": {
+      "generatedOn": "生成于",
+      "success": "文件导出成功",
+      "error": "导出文件出错"
+    },
+    "emailAlert": {
+      "title": "邮件提醒",
+      "description": "直接接收负现金流提醒到您的邮箱",
+      "placeholder": "your@email.com",
+      "send": "发送提醒",
+      "sending": "发送中...",
+      "sent": "提醒已发送",
+      "error": "发送提醒出错",
+      "emailRequired": "请输入有效的邮箱地址",
+      "noConfig": "未设置邮件配置。请先配置邮件设置。",
+      "note": "注意",
+      "noteText": "当现金流为负或预计余额严重不足时将发送提醒"
+    },
+    "prediction": {
+      "title": "现金流预测",
+      "predictedBalance": "预测余额",
+      "insufficientData": "数据不足，无法进行预测",
+      "insights": "智能洞察",
+      "positiveOutlook": "积极展望",
+      "positiveMessage": "根据过去 7 天，您的现金流趋向正值",
+      "warningOutlook": "警告展望",
+      "warningMessage": "根据过去 7 天，您的现金流趋向负值",
+      "moreIncome": "收入多于支出",
+      "moreIncomeMessage": "您的收入移动多于支出移动，这是积极的"
+    },
+    "yearComparison": {
+      "title": "年度对比",
+      "load": "加载年度数据",
+      "loading": "加载中...",
+      "noData": "无可用数据",
+      "yearTrend": "年度趋势",
+      "totalIncome": "年度总收入",
+      "totalExpense": "年度总支出"
+    },
+    "messages": {
+      "errorLoading": "加载现金流出错"
+    }
+  },
+  "emailConfig": {
+    "title": "邮件配置",
+    "back": "返回",
+    "form": {
+      "host": "SMTP 服务器",
+      "port": "端口",
+      "user": "用户名",
+      "password": "密码",
+      "fromEmail": "发件人邮箱",
+      "fromName": "发件人名称",
+      "secure": "使用安全连接（TLS/SSL）",
+      "test": "测试连接",
+      "testing": "测试中...",
+      "testSuccess": "连接成功！",
+      "testFailed": "连接失败",
+      "placeholders": {
+        "host": "例：smtp.gmail.com",
+        "user": "例：your@email.com",
+        "password": "您的应用密码",
+        "fromEmail": "例：noreply@yourcompany.com",
+        "fromName": "例：我的公司"
+      },
+      "errors": {
+        "requiredFields": "请填写所有必填字段"
+      }
+    },
+    "messages": {
+      "createSuccess": "邮件配置创建成功",
+      "updateSuccess": "邮件配置更新成功",
+      "error": "保存配置出错",
+      "testError": "测试连接出错"
+    },
+    "info": {
+      "title": "重要信息",
+      "item1": "使用有效的 SMTP 服务器（Gmail、Outlook、SendGrid 等）",
+      "item2": "对于 Gmail，请使用应用密码，而非常规密码",
+      "item3": "端口 587 用于 TLS，465 用于 SSL",
+      "item4": "保存前请测试连接以确保其正常工作"
+    }
+  },
+  "offline": {
+    "offline": "离线 - 更改将保存在本地",
+    "backOnline": "已重新上线",
+    "syncing": "同步更改中...",
+    "pendingOperations": "待处理操作",
+    "remaining": "剩余",
+    "syncNow": "立即同步",
+    "pendingSync": "待同步"
+  },
+  "subscription": {
+    "banner": {
+      "trialRemaining": "试用期：剩余 {days} 天",
+      "trialUrgent": "试用期仅剩 {days} 天！",
+      "trialExpired": "您的试用期已结束",
+      "trialExpiredMessage": "激活订阅以继续使用 Nitro",
+      "urgentMessage": "立即激活订阅以避免失去访问权限",
+      "enjoyMessage": "免费享受所有功能",
+      "activateSubscription": "激活订阅",
+      "activateNow": "立即激活",
+      "viewDetails": "查看详情",
+      "clickToViewDetails": "点击查看详情",
+      "close": "关闭"
+    },
+    "blocker": {
+      "title": "需要订阅",
+      "message": "您的试用期已结束。激活订阅以继续使用 Nitro。",
+      "activate": "激活订阅",
+      "verifying": "验证订阅中..."
+    },
+    "page": {
+      "title": "我的订阅",
+      "currentStatus": "当前状态",
+      "active": "✓ 已激活",
+      "inactive": "✗ 未激活",
+      "trialPeriod": "试用期",
+      "daysRemaining": "您还有 {days} 天免费试用",
+      "endsOn": "结束于：{date}",
+      "activeSubscription": "已激活订阅",
+      "nextRenewal": "下次续费：{date}",
+      "expiredSubscription": "订阅已过期",
+      "expiredMessage": "您的试用期已结束。激活订阅以继续使用 Nitro。",
+      "currentPlan": "当前套餐",
+      "perMonth": "月",
+      "perYear": "年",
+      "activateYourSubscription": "激活您的订阅",
+      "activateSubscription": "激活订阅",
+      "trialEndingSoon": "您的试用期即将结束。立即激活订阅以不间断地继续使用。",
+      "renewSubscription": "续费订阅",
+      "renewMessage": "您的订阅已过期。续费以继续使用 Nitro 的所有功能。",
+      "renewNow": "立即续费",
+      "loading": "加载中...",
+      "errorLoading": "无法加载订阅信息",
+      "errorLoadingSubscription": "加载订阅出错"
+    },
+    "payment": {
+      "title": "激活订阅",
+      "subtitle": "完成付款以不间断地继续使用 Nitro",
+      "selectPlan": "选择您的套餐",
+      "saveMore": "节省超过 1 个月",
+      "planSummary": "套餐摘要",
+      "perMonth": "月",
+      "perYear": "年",
+      "includes": "包含：",
+      "feature1": "无限用户",
+      "feature2": "无限仓库",
+      "feature3": "无限产品",
+      "feature4": "所有库存策略",
+      "feature5": "电子开票（CFDI）",
+      "feature6": "高级报表",
+      "feature7": "REST API 和 Webhooks",
+      "feature8": "优先支持",
+      "paymentInfo": "付款信息",
+      "securityNote": "您的信息受银行级加密保护。",
+      "securityNote2": "我们不存储您的卡片数据。",
+      "errorLoading": "加载信息出错"
+    },
+    "paymentForm": {
+      "cardInfo": "卡片信息",
+      "cancel": "取消",
+      "payNow": "立即付款",
+      "processing": "处理中...",
+      "securePayment": "由 Stripe 处理的安全付款",
+      "stripeNotLoaded": "Stripe 未正确加载",
+      "formNotLoaded": "无法加载付款表单",
+      "paymentError": "处理付款出错",
+      "confirmError": "确认付款出错",
+      "paymentSuccess": "付款处理成功！"
+    }
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "欢迎使用 Nitro！",
+      "description": "我们将引导您完成几个简单步骤，设置您的账户并开始使用平台。"
+    },
+    "company": {
+      "title": "公司信息",
+      "description": "填写公司的基本信息。您可以稍后更新。",
+      "legalName": "法定名称",
+      "legalNamePlaceholder": "公司的法定名称",
+      "taxId": "税号",
+      "taxIdPlaceholder": "税务识别号",
+      "email": "邮箱",
+      "emailPlaceholder": "email@company.com",
+      "phone": "电话",
+      "phonePlaceholder": "+1 123 456 7890"
+    },
+    "pack": {
+      "title": "开票配置",
+      "description": "选择您要使用的开票提供商。您可以稍后配置。"
+    },
+    "packConfig": {
+      "title": "配置 {packName}",
+      "description": "输入您的开票提供商凭据。",
+      "facturaApi": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "sk_live_...",
+        "apiKeyHelp": "从您的 FacturaAPI 账户获取 API Key"
+      },
+      "facturaGreen": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "BDI5e07d9c59c5a5297058e32d6b9883dce92b175104",
+        "apiKeyHelp": "您的 Factura Green API Key（x-application-key）",
+        "tenantId": "Tenant ID",
+        "tenantIdPlaceholder": "https://api.alpha.tpa.factura.green",
+        "tenantIdHelp": "您的租户基础 URL",
+        "businessUuid": "Business UUID",
+        "businessUuidPlaceholder": "e-business-160625973100059788268-4a7c-44f8-a3b1-8346a22b9061",
+        "businessUuidHelp": "在 Factura Green 注册的业务（发票方）UUID",
+        "accountUuid": "Account UUID",
+        "accountUuidPlaceholder": "0000",
+        "accountUuidHelp": "账户 UUID（默认：0000）"
+      }
+    },
+    "complete": {
+      "title": "设置完成！",
+      "description": "您的账户已配置完成。您现在可以开始使用 Nitro 的所有功能。",
+      "button": "开始使用 Nitro"
+    },
+    "skipForNow": "暂时跳过",
+    "getStarted": "开始",
+    "continue": "继续",
+    "back": "返回",
+    "noPack": "暂不使用开票"
+  },
+  "help": {
+    "button": "帮助",
+    "footer": "还有问题？请联系支持。"
+  },
+  "inventoryAlerts": {
+    "title": "库存提醒",
+    "close": "关闭",
+    "noAlerts": "无库存提醒",
+    "expiringProducts": "即将到期",
+    "lowStockProducts": "库存不足",
+    "viewAllAlerts": "查看所有提醒",
+    "priority": {
+      "urgent": "紧急",
+      "high": "高",
+      "medium": "中"
+    },
+    "expiry": {
+      "expired": "{days} 天前已到期",
+      "today": "今日到期",
+      "tomorrow": "明日到期",
+      "inDays": "{days} 天后到期"
+    },
+    "stock": {
+      "outOfStock": "缺货",
+      "critical": "库存严重不足",
+      "low": "库存不足"
+    }
+  }
+}

@@ -17,6 +17,7 @@ export default function RegisterPage() {
         email: '',
         password: '',
         password_confirmation: '',
+        referrer_code: '',
     });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -245,6 +246,22 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="space-y-4">
+                        {/* Código de referido — opcional */}
+                        <div>
+                            <label htmlFor="referrer_code" className="block text-sm font-medium mb-2" style={{ color: `rgb(var(--color-secondary-700))` }}>
+                                {locale === 'zh' ? '推荐码（可选）' : locale === 'en' ? 'Referral Code (optional)' : 'Código de referido (opcional)'}
+                            </label>
+                            <input
+                                id="referrer_code" name="referrer_code" type="text"
+                                maxLength={20}
+                                className="appearance-none block w-full px-4 py-3 rounded-lg text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors uppercase"
+                                style={inputStyle(false)}
+                                value={formData.referrer_code}
+                                onChange={handleChange}
+                                placeholder={locale === 'zh' ? '例：REF-X7K2M9' : locale === 'en' ? 'Ex: REF-X7K2M9' : 'Ej: REF-X7K2M9'}
+                            />
+                        </div>
+
                         <button
                             type="submit"
                             disabled={loading || passwordMismatch}

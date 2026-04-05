@@ -63,7 +63,7 @@ export const authService = {
     }
   },
 
-  async register(data: { name: string; email: string; password: string; password_confirmation: string; companyName: string }): Promise<void> {
+  async register(data: { name: string; email: string; password: string; password_confirmation: string; companyName: string; referrer_code?: string }): Promise<void> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',

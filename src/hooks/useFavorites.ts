@@ -5,8 +5,9 @@ import { useState, useEffect, useCallback } from 'react';
 const STORAGE_KEY = 'nitro-favorites';
 
 export interface FavoriteItem {
-  path: string;
+  path: string;       // path base sin tenant/locale, ej: /dashboard/clientes
   name: string;
+  translationKey?: string;
 }
 
 function readFromStorage(): FavoriteItem[] {
@@ -21,18 +22,36 @@ function readFromStorage(): FavoriteItem[] {
 function writeToStorage(items: FavoriteItem[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    // Disparar evento para sincronizar otras instancias del hook en la misma pestaña
     window.dispatchEvent(new StorageEvent('storage', { key: STORAGE_KEY, newValue: JSON.stringify(items) }));
   } catch {
     // ignore
   }
 }
 
+/**
+ * Extrae el path base quitando el prefijo /{tenant}/{locale}
+ * Ej: /redfox/es/dashboard/clientes → /dashboard/clientes
+ */
+function toBasePath(path: string): string {
+  // Quitar prefijo /{tenant}/{locale} si existe
+  const match = path.match(/^\/[^/]+\/(?:es|en|zh)(\/.*)?$/);
+  if (match) return match[1] || '/';
+  return path;
+}
+
 export function useFavorites() {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
 
   useEffect(() => {
-    setFavorites(readFromStorage());
+    // Migrar favoritos viejos que tengan paths con tenant/locale
+    const stored = readFromStorage();
+    const migrated = stored.map(f => ({ ...f, path: toBasePath(f.path) }));
+    // Deduplicar por path
+    const deduped = migrated.filter((f, i, arr) => arr.findIndex(x => x.path === f.path) === i);
+    if (JSON.stringify(migrated) !== JSON.stringify(stored)) {
+      writeToStorage(deduped);
+    }
+    setFavorites(deduped);
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY) {
@@ -45,15 +64,22 @@ export function useFavorites() {
   }, []);
 
   const isFavorite = useCallback(
-    (path: string) => favorites.some((f) => f.path === path),
+    (path: string) => {
+      const base = toBasePath(path);
+      return favorites.some((f) => f.path === base);
+    },
     [favorites],
   );
 
   const toggle = useCallback(
     (item: FavoriteItem) => {
+      const base = toBasePath(item.path);
+      const normalizedItem = { ...item, path: base };
       const current = readFromStorage();
-      const exists = current.some((f) => f.path === item.path);
-      const next = exists ? current.filter((f) => f.path !== item.path) : [...current, item];
+      const exists = current.some((f) => f.path === base);
+      const next = exists
+        ? current.filter((f) => f.path !== base)
+        : [...current, normalizedItem];
       writeToStorage(next);
       setFavorites(next);
     },

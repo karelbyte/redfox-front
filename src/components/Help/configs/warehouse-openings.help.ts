@@ -1,34 +1,38 @@
 import type { HelpConfig } from '../HelpButton';
 
 export const warehouseOpeningsHelp: HelpConfig = {
-  title: { es: 'Guía de Aperturas de Almacén', en: 'Warehouse Openings Guide' },
+  title: { es: 'Guía de Aperturas de Almacén', en: 'Warehouse Openings Guide', zh: '仓库开仓指南' },
   description: {
     es: 'Registra el inventario inicial de tu almacén',
     en: 'Register the initial inventory of your warehouse',
+    zh: '登记仓库的初始库存',
   },
   sections: [
     {
       icon: '📦',
-      title: { es: '¿Qué es una apertura?', en: 'What is an opening?' },
+      title: { es: '¿Qué es una apertura?', en: 'What is an opening?', zh: '什么是开仓？' },
       content: {
         es: 'Una apertura es el registro de un producto con su cantidad y precio inicial en el almacén. Es el punto de partida del inventario.\n\nAntes de cerrar el almacén, debes registrar todos los productos que tiene físicamente.',
         en: 'An opening is the record of a product with its initial quantity and price in the warehouse. It is the starting point of inventory.\n\nBefore closing the warehouse, you must register all products it physically has.',
+        zh: '开仓是在仓库中登记产品及其初始数量和价格的过程。这是库存的起点。\n\n关闭仓库前，必须登记仓库中实际存有的所有产品。',
       },
     },
     {
       icon: '💰',
-      title: { es: 'Precio de apertura', en: 'Opening price' },
+      title: { es: 'Precio de apertura', en: 'Opening price', zh: '开仓价格' },
       content: {
         es: 'El precio que registras en la apertura es el costo de adquisición del producto. Este precio se usa para calcular el costo promedio del inventario.\n\nSi el producto tiene estrategia FIFO o FEFO, el precio de apertura se usa como costo del primer lote.',
         en: 'The price you register in the opening is the acquisition cost of the product. This price is used to calculate the average inventory cost.\n\nIf the product has FIFO or FEFO strategy, the opening price is used as the cost of the first batch.',
+        zh: '开仓时登记的价格是产品的采购成本。此价格用于计算库存的平均成本。\n\n如果产品采用FIFO或FEFO策略，开仓价格将作为第一个批次的成本。',
       },
     },
     {
       icon: '🔒',
-      title: { es: 'Cierre del almacén', en: 'Warehouse closing' },
+      title: { es: 'Cierre del almacén', en: 'Warehouse closing', zh: '仓库关闭' },
       content: {
         es: 'Al cerrar el almacén desde esta vista, todos los productos registrados en las aperturas se transfieren al inventario general.\n\nEste proceso es irreversible. Una vez cerrado, el almacén no acepta nuevas aperturas.',
         en: 'When closing the warehouse from this view, all products registered in the openings are transferred to the general inventory.\n\nThis process is irreversible. Once closed, the warehouse does not accept new openings.',
+        zh: '从此视图关闭仓库时，所有在开仓中登记的产品将转入总库存。\n\n此过程不可逆。一旦关闭，仓库不再接受新的开仓登记。',
       },
     },
   ],

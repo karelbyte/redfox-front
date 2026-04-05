@@ -78,6 +78,8 @@ export function UserMenu() {
     // El logout ya maneja la redirección con locale, así que no necesitamos hacer nada aquí
   };
 
+  const posTooltip = locale === 'en' ? 'Point of Sale (POS)' : locale === 'zh' ? '销售终端 (POS)' : 'Punto de Venta (POS)';
+
   const handlePOSClick = () => {
     router.push(`/${tenant}/${locale}/pos`);
   };
@@ -85,7 +87,7 @@ export function UserMenu() {
   return (
     <div className="flex items-center space-x-3">
       {/* Botón de POS */}
-      <Tooltip content="Point of Sale (POS)" placement="bottom">
+      <Tooltip content={posTooltip} placement="bottom">
         <button
           onClick={handlePOSClick}
           className="p-2 rounded-lg transition-colors hover:bg-gray-100 focus:outline-none"

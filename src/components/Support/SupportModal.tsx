@@ -26,6 +26,13 @@ const SUBJECTS = {
     'I want to suggest an improvement',
     'Other',
   ],
+  zh: [
+    '我遇到了技术问题',
+    '我不理解某个功能的使用方法',
+    '我发现了一个错误',
+    '我想提出改进建议',
+    '其他',
+  ],
 };
 
 const COPY = {
@@ -63,11 +70,28 @@ const COPY = {
     minLength: 'Message must be at least 10 characters.',
     selectSubject: 'Please select a subject.',
   },
+  zh: {
+    title: '联系支持',
+    description: '告诉我们您需要什么帮助，我们会尽快回复您。',
+    subjectLabel: '主题',
+    subjectPlaceholder: '请选择主题...',
+    messageLabel: '消息',
+    messagePlaceholder: '请尽可能详细地描述您的问题...',
+    send: '发送消息',
+    sending: '发送中...',
+    cancel: '取消',
+    successTitle: '消息已发送！',
+    successDesc: '我们已收到您的消息，将尽快回复。',
+    close: '关闭',
+    errorMsg: '消息发送失败，请重试。',
+    minLength: '消息至少需要 10 个字符。',
+    selectSubject: '请选择一个主题。',
+  },
 };
 
 export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
   const locale = useLocale();
-  const lang = locale === 'en' ? 'en' : 'es';
+  const lang = locale === 'en' ? 'en' : locale === 'zh' ? 'zh' : 'es';
   const c = COPY[lang];
   const subjects = SUBJECTS[lang];
 

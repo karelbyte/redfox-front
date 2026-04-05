@@ -7,13 +7,13 @@ import SupportModal from '@/components/Support/SupportModal';
 
 export interface HelpSection {
   icon?: string;
-  title: { es: string; en: string };
-  content: { es: string; en: string };
+  title: { es: string; en: string; zh?: string };
+  content: { es: string; en: string; zh?: string };
 }
 
 export interface HelpConfig {
-  title: { es: string; en: string };
-  description: { es: string; en: string };
+  title: { es: string; en: string; zh?: string };
+  description: { es: string; en: string; zh?: string };
   sections: HelpSection[];
 }
 
@@ -27,7 +27,7 @@ export default function HelpButton({ config }: HelpButtonProps) {
   const locale = useLocale();
   const tHelp = useTranslations('help');
 
-  const lang = locale === 'en' ? 'en' : 'es';
+  const lang = locale === 'en' ? 'en' : locale === 'zh' ? 'zh' : 'es';
 
   return (
     <>
@@ -68,9 +68,9 @@ export default function HelpButton({ config }: HelpButtonProps) {
                     className="text-base font-semibold"
                     style={{ color: `rgb(var(--color-primary-800))` }}
                   >
-                    {config.title[lang]}
+                    {config.title[lang] ?? config.title['es']}
                   </h2>
-                  <p className="text-xs text-gray-500 mt-0.5">{config.description[lang]}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{config.description[lang] ?? config.description['es']}</p>
                 </div>
               </div>
               <button
@@ -94,12 +94,12 @@ export default function HelpButton({ config }: HelpButtonProps) {
                       className="text-sm font-semibold"
                       style={{ color: `rgb(var(--color-primary-700))` }}
                     >
-                      {section.title[lang]}
+                      {section.title[lang] ?? section.title['es']}
                     </h3>
                   </div>
                   <div className="px-4 py-3">
                     <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
-                      {section.content[lang]}
+                      {section.content[lang] ?? section.content['es']}
                     </p>
                   </div>
                 </div>

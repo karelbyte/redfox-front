@@ -13,15 +13,19 @@ import { TrialBanner } from "@/components/Subscription/TrialBanner";
 import Tooltip from "@/components/atoms/Tooltip";
 import { useFavorites } from "@/hooks/useFavorites";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 export function MainMenu() {
   const { currentTheme } = useTheme();
   const { isSearchOpen, openSearch, closeSearch } = useGlobalSearch();
   const [supportOpen, setSupportOpen] = useState(false);
   const t = useTranslations('globalSearch');
+  const tNav = useTranslations('navigation');
   const locale = useLocale();
-  const { favorites } = useFavorites();
-  const supportTitle = locale === 'en' ? 'Contact Support' : 'Contactar Soporte';
+  const params = useParams();
+  const tenant = params?.tenant as string;
+  const { favorites, toggle } = useFavorites();
+  const supportTitle = locale === 'en' ? 'Contact Support' : locale === 'zh' ? '联系支持' : 'Contactar Soporte';
   const searchTitle = `${t('searchPlaceholder')} (⌘K)`;
 
   const getImageUrl = (): string => {
@@ -52,21 +56,34 @@ export function MainMenu() {
             <div className="flex items-center flex-1 justify-center px-4 gap-1">
               {favorites.length > 0 ? (
                 favorites.map((fav) => {
-                  const initials = fav.name
+                  const displayName = fav.translationKey
+                    ? tNav(fav.translationKey as Parameters<typeof tNav>[0])
+                    : fav.name;
+                  const initials = displayName
                     .split(' ')
                     .filter(Boolean)
                     .slice(0, 2)
                     .map((w: string) => w.charAt(0).toUpperCase())
                     .join('');
                   return (
-                    <Tooltip key={fav.path} content={fav.name} placement="bottom">
-                      <Link
-                        href={fav.path}
-                        className="flex items-center justify-center w-8 h-8 rounded-md transition-colors hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-gray-200 text-xs font-semibold flex-shrink-0"
+                    <div key={fav.path} className="relative group">
+                      <Tooltip content={displayName} placement="bottom">
+                        <Link
+                          href={tenant ? `/${tenant}/${locale}${fav.path}` : fav.path}
+                          className="flex items-center justify-center w-8 h-8 rounded-md transition-colors hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-gray-200 text-xs font-semibold flex-shrink-0"
+                        >
+                          {initials}
+                        </Link>
+                      </Tooltip>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: fav.path, name: fav.name, translationKey: fav.translationKey }); }}
+                        className="absolute -top-1.5 -right-1.5 opacity-0 group-hover:opacity-100 flex items-center justify-center w-4 h-4 rounded-full bg-gray-500 text-white text-xs leading-none hover:bg-red-500 transition-opacity"
+                        title="Quitar de favoritos"
                       >
-                        {initials}
-                      </Link>
-                    </Tooltip>
+                        ×
+                      </button>
+                    </div>
                   );
                 })
               ) : (
