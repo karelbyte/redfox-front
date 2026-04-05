@@ -37,43 +37,28 @@ export default function BrandTable({ brands, onEdit, onDelete, visibleColumns }:
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            {isVisible('code') && (
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('form.code')}
-              </th>
-            )}
-            {isVisible('description') && (
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
-                {t('form.description')}
-              </th>
-            )}
             {isVisible('image') && (
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: `rgb(var(--color-primary-600))` }}>
                 {t('form.image')}
               </th>
             )}
+            {isVisible('code') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: `rgb(var(--color-primary-600))` }}>
+                {t('form.name')}
+              </th>
+            )}
+            {isVisible('description') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: `rgb(var(--color-primary-600))` }}>
+                {t('form.description')}
+              </th>
+            )}
             {isVisible('status') && (
-              <th
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: `rgb(var(--color-primary-600))` }}>
                 {t('form.status')}
               </th>
             )}
             {isVisible('actions') && (
-              <th
-                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
-                style={{ color: `rgb(var(--color-primary-600))` }}
-              >
+              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: `rgb(var(--color-primary-600))` }}>
                 {t('table.actions')}
               </th>
             )}
@@ -82,24 +67,28 @@ export default function BrandTable({ brands, onEdit, onDelete, visibleColumns }:
         <tbody className="bg-white divide-y divide-gray-200">
           {brands.map((brand) => (
             <tr key={brand.id} className="hover:bg-primary-50 transition-colors">
+              {isVisible('image') && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {brand.img ? (
+                    <img
+                      src={`${API_BASE_URL}${brand.img}`}
+                      alt={brand.code}
+                      width={40}
+                      height={40}
+                      className="object-contain rounded-lg border border-gray-200"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                      <span className="text-xs text-gray-400">{brand.code.charAt(0).toUpperCase()}</span>
+                    </div>
+                  )}
+                </td>
+              )}
               {isVisible('code') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{brand.code}</td>
               )}
               {isVisible('description') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{brand.description}</td>
-              )}
-              {isVisible('image') && (
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {brand.img && (
-                    <img
-                      src={`${API_BASE_URL}${brand.img}`}
-                      alt={brand.code}
-                      width={80}
-                      height={80}
-                      className="object-contain rounded-lg border border-gray-200"
-                    />
-                  )}
-                </td>
               )}
               {isVisible('status') && (
                 <td className="px-6 py-4 whitespace-nowrap">

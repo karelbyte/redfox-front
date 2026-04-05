@@ -79,6 +79,22 @@ export interface PaginatedInventoryResponse {
 }
 
 class InventoryService {
+  async getInventoryByProduct(productId: string): Promise<InventoryProduct[]> {
+    const params = new URLSearchParams();
+    params.append('product_id', productId);
+    params.append('limit', '50');
+    const response = await api.get<{ data: InventoryProduct[] }>(`/inventory?${params.toString()}`);
+    return response.data || [];
+  }
+
+  async getInventoryAll(warehouseId: string): Promise<InventoryResponse> {
+    const params = new URLSearchParams();
+    params.append('warehouse_id', warehouseId);
+    params.append('limit', '9999');
+    const response = await api.get<InventoryResponse>(`/inventory?${params.toString()}`);
+    return response;
+  }
+
   async getInventory(warehouseId: string, page?: number, term?: string): Promise<InventoryResponse> {
     const params = new URLSearchParams();
     params.append('warehouse_id', warehouseId);

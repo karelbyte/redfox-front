@@ -57,18 +57,22 @@ class NotificationService {
 
   // Real-time subscription methods (for WebSocket integration)
   subscribeToNotifications(userId: string, callback: (notification: Notification) => void): () => void {
-    // This would be implemented with WebSocket or Server-Sent Events
-    // For now, we'll use polling as a fallback
+    // Polling ligero: solo notifica si hay notificaciones nuevas que no estaban antes
+    let knownIds = new Set<string>();
+
     const interval = setInterval(async () => {
       try {
-        const response = await this.getNotifications({ isRead: false, limit: 1 });
-        if (response.data.length > 0) {
-          callback(response.data[0]);
+        const response = await this.getNotifications({ isRead: false, limit: 10 });
+        for (const n of response.data) {
+          if (!knownIds.has(n.id)) {
+            knownIds.add(n.id);
+            callback(n);
+          }
         }
       } catch (error) {
         console.error('Error polling notifications:', error);
       }
-    }, 30000); // Poll every 30 seconds
+    }, 30000);
 
     return () => clearInterval(interval);
   }

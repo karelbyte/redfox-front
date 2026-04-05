@@ -9,11 +9,16 @@ import NotificationDropdown from './NotificationDropdown';
 import Tooltip from '@/components/atoms/Tooltip';
 
 const NotificationBell: React.FC = () => {
-  const { unreadCount } = useNotifications();
+  const { unreadCount, notifications } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
   const bellRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Solo pulsa si hay errores sin leer
+  const hasUnreadErrors = notifications.some(
+    n => !n.isRead && n.type === 'error'
+  );
 
   const tooltipText = locale === 'en'
     ? `Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`
@@ -66,7 +71,7 @@ const NotificationBell: React.FC = () => {
               </span>
               <span
                 className="absolute -top-1 -right-1 inline-flex h-5 w-5 rounded-full opacity-75 animate-ping"
-                style={{ backgroundColor: `rgb(var(--color-primary-400))` }}
+                style={{ backgroundColor: `rgb(var(--color-primary-400))`, display: hasUnreadErrors ? undefined : 'none' }}
               />
             </>
           )}

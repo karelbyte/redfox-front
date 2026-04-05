@@ -197,7 +197,7 @@ export default function PurchaseOrderTable({
               )}
               {isVisible('warehouse') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {purchaseOrder.warehouse.name}
+                  {purchaseOrder.warehouse?.name ?? '—'}
                 </td>
               )}
               {isVisible('document') && (

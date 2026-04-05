@@ -31,12 +31,18 @@ const getHeaders = (isFormData = false) => {
   if (typeof window !== 'undefined') {
     headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
-    // Obtener el tenant actual de la URL
+    // Obtener el tenant y locale actual de la URL
     const segments = window.location.pathname.split('/').filter(Boolean);
-    const tenant = segments[0];
+    const locales = ['es', 'en'];
+    const firstIsLocale = locales.includes(segments[0]);
+    const tenant = firstIsLocale ? null : segments[0];
+    const locale = firstIsLocale ? segments[0] : (segments[1] || 'es');
+
     if (tenant) {
       headers['X-Tenant-Slug'] = tenant;
     }
+    // Enviar el idioma activo para que la API responda en el idioma correcto
+    headers['X-Locale'] = locale;
   }
 
   if (!isFormData) {

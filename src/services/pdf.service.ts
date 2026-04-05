@@ -602,7 +602,7 @@ export class PDFService {
     currentY += 8;
     this.doc.text(`Proveedor: ${purchaseOrder.provider.name}`, margin, currentY);
     currentY += 8;
-    this.doc.text(`Almacén: ${purchaseOrder.warehouse.name}`, margin, currentY);
+    this.doc.text(`Almacén: ${purchaseOrder.warehouse?.name ?? '—'}`, margin, currentY);
     currentY += 8;
     this.doc.text(`Documento: ${purchaseOrder.document}`, margin, currentY);
     currentY += 8;
@@ -623,15 +623,17 @@ export class PDFService {
       let totalAmount = 0;
 
       details.forEach((detail) => {
-        const subtotal = detail.quantity * detail.price;
+        const price = Number(detail.price);
+        const quantity = Number(detail.quantity);
+        const subtotal = quantity * price;
         totalAmount += subtotal;
         rows.push([
           detail.product.name,
           detail.product.sku,
           detail.product.brand?.name || "",
           detail.product.category?.name || "",
-          detail.quantity.toString(),
-          `$${detail.price.toFixed(2)}`,
+          quantity.toString(),
+          `$${price.toFixed(2)}`,
           `$${subtotal.toFixed(2)}`
         ]);
       });

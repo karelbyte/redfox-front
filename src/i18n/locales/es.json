@@ -595,25 +595,25 @@
       "noBrandsDesc": "Haz clic en 'Nueva Marca' para agregar una.",
       "noResultsDesc": "No se encontraron resultados",
       "form": {
-        "code": "Código",
+        "code": "Nombre",
         "name": "Nombre",
-        "description": "Descripción",
+        "description": "Descripción (opcional)",
         "image": "Imagen",
         "status": "Estado",
         "active": "Activo",
         "placeholders": {
-          "code": "Ej: BRD001",
+          "code": "Ej: Samsung",
           "name": "Ej: Samsung",
           "description": "Ej: Marca líder en tecnología"
         },
         "errors": {
-          "codeRequired": "El código es requerido",
+          "codeRequired": "El nombre es requerido",
           "nameRequired": "El nombre es requerido",
           "descriptionRequired": "La descripción es requerida"
         }
       },
       "table": {
-        "code": "Código",
+        "code": "Nombre",
         "name": "Nombre",
         "description": "Descripción",
         "status": "Estado",
@@ -1039,6 +1039,8 @@
         "importFromPackError": "No se pudo importar desde el pack",
         "packSyncFailedCreate": "Cliente guardado en Redfox. Atención: no se registró en el PAC. No podrá facturar hasta corregirlo. Detalle: {detail}",
         "packSyncFailedUpdate": "Cliente guardado en Redfox. Atención: no se actualizó en el PAC. No podrá facturar hasta corregirlo. Detalle: {detail}",
+        "syncSuccess": "Cliente resincronizado con el PAC correctamente",
+        "syncError": "Error al resincronizar el cliente con el PAC: {error}",
         "confirmDelete": "¿Estás seguro de que deseas eliminar el cliente \"{name}\"? Esta acción no se puede deshacer."
       },
       "actions": {
@@ -1547,6 +1549,9 @@
           "price": "Precio",
           "batchNumber": "Lote",
           "expirationDate": "Fecha de Vencimiento",
+          "recommended": "recomendado",
+          "optional": "opcional",
+          "priceHint": "Precio base del producto: {price}",
           "placeholders": {
             "quantity": "Ingrese la cantidad",
             "price": "Ingrese el precio",
@@ -1557,7 +1562,13 @@
             "quantityRequired": "La cantidad es requerida",
             "quantityPositive": "La cantidad debe ser mayor a 0",
             "priceRequired": "El precio es requerido",
-            "pricePositive": "El precio debe ser mayor a 0"
+            "pricePositive": "El precio debe ser mayor a 0",
+            "expirationDateRequired": "La fecha de vencimiento es obligatoria para productos FEFO"
+          },
+          "strategyHints": {
+            "fefo": "Requiere fecha de vencimiento. El sistema desconta primero los lotes que vencen antes.",
+            "fifo": "El sistema desconta primero las entradas más antiguas. El lote es recomendado para trazabilidad.",
+            "average": "El precio se calcula como promedio ponderado. No se usan lotes ni fechas de vencimiento."
           }
         },
         "messages": {
@@ -1696,6 +1707,7 @@
         "edit": "Editar",
         "view": "Ver",
         "delete": "Eliminar",
+        "cancel": "Cancelar",
         "convertToSale": "Convertir a Venta",
         "downloadPDF": "Descargar PDF",
         "addProduct": "Añadir Producto",
@@ -1850,7 +1862,8 @@
         },
         "placeholders": {
           "code": "Ej: SAL-2024-001",
-          "destination": "Ej: Tienda Central - Av. Principal 123"
+          "destination": "Ej: Tienda Central - Av. Principal 123",
+          "selectClient": "Seleccionar cliente"
         },
         "errors": {
           "codeRequired": "El código es requerido",
@@ -1890,6 +1903,8 @@
         "createNewClient": "Crear nuevo cliente",
         "generatePDF": "Generar PDF",
         "generatingPDF": "Generando PDF...",
+        "create": "Crear Venta",
+        "newClient": "Nuevo Cliente",
         "invoice": "Facturar",
         "invoiceAndStamp": "Facturar y Timbrar",
         "printTicket": "Imprimir Ticket",
@@ -3182,7 +3197,10 @@
         "providerId": "Proveedor",
         "warehouse": "Almacén",
         "warehouseId": "Almacén",
+        "warehouseHint": "Opcional. El almacén destino se puede definir por producto al agregar los detalles.",
+        "optional": "opcional",
         "document": "Documento",
+        "documentHint": "Opcional. Número de referencia, cotización o folio del proveedor.",
         "amount": "Monto",
         "notes": "Notas",
         "expectedDeliveryDate": "Fecha de Entrega Esperada",
@@ -3236,7 +3254,11 @@
       },
       "approveModal": {
         "title": "Aprobar {item}",
-        "message": "¿Estás seguro de que deseas aprobar {item} \"{name}\"? Esta acción no se puede deshacer."
+        "message": "¿Estás seguro de que deseas aprobar {item} \"{name}\"? Esta acción no se puede deshacer.",
+        "emailSection": "Notificar al proveedor",
+        "noEmailConfig": "No hay un servidor de correo configurado. Configura uno en Ajustes > Correo para poder enviar notificaciones.",
+        "noProviderEmail": "El proveedor \"{name}\" no tiene correo electrónico registrado.",
+        "sendEmailToProvider": "Enviar orden de compra por correo al proveedor ({email})"
       },
       "rejectModal": {
         "title": "Rechazar {item}",
@@ -3298,6 +3320,8 @@
           "quantity": "Cantidad",
           "price": "Precio",
           "selectProduct": "Seleccionar producto",
+          "warehouseDestination": "Almacén destino",
+          "warehouseDestinationPlaceholder": "Sin almacén asignado (opcional)",
           "placeholders": {
             "quantity": "Ej: 10",
             "price": "Ej: 100.00"

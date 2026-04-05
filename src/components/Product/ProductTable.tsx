@@ -4,6 +4,7 @@ import { PencilIcon, TrashIcon, QrCodeIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
 import { usePermissions } from '@/hooks/usePermissions';
 import Tooltip from '@/components/atoms/Tooltip';
+import { API_BASE_URL } from '@/lib/config';
 
 interface ProductTableProps {
   products: Product[];
@@ -147,10 +148,25 @@ export default function ProductTable({
               </td>
               {isVisible('name') && (
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span>
-                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                    <div className="text-sm text-gray-500">{product.description}</div>
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-shrink-0 h-10 w-10">
+                      {product.images && product.images.length > 0 ? (
+                        <img
+                          src={`${API_BASE_URL}${product.images[0]}`}
+                          alt={product.name}
+                          className="h-10 w-10 rounded-lg object-cover border border-gray-200"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                          <span className="text-xs text-gray-400">{product.name.charAt(0).toUpperCase()}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                      <div className="text-sm text-gray-500">{product.description}</div>
+                    </div>
+                  </div>
                 </td>
               )}
               {isVisible('code') && (

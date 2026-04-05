@@ -60,6 +60,15 @@ export default function AgregarProductoPage() {
         onSavingChange={setIsSaving}
         onValidChange={setIsFormValid}
       />
+      <div className="flex justify-end mt-6">
+        <Btn
+          onClick={handleSave}
+          disabled={!isFormValid}
+          loading={isSaving}
+        >
+          {tCommon('actions.save')}
+        </Btn>
+      </div>
     </div>
   );
 } 

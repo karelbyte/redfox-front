@@ -278,24 +278,10 @@ const QuotationDetailsPage = () => {
     }
   };
 
-  const handleConvertToSale = async (warehouseId: string) => {
+  const handleConvertToSale = () => {
     if (!quotation) return;
-
-    try {
-      setIsConverting(true);
-      const result = await quotationService.convertToSale(quotationId, warehouseId);
-      toastService.success(result.message);
-      setConvertModalOpen(false);
-      loadQuotation();
-    } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('messages.errorConverting'));
-      }
-    } finally {
-      setIsConverting(false);
-    }
+    const tenant = params.tenant as string;
+    router.push(`/${tenant}/${locale}/dashboard/cotizaciones/${quotationId}/convertir-a-venta`);
   };
 
   const canModify = quotation?.status !== QuotationStatus.CONVERTED;
@@ -355,7 +341,7 @@ const QuotationDetailsPage = () => {
           {canConvertToSale && (
             <Btn
               variant="primary"
-              onClick={() => setConvertModalOpen(true)}
+              onClick={handleConvertToSale}
               leftIcon={<BoltIcon className="h-5 w-5" />}
               className="!bg-green-600 hover:!bg-green-700"
             >

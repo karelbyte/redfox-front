@@ -6,7 +6,7 @@ export interface PurchaseOrder {
   code: string;
   date: string;
   provider: Provider;
-  warehouse: Warehouse;
+  warehouse: Warehouse | null;
   document: string;
   amount: number;
   notes?: string;
@@ -20,8 +20,8 @@ export interface PurchaseOrderFormData {
   code: string;
   date: string;
   provider_id: string;
-  warehouse_id: string;
-  document: string;
+  warehouse_id?: string;
+  document?: string;
   amount: number;
   notes?: string;
   expected_delivery_date: string;
@@ -41,35 +41,16 @@ export interface PurchaseOrderDetail {
     width: number;
     height: number;
     length: number;
-    brand: {
-      id: string;
-      name: string;
-      description: string;
-    };
-    category: {
-      id: string;
-      name: string;
-      description: string;
-    };
-    tax: {
-      id: string;
-      code: string;
-      name: string;
-      value: number;
-      type: string;
-      isActive: boolean;
-      createdAt: string;
-    };
-    measurement_unit: {
-      id: string;
-      code: string;
-      description: string;
-    };
+    brand: { id: string; name: string; description: string; };
+    category: { id: string; name: string; description: string; };
+    tax: { id: string; code: string; name: string; value: number; type: string; isActive: boolean; createdAt: string; };
+    measurement_unit: { id: string; code: string; description: string; };
     is_active: boolean;
     type: string;
     images: string[];
     created_at: string;
   };
+  warehouse?: Warehouse | null;
   quantity: number;
   price: number;
   created_at: string;
@@ -79,6 +60,7 @@ export interface PurchaseOrderDetailFormData {
   product_id: string;
   quantity: number;
   price: number;
+  warehouse_id?: string;
   [key: string]: unknown;
 }
 

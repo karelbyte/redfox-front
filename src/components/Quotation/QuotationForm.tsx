@@ -16,9 +16,11 @@ import { ClientFormRef } from '@/components/Client/ClientForm';
 export interface QuotationFormProps {
   quotation: Quotation | null;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (id?: string) => void;
   onSavingChange?: (isSaving: boolean) => void;
   onValidChange?: (isValid: boolean) => void;
+  /** 'drawer' = single column, 'page' = 2-column grid. Default: 'drawer' */
+  layout?: 'drawer' | 'page';
 }
 
 export interface QuotationFormRef {
@@ -33,7 +35,7 @@ interface FormErrors {
 }
 
 const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
-  ({ quotation, onSuccess, onSavingChange, onValidChange }, ref) => {
+  ({ quotation, onSuccess, onSavingChange, onValidChange, layout = 'drawer' }, ref) => {
     const t = useTranslations('pages.quotations');
     const [formData, setFormData] = useState<QuotationFormData>({
       code: '',
@@ -45,6 +47,7 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
 
     const [clients, setClients] = useState<Client[]>([]);
     const [errors, setErrors] = useState<FormErrors>({});
+    const [surrogateKey, setSurrogateKey] = useState(0);
 
     const [showClientDrawer, setShowClientDrawer] = useState(false);
     const [isSavingClient, setIsSavingClient] = useState(false);
@@ -75,6 +78,8 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
           client_id: '',
           notes: '',
         });
+        // Forzar remonte del SurrogateInput para que recargue el código sugerido
+        setSurrogateKey(k => k + 1);
       }
     }, [quotation]);
 
@@ -127,11 +132,11 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
 
         if (quotation) {
           await quotationService.updateQuotation(quotation.id, data);
+          onSuccess(quotation.id);
         } else {
-          await quotationService.createQuotation(data);
+          const created = await quotationService.createQuotation(data);
+          onSuccess(created.id);
         }
-
-        onSuccess();
       } catch (error) {
         if (error instanceof Error) {
           toastService.error(error.message);
@@ -164,51 +169,54 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
     return (
       <>
         <form className="space-y-6">
-          <SurrogateInput
-            label={t('form.code')}
-            value={formData.code}
-            onChange={(value) => setFormData(prev => ({ ...prev, code: value }))}
-            surrogateCode="quotation"
-            placeholder={t('form.placeholders.code')}
-            required
-            error={errors.code}
-          />
+          <div className={layout === 'page' ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-6'}>
+            <SurrogateInput
+              key={quotation ? `edit-${quotation.id}` : `create-${surrogateKey}`}
+              label={t('form.code')}
+              value={formData.code}
+              onChange={(value) => setFormData(prev => ({ ...prev, code: value }))}
+              surrogateCode="quotation"
+              placeholder={t('form.placeholders.code')}
+              required
+              error={errors.code}
+            />
 
-          <Input
-            type="date"
-            id="date"
-            label={t('form.date')}
-            required
-            value={formData.date}
-            onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-            error={errors.date}
-          />
+            <SelectWithAdd
+              id="client"
+              label={t('form.client')}
+              value={formData.client_id}
+              onChange={(e) => setFormData(prev => ({ ...prev, client_id: e.target.value }))}
+              options={clients.map((client) => ({
+                value: client.id,
+                label: `${client.code} - ${client.name}`
+              }))}
+              placeholder={t('form.placeholders.selectClient')}
+              required
+              error={errors.client_id}
+              showAddButton
+              onAddClick={() => setShowClientDrawer(true)}
+              addButtonTitle={t('actions.createNewClient')}
+            />
 
-          <Input
-            type="date"
-            id="valid_until"
-            label={t('form.validUntil')}
-            value={formData.valid_until}
-            onChange={(e) => setFormData(prev => ({ ...prev, valid_until: e.target.value }))}
-            error={errors.valid_until}
-          />
+            <Input
+              type="date"
+              id="date"
+              label={t('form.date')}
+              required
+              value={formData.date}
+              onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+              error={errors.date}
+            />
 
-          <SelectWithAdd
-            id="client"
-            label={t('form.client')}
-            value={formData.client_id}
-            onChange={(e) => setFormData(prev => ({ ...prev, client_id: e.target.value }))}
-            options={clients.map((client) => ({
-              value: client.id,
-              label: `${client.code} - ${client.name}`
-            }))}
-            placeholder={t('form.placeholders.selectClient')}
-            required
-            error={errors.client_id}
-            showAddButton
-            onAddClick={() => setShowClientDrawer(true)}
-            addButtonTitle={t('actions.createNewClient')}
-          />
+            <Input
+              type="date"
+              id="valid_until"
+              label={t('form.validUntil')}
+              value={formData.valid_until}
+              onChange={(e) => setFormData(prev => ({ ...prev, valid_until: e.target.value }))}
+              error={errors.valid_until}
+            />
+          </div>
 
           <TextArea
             id="notes"

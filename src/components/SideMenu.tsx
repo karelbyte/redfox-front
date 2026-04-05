@@ -6,6 +6,9 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePermissions } from "@/hooks/usePermissions";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/24/outline";
+import { StarIcon as StarSolid } from "@heroicons/react/24/solid";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface MenuItem {
   name: string;
@@ -30,6 +33,7 @@ export function SideMenu() {
   const locale = useLocale();
   const t = useTranslations("navigation");
   const { can } = usePermissions();
+  const { isFavorite, toggle } = useFavorites();
 
   const tenant = params?.tenant as string;
 
@@ -1290,50 +1294,61 @@ export function SideMenu() {
                       role="menu"
                     >
                       {options.map((opt) => (
-                        <Link
-                          key={opt.path}
-                          href={opt.path}
-                          className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors mx-1"
-                          style={{
-                            backgroundColor:
-                              pathname === opt.path
-                                ? "rgb(var(--color-primary-50))"
-                                : "transparent",
-                            color:
-                              pathname === opt.path
-                                ? "rgb(var(--color-primary-600))"
-                                : "#4b5563",
-                          }}
-                          onMouseEnter={(e) => {
-                            if (pathname !== opt.path) {
-                              e.currentTarget.style.backgroundColor =
-                                "rgb(var(--color-primary-50))";
-                              e.currentTarget.style.color =
-                                "rgb(var(--color-primary-600))";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (pathname !== opt.path) {
-                              e.currentTarget.style.backgroundColor =
-                                "transparent";
-                              e.currentTarget.style.color = "#4b5563";
-                            }
-                          }}
-                          role="menuitem"
-                        >
-                          <span
-                            className="mr-3 shrink-0"
+                        <div key={opt.path} className="flex items-center mx-1 group/popitem">
+                          <Link
+                            href={opt.path}
+                            className="flex items-center flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors"
                             style={{
+                              backgroundColor:
+                                pathname === opt.path
+                                  ? "rgb(var(--color-primary-50))"
+                                  : "transparent",
                               color:
                                 pathname === opt.path
-                                  ? "rgb(var(--color-primary-500))"
-                                  : "#9ca3af",
+                                  ? "rgb(var(--color-primary-600))"
+                                  : "#4b5563",
                             }}
+                            onMouseEnter={(e) => {
+                              if (pathname !== opt.path) {
+                                e.currentTarget.style.backgroundColor =
+                                  "rgb(var(--color-primary-50))";
+                                e.currentTarget.style.color =
+                                  "rgb(var(--color-primary-600))";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (pathname !== opt.path) {
+                                e.currentTarget.style.backgroundColor =
+                                  "transparent";
+                                e.currentTarget.style.color = "#4b5563";
+                              }
+                            }}
+                            role="menuitem"
                           >
-                            {opt.icon}
-                          </span>
-                          {opt.name}
-                        </Link>
+                            <span
+                              className="mr-3 shrink-0"
+                              style={{
+                                color:
+                                  pathname === opt.path
+                                    ? "rgb(var(--color-primary-500))"
+                                    : "#9ca3af",
+                              }}
+                            >
+                              {opt.icon}
+                            </span>
+                            {opt.name}
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); toggle({ path: opt.path, name: opt.name }); }}
+                            className="p-1 mr-1 rounded flex-shrink-0"
+                            title={isFavorite(opt.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                          >
+                            {isFavorite(opt.path)
+                              ? <StarSolid className="h-3.5 w-3.5 text-yellow-400" />
+                              : <StarIcon className="h-3.5 w-3.5 text-gray-300 hover:text-yellow-400" />}
+                          </button>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -1377,7 +1392,17 @@ export function SideMenu() {
                     onMouseLeave={(e) => itemHoverLeave(e, isActive)}
                   >
                     {iconContent}
-                    {item.name}
+                    <span className="flex-1">{item.name}</span>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: item.path, name: item.name }); }}
+                      className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity"
+                      title={isFavorite(item.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                    >
+                      {isFavorite(item.path)
+                        ? <StarSolid className="h-3.5 w-3.5 text-yellow-400" />
+                        : <StarIcon className="h-3.5 w-3.5 text-gray-300 hover:text-yellow-400" />}
+                    </button>
                   </Link>
                 )}
                 {item.subItems && isExpanded && filteredSubItems.length > 0 && (
@@ -1423,7 +1448,17 @@ export function SideMenu() {
                           >
                             {subItem.icon}
                           </span>
-                          {subItem.name}
+                          <span className="flex-1">{subItem.name}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: subItem.path, name: subItem.name }); }}
+                            className="ml-1 p-0.5 rounded transition-opacity"
+                            title={isFavorite(subItem.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                          >
+                            {isFavorite(subItem.path)
+                              ? <StarSolid className="h-3.5 w-3.5 text-yellow-400" />
+                              : <StarIcon className="h-3.5 w-3.5 text-gray-300 hover:text-yellow-400" />}
+                          </button>
                         </div>
                       </Link>
                     ))}

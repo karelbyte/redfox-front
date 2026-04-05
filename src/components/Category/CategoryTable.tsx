@@ -50,6 +50,23 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
     return (
       <React.Fragment key={category.id}>
         <tr className={`${isChild ? 'bg-gray-50' : ''} hover:bg-gray-50 transition-colors`}>
+          {isVisible('image') && (
+            <td className="px-6 py-4 whitespace-nowrap">
+              {category.image ? (
+                <Image
+                  src={`${API_BASE_URL}${category.image}`}
+                  alt={category.name}
+                  width={40}
+                  height={40}
+                  className="object-contain rounded-lg border border-gray-200"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                  <span className="text-xs text-gray-400">{category.name.charAt(0).toUpperCase()}</span>
+                </div>
+              )}
+            </td>
+          )}
           {isVisible('name') && (
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               <div className="flex items-center">
@@ -60,8 +77,7 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
                     size="sm"
                     leftIcon={
                       <ChevronDownIcon
-                        className={`h-4 w-4 transform transition-transform ${isExpanded ? 'rotate-180' : ''
-                          }`}
+                        className={`h-4 w-4 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                       />
                     }
                     className="mr-2"
@@ -78,31 +94,12 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
               </div>
             </td>
           )}
-          {isVisible('slug') && (
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{category.slug}</td>
-          )}
-          {isVisible('image') && (
-            <td className="px-6 py-4 whitespace-nowrap">
-              {category.image && (
-                <Image
-                  src={`${API_BASE_URL}${category.image}`}
-                  alt={category.name}
-                  width={80}
-                  height={80}
-                  className="object-contain rounded-lg border border-gray-200"
-                />
-              )}
-            </td>
-          )}
           {isVisible('description') && (
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{category.description}</td>
           )}
           {isVisible('status') && (
             <td className="px-6 py-4 whitespace-nowrap">
-              <span
-                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}
-              >
+              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                 {category.isActive ? commonT('status.active') : commonT('status.inactive')}
               </span>
             </td>
@@ -112,23 +109,12 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
               <div className="flex justify-end space-x-2">
                 {can(['category_update']) && (
                   <Tooltip content={commonT('actions.edit')} placement="top">
-                    <Btn
-                      onClick={() => onEdit(category)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                    />
+                    <Btn onClick={() => onEdit(category)} variant="ghost" size="sm" leftIcon={<PencilIcon className="h-4 w-4" />} />
                   </Tooltip>
                 )}
                 {can(['category_delete']) && (
                   <Tooltip content={commonT('actions.delete')} placement="top">
-                    <Btn
-                      onClick={() => onDelete(category)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      style={{ color: '#dc2626' }}
-                    />
+                    <Btn onClick={() => onDelete(category)} variant="ghost" size="sm" leftIcon={<TrashIcon className="h-4 w-4" />} style={{ color: '#dc2626' }} />
                   </Tooltip>
                 )}
               </div>
@@ -136,9 +122,7 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
           )}
         </tr>
         {hasChildren && isExpanded && category.children && (
-          <>
-            {category.children.map(child => renderCategoryRow(child, true))}
-          </>
+          <>{category.children.map(child => renderCategoryRow(child, true))}</>
         )}
       </React.Fragment>
     );
@@ -149,19 +133,14 @@ export default function CategoryTable({ categories, onEdit, onDelete, visibleCol
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            {isVisible('name') && (
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                {t('form.name')}
-              </th>
-            )}
-            {isVisible('slug') && (
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                {t('form.slug')}
-              </th>
-            )}
             {isVisible('image') && (
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
                 {t('form.image')}
+              </th>
+            )}
+            {isVisible('name') && (
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'rgb(var(--color-primary-600))' }}>
+                {t('form.name')}
               </th>
             )}
             {isVisible('description') && (

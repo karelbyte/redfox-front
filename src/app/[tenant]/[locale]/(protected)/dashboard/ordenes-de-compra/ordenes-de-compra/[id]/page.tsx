@@ -166,13 +166,13 @@ export default function PurchaseOrderDetailsPage() {
     setShowApproveModal(true);
   };
 
-  const handleConfirmApprove = async () => {
+  const handleConfirmApprove = async (sendEmail: boolean) => {
     if (!purchaseOrder) return;
 
     try {
-      await purchaseOrdersService.approvePurchaseOrder(purchaseOrderId);
+      await purchaseOrdersService.approvePurchaseOrder(purchaseOrderId, sendEmail);
       toastService.success(t('approveOrder.success'));
-      fetchPurchaseOrder(); // Refresh purchase order status
+      fetchPurchaseOrder();
       setShowApproveModal(false);
     } catch (error) {
       if (error instanceof Error) {
@@ -353,7 +353,7 @@ export default function PurchaseOrderDetailsPage() {
           <div className="space-y-3">
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.name')}:</span>
-              <p className="text-sm text-gray-900">{purchaseOrder.warehouse.name}</p>
+              <p className="text-sm text-gray-900">{purchaseOrder.warehouse?.name ?? '—'}</p>
             </div>
           </div>
         </div>

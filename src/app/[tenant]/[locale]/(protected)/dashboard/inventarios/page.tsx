@@ -19,6 +19,9 @@ import { useColumnPersistence } from "@/hooks/useColumnPersistence";
 import ColumnSelector from "@/components/Table/ColumnSelector";
 import HelpButton from "@/components/Help/HelpButton";
 import { inventoryHelp } from "@/components/Help/configs/inventory.help";
+import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
+import { Btn } from "@/components/atoms";
+import { InventoryPDFService } from "@/services/inventory-pdf.service";
 
 export default function InventariosPage() {
   const router = useRouter();
@@ -39,6 +42,8 @@ export default function InventariosPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
+  const [warehouseValue, setWarehouseValue] = useState(0);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const availableColumns = [
     { key: "product", label: t("table.product") },
@@ -99,6 +104,15 @@ export default function InventariosPage() {
       setTotalPages(response.meta?.totalPages || 1);
       setTotal(response.meta?.total || 0);
       setCurrentPage(page);
+
+      // Calcular valor total del almacén con todos los items
+      if (response.meta?.totalPages && response.meta.totalPages > 1) {
+        // Si hay más de una página, traer todos para calcular el valor
+        const allResponse = await inventoryService.getInventoryAll(selectedWarehouseId);
+        setWarehouseValue(InventoryPDFService.warehouseValue(allResponse.data));
+      } else {
+        setWarehouseValue(InventoryPDFService.warehouseValue(response.data));
+      }
     } catch {
       toastService.error(t('messages.errorLoadingInventory'));
       setInventoryItems([]);
@@ -160,6 +174,47 @@ export default function InventariosPage() {
     },
     [currentPage, fetchInventory, t],
   );
+
+  const handlePrintInventory = async () => {
+    if (!selectedWarehouseId || !selectedWarehouse) return;
+    try {
+      setIsPrinting(true);
+      const allResponse = await inventoryService.getInventoryAll(selectedWarehouseId);
+      const currency = selectedWarehouse.currency?.code || 'MXN';
+      const isEn = locale === 'en';
+
+      const translations = {
+        title: isEn ? 'Warehouse Inventory' : 'Inventario del Almacén',
+        warehouse: isEn ? 'Warehouse' : 'Almacén',
+        generatedOn: isEn ? 'Generated on' : 'Generado el',
+        page: isEn ? 'Page' : 'Página',
+        footer: isEn ? 'Automatically generated document — Nitro' : 'Documento generado automáticamente — Nitro',
+        product: isEn ? 'Product' : 'Producto',
+        sku: 'SKU',
+        brand: isEn ? 'Brand' : 'Marca',
+        category: isEn ? 'Category' : 'Categoría',
+        strategy: isEn ? 'Strategy' : 'Estrategia',
+        quantity: isEn ? 'Qty' : 'Cant.',
+        unit: isEn ? 'Unit' : 'Unidad',
+        unitPrice: isEn ? 'Unit Price' : 'Precio Unit.',
+        taxRate: isEn ? 'Tax' : 'Impuesto',
+        subtotal: 'Subtotal',
+        totalProducts: isEn ? 'Total products' : 'Total productos',
+        totalUnits: isEn ? 'Total units' : 'Total unidades',
+        warehouseValue: isEn ? 'Warehouse value' : 'Valor del almacén',
+        fifo: 'FIFO',
+        fefo: 'FEFO',
+        average: isEn ? 'Average' : 'Promedio',
+      };
+
+      const svc = new InventoryPDFService(locale);
+      svc.generate(allResponse.data, selectedWarehouse.name, currency, translations);
+    } catch {
+      toastService.error(t('messages.errorLoadingInventory'));
+    } finally {
+      setIsPrinting(false);
+    }
+  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -243,28 +298,56 @@ export default function InventariosPage() {
                   className="rounded-lg shadow p-6"
                   style={{ backgroundColor: `rgb(var(--color-surface))` }}
                 >
-                  <h2
-                    className="text-lg font-medium"
-                    style={{ color: `rgb(var(--color-text-primary))` }}
-                  >
-                    {t('warehouseInventory')}
-                  </h2>
-                  {total > 0 && (
-                    <p
-                      className="text-sm mt-1"
-                      style={{ color: `rgb(var(--color-text-secondary))` }}
-                    >
-                      {t('productsInInventory', { count: total })}
-                    </p>
-                  )}
-                  {total === 0 && !loadingInventory && (
-                    <p
-                      className="text-sm mt-1"
-                      style={{ color: `rgb(var(--color-text-secondary))` }}
-                    >
-                      {t('noProductsInInventory')}
-                    </p>
-                  )}
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h2
+                        className="text-lg font-medium"
+                        style={{ color: `rgb(var(--color-text-primary))` }}
+                      >
+                        {t('warehouseInventory')}
+                      </h2>
+                      {total > 0 && (
+                        <p
+                          className="text-sm mt-1"
+                          style={{ color: `rgb(var(--color-text-secondary))` }}
+                        >
+                          {t('productsInInventory', { count: total })}
+                        </p>
+                      )}
+                      {total === 0 && !loadingInventory && (
+                        <p
+                          className="text-sm mt-1"
+                          style={{ color: `rgb(var(--color-text-secondary))` }}
+                        >
+                          {t('noProductsInInventory')}
+                        </p>
+                      )}
+                      {warehouseValue > 0 && (
+                        <p className="text-sm mt-2 font-semibold" style={{ color: `rgb(var(--color-primary-700))` }}>
+                          {locale === 'en' ? 'Warehouse value' : 'Valor del almacén'}:{' '}
+                          <span>
+                            {new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'es-MX', {
+                              style: 'currency',
+                              currency: selectedWarehouse?.currency?.code || 'MXN',
+                            }).format(warehouseValue)}
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                    {total > 0 && (
+                      <Btn
+                        size="sm"
+                        variant="outline"
+                        onClick={handlePrintInventory}
+                        disabled={isPrinting}
+                        leftIcon={<DocumentArrowDownIcon className="h-4 w-4" />}
+                      >
+                        {isPrinting
+                          ? (locale === 'en' ? 'Generating...' : 'Generando...')
+                          : (locale === 'en' ? 'Print inventory' : 'Imprimir inventario')}
+                      </Btn>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

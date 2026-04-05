@@ -3,7 +3,7 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useTranslations } from 'next-intl';
 import { PurchaseOrder, PurchaseOrderFormData } from '@/types/purchase-order';
-import { providersService, warehousesService } from '@/services';
+import { providersService } from '@/services';
 import { toastService } from '@/services';
 import { Input, SearchSelect, TextArea } from '@/components/atoms';
 import { SurrogateInput } from '@/components/atoms/SurrogateInput';
@@ -25,8 +25,6 @@ interface FormErrors {
   code?: string;
   date?: string;
   provider_id?: string;
-  warehouse_id?: string;
-  document?: string;
   expected_delivery_date?: string;
 }
 
@@ -35,126 +33,55 @@ const PurchaseOrderForm = forwardRef<PurchaseOrderFormRef, PurchaseOrderFormProp
     const t = useTranslations('pages.purchaseOrders');
     const [formData, setFormData] = useState<PurchaseOrderFormData>({
       code: '',
-      date: '',
+      date: new Date().toISOString().split('T')[0],
       provider_id: '',
       warehouse_id: '',
       document: '',
       amount: 0,
       notes: '',
-      expected_delivery_date: '',
-      status: 'PENDING'
+      expected_delivery_date: new Date().toISOString().split('T')[0],
+      status: 'PENDING',
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
 
-    // Cargar datos de la orden a editar
     useEffect(() => {
       if (purchaseOrder) {
         setFormData({
           code: purchaseOrder.code,
           date: purchaseOrder.date,
           provider_id: purchaseOrder.provider.id,
-          warehouse_id: purchaseOrder.warehouse.id,
-          document: purchaseOrder.document,
+          warehouse_id: purchaseOrder.warehouse?.id || '',
+          document: purchaseOrder.document || '',
           amount: purchaseOrder.amount,
           notes: purchaseOrder.notes || '',
           expected_delivery_date: purchaseOrder.expected_delivery_date,
-          status: purchaseOrder.status
+          status: purchaseOrder.status,
         });
       }
     }, [purchaseOrder]);
 
-    // Función para buscar proveedores
     const searchProviders = async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
         const response = await providersService.getProviders();
         const providers = response.data || [];
-        
-        // Si no hay término de búsqueda, devolver todos los proveedores
         if (!term.trim()) {
-          return providers.map(provider => ({
-            id: provider.id,
-            label: provider.name,
-            subtitle: `Código: ${provider.code}`
-          }));
+          return providers.map(p => ({ id: p.id, label: p.name, subtitle: `Código: ${p.code}` }));
         }
-        
-        // Filtrar por término de búsqueda
         return providers
-          .filter(provider => 
-            provider.name.toLowerCase().includes(term.toLowerCase()) ||
-            provider.code.toLowerCase().includes(term.toLowerCase())
-          )
-          .map(provider => ({
-            id: provider.id,
-            label: provider.name,
-            subtitle: `Código: ${provider.code}`
-          }));
-      } catch (error) {
-        console.error('Error buscando proveedores:', error);
-        return [];
-      }
-    };
-
-    // Función para buscar almacenes
-    const searchWarehouses = async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
-      try {
-        const response = await warehousesService.getWarehouses({});
-        const warehouses = response.data || [];
-        
-        // Si no hay término de búsqueda, devolver todos los almacenes
-        if (!term.trim()) {
-          return warehouses.map(warehouse => ({
-            id: warehouse.id,
-            label: warehouse.name,
-            subtitle: `Código: ${warehouse.code}`
-          }));
-        }
-        
-        // Filtrar por término de búsqueda
-        return warehouses
-          .filter(warehouse => 
-            warehouse.name.toLowerCase().includes(term.toLowerCase()) ||
-            warehouse.code.toLowerCase().includes(term.toLowerCase())
-          )
-          .map(warehouse => ({
-            id: warehouse.id,
-            label: warehouse.name,
-            subtitle: `Código: ${warehouse.code}`
-          }));
-      } catch (error) {
-        console.error('Error buscando almacenes:', error);
+          .filter(p => p.name.toLowerCase().includes(term.toLowerCase()) || p.code.toLowerCase().includes(term.toLowerCase()))
+          .map(p => ({ id: p.id, label: p.name, subtitle: `Código: ${p.code}` }));
+      } catch {
         return [];
       }
     };
 
     const validateForm = (): boolean => {
       const newErrors: FormErrors = {};
-
-      if (!formData.code.trim()) {
-        newErrors.code = t('form.errors.codeRequired');
-      }
-
-      if (!formData.date) {
-        newErrors.date = t('form.errors.dateRequired');
-      }
-
-      if (!formData.provider_id) {
-        newErrors.provider_id = t('form.errors.providerRequired');
-      }
-
-      if (!formData.warehouse_id) {
-        newErrors.warehouse_id = t('form.errors.warehouseRequired');
-      }
-
-      if (!formData.document.trim()) {
-        newErrors.document = t('form.errors.documentRequired');
-      }
-
-      if (!formData.expected_delivery_date) {
-        newErrors.expected_delivery_date = t('form.errors.expectedDeliveryDateRequired');
-      }
-
+      if (!formData.code.trim()) newErrors.code = t('form.errors.codeRequired');
+      if (!formData.date) newErrors.date = t('form.errors.dateRequired');
+      if (!formData.provider_id) newErrors.provider_id = t('form.errors.providerRequired');
+      if (!formData.expected_delivery_date) newErrors.expected_delivery_date = t('form.errors.expectedDeliveryDateRequired');
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
       onValidChange?.(isValid);
@@ -162,139 +89,92 @@ const PurchaseOrderForm = forwardRef<PurchaseOrderFormRef, PurchaseOrderFormProp
     };
 
     useEffect(() => {
-      const timeoutId = setTimeout(() => {
-        validateForm();
-      }, 300); // Debounce de 300ms para evitar validaciones excesivas
-
-      return () => clearTimeout(timeoutId);
+      const id = setTimeout(() => validateForm(), 300);
+      return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async (): Promise<PurchaseOrderFormData | null> => {
-      if (!validateForm()) {
-        return null;
-      }
-
+      if (!validateForm()) return null;
       try {
         onSavingChange?.(true);
-        const result = {
+        return {
           ...formData,
           code: formData.code.trim(),
-          document: formData.document.trim(),
-          notes: formData.notes?.trim() || ''
+          document: formData.document?.trim() || '',
+          notes: formData.notes?.trim() || '',
+          amount: 0,
         };
-        return result;
       } catch (error) {
-        if (error instanceof Error) {
-          toastService.error(error.message);
-        } else {
-          toastService.error(t('messages.errorCreating'));
-        }
+        toastService.error(error instanceof Error ? error.message : t('messages.errorCreating'));
         return null;
       } finally {
         onSavingChange?.(false);
       }
     };
 
-    useImperativeHandle(ref, () => ({
-      submit: handleSubmit,
-      getFormData: () => formData,
-    }));
+    useImperativeHandle(ref, () => ({ submit: handleSubmit, getFormData: () => formData }));
 
     return (
       <form className="space-y-6">
-        <div className="space-y-6">
-          {/* Código */}
-          <div>
-            <SurrogateInput
-              label={t('form.code')}
-              placeholder={t('form.placeholders.code')}
-              value={formData.code}
-              onChange={(value) => setFormData(prev => ({ ...prev, code: value }))}
-              surrogateCode="purchase_order"
-              error={errors.code}
-              required
-            />
-          </div>
+        <SurrogateInput
+          label={t('form.code')}
+          placeholder={t('form.placeholders.code')}
+          value={formData.code}
+          onChange={(value) => setFormData(prev => ({ ...prev, code: value }))}
+          surrogateCode="purchase_order"
+          error={errors.code}
+          required
+        />
 
-          {/* Fecha */}
-          <div>
-            <Input
-              type="date"
-              label={t('form.date')}
-              value={formData.date}
-              onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-              error={errors.date}
-              required
-            />
-          </div>
+        <Input
+          type="date"
+          label={t('form.date')}
+          value={formData.date}
+          onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+          error={errors.date}
+          required
+        />
 
-          {/* Proveedor */}
-          <div>
-            <SearchSelect
-              value={formData.provider_id}
-              onChange={(providerId) => setFormData(prev => ({ ...prev, provider_id: providerId }))}
-              onSearch={searchProviders}
-              label={t('form.provider')}
-              placeholder={t('form.placeholders.provider')}
-              required
-              error={errors.provider_id}
-            />
-          </div>
+        <SearchSelect
+          value={formData.provider_id}
+          onChange={(id) => setFormData(prev => ({ ...prev, provider_id: id }))}
+          onSearch={searchProviders}
+          label={t('form.provider')}
+          placeholder={t('form.placeholders.provider')}
+          required
+          error={errors.provider_id}
+        />
 
-          {/* Almacén */}
-          <div>
-            <SearchSelect
-              value={formData.warehouse_id}
-              onChange={(warehouseId) => setFormData(prev => ({ ...prev, warehouse_id: warehouseId }))}
-              onSearch={searchWarehouses}
-              label={t('form.warehouse')}
-              placeholder={t('form.placeholders.warehouse')}
-              required
-              error={errors.warehouse_id}
-            />
-          </div>
+        <Input
+          type="date"
+          label={t('form.expectedDeliveryDate')}
+          value={formData.expected_delivery_date}
+          onChange={(e) => setFormData(prev => ({ ...prev, expected_delivery_date: e.target.value }))}
+          error={errors.expected_delivery_date}
+          required
+        />
 
-          {/* Documento */}
-          <div>
-            <Input
-              label={t('form.document')}
-              placeholder={t('form.placeholders.document')}
-              value={formData.document}
-              onChange={(e) => setFormData(prev => ({ ...prev, document: e.target.value }))}
-              error={errors.document}
-              required
-            />
-          </div>
+        {/* Documento — referencia del proveedor, opcional */}
+        <Input
+          label={`${t('form.document')} (${t('form.optional')})`}
+          placeholder={t('form.placeholders.document')}
+          value={formData.document || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, document: e.target.value }))}
+          helperText={t('form.documentHint')}
+        />
 
-          {/* Fecha de Entrega Esperada */}
-          <div>
-            <Input
-              type="date"
-              label={t('form.expectedDeliveryDate')}
-              value={formData.expected_delivery_date}
-              onChange={(e) => setFormData(prev => ({ ...prev, expected_delivery_date: e.target.value }))}
-              error={errors.expected_delivery_date}
-              required
-            />
-          </div>
-        </div>
-
-        {/* Notas */}
-        <div>
-          <TextArea
-            label={t('form.notes')}
-            placeholder={t('form.placeholders.notes')}
-            value={formData.notes || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-            rows={3}
-          />
-        </div>
+        <TextArea
+          label={t('form.notes')}
+          placeholder={t('form.placeholders.notes')}
+          value={formData.notes || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+          rows={3}
+        />
       </form>
     );
   }
 );
 
 PurchaseOrderForm.displayName = 'PurchaseOrderForm';
-
-export default PurchaseOrderForm; 
+export default PurchaseOrderForm;

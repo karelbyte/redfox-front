@@ -5,6 +5,7 @@ import { useLocaleUtils } from '@/hooks/useLocale';
 import { PurchaseOrderDetail } from '@/types/purchase-order';
 import { Btn } from '@/components/atoms';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { API_BASE_URL } from '@/lib/config';
 
 interface PurchaseOrderProductsTableProps {
   products: PurchaseOrderDetail[];
@@ -111,7 +112,7 @@ export default function PurchaseOrderProductsTable({
                     {product.product.images && product.product.images.length > 0 ? (
                       <img
                         className="h-10 w-10 rounded-full object-cover"
-                        src={product.product.images[0]}
+                        src={`${API_BASE_URL}${product.product.images[0]}`}
                         alt={product.product.name}
                       />
                     ) : (

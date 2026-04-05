@@ -590,25 +590,25 @@
       "noBrandsDesc": "Click on 'New Brand' to add one.",
       "noResultsDesc": "No results found",
       "form": {
-        "code": "Code",
+        "code": "Name",
         "name": "Name",
-        "description": "Description",
+        "description": "Description (optional)",
         "image": "Image",
         "status": "Status",
         "active": "Active",
         "placeholders": {
-          "code": "Ex: BRD001",
+          "code": "Ex: Samsung",
           "name": "Ex: Samsung",
           "description": "Ex: Leading technology brand"
         },
         "errors": {
-          "codeRequired": "Code is required",
+          "codeRequired": "Name is required",
           "nameRequired": "Name is required",
           "descriptionRequired": "Description is required"
         }
       },
       "table": {
-        "code": "Code",
+        "code": "Name",
         "name": "Name",
         "description": "Description",
         "status": "Status",
@@ -1050,6 +1050,8 @@
         "importFromPackError": "Could not import from pack",
         "packSyncFailedCreate": "Client saved in Redfox. Attention: it was not registered in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
         "packSyncFailedUpdate": "Client saved in Redfox. Attention: it was not updated in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
+        "syncSuccess": "Client successfully re-synced with the PAC",
+        "syncError": "Error re-syncing client with PAC: {error}",
         "confirmDelete": "Are you sure you want to delete the client \"{name}\"? This action cannot be undone."
       },
       "actions": {
@@ -1567,6 +1569,9 @@
           "price": "Price",
           "batchNumber": "Batch Number",
           "expirationDate": "Expiration Date",
+          "recommended": "recommended",
+          "optional": "optional",
+          "priceHint": "Product base price: {price}",
           "placeholders": {
             "quantity": "Enter quantity",
             "price": "Enter price",
@@ -1577,7 +1582,13 @@
             "quantityRequired": "Quantity is required",
             "quantityPositive": "Quantity must be greater than 0",
             "priceRequired": "Price is required",
-            "pricePositive": "Price must be greater than 0"
+            "pricePositive": "Price must be greater than 0",
+            "expirationDateRequired": "Expiration date is required for FEFO products"
+          },
+          "strategyHints": {
+            "fefo": "Expiration date required. The system deducts lots that expire first.",
+            "fifo": "The system deducts oldest entries first. Batch number is recommended for traceability.",
+            "average": "Price is calculated as weighted average. Lot numbers and expiration dates are not used."
           }
         },
         "messages": {
@@ -1716,6 +1727,7 @@
         "edit": "Edit",
         "view": "View",
         "delete": "Delete",
+        "cancel": "Cancel",
         "convertToSale": "Convert to Sale",
         "downloadPDF": "Download PDF",
         "addProduct": "Add Product",
@@ -1870,7 +1882,8 @@
         },
         "placeholders": {
           "code": "Ex: SAL-2024-001",
-          "destination": "Ex: Central Store - Main St 123"
+          "destination": "Ex: Central Store - Main St 123",
+          "selectClient": "Select client"
         },
         "errors": {
           "codeRequired": "Code is required",
@@ -1910,6 +1923,8 @@
         "createNewClient": "Create new client",
         "generatePDF": "Generate PDF",
         "generatingPDF": "Generating PDF...",
+        "create": "Create Sale",
+        "newClient": "New Client",
         "invoice": "Invoice",
         "invoiceAndStamp": "Invoice & Stamp",
         "printTicket": "Print Ticket",
@@ -3162,7 +3177,10 @@
         "providerId": "Provider",
         "warehouse": "Warehouse",
         "warehouseId": "Warehouse",
+        "warehouseHint": "Optional. The destination warehouse can be defined per product when adding details.",
+        "optional": "optional",
         "document": "Document",
+        "documentHint": "Optional. Reference number, quote or supplier's folio.",
         "amount": "Amount",
         "notes": "Notes",
         "expectedDeliveryDate": "Expected Delivery Date",
@@ -3225,7 +3243,11 @@
       },
       "approveModal": {
         "title": "Approve {item}",
-        "message": "Are you sure you want to approve {item} \"{name}\"? This action cannot be undone."
+        "message": "Are you sure you want to approve {item} \"{name}\"? This action cannot be undone.",
+        "emailSection": "Notify provider",
+        "noEmailConfig": "No email server is configured. Set one up in Settings > Email to send notifications.",
+        "noProviderEmail": "Provider \"{name}\" has no email address on file.",
+        "sendEmailToProvider": "Send purchase order by email to provider ({email})"
       },
       "rejectModal": {
         "title": "Reject {item}",
@@ -3286,6 +3308,8 @@
           "quantity": "Quantity",
           "price": "Price",
           "selectProduct": "Select product",
+          "warehouseDestination": "Destination warehouse",
+          "warehouseDestinationPlaceholder": "No warehouse assigned (optional)",
           "placeholders": {
             "quantity": "Ex: 10",
             "price": "Ex: 100.00"

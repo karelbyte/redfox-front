@@ -1,8 +1,8 @@
 'use client'
 
 import { useRef, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
+import { useRouter, useParams } from 'next/navigation';
 import { toastService } from '@/services/toast.service';
 import QuotationForm, { QuotationFormRef } from '@/components/Quotation/QuotationForm';
 import { Btn } from '@/components/atoms';
@@ -12,17 +12,24 @@ const CreateQuotationPage = () => {
   const t = useTranslations('pages.quotations');
   const tCommon = useTranslations('common');
   const router = useRouter();
+  const params = useParams();
+  const locale = useLocale();
+  const tenant = params?.tenant as string;
   const quotationFormRef = useRef<QuotationFormRef>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
 
   const handleBack = () => {
-    router.push('/dashboard/cotizaciones/lista-de-cotizaciones');
+    router.push(`/${tenant}/${locale}/dashboard/cotizaciones/lista-de-cotizaciones`);
   };
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = (id?: string) => {
     toastService.success(t('messages.createSuccess'));
-    router.push('/dashboard/cotizaciones/lista-de-cotizaciones');
+    if (id) {
+      router.push(`/${tenant}/${locale}/dashboard/cotizaciones/${id}`);
+    } else {
+      router.push(`/${tenant}/${locale}/dashboard/cotizaciones/lista-de-cotizaciones`);
+    }
   };
 
   const handleSave = () => {
@@ -64,6 +71,7 @@ const CreateQuotationPage = () => {
           onSuccess={handleFormSuccess}
           onSavingChange={setIsSaving}
           onValidChange={setIsFormValid}
+          layout="page"
         />
       </div>
     </div>

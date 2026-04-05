@@ -59,8 +59,8 @@ class PurchaseOrdersService {
     return response;
   }
 
-  async approvePurchaseOrder(id: string): Promise<PurchaseOrderApprovalResponse> {
-    const response = await api.post<PurchaseOrderApprovalResponse>(`/purchase-orders/${id}/approve`, {});
+  async approvePurchaseOrder(id: string, sendEmail = false): Promise<PurchaseOrderApprovalResponse> {
+    const response = await api.post<PurchaseOrderApprovalResponse>(`/purchase-orders/${id}/approve`, { sendEmail });
     return response;
   }
 

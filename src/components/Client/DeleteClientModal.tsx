@@ -21,22 +21,22 @@ const DeleteClientModal = ({
   const t = useTranslations('pages.clients');
   const tCommon = useTranslations('common');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleDelete = async () => {
     if (!client) return;
 
     try {
       setIsDeleting(true);
+      setErrorMsg(null);
       onDeletingChange(true);
       await clientsService.deleteClient(client.id);
       toastService.success(t('messages.clientDeleted'));
       onSuccess();
     } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('messages.errorDeleting'));
-      }
+      const msg = error instanceof Error ? error.message : t('messages.errorDeleting');
+      setErrorMsg(msg);
+      toastService.error(msg);
     } finally {
       setIsDeleting(false);
       onDeletingChange(false);
@@ -81,13 +81,19 @@ const DeleteClientModal = ({
               </div>
             </div>
           </div>
-          <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+          <div className="mt-5 sm:mt-4">
+            {errorMsg && (
+              <div className="mb-3 px-3 py-2 rounded-md bg-red-50 border border-red-200 text-sm text-red-700">
+                {errorMsg}
+              </div>
+            )}
+            <div className="flex flex-row-reverse gap-2">
             <Btn
               variant="danger"
               onClick={handleDelete}
               disabled={isDeleting}
               loading={isDeleting}
-              className="inline-flex w-full justify-center text-sm shadow-sm sm:ml-3 sm:w-auto"
+              className="inline-flex w-full justify-center text-sm shadow-sm sm:w-auto"
             >
               {tCommon('actions.delete')}
             </Btn>
@@ -95,10 +101,11 @@ const DeleteClientModal = ({
               variant="outline"
               onClick={onClose}
               disabled={isDeleting}
-              className="mt-3 inline-flex w-full justify-center text-sm sm:mt-0 sm:w-auto"
+              className="inline-flex w-full justify-center text-sm sm:w-auto"
             >
               {tCommon('actions.cancel')}
             </Btn>
+            </div>
           </div>
         </div>
       </div>

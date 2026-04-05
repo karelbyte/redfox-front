@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { Notification, NotificationFilters } from '@/types/notification';
 import { notificationService } from '@/services/notifications.service';
 import { useAuth } from '@/context/AuthContext';
+import { useToastNotificationStore, toastToNotification } from '@/stores/toast-notification.store';
 
 interface NotificationContextType {
   notifications: Notification[];
@@ -75,7 +76,17 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     }
   }, [user]);
 
+  const isLocalNotification = (id: string) => id.startsWith('toast-');
+
   const markAsRead = useCallback(async (id: string) => {
+    // Notificaciones locales (toast) — solo actualizar estado
+    if (isLocalNotification(id)) {
+      setNotifications(prev =>
+        prev.map(n => n.id === id ? { ...n, isRead: true } : n)
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+      return;
+    }
     try {
       await notificationService.markAsRead(id);
       setNotifications(prev => 
@@ -94,11 +105,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   const markAllAsRead = useCallback(async () => {
     try {
-      await notificationService.markAllAsRead();
-      setNotifications(prev => 
-        prev.map(notification => ({ ...notification, isRead: true }))
-      );
+      // Marcar locales en estado
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       setUnreadCount(0);
+      // Marcar en servidor solo las no-locales
+      await notificationService.markAllAsRead();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error marking all notifications as read');
       console.error('Error marking all notifications as read:', err);
@@ -106,6 +117,15 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   }, []);
 
   const deleteNotification = useCallback(async (id: string) => {
+    // Notificaciones locales (toast) — solo eliminar del estado
+    if (isLocalNotification(id)) {
+      const notification = notifications.find(n => n.id === id);
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      if (notification && !notification.isRead) {
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+      return;
+    }
     try {
       await notificationService.deleteNotification(id);
       const notification = notifications.find(n => n.id === id);
@@ -121,8 +141,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   const deleteAllRead = useCallback(async () => {
     try {
-      await notificationService.deleteAllRead();
+      // Eliminar locales del estado directamente
       setNotifications(prev => prev.filter(n => !n.isRead));
+      // Eliminar del servidor solo las no-locales
+      await notificationService.deleteAllRead();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error deleting read notifications');
       console.error('Error deleting read notifications:', err);
@@ -130,10 +152,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   }, []);
 
   const addNotification = useCallback((notification: Notification) => {
-    setNotifications(prev => [notification, ...prev]);
-    if (!notification.isRead) {
-      setUnreadCount(prev => prev + 1);
-    }
+    setNotifications(prev => {
+      if (prev.some(n => n.id === notification.id)) return prev;
+      if (!notification.isRead) setUnreadCount(c => c + 1);
+      return [notification, ...prev];
+    });
   }, []);
 
   // Initial load and real-time subscription
@@ -143,14 +166,24 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     fetchNotifications();
     refreshUnreadCount();
 
-    // Subscribe to real-time notifications
+    // Subscribe to real-time notifications — pasamos los IDs ya conocidos para evitar duplicados
     const unsubscribe = notificationService.subscribeToNotifications(
       user.id,
-      addNotification
+      addNotification,
     );
 
     return unsubscribe;
-  }, [user, fetchNotifications, refreshUnreadCount, addNotification]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Consume toast notifications from the bridge store and add them to the bell
+  const consume = useToastNotificationStore((s) => s.consume);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const items = consume();
+      items.forEach((item) => addNotification(toastToNotification(item)));
+    }, 300);
+    return () => clearInterval(interval);
+  }, [consume, addNotification]);
 
   const value: NotificationContextType = {
     notifications,

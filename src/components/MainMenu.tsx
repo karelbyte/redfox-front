@@ -11,6 +11,8 @@ import { MagnifyingGlassIcon, ChatBubbleLeftEllipsisIcon } from "@heroicons/reac
 import { useTranslations, useLocale } from "next-intl";
 import { TrialBanner } from "@/components/Subscription/TrialBanner";
 import Tooltip from "@/components/atoms/Tooltip";
+import { useFavorites } from "@/hooks/useFavorites";
+import Link from "next/link";
 
 export function MainMenu() {
   const { currentTheme } = useTheme();
@@ -18,6 +20,7 @@ export function MainMenu() {
   const [supportOpen, setSupportOpen] = useState(false);
   const t = useTranslations('globalSearch');
   const locale = useLocale();
+  const { favorites } = useFavorites();
   const supportTitle = locale === 'en' ? 'Contact Support' : 'Contactar Soporte';
   const searchTitle = `${t('searchPlaceholder')} (⌘K)`;
 
@@ -46,8 +49,29 @@ export function MainMenu() {
               </div>
             </div>
 
-            <div className="flex items-center flex-1 justify-center px-4">
-              <TrialBanner />
+            <div className="flex items-center flex-1 justify-center px-4 gap-1">
+              {favorites.length > 0 ? (
+                favorites.map((fav) => {
+                  const initials = fav.name
+                    .split(' ')
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map((w: string) => w.charAt(0).toUpperCase())
+                    .join('');
+                  return (
+                    <Tooltip key={fav.path} content={fav.name} placement="bottom">
+                      <Link
+                        href={fav.path}
+                        className="flex items-center justify-center w-8 h-8 rounded-md transition-colors hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-gray-200 text-xs font-semibold flex-shrink-0"
+                      >
+                        {initials}
+                      </Link>
+                    </Tooltip>
+                  );
+                })
+              ) : (
+                <TrialBanner />
+              )}
             </div>
 
             <div className="flex items-center space-x-2">

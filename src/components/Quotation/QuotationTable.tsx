@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocaleUtils } from '@/hooks/useLocale';
+import { useRouter, useParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { Quotation, QuotationStatus } from '@/types/quotation';
 import { toastService } from '@/services/toast.service';
 import { quotationService } from '@/services/quotations.service';
@@ -11,7 +13,6 @@ import ActionsMenu from '@/components/atoms/ActionsMenu';
 import { QuotationActionsMenu } from './QuotationActionsMenu';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
 import { QuotationPDFService } from '@/services/quotation-pdf.service';
-import ConvertToSaleModal from './ConvertToSaleModal';
 
 interface QuotationTableProps {
   quotations: Quotation[];
@@ -26,9 +27,11 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
   const t = useTranslations('pages.quotations');
   const tCommon = useTranslations('common');
   const { formatDate, formatCurrency } = useLocaleUtils();
+  const router = useRouter();
+  const params = useParams();
+  const locale = useLocale();
   const [loadingActions, setLoadingActions] = useState<{ [key: string]: boolean }>({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [convertModalOpen, setConvertModalOpen] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState<Quotation | null>(null);
 
   const handleGeneratePDF = (quotation: Quotation) => {
@@ -62,8 +65,8 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
   };
 
   const handleConvertClick = (quotation: Quotation) => {
-    setSelectedQuotation(quotation);
-    setConvertModalOpen(true);
+    const tenant = params?.tenant as string;
+    router.push(`/${tenant}/${locale}/dashboard/cotizaciones/${quotation.id}/convertir-a-venta`);
   };
 
   const handleDeleteConfirm = async () => {
@@ -84,27 +87,6 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
       }
     } finally {
       setLoadingActions(prev => ({ ...prev, [`delete-${selectedQuotation.id}`]: false }));
-    }
-  };
-
-  const handleConvertConfirm = async (warehouseId: string) => {
-    if (!selectedQuotation) return;
-
-    try {
-      setLoadingActions(prev => ({ ...prev, [`convert-${selectedQuotation.id}`]: true }));
-      const result = await quotationService.convertToSale(selectedQuotation.id, warehouseId);
-      toastService.success(result.message);
-      setConvertModalOpen(false);
-      setSelectedQuotation(null);
-      onRefresh();
-    } catch (error) {
-      if (error instanceof Error) {
-        toastService.error(error.message);
-      } else {
-        toastService.error(t('messages.errorConverting'));
-      }
-    } finally {
-      setLoadingActions(prev => ({ ...prev, [`convert-${selectedQuotation.id}`]: false }));
     }
   };
 
@@ -246,18 +228,6 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
       confirmText={tCommon('actions.delete')}
       cancelText={tCommon('actions.cancel')}
       confirmButtonStyle={{ backgroundColor: '#dc2626' }}
-    />
-
-    {/* Convert to Sale Modal */}
-    <ConvertToSaleModal
-      isOpen={convertModalOpen}
-      quotationCode={selectedQuotation?.code || ''}
-      onClose={() => {
-        setConvertModalOpen(false);
-        setSelectedQuotation(null);
-      }}
-      onConfirm={handleConvertConfirm}
-      isLoading={loadingActions[`convert-${selectedQuotation?.id}`] || false}
     />
   </>
   );

@@ -77,11 +77,6 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
         isValid = false;
       }
 
-      if (!formData.slug.trim()) {
-        newErrors.slug = t('form.errors.slugRequired');
-        isValid = false;
-      }
-
       setErrors(newErrors);
       onValidChange?.(isValid);
       return isValid;
@@ -149,17 +144,6 @@ const CategoryForm = forwardRef<CategoryFormRef, CategoryFormProps>(
           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
           placeholder={t('form.placeholders.name')}
           error={errors.name}
-        />
-
-        <Input
-          type="text"
-          id="slug"
-          label={t('form.slug')}
-          required
-          value={formData.slug}
-          onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-          placeholder={t('form.placeholders.slug')}
-          error={errors.slug}
         />
 
         <Input

@@ -65,12 +65,7 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
       let isValid = true;
 
       if (!formData.code.trim()) {
-        newErrors.code = t('form.errors.codeRequired');
-        isValid = false;
-      }
-
-      if (!formData.description.trim()) {
-        newErrors.description = t('form.errors.descriptionRequired');
+        newErrors.code = t('form.errors.nameRequired');
         isValid = false;
       }
 
@@ -135,11 +130,11 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
         <Input
           type="text"
           id="code"
-          label={t('form.code')}
+          label={t('form.name')}
           required
           value={formData.code}
           onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
-          placeholder={t('form.placeholders.code')}
+          placeholder={t('form.placeholders.name')}
           error={errors.code}
         />
 
@@ -147,7 +142,6 @@ const BrandForm = forwardRef<BrandFormRef, BrandFormProps>(
           type="text"
           id="description"
           label={t('form.description')}
-          required
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           placeholder={t('form.placeholders.description')}

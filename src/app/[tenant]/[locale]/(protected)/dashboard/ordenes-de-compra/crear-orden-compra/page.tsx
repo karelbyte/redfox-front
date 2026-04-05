@@ -10,7 +10,7 @@ import { warehousesService } from '@/services/warehouses.service';
 import { toastService } from '@/services/toast.service';
 import { Provider } from '@/types/provider';
 import { Warehouse } from '@/types/warehouse';
-import { Btn, Input, Select, SelectWithAdd } from '@/components/atoms';
+import { Btn, Input, Select, SelectWithAdd, TextArea } from '@/components/atoms';
 import { SurrogateInput } from '@/components/atoms/SurrogateInput';
 import Loading from '@/components/Loading/Loading';
 import Drawer from '@/components/Drawer/Drawer';
@@ -26,6 +26,7 @@ interface FormState {
   warehouse_id: string;
   document: string;
   amount: number;
+  notes: string;
   expected_delivery_date: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED' | 'COMPLETED';
 }
@@ -42,15 +43,17 @@ export default function CreatePurchaseOrderPage() {
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [formData, setFormData] = useState<FormState>({
     code: '',
-    date: new Date().toISOString().split('T')[0], // Fecha actual
+    date: new Date().toISOString().split('T')[0],
     provider_id: '',
     warehouse_id: '',
     document: '',
     amount: 0,
-    expected_delivery_date: new Date().toISOString().split('T')[0], // Fecha actual
+    notes: '',
+    expected_delivery_date: new Date().toISOString().split('T')[0],
     status: 'PENDING'
   });
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+  const [isFormValid, setIsFormValid] = useState(false);
 
   // Estados para el drawer de proveedores
   const [showProviderDrawer, setShowProviderDrawer] = useState(false);
@@ -107,24 +110,18 @@ export default function CreatePurchaseOrderPage() {
       newErrors.provider_id = t('form.errors.providerRequired');
     }
 
-    if (!formData.warehouse_id) {
-      newErrors.warehouse_id = t('form.errors.warehouseRequired');
-    }
+    // warehouse_id es opcional — el almacén se define por producto al agregar detalles
 
-    if (!formData.document.trim()) {
-      newErrors.document = t('form.errors.documentRequired');
-    }
-
-    if (!formData.amount || formData.amount <= 0) {
-      newErrors.amount = t('form.errors.amountRequired');
-    }
+    // document es opcional — referencia del proveedor
 
     if (!formData.expected_delivery_date) {
       newErrors.expected_delivery_date = t('form.errors.expectedDeliveryDateRequired');
     }
 
+    const valid = Object.keys(newErrors).length === 0;
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setIsFormValid(valid);
+    return valid;
   };
 
   const handleInputChange = (field: keyof FormState, value: string) => {
@@ -147,9 +144,10 @@ export default function CreatePurchaseOrderPage() {
         code: formData.code.trim(),
         date: formData.date,
         provider_id: formData.provider_id,
-        warehouse_id: formData.warehouse_id,
-        document: formData.document.trim(),
-        amount: formData.amount,
+        ...(formData.warehouse_id ? { warehouse_id: formData.warehouse_id } : {}),
+        ...(formData.document.trim() ? { document: formData.document.trim() } : {}),
+        amount: 0,
+        notes: formData.notes?.trim() || '',
         expected_delivery_date: formData.expected_delivery_date,
         status: formData.status
       });
@@ -234,7 +232,7 @@ export default function CreatePurchaseOrderPage() {
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Código */}
+              {/* Fila 1: Código + Fecha */}
               <div>
                 <SurrogateInput
                   label={t('form.code')}
@@ -247,7 +245,6 @@ export default function CreatePurchaseOrderPage() {
                 />
               </div>
 
-              {/* Fecha */}
               <div>
                 <Input
                   type="date"
@@ -259,8 +256,8 @@ export default function CreatePurchaseOrderPage() {
                 />
               </div>
 
-              {/* Proveedor */}
-              <div>
+              {/* Fila 2: Proveedor a todo el ancho */}
+              <div className="md:col-span-2">
                 <SelectWithAdd
                   id="provider-select"
                   label={t('form.provider')}
@@ -279,50 +276,18 @@ export default function CreatePurchaseOrderPage() {
                 />
               </div>
 
-              {/* Almacén */}
+              {/* Fila 3: Documento + Fecha de entrega */}
               <div>
-                <Select
-                  label={t('form.warehouse')}
-                  placeholder={t('form.placeholders.warehouse')}
-                  value={formData.warehouse_id}
-                  onChange={(e) => handleInputChange('warehouse_id', e.target.value)}
-                  error={errors.warehouse_id}
-                  required
-                  options={warehouses.map((warehouse) => ({
-                    value: warehouse.id,
-                    label: `${warehouse.code} - ${warehouse.name}`
-                  }))}
-                />
-              </div>
-
-              {/* Documento */}
-              <div className="md:col-span-2">
                 <Input
-                  label={t('form.document')}
+                  label={`${t('form.document')} (${t('form.optional')})`}
                   placeholder={t('form.placeholders.document')}
                   value={formData.document}
                   onChange={(e) => handleInputChange('document', e.target.value)}
                   error={errors.document}
-                  required
+                  helperText={t('form.documentHint')}
                 />
               </div>
 
-              {/* Monto */}
-              <div>
-                <Input
-                  type="number"
-                  label={t('form.amount')}
-                  placeholder={t('form.placeholders.amount')}
-                  value={formData.amount.toString()}
-                  onChange={(e) => handleInputChange('amount', e.target.value)}
-                  error={errors.amount}
-                  required
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-
-              {/* Fecha de entrega esperada */}
               <div>
                 <Input
                   type="date"
@@ -333,6 +298,17 @@ export default function CreatePurchaseOrderPage() {
                   required
                 />
               </div>
+
+              {/* Notas — a todo el ancho, al final */}
+              <div className="md:col-span-2">
+                <TextArea
+                  label={t('form.notes')}
+                  placeholder={t('form.placeholders.notes')}
+                  value={formData.notes || ''}
+                  onChange={(e) => handleInputChange('notes', e.target.value)}
+                  rows={3}
+                />
+              </div>
             </div>
           </div>
 
@@ -341,7 +317,7 @@ export default function CreatePurchaseOrderPage() {
             <Btn
               type="submit"
               loading={loading}
-              disabled={loading}
+              disabled={loading || !isFormValid}
             >
               {loading ? t('actions.saving') : t('actions.create')}
             </Btn>
