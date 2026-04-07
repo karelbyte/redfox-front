@@ -1053,7 +1053,9 @@
         "packSyncFailedUpdate": "Client saved in Redfox. Attention: it was not updated in the PAC. You will not be able to invoice until this is fixed. Detail: {detail}",
         "syncSuccess": "Client successfully re-synced with the PAC",
         "syncError": "Error re-syncing client with PAC: {error}",
-        "confirmDelete": "Are you sure you want to delete the client \"{name}\"? This action cannot be undone."
+        "confirmDelete": "Are you sure you want to delete the client \"{name}\"? This action cannot be undone.",
+        "deleteSuccess": "Clients deleted successfully",
+        "errorDelete": "Error deleting clients"
       },
       "actions": {
         "edit": "Edit",

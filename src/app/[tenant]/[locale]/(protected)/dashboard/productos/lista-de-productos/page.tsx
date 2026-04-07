@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useRouter, useParams } from "next/navigation";
 import { Product } from "@/types/product";
 import { productService } from "@/services/products.service";
 import { ProductPDFService } from "@/services/product-pdf.service";
@@ -34,6 +35,8 @@ export default function ListProductsPage() {
   const tPdf = useTranslations("pages.products.pdf");
   const locale = useLocale();
   const { can } = usePermissions();
+  const router = useRouter();
+  const params = useParams();
   const { search_product, setSearchProduct } = useSearchStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -284,6 +287,13 @@ export default function ListProductsPage() {
               {isImporting ? t("importingFromPack") : t("importFromPack")}
             </Btn>
             <Btn
+              variant="outline"
+              onClick={() => router.push(`/${params?.tenant}/${locale}/dashboard/productos/importar-productos`)}
+              leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
+            >
+              {locale === 'zh' ? '导入 CSV' : locale === 'en' ? 'Import CSV' : 'Importar CSV'}
+            </Btn>
+            <Btn
               onClick={() => {
                 setEditingProduct(null);
                 setShowDrawer(true);
@@ -448,6 +458,7 @@ export default function ListProductsPage() {
           onClose={clearSelection}
         />
       )}
+
     </div>
   );
 }

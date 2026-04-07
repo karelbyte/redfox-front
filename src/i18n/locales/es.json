@@ -1042,7 +1042,9 @@
         "packSyncFailedUpdate": "Cliente guardado en Redfox. Atención: no se actualizó en el PAC. No podrá facturar hasta corregirlo. Detalle: {detail}",
         "syncSuccess": "Cliente resincronizado con el PAC correctamente",
         "syncError": "Error al resincronizar el cliente con el PAC: {error}",
-        "confirmDelete": "¿Estás seguro de que deseas eliminar el cliente \"{name}\"? Esta acción no se puede deshacer."
+        "confirmDelete": "¿Estás seguro de que deseas eliminar el cliente \"{name}\"? Esta acción no se puede deshacer.",
+        "deleteSuccess": "Clientes eliminados correctamente",
+        "errorDelete": "Error al eliminar los clientes"
       },
       "actions": {
         "edit": "Editar",

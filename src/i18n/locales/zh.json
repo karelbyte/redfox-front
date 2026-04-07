@@ -1053,7 +1053,9 @@
         "packSyncFailedUpdate": "客户已保存到 Redfox。注意：未在 PAC 更新。在修复此问题之前，您将无法开票。详情：{detail}",
         "syncSuccess": "客户已成功与 PAC 重新同步",
         "syncError": "与 PAC 重新同步客户出错：{error}",
-        "confirmDelete": "确定要删除客户「{name}」吗？此操作无法撤销。"
+        "confirmDelete": "确定要删除客户「{name}」吗？此操作无法撤销。",
+        "deleteSuccess": "客户删除成功",
+        "errorDelete": "删除客户出错"
       },
       "actions": {
         "edit": "编辑",

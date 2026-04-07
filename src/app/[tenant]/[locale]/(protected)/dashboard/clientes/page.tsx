@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, useParams } from "next/navigation";
 import { Client } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
@@ -31,6 +32,10 @@ export default function ClientsPage() {
   const t = useTranslations("pages.clients");
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const locale = useLocale();
+  const router = useRouter();
+  const params = useParams();
+  const tenant = params?.tenant as string;
   const { search_client, setSearchClient, clearAllSearches } = useSearchStore();
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
@@ -240,6 +245,15 @@ export default function ClientsPage() {
               leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
             >
               {isImporting ? t("importingFromPack") : t("importFromPack")}
+            </Btn>
+          )}
+          {can(["client_create"]) && (
+            <Btn
+              variant="outline"
+              onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/importar-clientes`)}
+              leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
+            >
+              {locale === 'zh' ? '导入 CSV' : locale === 'en' ? 'Import CSV' : 'Importar CSV'}
             </Btn>
           )}
           {can(["client_create"]) && (
