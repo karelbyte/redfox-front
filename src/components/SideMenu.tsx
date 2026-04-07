@@ -1244,7 +1244,7 @@ export function SideMenu() {
 
             const itemClassName = collapsed
               ? "w-full flex items-center justify-center px-2 py-3 rounded-lg transition-colors"
-              : "w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors";
+              : "group w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors";
             const itemStyle = {
               backgroundColor: isActive ? `rgb(var(--color-primary-50))` : "transparent",
               color: isActive ? `rgb(var(--color-primary-600))` : "#4b5563",
@@ -1423,16 +1423,6 @@ export function SideMenu() {
                   >
                     {iconContent}
                     <span className="flex-1 text-left">{item.name}</span>
-                    <button
-                      type="button"
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle({ path: item.path, name: item.name, translationKey: item.translationKey }); }}
-                      className="p-0.5 rounded mr-1 flex-shrink-0"
-                      title={isFavorite(item.path) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-                    >
-                      {isFavorite(item.path)
-                        ? <StarSolid className="h-3.5 w-3.5 text-yellow-400" />
-                        : <StarIcon className="h-3.5 w-3.5 text-gray-300 hover:text-yellow-400" />}
-                    </button>
                     <svg
                       className={`w-4 h-4 flex-shrink-0 transform transition-transform ${isExpanded ? "rotate-180" : ""}`}
                       fill="none"

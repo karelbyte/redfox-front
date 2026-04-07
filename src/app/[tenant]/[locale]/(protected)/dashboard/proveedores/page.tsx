@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from 'next-intl';
+import { useRouter, useParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
 import { useSearchStore } from "@/stores/search.store";
@@ -9,7 +11,7 @@ import { Provider } from "@/types/provider";
 import ProviderForm from "@/components/Provider/ProviderForm";
 import ProviderTable from "@/components/Provider/ProviderTable";
 import DeleteProviderModal from "@/components/Provider/DeleteProviderModal";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ProviderFormRef } from "@/components/Provider/ProviderForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
@@ -29,6 +31,10 @@ export default function ProvidersPage() {
   const t = useTranslations('pages.providers');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  const router = useRouter();
+  const params = useParams();
+  const locale = useLocale();
+  const tenant = params?.tenant as string;
   const { search_provider, setSearchProvider } = useSearchStore();
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
@@ -189,15 +195,24 @@ export default function ProvidersPage() {
         <div className="flex items-center gap-2">
 
           {can(["provider_create"]) && (
-            <Btn
-              onClick={() => {
-                setSelectedProvider(null);
-                setShowDrawer(true);
-              }}
-              leftIcon={<PlusIcon className="h-5 w-5" />}
-            >
-              {t('newProvider')}
-            </Btn>
+            <>
+              <Btn
+                variant="outline"
+                onClick={() => router.push(`/${tenant}/${locale}/dashboard/proveedores/importar-proveedores`)}
+                leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
+              >
+                {locale === 'zh' ? '导入 CSV' : locale === 'en' ? 'Import CSV' : 'Importar CSV'}
+              </Btn>
+              <Btn
+                onClick={() => {
+                  setSelectedProvider(null);
+                  setShowDrawer(true);
+                }}
+                leftIcon={<PlusIcon className="h-5 w-5" />}
+              >
+                {t('newProvider')}
+              </Btn>
+            </>
           )}
         </div>
       </div>
