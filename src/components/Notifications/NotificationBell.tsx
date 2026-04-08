@@ -8,7 +8,7 @@ import { useLocale } from 'next-intl';
 import NotificationDropdown from './NotificationDropdown';
 import Tooltip from '@/components/atoms/Tooltip';
 
-const NotificationBell: React.FC = () => {
+const NotificationBell: React.FC<{ dataTour?: string }> = ({ dataTour }) => {
   const { unreadCount, notifications } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
@@ -52,6 +52,7 @@ const NotificationBell: React.FC = () => {
       <Tooltip content={tooltipText} placement="bottom">
         <button
           ref={bellRef}
+          data-tour={dataTour}
           onClick={() => setIsOpen(!isOpen)}
           className="relative p-2 rounded-lg transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2"
           style={{ '--tw-ring-color': `rgb(var(--color-primary-500))` } as React.CSSProperties}

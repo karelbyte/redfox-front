@@ -96,13 +96,7 @@ export default function ActivatePage() {
             className="min-h-screen flex items-center justify-center"
             style={{ backgroundColor: `rgb(var(--color-secondary-50))` }}
         >
-            <div
-                className="max-w-md w-full p-8 rounded-xl shadow-lg text-center"
-                style={{
-                    backgroundColor: "white",
-                    border: `1px solid rgb(var(--color-secondary-200))`,
-                }}
-            >
+            <div className="max-w-md w-full p-8 text-center">
                 {status === 'loading' && (
                     <div className="flex flex-col items-center space-y-4">
                         <div className="flex-shrink-0 flex items-center self-center mb-4">

@@ -1465,6 +1465,7 @@ export function SideMenu() {
                       <Link
                         key={subItem.path}
                         href={subItem.path}
+                        {...(subItem.translationKey === 'pos' ? { 'data-tour': 'pos' } : {})}
                         className="block px-4 py-2 text-sm font-medium rounded-lg transition-colors"
                         style={{
                           backgroundColor:

@@ -7,14 +7,13 @@ import NotificationBell from "@/components/Notifications/NotificationBell";
 import GlobalSearchModal from "@/components/GlobalSearch/GlobalSearchModal";
 import SupportModal from "@/components/Support/SupportModal";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
-import { MagnifyingGlassIcon, ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, ChatBubbleLeftEllipsisIcon, PlayIcon } from "@heroicons/react/24/outline";
 import { useTranslations, useLocale } from "next-intl";
 import { TrialBanner } from "@/components/Subscription/TrialBanner";
 import Tooltip from "@/components/atoms/Tooltip";
 import { useFavorites } from "@/hooks/useFavorites";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
 export function MainMenu() {
   const { currentTheme } = useTheme();
   const { isSearchOpen, openSearch, closeSearch } = useGlobalSearch();
@@ -107,6 +106,7 @@ export function MainMenu() {
               {/* Soporte */}
               <Tooltip content={supportTitle} placement="bottom">
                 <button
+                  data-tour="support"
                   onClick={() => setSupportOpen(true)}
                   className="p-2 rounded-lg transition-colors hover:bg-gray-100 text-gray-500 hover:text-gray-700"
                 >
@@ -114,7 +114,24 @@ export function MainMenu() {
                 </button>
               </Tooltip>
 
-              <NotificationBell />
+              {/* 🧪 TEMP: botón para testear el tour — descomentar para testear
+              {process.env.NODE_ENV !== 'production' && (
+                <Tooltip content="Test tour" placement="bottom">
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('nitro-product-tour-completed');
+                      window.dispatchEvent(new CustomEvent('nitro:start-tour'));
+                    }}
+                    className="p-2 rounded-lg transition-colors hover:bg-amber-100 text-amber-500 hover:text-amber-700"
+                    title="Test product tour"
+                  >
+                    <PlayIcon className="h-5 w-5" />
+                  </button>
+                </Tooltip>
+              )}
+              */}
+
+              <NotificationBell dataTour="notifications" />
               <UserMenu />
             </div>
           </div>

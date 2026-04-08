@@ -184,3 +184,102 @@ body[data-theme="green-gray"] {
     display: none !important;
   }
 }
+
+/* ─── Shepherd.js Product Tour ─────────────────────────────────────────────── */
+.nitro-tour-step.shepherd-has-cancel-icon .shepherd-header {
+  padding-right: 2rem;
+}
+
+.nitro-tour-step .shepherd-content {
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  max-width: 320px;
+}
+
+.nitro-tour-step .shepherd-header {
+  background: rgb(var(--color-primary-600));
+  padding: 14px 16px;
+}
+
+.nitro-tour-step .shepherd-title {
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.nitro-tour-step .shepherd-cancel-icon {
+  color: rgba(255,255,255,0.8);
+}
+
+.nitro-tour-step .shepherd-cancel-icon:hover {
+  color: white;
+}
+
+.nitro-tour-step .shepherd-text {
+  padding: 16px;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.nitro-tour-step .shepherd-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.nitro-tour-btn-primary {
+  background: rgb(var(--color-primary-600)) !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+.nitro-tour-btn-primary:hover {
+  background: rgb(var(--color-primary-700)) !important;
+}
+
+.nitro-tour-btn-secondary {
+  background: white !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+
+.nitro-tour-btn-secondary:hover {
+  background: #f9fafb !important;
+}
+
+.nitro-tour-btn-skip {
+  background: transparent !important;
+  color: #9ca3af !important;
+  border: none !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  margin-right: auto !important;
+}
+
+.nitro-tour-btn-skip:hover {
+  color: #6b7280 !important;
+}
+
+.shepherd-modal-overlay-container {
+  z-index: 9998 !important;
+}
+
+.shepherd-element {
+  z-index: 9999 !important;
+}
