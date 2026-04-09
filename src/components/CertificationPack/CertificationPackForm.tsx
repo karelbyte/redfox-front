@@ -5,6 +5,8 @@ import { useTranslations } from 'next-intl';
 import { CertificationPack, CertificationPackType, CertificationPackFormData } from '@/types/certification-pack';
 import { certificationPackService } from '@/services/certification-packs.service';
 import { toastService } from '@/services/toast.service';
+import { useAuth } from '@/context/AuthContext';
+import { getAllowedCertificationPackTypes } from '@/lib/certification-pack-rules';
 
 export interface CertificationPackFormRef {
   submit: () => void;
@@ -27,8 +29,13 @@ function CertificationPackFormInner(
   ref: React.ForwardedRef<CertificationPackFormRef>,
 ) {
   const t = useTranslations('pages.certificationPacks');
+  const { user } = useAuth();
+  const allowedPackTypes = getAllowedCertificationPackTypes(
+    user?.organization_referrer_code,
+  );
+  const defaultPackType = allowedPackTypes[0] ?? CertificationPackType.FACTURAAPI;
   const [formData, setFormData] = useState<CertificationPackFormData>({
-    type: CertificationPackType.FACTURAAPI,
+    type: defaultPackType,
     config: {},
     is_active: true,
     is_default: false,
@@ -44,13 +51,26 @@ function CertificationPackFormInner(
       });
     } else {
       setFormData({
-        type: CertificationPackType.FACTURAAPI,
+        type: defaultPackType,
         config: {},
         is_active: true,
         is_default: false,
       });
     }
-  }, [pack]);
+  }, [defaultPackType, pack]);
+
+  useEffect(() => {
+    if (pack) {
+      return;
+    }
+
+    if (!allowedPackTypes.includes(formData.type)) {
+      setFormData(prev => ({
+        ...prev,
+        type: defaultPackType,
+      }));
+    }
+  }, [allowedPackTypes, defaultPackType, formData.type, pack]);
 
   const validateForm = useMemo(() => {
     const cfg = formData.config || {};
@@ -238,8 +258,12 @@ function CertificationPackFormInner(
           required
           disabled={!!pack}
         >
-          <option value={CertificationPackType.FACTURAAPI}>FacturaAPI</option>
-          <option value={CertificationPackType.FACTURA_GREEN}>Factura Green</option>
+          {allowedPackTypes.includes(CertificationPackType.FACTURAAPI) && (
+            <option value={CertificationPackType.FACTURAAPI}>FacturaAPI</option>
+          )}
+          {allowedPackTypes.includes(CertificationPackType.FACTURA_GREEN) && (
+            <option value={CertificationPackType.FACTURA_GREEN}>Factura Green</option>
+          )}
          {/* <option value={CertificationPackType.SAT}>SAT</option>*/} 
         </select>
       </div>

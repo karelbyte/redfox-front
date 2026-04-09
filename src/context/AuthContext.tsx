@@ -19,6 +19,7 @@ interface User {
   permissions: string[];
   organization_id?: string;
   organization_slug?: string;
+  organization_referrer_code?: string;
   status: boolean;
   created_at: string;
 }

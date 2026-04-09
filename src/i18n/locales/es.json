@@ -155,6 +155,7 @@
     "cashRegister": "Caja",
     "users": "Usuarios",
     "companySettings": "Generales de empresa",
+    "whatsAppBot": "Bot de WhatsApp",
     "subscription": "Suscripción",
     "roles": "Roles",
     "emailConfig": "Configuración de Correo",
@@ -1435,7 +1436,7 @@
       "noProductsClosedDesc": "Esta recepción no tiene productos registrados.",
       "addProductTitle": "Añadir Producto",
       "noReceptions": "No hay recepciones",
-         "noResultsDesc": "Resultados no encontrados",
+      "noResultsDesc": "Resultados no encontrados",
       "noReceptionsDesc": "Haz clic en \"Nueva Recepción\" para agregar una.",
       "searchReceptions": "Buscar recepciones...",
       "form": {
@@ -3156,7 +3157,7 @@
       "noPurchaseOrders": "No hay órdenes de compra",
       "noPurchaseOrdersDesc": "Haz clic en \"Crear Orden de Compra\" para agregar una.",
       "noPermissionDesc": "No tienes permisos para ver esta página",
-      "searchPurchaseOrders":"Buscar ordenes de compra..",
+      "searchPurchaseOrders": "Buscar ordenes de compra..",
       "table": {
         "code": "Código",
         "date": "Fecha",
@@ -3255,6 +3256,25 @@
         "errorLoadingWarehouses": "Error al cargar los almacenes",
         "pdfGenerated": "PDF generado correctamente",
         "errorGeneratingPDF": "Error al generar el PDF"
+      },
+      "pdf": {
+        "title": "Orden de Compra",
+        "code": "Código",
+        "date": "Fecha",
+        "provider": "Proveedor",
+        "warehouse": "Almacén",
+        "document": "Documento",
+        "deliveryDate": "Entrega esperada",
+        "status": "Estado",
+        "product": "Producto",
+        "sku": "SKU",
+        "quantity": "Cantidad",
+        "price": "Precio",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "footer": "Documento generado automáticamente",
+        "notes": "Notas",
+        "page": "Página"
       },
       "approveOrder": {
         "success": "Orden de compra aprobada correctamente",
@@ -3392,6 +3412,146 @@
       "error": {
         "title": "Error",
         "purchaseOrderNotFound": "Orden de compra no encontrada"
+      }
+    },
+    "botAssistant": {
+      "title": "Bot de WhatsApp",
+      "eyebrow": "Automatización comercial",
+      "headline": "Conecta WhatsApp y prepara tu bot de cotizaciones",
+      "subheadline": "Elige el provider, guía al cliente paso a paso y deja lista la identidad del bot para responder con el contexto de tu empresa.",
+      "summary": {
+        "provider": "Provider activo",
+        "company": "Contexto de empresa",
+        "companyPending": "Pendiente de completar"
+      },
+      "providerSection": {
+        "title": "Providers disponibles",
+        "description": "La configuración del bot vive en un solo módulo. Puedes empezar con la variante beta y luego pasar a la oficial."
+      },
+      "setupSection": {
+        "title": "Conexión y onboarding",
+        "stepsTitle": "Pasos para el cliente"
+      },
+      "configurationSection": {
+        "title": "Configuración del bot",
+        "description": "Define el tono, la bienvenida y la lógica base que usará el bot cuando reciba mensajes."
+      },
+      "actions": {
+        "connectBaileys": "Conectar WhatsApp Web",
+        "refreshQr": "Generar QR nuevo",
+        "disconnect": "Desconectar",
+        "save": "Guardar configuración"
+      },
+      "messages": {
+        "errorLoading": "No se pudo cargar la configuración del bot",
+        "providerUpdated": "Provider actualizado correctamente",
+        "errorUpdatingProvider": "No se pudo actualizar el provider",
+        "saved": "Configuración guardada correctamente",
+        "errorSaving": "No se pudo guardar la configuración",
+        "disconnected": "Bot desconectado",
+        "qrRefreshed": "QR actualizado",
+        "connectionStarted": "Conexión iniciada",
+        "errorConnecting": "No se pudo procesar la acción del provider"
+      },
+      "providers": {
+        "baileys": {
+          "title": "WhatsApp Web (Beta)",
+          "badge": "Beta",
+          "description": "Conecta por QR usando Baileys para pruebas, pilotos y validación rápida con tus clientes.",
+          "setupDescription": "Usa esta variante para empezar hoy mismo con un flujo simple por QR.",
+          "bullets": {
+            "qr": "Escaneo por QR desde el teléfono del cliente",
+            "beta": "Conector beta para pruebas controladas",
+            "testing": "Ideal para validar la experiencia antes del provider oficial"
+          },
+          "steps": {
+            "openPhone": "Abre WhatsApp en el teléfono que administrará la cuenta del negocio.",
+            "linkedDevices": "Entra a dispositivos vinculados y elige vincular un nuevo dispositivo.",
+            "scanQr": "Escanea el QR que aparece en Nitro desde esta misma pantalla.",
+            "waitConnected": "Espera a que el estado cambie a conectado.",
+            "testMessage": "Envía un mensaje de prueba para validar la atención inicial del bot."
+          },
+          "qrTitle": "Código QR de vinculación",
+          "qrAlt": "Código QR para conectar WhatsApp Web",
+          "qrHint": "Si el código expira o la sesión falla, genera uno nuevo desde aquí y vuelve a escanear.",
+          "qrEmpty": "Todavía no hay un QR disponible. Usa el botón de conexión para generarlo."
+        },
+        "cloud": {
+          "title": "WhatsApp Cloud API",
+          "badge": "Oficial",
+          "description": "Prepara la variante oficial de Meta con los identificadores y credenciales que usará tu operación estable.",
+          "setupDescription": "Esta vista deja documentado y guardado el onboarding oficial para cuando actives ese provider.",
+          "bullets": {
+            "official": "Ruta oficial orientada a operación estable",
+            "meta": "Pensado para integrar credenciales de Meta",
+            "prepared": "La UX y persistencia quedan listas desde ahora"
+          },
+          "steps": {
+            "metaLogin": "Inicia sesión con tu cuenta de Meta Business.",
+            "selectBusiness": "Selecciona o crea el negocio que administrará el canal.",
+            "connectNumber": "Vincula el número que usarás para atender clientes.",
+            "authorize": "Autoriza permisos, webhook y credenciales necesarias.",
+            "completeConfig": "Completa en Nitro los IDs y tokens para dejar la integración lista."
+          },
+          "previewTitle": "Provider oficial preparado",
+          "previewBody": "Aquí puedes guardar los datos clave del onboarding oficial para dejar estandarizado el proceso con el cliente. Para pruebas activas, seguimos usando la variante Beta con QR."
+        }
+      },
+      "fields": {
+        "assistantName": "Nombre del asistente",
+        "assistantNamePlaceholder": "Ej. Nitro Bot Ventas",
+        "defaultLanguage": "Idioma principal del bot",
+        "tone": "Tono de respuesta",
+        "isEnabled": "Bot activo",
+        "isEnabledHelp": "Permite que el bot responda mensajes entrantes.",
+        "autoReplyEnabled": "Respuesta automática",
+        "autoReplyEnabledHelp": "El bot contesta sin intervención manual.",
+        "quotationModeEnabled": "Modo cotizaciones",
+        "quotationModeEnabledHelp": "Responde consultas de precios y disponibilidad.",
+        "welcomeMessage": "Mensaje de bienvenida",
+        "welcomeMessagePlaceholder": "Hola, puedo ayudarte con precios, stock y cotizaciones.",
+        "handoffMessage": "Mensaje de escalado",
+        "handoffMessagePlaceholder": "Si necesitas atención humana, comparte el producto que buscas y te ayudamos.",
+        "quotationPrompt": "Instrucciones de cotización",
+        "quotationPromptPlaceholder": "Responde en nombre de la empresa, comparte disponibilidad y guía la solicitud de cotización.",
+        "appId": "App ID de Meta",
+        "appIdPlaceholder": "Ingresa el App ID",
+        "businessAccountId": "Business Account ID",
+        "businessAccountIdPlaceholder": "Ingresa el ID del negocio",
+        "phoneNumberId": "Phone Number ID",
+        "phoneNumberIdPlaceholder": "Ingresa el ID del número",
+        "verifyToken": "Verify Token",
+        "verifyTokenPlaceholder": "Ingresa el token de verificación",
+        "accessToken": "Access Token",
+        "accessTokenPlaceholder": "Ingresa el token de acceso"
+      },
+      "tones": {
+        "professional": "Profesional",
+        "friendly": "Cercano",
+        "direct": "Directo"
+      },
+      "statuses": {
+        "connected": "Conectado",
+        "qrReady": "QR listo",
+        "connecting": "Conectando",
+        "error": "Con error",
+        "disconnected": "Desconectado"
+      },
+      "statusCard": {
+        "title": "Estado actual",
+        "provider": "Provider",
+        "connection": "Conexión",
+        "phone": "Número vinculado",
+        "lastConnected": "Última conexión",
+        "pending": "Pendiente"
+      },
+      "companyContext": {
+        "title": "Contexto de empresa",
+        "company": "Empresa",
+        "phone": "Teléfono",
+        "email": "Correo",
+        "empty": "Sin configurar",
+        "description": "El bot toma como referencia la identidad y datos generales de tu empresa para responder con más contexto."
       }
     }
   },
@@ -4188,30 +4348,6 @@
   },
   "help": {
     "button": "Ayuda",
-    "footer": "¿Tienes dudas adicionales? Contacta a soporte."
-  },
-  "inventoryAlerts": {
-    "title": "Alertas de Inventario",
-    "close": "Cerrar",
-    "noAlerts": "Sin alertas de inventario",
-    "expiringProducts": "Próximos a Vencer",
-    "lowStockProducts": "Stock Bajo",
-    "viewAllAlerts": "Ver todas las alertas",
-    "priority": {
-      "urgent": "Urgente",
-      "high": "Alta",
-      "medium": "Media"
-    },
-    "expiry": {
-      "expired": "Vencido hace {days} día(s)",
-      "today": "Vence hoy",
-      "tomorrow": "Vence mañana",
-      "inDays": "Vence en {days} día(s)"
-    },
-    "stock": {
-      "outOfStock": "Sin stock",
-      "critical": "Stock crítico",
-      "low": "Stock bajo"
-    }
+    "footer": "¿Necesitas ayuda personalizada? Contacta soporte"
   }
 }

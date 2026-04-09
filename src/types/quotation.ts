@@ -81,6 +81,7 @@ export interface QuotationDetail {
   id: string;
   product: {
     id: string;
+    code?: string;
     name: string;
     slug: string;
     description: string;

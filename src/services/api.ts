@@ -10,7 +10,7 @@ const handleUnauthorized = () => {
 
     // Obtener tenant y locale de la URL de forma robusta
     const segments = window.location.pathname.split('/').filter(Boolean);
-    const locales = ['es', 'en'];
+    const locales = ['es', 'en', 'zh'];
 
     // El tenant suele ser el primer segmento si no es un locale
     const firstSegmentIsLocale = locales.includes(segments[0]);
@@ -33,7 +33,7 @@ const getHeaders = (isFormData = false) => {
 
     // Obtener el tenant y locale actual de la URL
     const segments = window.location.pathname.split('/').filter(Boolean);
-    const locales = ['es', 'en'];
+    const locales = ['es', 'en', 'zh'];
     const firstIsLocale = locales.includes(segments[0]);
     const tenant = firstIsLocale ? null : segments[0];
     const locale = firstIsLocale ? segments[0] : (segments[1] || 'es');

@@ -142,7 +142,7 @@ const QuotationListPage = () => {
 
       // Generar el PDF
       const pdfService = new QuotationPDFService(locale);
-      pdfService.generatePDF(quotation, detailsResponse.data, pdfTranslations);
+      await pdfService.generatePDF(quotation, detailsResponse.data, pdfTranslations);
       
       toastService.success(t('messages.pdfGenerated'));
     } catch (error) {

@@ -1,11 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { usersService } from '@/services/users.service';
 import { companySettingsService } from '@/services/company-settings.service';
 import { certificationPackService } from '@/services/certification-packs.service';
+import { toastService } from '@/services/toast.service';
 import Btn from '@/components/atoms/Btn';
+import { useAuth } from '@/context/AuthContext';
+import {
+  getAllowedCertificationPackTypes,
+  isFacturaGreenRestricted,
+} from '@/lib/certification-pack-rules';
+import { CertificationPackType } from '@/types/certification-pack';
 
 interface OnboardingModalProps {
   isOpen: boolean;
@@ -17,6 +24,8 @@ type Step = 'welcome' | 'company' | 'pack' | 'packConfig' | 'complete';
 export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
   const t = useTranslations('onboarding');
   const commonT = useTranslations('common.actions');
+  const locale = useLocale();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
   const [isSaving, setIsSaving] = useState(false);
   
@@ -41,10 +50,20 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     }));
   };
   
+  const allowedPackTypes = getAllowedCertificationPackTypes(
+    user?.organization_referrer_code,
+  );
+  const facturaGreenRestricted = isFacturaGreenRestricted(
+    user?.organization_referrer_code,
+  );
   const availablePacks = [
-    { id: 'FACTURA_GREEN', name: 'Factura Green' },
-    { id: 'FACTURAAPI', name: 'Factura API' },
-    { id: 'none', name: t('noPack') },
+    ...(allowedPackTypes.includes(CertificationPackType.FACTURA_GREEN)
+      ? [{ id: 'FACTURA_GREEN', name: 'Factura Green' }]
+      : []),
+    ...(allowedPackTypes.includes(CertificationPackType.FACTURAAPI)
+      ? [{ id: 'FACTURAAPI', name: 'Factura API' }]
+      : []),
+    ...(facturaGreenRestricted ? [] : [{ id: 'none', name: t('noPack') }]),
   ];
 
   useEffect(() => {
@@ -53,14 +72,26 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (facturaGreenRestricted) {
+      setSelectedPack('FACTURA_GREEN');
+    }
+  }, [facturaGreenRestricted, isOpen]);
+
   if (!isOpen) return null;
 
   const handleNext = async () => {
     if (currentStep === 'welcome') {
       setCurrentStep('company');
     } else if (currentStep === 'company') {
-      await saveCompanyData();
-      setCurrentStep('pack');
+      const saved = await saveCompanyData();
+      if (saved) {
+        setCurrentStep('pack');
+      }
     } else if (currentStep === 'pack') {
       // Si seleccionó un pack real (no "none"), ir a configuración
       if (selectedPack && selectedPack !== 'none') {
@@ -70,8 +101,10 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
         setCurrentStep('complete');
       }
     } else if (currentStep === 'packConfig') {
-      await savePackConfiguration();
-      setCurrentStep('complete');
+      const saved = await savePackConfiguration();
+      if (saved) {
+        setCurrentStep('complete');
+      }
     }
   };
 
@@ -115,8 +148,10 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     }
   };
 
-  const saveCompanyData = async () => {
-    if (!companyData.legal_name) return;
+  const saveCompanyData = async (): Promise<boolean> => {
+    if (!companyData.legal_name) {
+      return false;
+    }
     
     setIsSaving(true);
     try {
@@ -126,15 +161,28 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
         email: companyData.email || undefined,
         phone: companyData.phone || undefined,
       });
+      return true;
     } catch (error) {
       console.error('Error saving company data:', error);
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : locale === 'zh'
+            ? '无法保存公司信息'
+            : locale === 'en'
+              ? 'Unable to save company information'
+              : 'No se pudo guardar la información de la empresa';
+      toastService.error(message);
+      return false;
     } finally {
       setIsSaving(false);
     }
   };
 
-  const savePackConfiguration = async () => {
-    if (!selectedPack || selectedPack === 'none') return;
+  const savePackConfiguration = async (): Promise<boolean> => {
+    if (!selectedPack || selectedPack === 'none') {
+      return true;
+    }
     
     setIsSaving(true);
     try {
@@ -143,8 +191,19 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
         config: packConfig,
         is_active: true,
       });
+      return true;
     } catch (error) {
       console.error('Error saving pack configuration:', error);
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : locale === 'zh'
+            ? '无法保存开票套餐配置'
+            : locale === 'en'
+              ? 'Unable to save certification pack configuration'
+              : 'No se pudo guardar la configuración del pack';
+      toastService.error(message);
+      return false;
     } finally {
       setIsSaving(false);
     }

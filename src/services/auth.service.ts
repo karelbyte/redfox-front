@@ -19,6 +19,7 @@ interface LoginResponse {
     }>;
     organization_id?: string;
     organization_slug?: string;
+    organization_referrer_code?: string;
     permissions: string[];
     status: boolean;
     created_at: string;

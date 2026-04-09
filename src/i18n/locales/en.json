@@ -155,6 +155,7 @@
     "cashRegister": "Cash Register",
     "users": "Users",
     "companySettings": "Company settings",
+    "whatsAppBot": "WhatsApp Bot",
     "subscription": "Subscription",
     "roles": "Roles",
     "emailConfig": "Email Configuration",
@@ -3138,7 +3139,7 @@
       "noPurchaseOrders": "No purchase orders",
       "noPurchaseOrdersDesc": "Click on \"Create Purchase Order\" to add one.",
       "noPermissionDesc": "You don't have permission to view this page",
-      "searchPurchaseOrders":"",
+      "searchPurchaseOrders": "",
       "table": {
         "code": "Code",
         "date": "Date",
@@ -3246,6 +3247,25 @@
         "errorLoadingWarehouses": "Error loading warehouses",
         "pdfGenerated": "PDF generated successfully",
         "errorGeneratingPDF": "Error generating PDF"
+      },
+      "pdf": {
+        "title": "Purchase Order",
+        "code": "Code",
+        "date": "Date",
+        "provider": "Provider",
+        "warehouse": "Warehouse",
+        "document": "Document",
+        "deliveryDate": "Expected delivery",
+        "status": "Status",
+        "product": "Product",
+        "sku": "SKU",
+        "quantity": "Quantity",
+        "price": "Price",
+        "subtotal": "Subtotal",
+        "total": "Total",
+        "footer": "Document generated automatically",
+        "notes": "Notes",
+        "page": "Page"
       },
       "approveOrder": {
         "success": "Purchase order approved successfully",
@@ -3382,6 +3402,146 @@
       "error": {
         "title": "Error",
         "purchaseOrderNotFound": "Purchase order not found"
+      }
+    },
+    "botAssistant": {
+      "title": "WhatsApp Bot",
+      "eyebrow": "Sales automation",
+      "headline": "Connect WhatsApp and prepare your quotation bot",
+      "subheadline": "Choose the provider, guide the client step by step and leave the bot identity ready to answer with your company context.",
+      "summary": {
+        "provider": "Active provider",
+        "company": "Company context",
+        "companyPending": "Pending completion"
+      },
+      "providerSection": {
+        "title": "Available providers",
+        "description": "The bot configuration lives in one module. You can start with the beta variant and move later to the official one."
+      },
+      "setupSection": {
+        "title": "Connection and onboarding",
+        "stepsTitle": "Client steps"
+      },
+      "configurationSection": {
+        "title": "Bot configuration",
+        "description": "Define the tone, welcome message and base logic the bot will use when it receives messages."
+      },
+      "actions": {
+        "connectBaileys": "Connect WhatsApp Web",
+        "refreshQr": "Generate new QR",
+        "disconnect": "Disconnect",
+        "save": "Save configuration"
+      },
+      "messages": {
+        "errorLoading": "Could not load bot configuration",
+        "providerUpdated": "Provider updated successfully",
+        "errorUpdatingProvider": "Could not update provider",
+        "saved": "Configuration saved successfully",
+        "errorSaving": "Could not save configuration",
+        "disconnected": "Bot disconnected",
+        "qrRefreshed": "QR updated",
+        "connectionStarted": "Connection started",
+        "errorConnecting": "Could not process the provider action"
+      },
+      "providers": {
+        "baileys": {
+          "title": "WhatsApp Web (Beta)",
+          "badge": "Beta",
+          "description": "Connect by QR using Baileys for testing, pilots and quick validation with your clients.",
+          "setupDescription": "Use this variant to start today with a simple QR-based flow.",
+          "bullets": {
+            "qr": "QR scan from the client's phone",
+            "beta": "Beta connector for controlled testing",
+            "testing": "Ideal to validate the experience before the official provider"
+          },
+          "steps": {
+            "openPhone": "Open WhatsApp on the phone that will manage the business account.",
+            "linkedDevices": "Go to linked devices and choose to link a new device.",
+            "scanQr": "Scan the QR shown in Nitro from this screen.",
+            "waitConnected": "Wait until the status changes to connected.",
+            "testMessage": "Send a test message to validate the bot first response."
+          },
+          "qrTitle": "Linking QR code",
+          "qrAlt": "QR code to connect WhatsApp Web",
+          "qrHint": "If the code expires or the session fails, generate a new one here and scan again.",
+          "qrEmpty": "There is no QR available yet. Use the connect button to generate one."
+        },
+        "cloud": {
+          "title": "WhatsApp Cloud API",
+          "badge": "Official",
+          "description": "Prepare Meta official variant with the identifiers and credentials your stable operation will use.",
+          "setupDescription": "This view documents and stores the official onboarding so you can activate that provider later.",
+          "bullets": {
+            "official": "Official route oriented to stable operation",
+            "meta": "Designed to integrate Meta credentials",
+            "prepared": "UX and persistence are ready from now"
+          },
+          "steps": {
+            "metaLogin": "Sign in with your Meta Business account.",
+            "selectBusiness": "Select or create the business that will manage the channel.",
+            "connectNumber": "Link the number you will use to serve clients.",
+            "authorize": "Authorize permissions, webhook and required credentials.",
+            "completeConfig": "Complete the IDs and tokens in Nitro to leave the integration ready."
+          },
+          "previewTitle": "Official provider prepared",
+          "previewBody": "Here you can store the key data of the official onboarding and standardize the process with the client. For active testing, we still use the Beta QR variant."
+        }
+      },
+      "fields": {
+        "assistantName": "Assistant name",
+        "assistantNamePlaceholder": "Ex. Nitro Sales Bot",
+        "defaultLanguage": "Bot primary language",
+        "tone": "Reply tone",
+        "isEnabled": "Bot enabled",
+        "isEnabledHelp": "Allows the bot to answer incoming messages.",
+        "autoReplyEnabled": "Automatic replies",
+        "autoReplyEnabledHelp": "The bot responds without manual intervention.",
+        "quotationModeEnabled": "Quotation mode",
+        "quotationModeEnabledHelp": "Answers price and availability requests.",
+        "welcomeMessage": "Welcome message",
+        "welcomeMessagePlaceholder": "Hi, I can help you with prices, stock and quotations.",
+        "handoffMessage": "Handoff message",
+        "handoffMessagePlaceholder": "If you need human assistance, share the product you are looking for and we will help you.",
+        "quotationPrompt": "Quotation instructions",
+        "quotationPromptPlaceholder": "Answer on behalf of the company, share availability and guide the quotation request.",
+        "appId": "Meta App ID",
+        "appIdPlaceholder": "Enter the App ID",
+        "businessAccountId": "Business Account ID",
+        "businessAccountIdPlaceholder": "Enter the business ID",
+        "phoneNumberId": "Phone Number ID",
+        "phoneNumberIdPlaceholder": "Enter the phone number ID",
+        "verifyToken": "Verify Token",
+        "verifyTokenPlaceholder": "Enter the verification token",
+        "accessToken": "Access Token",
+        "accessTokenPlaceholder": "Enter the access token"
+      },
+      "tones": {
+        "professional": "Professional",
+        "friendly": "Friendly",
+        "direct": "Direct"
+      },
+      "statuses": {
+        "connected": "Connected",
+        "qrReady": "QR ready",
+        "connecting": "Connecting",
+        "error": "With error",
+        "disconnected": "Disconnected"
+      },
+      "statusCard": {
+        "title": "Current status",
+        "provider": "Provider",
+        "connection": "Connection",
+        "phone": "Linked number",
+        "lastConnected": "Last connection",
+        "pending": "Pending"
+      },
+      "companyContext": {
+        "title": "Company context",
+        "company": "Company",
+        "phone": "Phone",
+        "email": "Email",
+        "empty": "Not configured",
+        "description": "The bot uses your company identity and general data as context to answer more consistently."
       }
     }
   },
@@ -4177,30 +4337,6 @@
   },
   "help": {
     "button": "Help",
-    "footer": "Still have questions? Contact support."
-  },
-  "inventoryAlerts": {
-    "title": "Inventory Alerts",
-    "close": "Close",
-    "noAlerts": "No inventory alerts",
-    "expiringProducts": "Expiring Soon",
-    "lowStockProducts": "Low Stock",
-    "viewAllAlerts": "View all alerts",
-    "priority": {
-      "urgent": "Urgent",
-      "high": "High",
-      "medium": "Medium"
-    },
-    "expiry": {
-      "expired": "Expired {days} day(s) ago",
-      "today": "Expires today",
-      "tomorrow": "Expires tomorrow",
-      "inDays": "Expires in {days} day(s)"
-    },
-    "stock": {
-      "outOfStock": "Out of stock",
-      "critical": "Critical stock",
-      "low": "Low stock"
-    }
+    "footer": "Need personalized help? Contact support"
   }
 }

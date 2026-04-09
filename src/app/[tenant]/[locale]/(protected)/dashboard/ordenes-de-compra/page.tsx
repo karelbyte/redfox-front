@@ -8,6 +8,7 @@ import { PurchaseOrder, PurchaseOrderApprovalResponse, PurchaseOrderRejectionRes
 import { purchaseOrdersService } from '@/services';
 import { toastService } from '@/services';
 import { PDFService } from '@/services';
+import { PurchaseOrderPDFService } from '@/services/purchase-order-pdf.service';
 import { useSearchStore } from "@/stores/search.store";
 import PurchaseOrderTable from '@/components/PurchaseOrder/PurchaseOrderTable';
 import PurchaseOrderForm from '@/components/PurchaseOrder/PurchaseOrderForm';
@@ -175,17 +176,30 @@ export default function PurchaseOrdersPage() {
   const handleGeneratePDF = async (purchaseOrder: PurchaseOrder) => {
     try {
       setIsGeneratingPDF(true);
-      
-      // Obtener los detalles de la orden de compra
       const detailsResponse = await purchaseOrdersService.getPurchaseOrderDetails(purchaseOrder.id);
       const details = detailsResponse.data || [];
-      
-      // Generar el PDF usando la orden completa y los detalles
-      const pdfService = new PDFService();
-      pdfService.generatePurchaseOrderPDF(purchaseOrder, details, {
-        filename: `purchase-order-${purchaseOrder.code}.pdf`
+
+      const pdfService = new PurchaseOrderPDFService(locale);
+      await pdfService.generatePDF(purchaseOrder, details, {
+        title: t('pdf.title'),
+        code: t('pdf.code'),
+        date: t('pdf.date'),
+        provider: t('pdf.provider'),
+        warehouse: t('pdf.warehouse'),
+        document: t('pdf.document'),
+        deliveryDate: t('pdf.deliveryDate'),
+        status: t('pdf.status'),
+        product: t('pdf.product'),
+        sku: t('pdf.sku'),
+        quantity: t('pdf.quantity'),
+        price: t('pdf.price'),
+        subtotal: t('pdf.subtotal'),
+        total: t('pdf.total'),
+        footer: t('pdf.footer'),
+        notes: t('pdf.notes'),
+        page: t('pdf.page'),
       });
-      
+
       toastService.success(t('messages.pdfGenerated'));
     } catch (error) {
       if (error instanceof Error) {

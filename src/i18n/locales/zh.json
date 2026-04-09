@@ -155,6 +155,7 @@
     "cashRegister": "收银机",
     "users": "用户",
     "companySettings": "公司设置",
+    "whatsAppBot": "WhatsApp 机器人",
     "subscription": "订阅",
     "roles": "角色",
     "emailConfig": "邮件配置",
@@ -3247,6 +3248,25 @@
         "pdfGenerated": "PDF 生成成功",
         "errorGeneratingPDF": "生成 PDF 出错"
       },
+      "pdf": {
+        "title": "采购订单",
+        "code": "编号",
+        "date": "日期",
+        "provider": "供应商",
+        "warehouse": "仓库",
+        "document": "单据",
+        "deliveryDate": "预计交货日期",
+        "status": "状态",
+        "product": "产品",
+        "sku": "SKU",
+        "quantity": "数量",
+        "price": "单价",
+        "subtotal": "小计",
+        "total": "合计",
+        "footer": "自动生成的文件",
+        "notes": "备注",
+        "page": "页"
+      },
       "approveOrder": {
         "success": "采购订单批准成功",
         "error": "批准采购订单出错"
@@ -3382,6 +3402,146 @@
       "error": {
         "title": "错误",
         "purchaseOrderNotFound": "未找到采购订单"
+      }
+    },
+    "botAssistant": {
+      "title": "WhatsApp 机器人",
+      "eyebrow": "销售自动化",
+      "headline": "连接 WhatsApp 并准备你的报价机器人",
+      "subheadline": "选择 provider，按步骤引导客户，并让机器人带着公司上下文开始回答。",
+      "summary": {
+        "provider": "当前 provider",
+        "company": "公司上下文",
+        "companyPending": "待完善"
+      },
+      "providerSection": {
+        "title": "可用 providers",
+        "description": "机器人的配置集中在一个模块中。你可以先从 Beta 方案开始，之后再切换到官方方案。"
+      },
+      "setupSection": {
+        "title": "连接与引导",
+        "stepsTitle": "客户操作步骤"
+      },
+      "configurationSection": {
+        "title": "机器人配置",
+        "description": "定义语气、欢迎语和机器人收到消息后使用的基础逻辑。"
+      },
+      "actions": {
+        "connectBaileys": "连接 WhatsApp Web",
+        "refreshQr": "生成新二维码",
+        "disconnect": "断开连接",
+        "save": "保存配置"
+      },
+      "messages": {
+        "errorLoading": "无法加载机器人配置",
+        "providerUpdated": "Provider 更新成功",
+        "errorUpdatingProvider": "无法更新 provider",
+        "saved": "配置保存成功",
+        "errorSaving": "无法保存配置",
+        "disconnected": "机器人已断开",
+        "qrRefreshed": "二维码已更新",
+        "connectionStarted": "连接已开始",
+        "errorConnecting": "无法处理 provider 操作"
+      },
+      "providers": {
+        "baileys": {
+          "title": "WhatsApp Web（Beta）",
+          "badge": "Beta",
+          "description": "通过 Baileys 和二维码连接，适合测试、试点和快速验证客户体验。",
+          "setupDescription": "如果你想马上测试二维码流程，就使用这个方案。",
+          "bullets": {
+            "qr": "通过客户手机扫描二维码",
+            "beta": "适合受控测试的 Beta 连接器",
+            "testing": "非常适合在官方 provider 之前验证体验"
+          },
+          "steps": {
+            "openPhone": "在负责业务账号的手机上打开 WhatsApp。",
+            "linkedDevices": "进入已关联设备并选择关联新设备。",
+            "scanQr": "在 Nitro 当前页面扫描显示的二维码。",
+            "waitConnected": "等待状态变为已连接。",
+            "testMessage": "发送测试消息，验证机器人第一条回复。"
+          },
+          "qrTitle": "绑定二维码",
+          "qrAlt": "用于连接 WhatsApp Web 的二维码",
+          "qrHint": "如果二维码过期或会话失败，可以在这里重新生成后再次扫描。",
+          "qrEmpty": "当前还没有可用二维码。请使用连接按钮生成。"
+        },
+        "cloud": {
+          "title": "WhatsApp Cloud API",
+          "badge": "官方",
+          "description": "准备 Meta 官方方案所需的标识和凭据，用于后续更稳定的正式运营。",
+          "setupDescription": "这个视图会记录并保存官方 onboarding，方便之后激活该 provider。",
+          "bullets": {
+            "official": "面向稳定运营的官方路线",
+            "meta": "用于接入 Meta 凭据",
+            "prepared": "从现在开始就把 UX 与持久化准备好"
+          },
+          "steps": {
+            "metaLogin": "使用 Meta Business 账号登录。",
+            "selectBusiness": "选择或创建管理该渠道的业务主体。",
+            "connectNumber": "关联用于服务客户的号码。",
+            "authorize": "授权权限、webhook 和所需凭据。",
+            "completeConfig": "在 Nitro 中补全 ID 和 token，让集成准备完成。"
+          },
+          "previewTitle": "官方 provider 已准备",
+          "previewBody": "你可以先把官方 onboarding 的关键数据保存在这里，方便与客户标准化执行。实际测试阶段，我们仍使用 Beta 二维码方案。"
+        }
+      },
+      "fields": {
+        "assistantName": "助手名称",
+        "assistantNamePlaceholder": "例如：Nitro 销售机器人",
+        "defaultLanguage": "机器人主要语言",
+        "tone": "回复语气",
+        "isEnabled": "启用机器人",
+        "isEnabledHelp": "允许机器人回复收到的消息。",
+        "autoReplyEnabled": "自动回复",
+        "autoReplyEnabledHelp": "机器人无需人工干预即可回复。",
+        "quotationModeEnabled": "报价模式",
+        "quotationModeEnabledHelp": "回答价格与库存可用性请求。",
+        "welcomeMessage": "欢迎消息",
+        "welcomeMessagePlaceholder": "你好，我可以帮助你查询价格、库存和报价。",
+        "handoffMessage": "转人工消息",
+        "handoffMessagePlaceholder": "如果你需要人工帮助，请告诉我们你要找的产品。",
+        "quotationPrompt": "报价说明",
+        "quotationPromptPlaceholder": "代表公司回复，提供库存信息并引导报价请求。",
+        "appId": "Meta App ID",
+        "appIdPlaceholder": "输入 App ID",
+        "businessAccountId": "Business Account ID",
+        "businessAccountIdPlaceholder": "输入业务 ID",
+        "phoneNumberId": "Phone Number ID",
+        "phoneNumberIdPlaceholder": "输入号码 ID",
+        "verifyToken": "Verify Token",
+        "verifyTokenPlaceholder": "输入验证 token",
+        "accessToken": "Access Token",
+        "accessTokenPlaceholder": "输入访问 token"
+      },
+      "tones": {
+        "professional": "专业",
+        "friendly": "友好",
+        "direct": "直接"
+      },
+      "statuses": {
+        "connected": "已连接",
+        "qrReady": "二维码已就绪",
+        "connecting": "连接中",
+        "error": "有错误",
+        "disconnected": "未连接"
+      },
+      "statusCard": {
+        "title": "当前状态",
+        "provider": "Provider",
+        "connection": "连接",
+        "phone": "已绑定号码",
+        "lastConnected": "最后连接时间",
+        "pending": "待定"
+      },
+      "companyContext": {
+        "title": "公司上下文",
+        "company": "公司",
+        "phone": "电话",
+        "email": "邮箱",
+        "empty": "未配置",
+        "description": "机器人会使用公司的身份和基础资料作为上下文，让回复更一致。"
       }
     }
   },
@@ -4177,30 +4337,6 @@
   },
   "help": {
     "button": "帮助",
-    "footer": "还有问题？请联系支持。"
-  },
-  "inventoryAlerts": {
-    "title": "库存提醒",
-    "close": "关闭",
-    "noAlerts": "无库存提醒",
-    "expiringProducts": "即将到期",
-    "lowStockProducts": "库存不足",
-    "viewAllAlerts": "查看所有提醒",
-    "priority": {
-      "urgent": "紧急",
-      "high": "高",
-      "medium": "中"
-    },
-    "expiry": {
-      "expired": "{days} 天前已到期",
-      "today": "今日到期",
-      "tomorrow": "明日到期",
-      "inDays": "{days} 天后到期"
-    },
-    "stock": {
-      "outOfStock": "缺货",
-      "critical": "库存严重不足",
-      "low": "库存不足"
-    }
+    "footer": "需要个性化帮助？请联系支持团队"
   }
 }
