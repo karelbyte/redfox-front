@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import {
@@ -244,8 +244,8 @@ export default function ImportClientsPage() {
                   {groups.map(group => {
                     const groupFields = FIELDS.filter(f => f.group === group);
                     return (
-                      <>
-                        <tr key={`group-${group}`} className="border-t-2 border-gray-200">
+                      <React.Fragment key={`group-${group}`}>
+                        <tr className="border-t-2 border-gray-200">
                           <td colSpan={5} className={`px-4 py-2 text-xs font-semibold text-gray-600 ${GROUP_COLORS[group]}`}>
                             {GROUP_LABELS[group][locale] || GROUP_LABELS[group].es}
                           </td>
@@ -267,7 +267,7 @@ export default function ImportClientsPage() {
                             <td className="px-4 py-3"><code className="text-gray-500 font-mono text-xs">{f.example}</code></td>
                           </tr>
                         ))}
-                      </>
+                      </React.Fragment>
                     );
                   })}
                 </tbody>

@@ -54,6 +54,15 @@
       "export": "Export",
       "more": "More"
     },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "pages": "pages",
+      "of": "of",
+      "showing": "Showing",
+      "results": "results"
+    },
     "status": {
       "active": "Active",
       "inactive": "Inactive",
@@ -409,6 +418,7 @@
         "basePrice": "Base Price (Standard Selling Price)",
         "alternativePrices": "Alternative Price Lists",
         "addPrice": "Add Alternative Price",
+        "minStock": "Minimum Stock",
         "images": "Images",
         "placeholders": {
           "name": "Ex: Product XYZ",
@@ -417,6 +427,7 @@
           "code": "Ex: 12345678",
           "sku": "Ex: SKU001",
           "barcode": "Ex: 1234567890123",
+          "minStock": "Ex: 5",
           "weight": "Ex: 1.5",
           "width": "Ex: 10",
           "height": "Ex: 5",

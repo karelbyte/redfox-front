@@ -115,6 +115,137 @@ export class TicketPrinterService {
     return lines;
   }
 
+  private async readBlobAsDataUrl(blob: Blob): Promise<string | null> {
+    return await new Promise<string | null>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  private async loadImage(dataUrl: string): Promise<HTMLImageElement | null> {
+    return await new Promise<HTMLImageElement | null>((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => resolve(null);
+      image.src = dataUrl;
+    });
+  }
+
+  private async normalizeQRCode(dataUrl: string): Promise<string | null> {
+    const image = await this.loadImage(dataUrl);
+    if (!image) {
+      return dataUrl;
+    }
+
+    const sourceCanvas = document.createElement('canvas');
+    sourceCanvas.width = image.naturalWidth || image.width;
+    sourceCanvas.height = image.naturalHeight || image.height;
+
+    const sourceContext = sourceCanvas.getContext('2d');
+    if (!sourceContext) {
+      return dataUrl;
+    }
+
+    sourceContext.drawImage(image, 0, 0);
+    const imageData = sourceContext.getImageData(
+      0,
+      0,
+      sourceCanvas.width,
+      sourceCanvas.height,
+    );
+
+    let minX = sourceCanvas.width;
+    let minY = sourceCanvas.height;
+    let maxX = -1;
+    let maxY = -1;
+
+    for (let y = 0; y < sourceCanvas.height; y += 1) {
+      for (let x = 0; x < sourceCanvas.width; x += 1) {
+        const index = (y * sourceCanvas.width + x) * 4;
+        const red = imageData.data[index];
+        const green = imageData.data[index + 1];
+        const blue = imageData.data[index + 2];
+        const alpha = imageData.data[index + 3];
+
+        const isVisibleDarkPixel =
+          alpha > 0 && (red < 245 || green < 245 || blue < 245);
+
+        if (!isVisibleDarkPixel) {
+          continue;
+        }
+
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+
+    if (maxX === -1 || maxY === -1) {
+      return dataUrl;
+    }
+
+    const cropWidth = maxX - minX + 1;
+    const cropHeight = maxY - minY + 1;
+    const outputSize = 160;
+    const padding = 18;
+    const availableSize = outputSize - padding * 2;
+    const scale = Math.min(availableSize / cropWidth, availableSize / cropHeight);
+    const drawWidth = cropWidth * scale;
+    const drawHeight = cropHeight * scale;
+    const drawX = (outputSize - drawWidth) / 2;
+    const drawY = (outputSize - drawHeight) / 2;
+
+    const outputCanvas = document.createElement('canvas');
+    outputCanvas.width = outputSize;
+    outputCanvas.height = outputSize;
+
+    const outputContext = outputCanvas.getContext('2d');
+    if (!outputContext) {
+      return dataUrl;
+    }
+
+    outputContext.fillStyle = '#ffffff';
+    outputContext.fillRect(0, 0, outputSize, outputSize);
+    outputContext.imageSmoothingEnabled = false;
+    outputContext.drawImage(
+      sourceCanvas,
+      minX,
+      minY,
+      cropWidth,
+      cropHeight,
+      drawX,
+      drawY,
+      drawWidth,
+      drawHeight,
+    );
+
+    return outputCanvas.toDataURL('image/png');
+  }
+
+  private async loadQRCode(url: string): Promise<string | null> {
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(url)}`;
+
+    try {
+      const response = await fetch(qrApiUrl);
+      if (!response.ok) {
+        return null;
+      }
+
+      const blob = await response.blob();
+      const dataUrl = await this.readBlobAsDataUrl(blob);
+      if (!dataUrl) {
+        return null;
+      }
+
+      return await this.normalizeQRCode(dataUrl);
+    } catch {
+      return null;
+    }
+  }
+
   async generateTicketContent(data: TicketData): Promise<string> {
     const locale = data.locale || 'en';
     const companySettings = await this.getCompanySettingsCached();
@@ -216,7 +347,6 @@ export class TicketPrinterService {
     lines.push('');
     lines.push(this.centerText(new Date().toLocaleDateString(locale)));
     lines.push('');
-    lines.push('');
     
     return lines.join('\n');
   }
@@ -236,10 +366,24 @@ export class TicketPrinterService {
       }
 
       const logoFullUrl = this.getLogoFullUrl(companySettings?.logoUrl ?? null);
-      const logoHtml =
-        logoFullUrl
-          ? `<div style="display:block;margin-bottom:8px;position:relative;width:100%;height:20mm;"><img src="${logoFullUrl}" style="display:block;position:absolute;right:25mm;width:30mm;height:20mm;object-fit:contain;object-position:center;" alt="" /></div>`
-          : '';
+      const logoHtml = logoFullUrl
+        ? `<div style="width:100%;text-align:center;margin-bottom:-40px;"><img src="${logoFullUrl}" style="width:20mm;height:20mm;object-fit:contain;display:block;margin:0 auto;" alt="" /></div>`
+        : '';
+
+      // QR code — apunta al website de la empresa o al app Nitro
+      const qrUrl = companySettings?.website?.trim() || 'https://nitrostock.work';
+      const qrBase64 = await this.loadQRCode(qrUrl);
+      const qrHtml = qrBase64
+        ? `
+            <div style="position:relative;width:100%;height:22mm;margin-top:4px;">
+              <img
+                src="${qrBase64}"
+                style="position:absolute;left:50%;margin-left:-50px;top:-40px;width:20mm;height:20mm;display:block;"
+                alt="QR"
+              />
+            </div>
+          `
+        : '';
 
       // Crear el contenido HTML para imprimir
       const htmlContent = `
@@ -257,12 +401,14 @@ export class TicketPrinterService {
                 padding: 10px;
                 width: 70mm;
                 max-width: 70mm;
+                box-sizing: border-box;
               }
               .ticket-content {
                 white-space: pre-wrap;
                 word-wrap: break-word;
                 width: 100%;
                 max-width: 70mm;
+                box-sizing: border-box;
               }
             }
             body {
@@ -273,17 +419,27 @@ export class TicketPrinterService {
               padding: 10px;
               width: 70mm;
               max-width: 70mm;
+              box-sizing: border-box;
             }
             .ticket-content {
               white-space: pre-wrap;
               word-wrap: break-word;
               width: 100%;
               max-width: 70mm;
+              box-sizing: border-box;
+            }
+            pre {
+              margin: 0;
+              padding: 0;
             }
           </style>
         </head>
         <body>
-          <div class="ticket-content">${logoHtml}<pre>${ticketContent}</pre></div>
+          <div class="ticket-content">
+            ${logoHtml}
+            <div style="white-space:pre-wrap;word-wrap:break-word;">${ticketContent}</div>
+            ${qrHtml}
+          </div>
         </body>
         </html>
       `;
@@ -295,10 +451,8 @@ export class TicketPrinterService {
         printWindow.onload = () => resolve();
       });
 
-      // Dar tiempo a que el logo (img) termine de cargar antes de imprimir
-      if (logoFullUrl) {
-        await new Promise(resolve => setTimeout(resolve, 400));
-      }
+      // Dar tiempo a que el logo y el QR terminen de cargar antes de imprimir
+      await new Promise(resolve => setTimeout(resolve, logoFullUrl || qrBase64 ? 600 : 400));
 
       printWindow.print();
       

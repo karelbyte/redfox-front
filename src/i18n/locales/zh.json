@@ -54,6 +54,15 @@
       "export": "导出",
       "more": "更多"
     },
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页",
+      "page": "页",
+      "pages": "页",
+      "of": "/",
+      "showing": "显示",
+      "results": "条结果"
+    },
     "status": {
       "active": "启用",
       "inactive": "禁用",
@@ -409,6 +418,7 @@
         "basePrice": "基础价格（标准售价）",
         "alternativePrices": "备选价格列表",
         "addPrice": "添加备选价格",
+        "minStock": "最低库存",
         "images": "图片",
         "placeholders": {
           "name": "例：产品 XYZ",
@@ -417,6 +427,7 @@
           "code": "例：12345678",
           "sku": "例：SKU001",
           "barcode": "例：1234567890123",
+          "minStock": "例：5",
           "weight": "例：1.5",
           "width": "例：10",
           "height": "例：5",

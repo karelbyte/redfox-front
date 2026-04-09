@@ -54,6 +54,15 @@
       "export": "Exportar",
       "more": "Mas"
     },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página",
+      "pages": "páginas",
+      "of": "de",
+      "showing": "Mostrando",
+      "results": "resultados"
+    },
     "status": {
       "active": "Activo",
       "inactive": "Inactivo",

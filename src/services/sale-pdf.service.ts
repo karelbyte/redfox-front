@@ -43,6 +43,44 @@ export class SalePDFService {
     this.locale = locale || 'es';
   }
 
+  private resetDocument(): void {
+    this.doc = new jsPDF();
+    this.pageWidth = this.doc.internal.pageSize.getWidth();
+    this.pageHeight = this.doc.internal.pageSize.getHeight();
+    this.currentY = 20;
+  }
+
+  private getSafeText(value: unknown, fallback: string = '—'): string {
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      return trimmed.length > 0 ? trimmed : fallback;
+    }
+
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? String(value) : fallback;
+    }
+
+    if (value === null || value === undefined) {
+      return fallback;
+    }
+
+    const text = String(value).trim();
+    return text.length > 0 ? text : fallback;
+  }
+
+  private drawText(
+    value: unknown,
+    x: number,
+    y: number,
+    options?: Parameters<jsPDF['text']>[3]
+  ): void {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      return;
+    }
+
+    this.doc.text(this.getSafeText(value), x, y, options);
+  }
+
   private async loadCompanySettings(): Promise<void> {
     try {
       this.companySettings = await companySettingsService.get();
@@ -124,11 +162,16 @@ export class SalePDFService {
   }
 
   private formatDate(date: string): string {
+    const parsedDate = new Date(date);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return this.getSafeText(date);
+    }
+
     const localeMap: Record<string, string> = {
       'es': 'es-MX',
       'en': 'en-US'
     };
-    return new Date(date).toLocaleDateString(localeMap[this.locale] || 'es-MX', {
+    return parsedDate.toLocaleDateString(localeMap[this.locale] || 'es-MX', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -146,7 +189,7 @@ export class SalePDFService {
       
       // Nombre de la empresa
       if (this.companySettings.name) {
-        this.doc.text(this.companySettings.name, this.margin, this.currentY);
+        this.drawText(this.companySettings.name, this.margin, this.currentY);
         this.currentY += 6;
       }
       
@@ -156,18 +199,18 @@ export class SalePDFService {
       this.doc.setTextColor(100, 100, 100);
       
       if (this.companySettings.address) {
-        this.doc.text(this.companySettings.address, this.margin, this.currentY);
+        this.drawText(this.companySettings.address, this.margin, this.currentY);
         this.currentY += 4;
       }
       
       if (this.companySettings.phone) {
-        this.doc.text(`Tel: ${this.companySettings.phone}`, this.margin, this.currentY);
+        this.drawText(`Tel: ${this.companySettings.phone}`, this.margin, this.currentY);
         this.currentY += 4;
       }
       
       if (this.companySettings.taxId) {
         const taxLabel = this.locale === 'es' ? 'RFC' : 'Tax ID';
-        this.doc.text(`${taxLabel}: ${this.companySettings.taxId}`, this.margin, this.currentY);
+        this.drawText(`${taxLabel}: ${this.companySettings.taxId}`, this.margin, this.currentY);
         this.currentY += 4;
       }
       
@@ -178,7 +221,7 @@ export class SalePDFService {
     // Título usando traducción
     this.doc.setFontSize(18);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(translations.title.toUpperCase(), this.pageWidth / 2, this.currentY, { align: 'center' });
+    this.drawText(this.getSafeText(translations.title, 'Venta').toUpperCase(), this.pageWidth / 2, this.currentY, { align: 'center' });
     
     this.currentY += 12;
 
@@ -191,28 +234,28 @@ export class SalePDFService {
     const rightColumn = this.pageWidth / 2 + 10;
 
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${translations.code}:`, leftColumn, this.currentY);
+    this.drawText(`${this.getSafeText(translations.code, 'Código')}:`, leftColumn, this.currentY);
     this.doc.setFont('helvetica', 'normal');
-    this.doc.text(sale.code, leftColumn + 20, this.currentY);
+    this.drawText(sale.code, leftColumn + 20, this.currentY);
 
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${translations.date}:`, rightColumn, this.currentY);
+    this.drawText(`${this.getSafeText(translations.date, 'Fecha')}:`, rightColumn, this.currentY);
     this.doc.setFont('helvetica', 'normal');
-    this.doc.text(this.formatDate(sale.created_at), rightColumn + 20, this.currentY);
+    this.drawText(this.formatDate(sale.created_at), rightColumn + 20, this.currentY);
 
     this.currentY += 6;
 
     // Destino y estado
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${translations.destination}:`, leftColumn, this.currentY);
+    this.drawText(`${this.getSafeText(translations.destination, 'Destino')}:`, leftColumn, this.currentY);
     this.doc.setFont('helvetica', 'normal');
-    this.doc.text(sale.destination, leftColumn + 20, this.currentY);
+    this.drawText(sale.destination, leftColumn + 20, this.currentY);
 
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${translations.status}:`, rightColumn, this.currentY);
+    this.drawText(`${this.getSafeText(translations.status, 'Estado')}:`, rightColumn, this.currentY);
     this.doc.setFont('helvetica', 'normal');
     const statusText = sale.status === 'CLOSED' ? translations.statusClosed : translations.statusOpen;
-    this.doc.text(statusText.toUpperCase(), rightColumn + 20, this.currentY);
+    this.drawText(this.getSafeText(statusText, '—').toUpperCase(), rightColumn + 20, this.currentY);
 
     this.currentY += 12;
   }
@@ -224,21 +267,21 @@ export class SalePDFService {
 
     this.doc.setFontSize(10);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${translations.client}:`, this.margin + 5, this.currentY);
+    this.drawText(`${this.getSafeText(translations.client, 'Cliente')}:`, this.margin + 5, this.currentY);
     
     this.currentY += 6;
     this.doc.setFontSize(9);
     this.doc.setFont('helvetica', 'normal');
-    this.doc.text(sale.client.name, this.margin + 5, this.currentY);
+    this.drawText(sale.client?.name, this.margin + 5, this.currentY);
     
     this.currentY += 5;
     this.doc.setFontSize(8);
     this.doc.setTextColor(100, 100, 100);
-    if (sale.client.email) {
-      this.doc.text(`Email: ${sale.client.email}`, this.margin + 5, this.currentY);
+    if (sale.client?.email) {
+      this.drawText(`Email: ${sale.client.email}`, this.margin + 5, this.currentY);
     }
-    if (sale.client.phone) {
-      this.doc.text(`Tel: ${sale.client.phone}`, this.margin + 80, this.currentY);
+    if (sale.client?.phone) {
+      this.drawText(`Tel: ${sale.client.phone}`, this.margin + 80, this.currentY);
     }
     this.doc.setTextColor(0, 0, 0);
 
@@ -247,9 +290,10 @@ export class SalePDFService {
 
   private addProductsTable(details: SaleDetail[], translations: PDFTranslations) {
     const tableData = details.map(detail => {
-      const productName = detail.product.name.length > 30
-        ? detail.product.name.substring(0, 27) + '...'
-        : detail.product.name;
+      const rawProductName = this.getSafeText(detail.product?.name);
+      const productName = rawProductName.length > 30
+        ? rawProductName.substring(0, 27) + '...'
+        : rawProductName;
 
       const quantity = Number(detail.quantity);
       const price = Number(detail.price);
@@ -265,7 +309,7 @@ export class SalePDFService {
 
       return [
         productName,
-        detail.product.sku,
+        this.getSafeText(detail.product?.sku),
         `${quantity} ${detail.product.measurement_unit?.code || ''}`,
         this.formatCurrency(price, currencyCode),
         this.formatCurrency(subtotal, currencyCode),
@@ -338,12 +382,12 @@ export class SalePDFService {
 
     this.doc.setFontSize(9);
     this.doc.setFont('helvetica', 'normal');
-    this.doc.text(`${translations.subtotal}:`, labelX, this.currentY, { align: 'right' });
-    this.doc.text(this.formatCurrency(grandSubtotal, currencyCode), valueX, this.currentY, { align: 'right' });
+    this.drawText(`${this.getSafeText(translations.subtotal, 'Subtotal')}:`, labelX, this.currentY, { align: 'right' });
+    this.drawText(this.formatCurrency(grandSubtotal, currencyCode), valueX, this.currentY, { align: 'right' });
 
     this.currentY += 6;
-    this.doc.text('IVA:', labelX, this.currentY, { align: 'right' });
-    this.doc.text(grandTax > 0 ? this.formatCurrency(grandTax, currencyCode) : '—', valueX, this.currentY, { align: 'right' });
+    this.drawText('IVA:', labelX, this.currentY, { align: 'right' });
+    this.drawText(grandTax > 0 ? this.formatCurrency(grandTax, currencyCode) : '—', valueX, this.currentY, { align: 'right' });
 
     this.currentY += 6;
     // Línea separadora
@@ -352,30 +396,60 @@ export class SalePDFService {
 
     this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${translations.total}:`, labelX, this.currentY + 2, { align: 'right' });
-    this.doc.text(this.formatCurrency(grandTotal, currencyCode), valueX, this.currentY + 2, { align: 'right' });
+    this.drawText(`${this.getSafeText(translations.total, 'Total')}:`, labelX, this.currentY + 2, { align: 'right' });
+    this.drawText(this.formatCurrency(grandTotal, currencyCode), valueX, this.currentY + 2, { align: 'right' });
 
     this.currentY += 12;
   }
 
-  private addFooter(translations: PDFTranslations) {
-    const footerY = this.pageHeight - 20;
-    
+  private async loadQRCode(): Promise<string | null> {
+    const qrUrl = this.companySettings?.website?.trim() || 'https://nitrostock.work';
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(qrUrl)}`;
+    try {
+      const response = await fetch(qrApiUrl);
+      if (!response.ok) return null;
+      const blob = await response.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  private addFooter(translations: PDFTranslations, qrBase64?: string | null) {
+    const footerY = this.pageHeight - 30;
+
+    // QR code
+    if (qrBase64) {
+      try {
+        this.doc.addImage(qrBase64, 'PNG', this.margin, footerY - 18, 18, 18);
+        const qrUrl = this.companySettings?.website?.trim() || 'https://nitrostock.work';
+        const shortUrl = qrUrl.replace(/^https?:\/\//, '').replace(/\/$/, '').substring(0, 25);
+        if (shortUrl) {
+          this.doc.setFontSize(6);
+          this.doc.setTextColor(130, 130, 130);
+          this.doc.setFont('helvetica', 'normal');
+          this.drawText(shortUrl, this.margin + 9, footerY + 2, { align: 'center' });
+        }
+      } catch { /* continuar sin QR */ }
+    }
+
     this.doc.setFontSize(8);
     this.doc.setTextColor(100, 100, 100);
     this.doc.setFont('helvetica', 'italic');
-    
+
     const footerText = translations.footer || 'Documento generado automáticamente';
-    this.doc.text(footerText, this.pageWidth / 2, footerY, { align: 'center' });
-    
-    // Número de página
-    this.doc.text(
-      `${translations.page} ${this.doc.getCurrentPageInfo().pageNumber}`,
-      this.pageWidth / 2,
-      footerY + 5,
-      { align: 'center' }
-    );
-    
+    if (footerText) {
+      this.drawText(footerText, this.pageWidth / 2, footerY + 5, { align: 'center' });
+    }
+
+    const pageLabel = `${this.getSafeText(translations.page, 'Página')} ${this.doc.getCurrentPageInfo().pageNumber}`;
+    this.drawText(pageLabel, this.pageWidth / 2, footerY + 10, { align: 'center' });
+
     this.doc.setTextColor(0, 0, 0);
   }
 
@@ -384,17 +458,16 @@ export class SalePDFService {
     details: SaleDetail[],
     translations: PDFTranslations
   ): Promise<void> {
-    // Cargar configuración de la empresa
+    this.resetDocument();
     await this.loadCompanySettings();
+    const qrBase64 = await this.loadQRCode();
 
-    // Generar el contenido del PDF
     await this.addHeader(sale, translations);
     this.addClientInfo(sale, translations);
     this.addProductsTable(details, translations);
     this.addTotal(details, translations);
-    this.addFooter(translations);
+    this.addFooter(translations, qrBase64);
 
-    // Descargar el PDF
     const fileName = `venta-${sale.code}.pdf`;
     this.doc.save(fileName);
   }
@@ -404,17 +477,16 @@ export class SalePDFService {
     details: SaleDetail[],
     translations: PDFTranslations
   ): Promise<void> {
-    // Cargar configuración de la empresa
+    this.resetDocument();
     await this.loadCompanySettings();
+    const qrBase64 = await this.loadQRCode();
 
-    // Generar el contenido del PDF
     await this.addHeader(sale, translations);
     this.addClientInfo(sale, translations);
     this.addProductsTable(details, translations);
     this.addTotal(details, translations);
-    this.addFooter(translations);
+    this.addFooter(translations, qrBase64);
 
-    // Abrir en nueva ventana
     const pdfBlob = this.doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl, '_blank');

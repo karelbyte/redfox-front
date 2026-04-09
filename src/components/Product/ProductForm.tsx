@@ -646,7 +646,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
             <TextArea
               id="description"
-              label={t('form.description')}
+              label={`${t('form.description')} *`}
               value={formData.description}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, description: e.target.value }))
