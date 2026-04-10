@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useTheme, ThemeType } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useTranslations, useLocale } from 'next-intl';
 import { authService } from '@/services/auth.service';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toastService } from '@/services/toast.service';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import AuthThemeSelector from '@/components/AuthThemeSelector';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { currentTheme, setTheme, themes } = useTheme();
+  const { currentTheme } = useTheme();
   const t = useTranslations('pages.register');
   const router = useRouter();
   const locale = useLocale();
@@ -102,19 +103,7 @@ export default function RegisterPage() {
       {/* Panel derecho — formulario */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 relative overflow-y-auto">
 
-        {/* Selector de tema */}
-        <div className="absolute top-4 right-4">
-          <select
-            value={currentTheme}
-            onChange={(e) => setTheme(e.target.value as ThemeType)}
-            className="px-3 py-2 rounded-lg text-sm focus:outline-none border transition-colors"
-            style={{ borderColor: `rgb(var(--color-secondary-300))`, color: `rgb(var(--color-secondary-800))` }}
-          >
-            {Object.entries(themes).map(([key, theme]) => (
-              <option key={key} value={key}>{theme.name}</option>
-            ))}
-          </select>
-        </div>
+        <AuthThemeSelector />
 
         <div className="w-full max-w-sm">
           {/* Logo mobile */}

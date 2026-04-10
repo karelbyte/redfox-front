@@ -7,6 +7,7 @@ interface CartItem {
   product: InventoryProduct;
   quantity: number;
   price: number;
+  priceMode: string;
   subtotal: number;
   tax_amount: number;
   subtotal_no_tax: number;
@@ -17,7 +18,7 @@ interface CartContextType {
   selectedClient: string;
   addToCart: (product: InventoryProduct, quantity?: number, price?: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
-  updatePrice: (productId: string, price: number) => void;
+  updatePrice: (productId: string, price: number, priceMode?: string) => void;
   removeFromCart: (productId: string) => void;
   clearCart: () => void;
   setSelectedClient: (clientId: string) => void;
@@ -63,7 +64,10 @@ class CartStateManager {
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       if (savedCart) {
         try {
-          this.cart = JSON.parse(savedCart);
+          const parsedCart = JSON.parse(savedCart);
+          this.cart = Array.isArray(parsedCart)
+            ? parsedCart.map((item) => this.normalizeCartItem(item))
+            : [];
         } catch (parseError) {
           console.error('Error parsing cart from localStorage, clearing cart:', parseError);
           localStorage.removeItem(CART_STORAGE_KEY);
@@ -138,6 +142,51 @@ class CartStateManager {
     };
   }
 
+  private inferPriceMode(product: InventoryProduct, price: number): string {
+    const normalizedPrice = typeof price === 'number' ? price : Number(price) || 0;
+
+    if (
+      product.product.base_price !== undefined &&
+      Math.abs(product.product.base_price - normalizedPrice) < 0.0001
+    ) {
+      return 'base';
+    }
+
+    const matchingPrice = product.product.prices?.find(
+      (productPrice) => Math.abs(productPrice.price - normalizedPrice) < 0.0001
+    );
+
+    if (matchingPrice) {
+      return `price:${matchingPrice.id}`;
+    }
+
+    if (
+      (product.product.base_price === undefined || product.product.base_price === null) &&
+      Math.abs(product.price - normalizedPrice) < 0.0001
+    ) {
+      return 'inventory';
+    }
+
+    return 'custom';
+  }
+
+  private normalizeCartItem(item: any): CartItem {
+    const numericPrice = typeof item?.price === 'number' ? item.price : parseFloat(item?.price) || 0;
+    const quantity = typeof item?.quantity === 'number' ? item.quantity : parseFloat(item?.quantity) || 0;
+    const totals = this.calculateItemTotals(item.product, quantity, numericPrice);
+
+    return {
+      ...item,
+      quantity,
+      price: numericPrice,
+      priceMode:
+        typeof item?.priceMode === 'string' && item.priceMode.length > 0
+          ? item.priceMode
+          : this.inferPriceMode(item.product, numericPrice),
+      ...totals,
+    };
+  }
+
   subscribe(listener: (cart: CartItem[], selectedClient: string) => void) {
     this.listeners.add(listener);
     // Notificar inmediatamente con el estado actual solo en el cliente
@@ -175,12 +224,16 @@ class CartStateManager {
       
       // Determinar el precio a usar: precio pasado, precio base del producto, o precio del inventario
       let productPrice: number;
+      let priceMode: string;
       if (price !== undefined) {
         productPrice = price;
+        priceMode = this.inferPriceMode(product, price);
       } else if (product.product.base_price !== undefined) {
         productPrice = product.product.base_price;
+        priceMode = 'base';
       } else {
         productPrice = typeof product.price === 'string' ? parseFloat(product.price) : (typeof product.price === 'number' ? product.price : 0);
+        priceMode = 'inventory';
       }
       
       if (existingItem) {
@@ -192,6 +245,7 @@ class CartStateManager {
               ...item, 
               quantity: newQuantity, 
               price: productPrice,
+              priceMode,
               ...totals
             };
           }
@@ -203,6 +257,7 @@ class CartStateManager {
           product,
           quantity,
           price: productPrice,
+          priceMode,
           ...totals
         };
         this.cart = [...this.cart, newItem];
@@ -242,7 +297,7 @@ class CartStateManager {
     }
   }
 
-  updatePrice(productId: string, price: number) {
+  updatePrice(productId: string, price: number, priceMode?: string) {
     try {
       const validPrice = typeof price === 'number' ? price : 0;
       this.cart = this.cart.map(item => {
@@ -250,7 +305,8 @@ class CartStateManager {
           const totals = this.calculateItemTotals(item.product, item.quantity, validPrice);
           return { 
             ...item, 
-            price: validPrice, 
+            price: validPrice,
+            priceMode: priceMode || this.inferPriceMode(item.product, validPrice),
             ...totals
           };
         }
@@ -341,9 +397,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (!isClient) return;
       cartManager.updateQuantity(productId, quantity);
     },
-    updatePrice: (productId: string, price: number) => {
+    updatePrice: (productId: string, price: number, priceMode?: string) => {
       if (!isClient) return;
-      cartManager.updatePrice(productId, price);
+      cartManager.updatePrice(productId, price, priceMode);
     },
     removeFromCart: (productId: string) => {
       if (!isClient) return;

@@ -1,12 +1,13 @@
 'use client';
 
-import { useTheme, ThemeType } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
 import PricingCards from '@/components/Pricing/PricingCards';
+import AuthThemeSelector from '@/components/AuthThemeSelector';
 
 export default function PricingPage() {
-  const { currentTheme, setTheme, themes } = useTheme();
+  const { currentTheme } = useTheme();
   const locale = useLocale();
 
   const getImageUrl = (): string => {
@@ -31,28 +32,7 @@ export default function PricingPage() {
       className="min-h-screen flex flex-col items-center justify-center p-4"
       style={{ backgroundColor: `rgb(var(--color-secondary-50))` }}
     >
-      {/* Selector de tema */}
-      <div className="absolute top-4 right-4">
-        <select
-          value={currentTheme}
-          onChange={(e) => setTheme(e.target.value as ThemeType)}
-          className="px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors"
-          style={
-            {
-              backgroundColor: 'white',
-              border: `1px solid rgb(var(--color-secondary-300))`,
-              color: `rgb(var(--color-secondary-800))`,
-              '--tw-ring-color': `rgb(var(--color-primary-500))`,
-            } as React.CSSProperties
-          }
-        >
-          {Object.entries(themes).map(([key, theme]) => (
-            <option key={key} value={key}>
-              {theme.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <AuthThemeSelector />
 
       {/* Header */}
       <div className="text-center mb-12">

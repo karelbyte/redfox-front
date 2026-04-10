@@ -422,7 +422,7 @@ export default function SaleDetailsPage() {
                 {sale.invoice_id && (
                   <span className="ml-2">
                     <a
-                      href={`/${locale}/dashboard/facturas/${sale.invoice_id}`}
+                      href={`/${locale}/dashboard/facturas/facturas/${sale.invoice_id}`}
                       className="text-sm font-medium"
                       style={{ color: `rgb(var(--color-primary-600))` }}
                     >

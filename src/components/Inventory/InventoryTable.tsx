@@ -185,7 +185,7 @@ export default function InventoryTable({
                         leftIcon={<ClockIcon className="h-4 w-4" />}
                       />
                     </Tooltip>
-                    {onSyncPack && (
+                    {/*onSyncPack && (
                       <Tooltip content={t('actions.syncWithPack')} placement="top">
                         <Btn
                           onClick={() => onSyncPack(item)}
@@ -194,7 +194,7 @@ export default function InventoryTable({
                           leftIcon={<ArrowPathIcon className="h-4 w-4" />}
                         />
                       </Tooltip>
-                    )}
+                    )*/}
                   </div>
                 </td>
               )}

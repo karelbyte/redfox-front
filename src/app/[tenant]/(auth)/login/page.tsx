@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from "@/context/AuthContext";
-import { useTheme, ThemeType } from "@/context/ThemeContext";
+import { useTheme } from "@/context/ThemeContext";
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
+import AuthThemeSelector from "@/components/AuthThemeSelector";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export default function LoginPage() {
   const { login, loginWithToken } = useAuth();
   const searchParams = useSearchParams();
   const locale = useLocale();
-  const { currentTheme, setTheme, themes } = useTheme();
+  const { currentTheme } = useTheme();
   const t = useTranslations('pages.login');
 
   useEffect(() => {
@@ -89,19 +90,7 @@ export default function LoginPage() {
       {/* Panel derecho — formulario */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 relative">
 
-        {/* Selector de tema */}
-        <div className="absolute top-4 right-4">
-          <select
-            value={currentTheme}
-            onChange={(e) => setTheme(e.target.value as ThemeType)}
-            className="px-3 py-2 rounded-lg text-sm focus:outline-none border transition-colors"
-            style={{ borderColor: `rgb(var(--color-secondary-300))`, color: `rgb(var(--color-secondary-800))` }}
-          >
-            {Object.entries(themes).map(([key, theme]) => (
-              <option key={key} value={key}>{theme.name}</option>
-            ))}
-          </select>
-        </div>
+        <AuthThemeSelector />
 
         <div className="w-full max-w-sm">
           {/* Logo mobile */}

@@ -110,10 +110,8 @@ export default function ActivatePage() {
                 )}
 
                 {(status === 'success') && (
-                    <div className="flex flex-col items-center space-y-4">
-                        <div className="flex-shrink-0 flex items-center self-center mb-4">
-                            <img src={getImageUrl()} alt="Nitro" className="h-12 w-auto" />
-                        </div>
+                    <div className="flex flex-col items-center space-y-4 ">
+                        <span className="text-3xl font-bold text-gray-800 ">Nitro Stock</span>
                         <CheckCircleIcon className="h-16 w-16 text-green-500" />
                         <h2 className="text-2xl font-bold text-gray-800">{t('successTitle')}</h2>
                         <p className="text-gray-600">{t('successMessage')}</p>

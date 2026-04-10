@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useTheme, ThemeType } from "@/context/ThemeContext";
+import { useTheme } from "@/context/ThemeContext";
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { authService } from "@/services/auth.service";
 import { toastService } from "@/services/toast.service";
+import AuthThemeSelector from "@/components/AuthThemeSelector";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { currentTheme, setTheme, themes } = useTheme();
+  const { currentTheme } = useTheme();
   const t = useTranslations('pages.forgotPassword');
   const locale = useLocale();
 
@@ -60,19 +61,7 @@ export default function ForgotPasswordPage() {
       {/* Panel derecho */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 relative">
 
-        {/* Selector de tema */}
-        <div className="absolute top-4 right-4">
-          <select
-            value={currentTheme}
-            onChange={(e) => setTheme(e.target.value as ThemeType)}
-            className="px-3 py-2 rounded-lg text-sm focus:outline-none border transition-colors"
-            style={{ borderColor: `rgb(var(--color-secondary-300))`, color: `rgb(var(--color-secondary-800))` }}
-          >
-            {Object.entries(themes).map(([key, theme]) => (
-              <option key={key} value={key}>{theme.name}</option>
-            ))}
-          </select>
-        </div>
+        <AuthThemeSelector />
 
         <div className="w-full max-w-sm">
           <div className="lg:hidden flex justify-center mb-8">
