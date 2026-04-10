@@ -11,7 +11,9 @@ import { Provider } from "@/types/provider";
 import ProviderForm from "@/components/Provider/ProviderForm";
 import ProviderTable from "@/components/Provider/ProviderTable";
 import DeleteProviderModal from "@/components/Provider/DeleteProviderModal";
+import BulkDeleteResultModal from "@/components/Provider/BulkDeleteResultModal";
 import { PlusIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { BulkDeleteProviderResult } from "@/types/provider";
 import Drawer from "@/components/Drawer/Drawer";
 import { ProviderFormRef } from "@/components/Provider/ProviderForm";
 import { Btn, SearchInput, EmptyState } from "@/components/atoms";
@@ -48,6 +50,7 @@ export default function ProvidersPage() {
   const [filters, setFilters] = useState<Record<string, any>>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [bulkDeleteResults, setBulkDeleteResults] = useState<BulkDeleteProviderResult[] | null>(null);
   const formRef = useRef<ProviderFormRef>(null);
   const initialFetchDone = useRef(false);
 
@@ -144,8 +147,22 @@ export default function ProvidersPage() {
       requiresConfirm: true,
       onClick: async () => {
         try {
-          await providersService.deleteProviders(selectedIds);
-          toastService.success(t('messages.deleteSuccess'));
+          const response = await providersService.deleteProviders(selectedIds);
+
+          if (response && response.results) {
+            setBulkDeleteResults(response.results);
+            if (response.totalFailed === 0) {
+              toastService.success(t('messages.deleteSuccess'));
+            } else if (response.totalDeleted > 0) {
+              toastService.warning(tCommon('messages.partialSuccess'));
+            } else {
+              toastService.error(t('messages.errorDelete'));
+            }
+          } else {
+            // Offline or old response format
+            toastService.success(t('messages.deleteSuccess'));
+          }
+
           clearSelection();
           fetchProviders(currentPage, searchTerm);
         } catch (error) {
@@ -332,6 +349,13 @@ export default function ProvidersPage() {
           onClose={handleDeleteModalClose}
           onSuccess={handleDeleteSuccess}
           onDeletingChange={setIsSaving}
+        />
+      )}
+
+      {bulkDeleteResults && (
+        <BulkDeleteResultModal
+          results={bulkDeleteResults}
+          onClose={() => setBulkDeleteResults(null)}
         />
       )}
 

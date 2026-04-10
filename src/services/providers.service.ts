@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { Provider, ProvidersResponse } from "@/types/provider";
+import { Provider, ProvidersResponse, BulkDeleteProviderResponse } from "@/types/provider";
 import { db } from "@/lib/db";
 
 export const providersService = {
@@ -195,18 +195,28 @@ export const providersService = {
     console.log('📴 Provider deletion queued for sync when online');
   },
 
-  deleteProviders: async (ids: string[]): Promise<void> => {
+  deleteProviders: async (ids: string[]): Promise<BulkDeleteProviderResponse | void> => {
     if (navigator.onLine) {
       try {
-        await api.post('/providers/bulk-delete', { ids });
-        await db.providers.bulkDelete(ids);
-        return;
+        const response = await api.post<BulkDeleteProviderResponse>('/providers/bulk-delete', { ids });
+
+        // Clean up cache for successfully deleted ones
+        const deletedIds = response.results
+          .filter(r => r.success)
+          .map(r => r.id);
+
+        if (deletedIds.length > 0) {
+          await db.providers.bulkDelete(deletedIds);
+        }
+
+        return response;
       } catch (error) {
         console.error('Failed to bulk delete providers online, queuing for later:', error);
       }
     }
 
     // Offline: delete locally and queue each operation
+    // (We return void here as we can't provide granular server feedback yet)
     await db.providers.bulkDelete(ids);
 
     for (const id of ids) {

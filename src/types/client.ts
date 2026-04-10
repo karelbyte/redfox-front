@@ -81,3 +81,11 @@ export interface ClientWithPackStatus {
   pack_sync_success: boolean;
   pack_sync_error?: string;
 }
+
+export interface BulkDeleteResult {
+  id: string;
+  code: string;
+  name: string;
+  success: boolean;
+  error?: string;
+}

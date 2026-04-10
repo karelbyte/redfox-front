@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { Client, ClientsResponse, ClientWithPackStatus } from "@/types/client";
+import { Client, ClientsResponse, ClientWithPackStatus, BulkDeleteResult } from "@/types/client";
 import { db } from "@/lib/db";
 
 export const clientsService = {
@@ -184,14 +184,10 @@ export const clientsService = {
 
   deleteClient: async (id: string): Promise<void> => {
     if (navigator.onLine) {
-      try {
-        await api.delete(`/clients/${id}`);
-        await db.clients.delete(id);
-        return;
-      } catch (error) {
-        console.error('Failed to delete client online, queuing for later:', error);
-        // Fall through to offline mode
-      }
+      // Online: llamar al API y propagar cualquier error
+      await api.delete(`/clients/${id}`);
+      await db.clients.delete(id);
+      return;
     }
 
     // Offline: mark as deleted and queue operation
@@ -209,15 +205,20 @@ export const clientsService = {
     console.log('📴 Client deletion queued for sync when online');
   },
 
-  deleteClients: async (ids: string[]): Promise<void> => {
+  deleteClients: async (ids: string[]): Promise<BulkDeleteResult[]> => {
     if (navigator.onLine) {
-      try {
-        await api.post('/clients/bulk-delete', { ids });
-        await db.clients.bulkDelete(ids);
-        return;
-      } catch (error) {
-        console.error('Failed to bulk delete clients online, queuing for later:', error);
+      const response = await api.post<{ results: BulkDeleteResult[] }>('/clients/bulk-delete', { ids });
+      
+      // Si hubo casos de éxito, eliminamos de la caché local los que correspondan
+      const successIds = (response.results || [])
+        .filter(r => r.success)
+        .map(r => r.id);
+      
+      if (successIds.length > 0) {
+        await db.clients.bulkDelete(successIds);
       }
+      
+      return response.results;
     }
 
     // Offline: delete locally and queue each operation
@@ -235,6 +236,14 @@ export const clientsService = {
     }
 
     console.log(`📴 ${ids.length} client deletions queued for sync when online`);
+    
+    // En offline, asumimos éxito momentáneo para el UI (se sincronizará después)
+    return ids.map(id => ({
+      id,
+      code: '?',
+      name: '?',
+      success: true
+    }));
   },
 
   importFromPack: async (): Promise<{

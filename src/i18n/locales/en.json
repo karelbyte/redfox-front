@@ -490,7 +490,8 @@
         "lowStockWarning": "Low stock"
       },
       "actions": {
-        "generateBarcode": "Generate Barcode"
+        "generateBarcode": "Generate Barcode",
+        "syncWithPack": "Re-sync with PAC"
       },
       "barcodeGenerator": {
         "title": "Generate Barcodes",
@@ -520,7 +521,8 @@
         "packSyncFailedCreate": "Product saved in Redfox. Attention: it was not registered in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}",
         "packSyncFailedUpdate": "Product saved in Redfox. Attention: it was not updated in the PAC. You will not be able to use it for invoicing until this is fixed. Detail: {detail}",
         "importFromPackSuccess": "Import completed: {created} created, {updated} updated, {skipped} skipped",
-        "importFromPackError": "Error importing products from pack"
+        "importFromPackError": "Error importing products from pack",
+        "syncingWithPack": "Syncing with PAC..."
       },
       "pdf": {
         "title": "Product Catalog",
@@ -788,6 +790,7 @@
     },
     "providers": {
       "title": "Providers",
+      "bulkDeleteResult": "Bulk Delete Result",
       "newProvider": "New Provider",
       "editProvider": "Edit Provider",
       "deleteProvider": "Delete Provider",
@@ -837,7 +840,8 @@
         "errorUpdating": "Error updating provider",
         "errorDeleting": "Error deleting provider",
         "confirmDelete": "Are you sure you want to delete the provider \"{name}\"? This action cannot be undone.",
-        "deleteSuccess": "Providers deleted successfully"
+        "deleteSuccess": "Providers deleted successfully",
+        "errorDelete": "Error deleting providers"
       },
       "actions": {
         "edit": "Edit",
@@ -978,6 +982,7 @@
     },
     "clients": {
       "title": "Clients",
+      "bulkDeleteResult": "Bulk Delete Result",
       "newClient": "New Client",
       "importFromPack": "Import from pack",
       "importingFromPack": "Importing...",
@@ -1055,6 +1060,7 @@
         "clientCreated": "Client created successfully",
         "clientUpdated": "Client updated successfully",
         "clientDeleted": "Client deleted successfully",
+        "deleteSuccess": "Clients deleted successfully",
         "errorLoading": "Error loading clients",
         "errorCreating": "Error creating client",
         "errorUpdating": "Error updating client",

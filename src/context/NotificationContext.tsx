@@ -40,10 +40,14 @@ interface NotificationProviderProps {
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
   const { user } = useAuth();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [state, setState] = useState({
+    notifications: [] as Notification[],
+    unreadCount: 0,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { notifications, unreadCount } = state;
 
   const fetchNotifications = useCallback(async (filters: NotificationFilters = {}) => {
     if (!user) return;
@@ -55,8 +59,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         limit: 20,
         ...filters,
       });
-      setNotifications(response.data);
-      setUnreadCount(response.meta.unreadCount);
+      setState({
+        notifications: response.data,
+        unreadCount: response.meta.unreadCount,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error loading notifications');
       console.error('Error fetching notifications:', err);
@@ -70,7 +76,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     
     try {
       const count = await notificationService.getUnreadCount();
-      setUnreadCount(count);
+      setState(prev => ({ ...prev, unreadCount: count }));
     } catch (err) {
       console.error('Error fetching unread count:', err);
     }
@@ -81,22 +87,26 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   const markAsRead = useCallback(async (id: string) => {
     // Notificaciones locales (toast) — solo actualizar estado
     if (isLocalNotification(id)) {
-      setNotifications(prev =>
-        prev.map(n => n.id === id ? { ...n, isRead: true } : n)
-      );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setState(prev => {
+        const notification = prev.notifications.find(n => n.id === id);
+        if (!notification || notification.isRead) return prev;
+        return {
+          notifications: prev.notifications.map(n => n.id === id ? { ...n, isRead: true } : n),
+          unreadCount: Math.max(0, prev.unreadCount - 1),
+        };
+      });
       return;
     }
     try {
       await notificationService.markAsRead(id);
-      setNotifications(prev => 
-        prev.map(notification => 
-          notification.id === id 
-            ? { ...notification, isRead: true }
-            : notification
-        )
-      );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setState(prev => {
+        const notification = prev.notifications.find(n => n.id === id);
+        if (!notification || notification.isRead) return prev;
+        return {
+          notifications: prev.notifications.map(n => n.id === id ? { ...n, isRead: true } : n),
+          unreadCount: Math.max(0, prev.unreadCount - 1),
+        };
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error marking notification as read');
       console.error('Error marking notification as read:', err);
@@ -106,8 +116,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   const markAllAsRead = useCallback(async () => {
     try {
       // Marcar locales en estado
-      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-      setUnreadCount(0);
+      setState(prev => ({
+        notifications: prev.notifications.map(n => ({ ...n, isRead: true })),
+        unreadCount: 0,
+      }));
       // Marcar en servidor solo las no-locales
       await notificationService.markAllAsRead();
     } catch (err) {
@@ -119,30 +131,37 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   const deleteNotification = useCallback(async (id: string) => {
     // Notificaciones locales (toast) — solo eliminar del estado
     if (isLocalNotification(id)) {
-      const notification = notifications.find(n => n.id === id);
-      setNotifications(prev => prev.filter(n => n.id !== id));
-      if (notification && !notification.isRead) {
-        setUnreadCount(prev => Math.max(0, prev - 1));
-      }
+      setState(prev => {
+        const notification = prev.notifications.find(n => n.id === id);
+        return {
+          notifications: prev.notifications.filter(n => n.id !== id),
+          unreadCount: (notification && !notification.isRead) ? Math.max(0, prev.unreadCount - 1) : prev.unreadCount,
+        };
+      });
       return;
     }
     try {
       await notificationService.deleteNotification(id);
-      const notification = notifications.find(n => n.id === id);
-      setNotifications(prev => prev.filter(n => n.id !== id));
-      if (notification && !notification.isRead) {
-        setUnreadCount(prev => Math.max(0, prev - 1));
-      }
+      setState(prev => {
+        const notification = prev.notifications.find(n => n.id === id);
+        return {
+          notifications: prev.notifications.filter(n => n.id !== id),
+          unreadCount: (notification && !notification.isRead) ? Math.max(0, prev.unreadCount - 1) : prev.unreadCount,
+        };
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error deleting notification');
       console.error('Error deleting notification:', err);
     }
-  }, [notifications]);
+  }, []);
 
   const deleteAllRead = useCallback(async () => {
     try {
       // Eliminar locales del estado directamente
-      setNotifications(prev => prev.filter(n => !n.isRead));
+      setState(prev => ({
+        ...prev,
+        notifications: prev.notifications.filter(n => !n.isRead),
+      }));
       // Eliminar del servidor solo las no-locales
       await notificationService.deleteAllRead();
     } catch (err) {
@@ -152,10 +171,12 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   }, []);
 
   const addNotification = useCallback((notification: Notification) => {
-    setNotifications(prev => {
-      if (prev.some(n => n.id === notification.id)) return prev;
-      if (!notification.isRead) setUnreadCount(c => c + 1);
-      return [notification, ...prev];
+    setState(prev => {
+      if (prev.notifications.some(n => n.id === notification.id)) return prev;
+      return {
+        notifications: [notification, ...prev.notifications],
+        unreadCount: notification.isRead ? prev.unreadCount : prev.unreadCount + 1,
+      };
     });
   }, []);
 

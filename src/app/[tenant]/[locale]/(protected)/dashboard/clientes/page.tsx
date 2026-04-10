@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
-import { Client } from "@/types/client";
+import { Client, BulkDeleteResult } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
 import { useSearchStore } from "@/stores/search.store";
@@ -12,6 +12,7 @@ import ClientForm from "@/components/Client/ClientForm";
 import ClientAddressForm from "@/components/Client/ClientAddressForm";
 import ClientTaxDataForm from "@/components/Client/ClientTaxDataForm";
 import DeleteClientModal from "@/components/Client/DeleteClientModal";
+import BulkDeleteResultModal from "@/components/Client/BulkDeleteResultModal";
 import { ArrowDownTrayIcon, PlusIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import Drawer from "@/components/Drawer/Drawer";
 import { ClientFormRef } from "@/components/Client/ClientForm";
@@ -41,6 +42,8 @@ export default function ClientsPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [showDrawer, setShowDrawer] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [bulkDeleteResults, setBulkDeleteResults] = useState<BulkDeleteResult[]>([]);
+  const [isBulkDeleteResultModalOpen, setIsBulkDeleteResultModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -86,8 +89,18 @@ export default function ClientsPage() {
       requiresConfirm: true,
       onClick: async () => {
         try {
-          await clientsService.deleteClients(selectedIds);
-          toastService.success(t('messages.deleteSuccess')); // Verify this key exists or add it
+          const results = await clientsService.deleteClients(selectedIds);
+          
+          // Verificar si hubo algún error
+          const hasErrors = results.some(r => !r.success);
+          
+          if (hasErrors) {
+            setBulkDeleteResults(results);
+            setIsBulkDeleteResultModalOpen(true);
+          } else {
+            toastService.success(t('messages.deleteSuccess'));
+          }
+          
           clearSelection();
           fetchClients(currentPage, searchTerm);
         } catch (error) {
@@ -95,7 +108,7 @@ export default function ClientsPage() {
           if (error instanceof Error) {
             toastService.error(error.message);
           } else {
-            toastService.error(t('messages.errorDelete')); // Verify this key exists
+            toastService.error(t('messages.errorDelete'));
           }
         }
       },
@@ -400,6 +413,15 @@ export default function ClientsPage() {
             selectedCount={selectedIds.length}
             actions={bulkActions}
             onClose={clearSelection}
+          />
+        )
+      }
+
+      {
+        isBulkDeleteResultModalOpen && (
+          <BulkDeleteResultModal
+            results={bulkDeleteResults}
+            onClose={() => setIsBulkDeleteResultModalOpen(false)}
           />
         )
       }

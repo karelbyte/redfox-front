@@ -168,6 +168,23 @@ export default function ListProductsPage() {
     setShowBarcodeModal(true);
   };
 
+  const handleSync = async (product: Product) => {
+    try {
+      toastService.info(t('messages.syncingWithPack') || 'Sincronizando con el PAC...');
+      const result = await productService.syncWithPack(product.id);
+      
+      if (result.success) {
+        toastService.success(tCommon('messages.syncSuccess') || 'Sincronización exitosa');
+        fetchProducts(currentPage, searchTerm);
+      } else {
+        toastService.error(result.message || tCommon('messages.syncError') || 'Error al sincronizar');
+      }
+    } catch (error) {
+      console.error('Error syncing with pack:', error);
+      toastService.error(tCommon('messages.syncError') || 'Error al sincronizar con el PAC');
+    }
+  };
+
   const handleGeneratePDF = async () => {
     try {
       setGeneratingPDF(true);
@@ -398,6 +415,7 @@ export default function ListProductsPage() {
               onEdit={handleEdit}
               onDelete={setProductToDelete}
               onGenerateBarcode={handleGenerateBarcode}
+              onSync={handleSync}
               visibleColumns={visibleColumns}
               selectedIds={selectedIds}
               onSelectChange={toggleSelect}

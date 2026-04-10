@@ -48,6 +48,7 @@ export interface Product {
   images: string[];
   currency?: { id: string; code: string; name: string } | null;
   created_at: string;
+  isSyncWithPack: boolean;
 }
 
 export interface ProductFormData {

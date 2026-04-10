@@ -490,7 +490,8 @@
         "lowStockWarning": "库存不足"
       },
       "actions": {
-        "generateBarcode": "生成条形码"
+        "generateBarcode": "生成条形码",
+        "syncWithPack": "与 PAC 重新同步"
       },
       "barcodeGenerator": {
         "title": "生成条形码",
@@ -520,7 +521,8 @@
         "packSyncFailedCreate": "产品已保存到 Redfox。注意：未在 PAC 注册。在修复此问题之前，您将无法用于开票。详情：{detail}",
         "packSyncFailedUpdate": "产品已保存到 Redfox。注意：未在 PAC 更新。在修复此问题之前，您将无法用于开票。详情：{detail}",
         "importFromPackSuccess": "导入完成：已创建 {created}，已更新 {updated}，已跳过 {skipped}",
-        "importFromPackError": "从套餐导入产品出错"
+        "importFromPackError": "从套餐导入产品出错",
+        "syncingWithPack": "正在与 PAC 同步..."
       },
       "pdf": {
         "title": "产品目录",
@@ -788,6 +790,7 @@
     },
     "providers": {
       "title": "供应商",
+      "bulkDeleteResult": "批量删除结果",
       "newProvider": "新建供应商",
       "editProvider": "编辑供应商",
       "deleteProvider": "删除供应商",
@@ -837,7 +840,8 @@
         "errorUpdating": "更新供应商出错",
         "errorDeleting": "删除供应商出错",
         "confirmDelete": "确定要删除供应商「{name}」吗？此操作无法撤销。",
-        "deleteSuccess": "供应商删除成功"
+        "deleteSuccess": "供应商删除成功",
+        "errorDelete": "批量删除供应商时出错"
       },
       "actions": {
         "edit": "编辑",

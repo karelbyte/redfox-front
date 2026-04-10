@@ -1,7 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { Product } from '@/types/product';
-import { PencilIcon, TrashIcon, QrCodeIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, QrCodeIcon, ArrowPathIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { Btn } from "@/components/atoms";
+import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
 import Tooltip from '@/components/atoms/Tooltip';
 import { API_BASE_URL } from '@/lib/config';
@@ -11,6 +12,7 @@ interface ProductTableProps {
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
   onGenerateBarcode: (product: Product) => void;
+  onSync?: (product: Product) => void;
   visibleColumns?: string[];
   selectedIds?: string[];
   onSelectChange?: (id: string) => void;
@@ -22,6 +24,7 @@ export default function ProductTable({
   onEdit,
   onDelete,
   onGenerateBarcode,
+  onSync,
   visibleColumns,
   selectedIds = [],
   onSelectChange,
@@ -163,7 +166,17 @@ export default function ProductTable({
                       )}
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                      <div className="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+                        {product.isSyncWithPack && (
+                          <Tooltip content={t('table.inPack')} placement="right">
+                            <CheckCircleIcon
+                              className="h-4 w-4 shrink-0 text-green-600"
+                              aria-label={t('table.inPack')}
+                            />
+                          </Tooltip>
+                        )}
+                        {product.name}
+                      </div>
                       <div className="text-sm text-gray-500">{product.description}</div>
                     </div>
                   </div>
@@ -194,12 +207,12 @@ export default function ProductTable({
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex items-center">
                     <span className={`${
-                      product.min_stock && product.min_stock > 0 && Number(product.total_stock) <= Number(product.min_stock)
+                      (product.min_stock ?? 0) > 0 && Number(product.total_stock) <= Number(product.min_stock)
                         ? 'text-red-600 font-bold flex items-center gap-1'
                         : 'text-gray-900'
                     }`}>
-                      {Number(product.total_stock)}
-                      {product.min_stock && product.min_stock > 0 && Number(product.total_stock) <= Number(product.min_stock) && (
+                      {Number(product.total_stock || 0)}
+                      {(product.min_stock ?? 0) > 0 && Number(product.total_stock) <= Number(product.min_stock) && (
                         <Tooltip content={t('table.lowStockWarning', { default: 'Stock bajo' })} placement="right">
                           <span>⚠️</span>
                         </Tooltip>
@@ -220,38 +233,13 @@ export default function ProductTable({
               )}
               {isVisible('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <Tooltip content={t('actions.generateBarcode')} placement="top">
-                      <Btn
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onGenerateBarcode(product)}
-                        leftIcon={<QrCodeIcon className="h-4 w-4" />}
-                        style={{ color: '#059669' }}
-                      />
-                    </Tooltip>
-                    {can(["product_update"]) && (
-                      <Tooltip content={tCommon('actions.edit')} placement="top">
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(product)}
-                          leftIcon={<PencilIcon className="h-4 w-4" />}
-                        />
-                      </Tooltip>
-                    )}
-                    {can(["product_delete"]) && (
-                      <Tooltip content={tCommon('actions.delete')} placement="top">
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onDelete(product)}
-                          leftIcon={<TrashIcon className="h-4 w-4" />}
-                          style={{ color: '#dc2626' }}
-                        />
-                      </Tooltip>
-                    )}
-                  </div>
+                  <ProductActionsMenu
+                    product={product}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onGenerateBarcode={onGenerateBarcode}
+                    onSync={onSync}
+                  />
                 </td>
               )}
             </tr>
@@ -260,4 +248,72 @@ export default function ProductTable({
       </table>
     </div>
   );
+}
+
+interface ProductActionsMenuProps {
+  product: Product;
+  onEdit: (product: Product) => void;
+  onDelete: (product: Product) => void;
+  onGenerateBarcode: (product: Product) => void;
+  onSync?: (product: Product) => void;
+}
+
+function ProductActionsMenu({
+  product,
+  onEdit,
+  onDelete,
+  onGenerateBarcode,
+  onSync,
+}: ProductActionsMenuProps) {
+  const t = useTranslations('pages.products');
+  const tCommon = useTranslations('common');
+  const { can } = usePermissions();
+
+  const menuItems: ActionMenuItem[] = [
+    ...(can(['product_update']) && onSync
+      ? [
+          {
+            icon: <ArrowPathIcon className="h-4 w-4" />,
+            label: t('actions.syncWithPack') || 'Resincronizar con el PAC',
+            color: '#0891b2',
+            onClick: () => {
+              onSync(product);
+            },
+          },
+        ]
+      : []),
+    {
+      icon: <QrCodeIcon className="h-4 w-4" />,
+      label: t('actions.generateBarcode'),
+      color: '#059669',
+      onClick: () => {
+        onGenerateBarcode(product);
+      },
+    },
+    ...(can(['product_update'])
+      ? [
+          {
+            icon: <PencilIcon className="h-4 w-4" />,
+            label: tCommon('actions.edit'),
+            onClick: () => {
+              onEdit(product);
+            },
+          },
+        ]
+      : []),
+    ...(can(['product_delete'])
+      ? [
+          {
+            icon: <TrashIcon className="h-4 w-4" />,
+            label: tCommon('actions.delete'),
+            color: '#dc2626',
+            onClick: () => {
+              onDelete(product);
+            },
+          },
+        ]
+      : []),
+  ];
+
+  return <ActionsMenu items={menuItems} />;
 }

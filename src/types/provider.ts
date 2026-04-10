@@ -69,3 +69,18 @@ export interface ProvidersResponse {
     totalPages: number;
   };
 }
+
+export interface BulkDeleteProviderResult {
+  id: string;
+  code: string;
+  name: string;
+  success: boolean;
+  error?: string;
+}
+
+export interface BulkDeleteProviderResponse {
+  results: BulkDeleteProviderResult[];
+  totalRequested: number;
+  totalDeleted: number;
+  totalFailed: number;
+}

@@ -85,6 +85,10 @@ class ProductService {
     return response;
   }
 
+  async syncWithPack(id: string): Promise<any> {
+    return await api.post(`/products/sync/${id}`, {});
+  }
+
   async deleteProduct(id: string): Promise<void> {
     await api.delete(`/products/${id}`);
   }
