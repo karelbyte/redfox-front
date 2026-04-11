@@ -1,10 +1,14 @@
 import { useCallback } from 'react';
+import { useParams } from 'next/navigation';
 import { useNotifications } from '@/context/NotificationContext';
 import { NotificationType, NotificationPriority, CreateNotificationDto } from '@/types/notification';
 import { notificationService } from '@/services/notifications.service';
 
 export const useNotificationActions = () => {
   const { addNotification } = useNotifications();
+  const params = useParams();
+  const tenant = params?.tenant;
+  const locale = params?.locale;
 
   const showNotification = useCallback(async (data: CreateNotificationDto) => {
     try {
@@ -16,6 +20,11 @@ export const useNotificationActions = () => {
       throw error;
     }
   }, [addNotification]);
+
+  const getBaseUrl = useCallback(() => {
+    if (!tenant || !locale) return '';
+    return `/${tenant}/${locale}`;
+  }, [tenant, locale]);
 
   const showSuccess = useCallback((title: string, message: string, actionUrl?: string, actionLabel?: string) => {
     return showNotification({
@@ -76,11 +85,11 @@ export const useNotificationActions = () => {
       message,
       type: NotificationType.ORDER,
       priority: NotificationPriority.MEDIUM,
-      actionUrl: orderId ? `/dashboard/ordenes-de-compra/${orderId}` : undefined,
+      actionUrl: orderId ? `${getBaseUrl()}/dashboard/ordenes-de-compra/ordenes-de-compra/${orderId}` : undefined,
       actionLabel: orderId ? 'Ver Orden' : undefined,
       metadata: { orderId },
     });
-  }, [showNotification]);
+  }, [showNotification, getBaseUrl]);
 
   const showInventoryNotification = useCallback((title: string, message: string, productId?: string) => {
     return showNotification({
@@ -88,11 +97,11 @@ export const useNotificationActions = () => {
       message,
       type: NotificationType.INVENTORY,
       priority: NotificationPriority.HIGH,
-      actionUrl: productId ? `/dashboard/inventarios` : undefined,
+      actionUrl: productId ? `${getBaseUrl()}/dashboard/inventarios` : undefined,
       actionLabel: productId ? 'Ver Inventario' : undefined,
       metadata: { productId },
     });
-  }, [showNotification]);
+  }, [showNotification, getBaseUrl]);
 
   const showSaleNotification = useCallback((title: string, message: string, saleId?: string) => {
     return showNotification({
@@ -100,11 +109,11 @@ export const useNotificationActions = () => {
       message,
       type: NotificationType.SALE,
       priority: NotificationPriority.MEDIUM,
-      actionUrl: saleId ? `/dashboard/ventas/${saleId}` : undefined,
+      actionUrl: saleId ? `${getBaseUrl()}/dashboard/ventas/ventas/${saleId}` : undefined,
       actionLabel: saleId ? 'Ver Venta' : undefined,
       metadata: { saleId },
     });
-  }, [showNotification]);
+  }, [showNotification, getBaseUrl]);
 
   const showQuotationNotification = useCallback((title: string, message: string, quotationId?: string) => {
     return showNotification({
@@ -112,11 +121,11 @@ export const useNotificationActions = () => {
       message,
       type: NotificationType.QUOTATION,
       priority: NotificationPriority.MEDIUM,
-      actionUrl: quotationId ? `/dashboard/cotizaciones/${quotationId}` : undefined,
+      actionUrl: quotationId ? `${getBaseUrl()}/dashboard/cotizaciones/${quotationId}` : undefined,
       actionLabel: quotationId ? 'Ver Cotización' : undefined,
       metadata: { quotationId },
     });
-  }, [showNotification]);
+  }, [showNotification, getBaseUrl]);
 
   const showInvoiceNotification = useCallback((title: string, message: string, invoiceId?: string) => {
     return showNotification({
@@ -124,11 +133,11 @@ export const useNotificationActions = () => {
       message,
       type: NotificationType.INVOICE,
       priority: NotificationPriority.HIGH,
-      actionUrl: invoiceId ? `/dashboard/facturas/${invoiceId}` : undefined,
+      actionUrl: invoiceId ? `${getBaseUrl()}/dashboard/facturas/facturas/${invoiceId}` : undefined,
       actionLabel: invoiceId ? 'Ver Factura' : undefined,
       metadata: { invoiceId },
     });
-  }, [showNotification]);
+  }, [showNotification, getBaseUrl]);
 
   return {
     showNotification,

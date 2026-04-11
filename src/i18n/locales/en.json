@@ -80,7 +80,9 @@
       "successCreated": "{item} created successfully",
       "successUpdated": "{item} updated successfully",
       "successDeleted": "{item} deleted successfully",
-      "successClosed": "{item} closed successfully"
+      "successClosed": "{item} closed successfully",
+      "success": "Operation successful",
+      "error": "An error has occurred"
     },
     "noPermission": "No Permission",
     "noPermissionDescription": "You don't have permission to access this page. Contact your administrator if you think this is an error.",
@@ -1680,6 +1682,11 @@
       }
     },
     "quotations": {
+      "common": {
+        "actions": {
+          "back": "Back"
+        }
+      },
       "title": "Quotations",
       "subtitle": "Manage your business quotations",
       "newQuotation": "New Quotation",
@@ -1723,12 +1730,15 @@
         "customPrice": "Custom Price",
         "discountPercentage": "Discount (%)",
         "discountAmount": "Discount (Amount)",
+        "email": "Email Address",
+        "emailMessage": "Custom Message (optional)",
         "placeholders": {
           "code": "e.g. COT-2026-001",
           "selectClient": "Select client",
           "selectWarehouse": "Select warehouse",
           "selectProduct": "Select product",
-          "notes": "Additional notes about the quotation"
+          "notes": "Additional notes about the quotation",
+          "emailMessage": "Write a message to attach to the email..."
         },
         "errors": {
           "codeRequired": "Code is required",
@@ -1754,7 +1764,10 @@
         "addProduct": "Add Product",
         "editProduct": "Edit Product",
         "newClient": "New Client",
-        "createNewClient": "Create new client"
+        "createNewClient": "Create new client",
+        "sendByEmail": "Send by Email",
+        "send": "Send",
+        "sending": "Sending..."
       },
       "search": {
         "placeholder": "Search by code, client..."
@@ -1787,7 +1800,9 @@
         "errorGeneratingPDF": "Error generating PDF",
         "pdfFooter": "Thank you for your preference",
         "pdfTitle": "Quotation",
-        "pdfPage": "Page"
+        "pdfPage": "Page",
+        "emailRequired": "Email is required",
+        "invalidEmails": "Invalid emails: {emails}"
       },
       "details": {
         "title": "Quotation {code}",

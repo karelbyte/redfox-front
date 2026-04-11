@@ -13,7 +13,7 @@ import Pagination from '@/components/Pagination/Pagination';
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import ExportButton from '@/components/atoms/ExportButton';
 import AdvancedFilters, { FilterField } from '@/components/atoms/AdvancedFilters';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
@@ -24,7 +24,9 @@ import { quotationsHelp } from "@/components/Help/configs/quotations.help";
 const QuotationListPage = () => {
   const t = useTranslations('pages.quotations');
   const router = useRouter();
+  const params = useParams();
   const locale = useLocale();
+  const tenant = params?.tenant as string;
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -86,7 +88,7 @@ const QuotationListPage = () => {
   };
 
   const handleView = (quotation: Quotation) => {
-    router.push(`/${locale}/dashboard/cotizaciones/${quotation.id}`);
+    router.push(`/${tenant}/${locale}/dashboard/cotizaciones/${quotation.id}`);
   };
 
   const handleDrawerClose = () => {
@@ -95,12 +97,18 @@ const QuotationListPage = () => {
     setIsSaving(false);
   };
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = (id?: string) => {
     handleDrawerClose();
-    loadQuotations();
+    
     toastService.success(
       selectedQuotation ? t('messages.updateSuccess') : t('messages.createSuccess')
     );
+
+    if (!selectedQuotation && id) {
+      router.push(`/${tenant}/${locale}/dashboard/cotizaciones/${id}`);
+    } else {
+      loadQuotations();
+    }
   };
 
   const handleSave = () => {

@@ -8,11 +8,10 @@ import { useLocale } from 'next-intl';
 import { Quotation, QuotationStatus } from '@/types/quotation';
 import { toastService } from '@/services/toast.service';
 import { quotationService } from '@/services/quotations.service';
-import { Btn } from '@/components/atoms';
 import ActionsMenu from '@/components/atoms/ActionsMenu';
 import { QuotationActionsMenu } from './QuotationActionsMenu';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
-import { QuotationPDFService } from '@/services/quotation-pdf.service';
+import SendQuotationEmailModal from '@/components/Quotation/SendQuotationEmailModal';
 
 interface QuotationTableProps {
   quotations: Quotation[];
@@ -32,12 +31,18 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
   const locale = useLocale();
   const [loadingActions, setLoadingActions] = useState<{ [key: string]: boolean }>({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState<Quotation | null>(null);
 
   const handleGeneratePDF = (quotation: Quotation) => {
     if (onGeneratePDF) {
       onGeneratePDF(quotation);
     }
+  };
+
+  const handleSendEmailClick = (quotation: Quotation) => {
+    setSelectedQuotation(quotation);
+    setEmailModalOpen(true);
   };
 
   const getStatusBadge = (status: QuotationStatus) => {
@@ -204,6 +209,7 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
                       onDelete: handleDeleteClick,
                       onConvert: handleConvertClick,
                       onGeneratePDF: handleGeneratePDF,
+                      onSendEmail: handleSendEmailClick,
                       loadingActions,
                     })}
                   />
@@ -229,6 +235,20 @@ const QuotationTable = ({ quotations, onEdit, onView, onRefresh, visibleColumns,
       cancelText={tCommon('actions.cancel')}
       confirmButtonStyle={{ backgroundColor: '#dc2626' }}
     />
+
+    {/* Send Email Modal */}
+    {selectedQuotation && (
+      <SendQuotationEmailModal
+        isOpen={emailModalOpen}
+        onClose={() => {
+          setEmailModalOpen(false);
+          setSelectedQuotation(null);
+        }}
+        quotationId={selectedQuotation.id}
+        defaultEmail={selectedQuotation.client?.email || ''}
+        locale={locale}
+      />
+    )}
   </>
   );
 };

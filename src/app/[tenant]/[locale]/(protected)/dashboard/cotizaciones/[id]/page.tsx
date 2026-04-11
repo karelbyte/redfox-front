@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { useLocaleUtils } from '@/hooks/useLocale';
-import { ArrowLeftIcon, PlusIcon, BoltIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PlusIcon, BoltIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { quotationService } from '@/services/quotations.service';
 import { productService } from '@/services/products.service';
 import { toastService } from '@/services/toast.service';
@@ -13,10 +13,11 @@ import { Product } from '@/types/product';
 import Drawer from '@/components/Drawer/Drawer';
 import Pagination from '@/components/Pagination/Pagination';
 import Loading from '@/components/Loading/Loading';
-import { Btn, Input, Select } from '@/components/atoms';
+import { Btn, Input, Select, SearchSelect } from '@/components/atoms';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import ConfirmModal from '@/components/Modal/ConfirmModal';
 import ConvertToSaleModal from '@/components/Quotation/ConvertToSaleModal';
+import SendQuotationEmailModal from '@/components/Quotation/SendQuotationEmailModal';
 
 interface ProductDrawerData {
   product_id: string;
@@ -65,6 +66,9 @@ const QuotationDetailsPage = () => {
   const [convertModalOpen, setConvertModalOpen] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
 
+  // Email modal
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+
   useEffect(() => {
     if (quotationId) {
       loadQuotation();
@@ -106,6 +110,31 @@ const QuotationDetailsPage = () => {
       console.error('Error loading products:', error);
     }
   };
+
+  const handleProductSearch = useCallback(async (term: string) => {
+    try {
+      const response = await productService.getProducts(1, term);
+      
+      // Merge with existing products so we have prices available when selected
+      setProducts(prevProducts => {
+        const currentProducts = [...prevProducts];
+        response.data.forEach(newProduct => {
+          if (!currentProducts.find(p => p.id === newProduct.id)) {
+            currentProducts.push(newProduct);
+          }
+        });
+        return currentProducts;
+      });
+
+      return response.data.map(p => ({
+        id: p.id,
+        label: `${p.sku} - ${p.name}`,
+      }));
+    } catch (err) {
+      console.error('Error searching products:', err);
+      return [];
+    }
+  }, []);
 
   const getStatusBadge = (status: QuotationStatus) => {
     const statusConfig = {
@@ -348,6 +377,13 @@ const QuotationDetailsPage = () => {
               {t('actions.convertToSale')}
             </Btn>
           )}
+          <Btn
+            variant="secondary"
+            onClick={() => setEmailModalOpen(true)}
+            leftIcon={<EnvelopeIcon className="h-5 w-5" />}
+          >
+            {t('actions.sendByEmail', { default: 'Enviar por correo' })}
+          </Btn>
           {canModify && details.length > 0 && (
             <Btn
               onClick={handleAddProduct}
@@ -430,41 +466,40 @@ const QuotationDetailsPage = () => {
       </div>
 
       {/* Products Table */}
-      <div
-        className="bg-white rounded-lg overflow-hidden mb-6"
-        style={{
-          boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
-        }}
-      >
-
-        {loading ? (
-          <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-          </div>
-        ) : details.length === 0 ? (
-          <div className="text-center py-12">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">{t('details.noProducts')}</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {canModify
-                ? t('details.noProductsDesc')
-                : t('details.noProductsClosedDesc')
-              }
-            </p>
-          </div>
-        ) : (
+      {loading ? (
+        <div className="flex items-center justify-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        </div>
+      ) : details.length === 0 ? (
+        <div className="text-center py-12">
+          <svg
+            className="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">{t('details.noProducts')}</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            {canModify
+              ? t('details.noProductsDesc')
+              : t('details.noProductsClosedDesc')
+            }
+          </p>
+        </div>
+      ) : (
+        <div
+          className="bg-white rounded-lg overflow-hidden mb-6"
+          style={{
+            boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
+          }}
+        >
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -544,8 +579,8 @@ const QuotationDetailsPage = () => {
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Botón de agregar producto - solo visible cuando se puede modificar y NO hay productos */}
       {canModify && !loading && details.length === 0 && (
@@ -579,23 +614,18 @@ const QuotationDetailsPage = () => {
         isFormValid={isDrawerFormValid}
       >
         <div className="space-y-4">
-          <Select
-            id="product"
+          <SearchSelect
             label={t('form.product')}
             value={productDrawerData.product_id}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              const selectedProduct = products.find(p => p.id === e.target.value);
+            onChange={(selectedId: string) => {
               setProductDrawerData(prev => ({
                 ...prev,
-                product_id: e.target.value,
+                product_id: selectedId,
                 price_id: 'base', // Seleccionar precio base por defecto
                 custom_price: ''
               }));
             }}
-            options={products.map((product) => ({
-              value: product.id,
-              label: `${product.sku} - ${product.name}`
-            }))}
+            onSearch={handleProductSearch}
             placeholder={t('form.placeholders.selectProduct')}
             required
             error={drawerErrors.product_id}
@@ -791,6 +821,16 @@ const QuotationDetailsPage = () => {
         onConfirm={handleConvertToSale}
         isLoading={isConverting}
       />
+
+      {quotation && (
+        <SendQuotationEmailModal
+          isOpen={emailModalOpen}
+          onClose={() => setEmailModalOpen(false)}
+          quotationId={quotation.id}
+          defaultEmail={quotation.client?.email || ''}
+          locale={locale}
+        />
+      )}
     </div>
   );
 };

@@ -95,6 +95,20 @@ class QuotationService {
   async deleteQuotationDetail(quotationId: string, detailId: string): Promise<void> {
     await api.delete(`/quotations/${quotationId}/details/${detailId}`);
   }
+
+  async sendEmail(
+    quotationId: string, 
+    emails: string[], 
+    message?: string, 
+    locale?: string
+  ): Promise<{ sent: boolean; message: string }> {
+    const response = await api.post<{ sent: boolean; message: string }>(`/quotations/${quotationId}/send-email`, {
+      emails,
+      message,
+      locale,
+    });
+    return response;
+  }
 }
 
 export const quotationService = new QuotationService();

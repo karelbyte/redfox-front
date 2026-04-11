@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { warehousesService } from '@/services/warehouses.service';
 import { Warehouse } from '@/types/warehouse';
-import { Select } from '@/components/atoms';
+import { Select, Btn } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
 
 interface ConvertToSaleModalProps {
@@ -112,24 +112,23 @@ const ConvertToSaleModal = ({
 
           {/* Botones */}
           <div className="flex space-x-3">
-            <button
+            <Btn
+              variant="outline"
               onClick={onClose}
               disabled={isLoading}
-              className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              fullWidth
             >
               {tCommon('actions.cancel')}
-            </button>
-            <button
+            </Btn>
+            <Btn
+              variant="success"
               onClick={handleConfirm}
-              disabled={isLoading || loadingWarehouses}
-              className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center"
+              loading={isLoading}
+              disabled={loadingWarehouses || !selectedWarehouseId}
+              fullWidth
             >
-              {isLoading ? (
-                <Loading size="sm" />
-              ) : (
-                t('actions.convertToSale')
-              )}
-            </button>
+              {t('actions.convertToSale')}
+            </Btn>
           </div>
         </div>
       </div>

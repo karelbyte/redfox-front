@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Quotation, QuotationStatus } from '@/types/quotation';
 import { ActionMenuItem } from '@/components/atoms/ActionsMenu';
-import { EyeIcon, PencilIcon, TrashIcon, ArrowsRightLeftIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, TrashIcon, ArrowsRightLeftIcon, DocumentArrowDownIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 
 interface QuotationActionsMenuProps {
   quotation: Quotation;
@@ -12,6 +12,7 @@ interface QuotationActionsMenuProps {
   onDelete: (quotation: Quotation) => void;
   onConvert: (quotation: Quotation) => void;
   onGeneratePDF: (quotation: Quotation) => void;
+  onSendEmail: (quotation: Quotation) => void;
   loadingActions: { [key: string]: boolean };
 }
 
@@ -22,6 +23,7 @@ export function QuotationActionsMenu({
   onDelete,
   onConvert,
   onGeneratePDF,
+  onSendEmail,
   loadingActions,
 }: QuotationActionsMenuProps) {
   const t = useTranslations('pages.quotations');
@@ -44,6 +46,12 @@ export function QuotationActionsMenu({
       label: t('actions.downloadPDF'),
       onClick: () => onGeneratePDF(quotation),
       color: '#059669',
+    },
+    {
+      icon: <EnvelopeIcon className="h-4 w-4" />,
+      label: t('actions.sendByEmail'),
+      onClick: () => onSendEmail(quotation),
+      color: '#4f46e5',
     },
   ];
 

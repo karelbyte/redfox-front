@@ -178,6 +178,8 @@ const QuotationForm = forwardRef<QuotationFormRef, QuotationFormProps>(
               surrogateCode="quotation"
               placeholder={t('form.placeholders.code')}
               required
+              disabled={!!quotation}
+              showSuggestion={!quotation}
               error={errors.code}
             />
 

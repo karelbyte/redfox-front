@@ -80,7 +80,9 @@
       "successCreated": "{item} creado exitosamente",
       "successUpdated": "{item} actualizado exitosamente",
       "successDeleted": "{item} eliminado exitosamente",
-      "successClosed": "{item} cerrado exitosamente"
+      "successClosed": "{item} cerrado exitosamente",
+      "success": "Operación exitosa",
+      "error": "Ha ocurrido un error"
     },
     "noPermission": "Sin permisos",
     "noPermissionDescription": "No tienes permisos para acceder a esta página. Contacta al administrador si crees que esto es un error.",
@@ -1658,6 +1660,11 @@
       }
     },
     "quotations": {
+      "common": {
+        "actions": {
+          "back": "Volver"
+        }
+      },
       "title": "Cotizaciones",
       "subtitle": "Gestiona las cotizaciones de tu negocio",
       "newQuotation": "Nueva Cotización",
@@ -1701,12 +1708,15 @@
         "customPrice": "Precio Personalizado",
         "discountPercentage": "Descuento (%)",
         "discountAmount": "Descuento (Monto)",
+        "email": "Correo electrónico",
+        "emailMessage": "Mensaje personalizado (opcional)",
         "placeholders": {
           "code": "Ej: COT-2026-001",
           "selectClient": "Seleccionar cliente",
           "selectWarehouse": "Seleccionar almacén",
           "selectProduct": "Seleccionar producto",
-          "notes": "Notas adicionales sobre la cotización"
+          "notes": "Notas adicionales sobre la cotización",
+          "emailMessage": "Escribe un mensaje para adjuntar al correo..."
         },
         "errors": {
           "codeRequired": "El código es requerido",
@@ -1732,7 +1742,10 @@
         "addProduct": "Añadir Producto",
         "editProduct": "Editar Producto",
         "newClient": "Nuevo Cliente",
-        "createNewClient": "Crear nuevo cliente"
+        "createNewClient": "Crear nuevo cliente",
+        "sendByEmail": "Enviar por correo",
+        "send": "Enviar",
+        "sending": "Enviando..."
       },
       "search": {
         "placeholder": "Buscar por código, cliente..."
@@ -1765,7 +1778,9 @@
         "errorGeneratingPDF": "Error al generar el PDF",
         "pdfFooter": "Gracias por su preferencia",
         "pdfTitle": "Cotización",
-        "pdfPage": "Página"
+        "pdfPage": "Página",
+        "emailRequired": "El correo electrónico es requerido",
+        "invalidEmails": "Correos inválidos: {emails}"
       },
       "details": {
         "title": "Cotización {code}",

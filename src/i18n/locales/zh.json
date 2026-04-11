@@ -80,7 +80,9 @@
       "successCreated": "{item} 创建成功",
       "successUpdated": "{item} 更新成功",
       "successDeleted": "{item} 删除成功",
-      "successClosed": "{item} 关闭成功"
+      "successClosed": "成功关闭 {item}",
+      "success": "操作成功",
+      "error": "发生错误"
     },
     "noPermission": "无权限",
     "noPermissionDescription": "您没有访问此页面的权限。如果您认为这是错误，请联系管理员。",
@@ -1678,6 +1680,11 @@
       }
     },
     "quotations": {
+      "common": {
+        "actions": {
+          "back": "返回"
+        }
+      },
       "title": "报价单",
       "subtitle": "管理您的业务报价单",
       "newQuotation": "新建报价单",
@@ -1721,12 +1728,15 @@
         "customPrice": "自定义价格",
         "discountPercentage": "折扣（%）",
         "discountAmount": "折扣（金额）",
+        "email": "电子邮件",
+        "emailMessage": "自定义消息 (可选)",
         "placeholders": {
           "code": "例：COT-2026-001",
           "selectClient": "选择客户",
           "selectWarehouse": "选择仓库",
           "selectProduct": "选择产品",
-          "notes": "关于报价单的附加备注"
+          "notes": "关于报价单的附加备注",
+          "emailMessage": "编写附在邮件中的消息..."
         },
         "errors": {
           "codeRequired": "编码为必填项",
@@ -1752,7 +1762,10 @@
         "addProduct": "添加产品",
         "editProduct": "编辑产品",
         "newClient": "新建客户",
-        "createNewClient": "创建新客户"
+        "createNewClient": "创建新客户",
+        "sendByEmail": "通过邮件发送",
+        "send": "发送",
+        "sending": "发送中..."
       },
       "search": {
         "placeholder": "按编码、客户搜索..."
@@ -1785,7 +1798,9 @@
         "errorGeneratingPDF": "生成 PDF 出错",
         "pdfFooter": "感谢您的惠顾",
         "pdfTitle": "报价单",
-        "pdfPage": "页"
+        "pdfPage": "页",
+        "emailRequired": "电子邮件是必填项",
+        "invalidEmails": "无效的电子邮件: {emails}"
       },
       "details": {
         "title": "报价单 {code}",
