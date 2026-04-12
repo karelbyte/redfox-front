@@ -134,8 +134,8 @@ export default function ImportClientsPage() {
       {queued ? (
         /* Pantalla de trabajo en cola */
         <div className="bg-white rounded-xl border p-10 text-center space-y-5">
-          <div className="flex items-center justify-center">
-            <div className="h-16 w-16 rounded-full border-4 border-primary-200 border-t-primary-600 animate-spin" style={{ borderTopColor: 'rgb(var(--color-primary-600))' }} />
+          <div className="flex items-center justify-center text-green-500">
+            <CheckCircleIcon className="h-16 w-16" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-gray-800">
@@ -143,7 +143,7 @@ export default function ImportClientsPage() {
             </h2>
             <p className="text-sm text-gray-500 mt-2">{queued.message}</p>
             <p className="text-xs text-gray-400 mt-3">
-              {locale === 'zh' ? '完成后您将在通知铃中收到通知。您可以继续使用系统。' : locale === 'en' ? 'You will receive a notification in the bell when done. You can continue using the system.' : 'Recibirás una notificación en el bell cuando termine. Puedes seguir usando el sistema.'}
+              {locale === 'zh' ? '完成后您将在通知铃中收到通知。您可以继续使用系统。' : locale === 'en' ? 'You will receive a notification in the bell when done. You can continue using the system.' : 'Recibirás una notificación en el sistema cuando termine. Puedes seguir usando el sistema.'}
             </p>
           </div>
           <div className="flex gap-3 justify-center pt-2">

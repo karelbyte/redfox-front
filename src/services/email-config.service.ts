@@ -2,6 +2,8 @@ import { api } from './api';
 
 export interface EmailConfig {
   id: string;
+  provider?: string;
+  apiKey?: string;
   host: string;
   port: number;
   user: string;
@@ -14,10 +16,12 @@ export interface EmailConfig {
 }
 
 export interface CreateEmailConfigDto {
-  host: string;
-  port: number;
-  user: string;
-  password: string;
+  provider?: string;
+  apiKey?: string;
+  host?: string;
+  port?: number;
+  user?: string;
+  password?: string;
   fromEmail: string;
   fromName?: string;
   secure?: boolean;

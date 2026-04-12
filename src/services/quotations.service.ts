@@ -109,6 +109,14 @@ class QuotationService {
     });
     return response;
   }
+
+  async downloadPDF(quotationId: string, locale?: string): Promise<Blob> {
+    const response = await api.get<Blob>(`/quotations/${quotationId}/pdf`, {
+      locale,
+      responseType: 'blob',
+    });
+    return response;
+  }
 }
 
 export const quotationService = new QuotationService();

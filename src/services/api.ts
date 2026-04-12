@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '@/lib/config';
 
 const baseURL = API_BASE_URL + '/api';
-console.log("DEBUG API URL:", API_BASE_URL);
+
 const handleUnauthorized = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('token');
@@ -52,7 +52,7 @@ const getHeaders = (isFormData = false) => {
   return headers;
 };
 
-const handleResponse = async (response: Response) => {
+const handleResponse = async (response: Response, responseType?: string) => {
   if (response.status === 401) {
     handleUnauthorized();
     return Promise.reject(new Error('Sesión expirada'));
@@ -61,7 +61,6 @@ const handleResponse = async (response: Response) => {
   if (!response.ok) {
     try {
       const errorData = await response.json();
-      // Si message es un array, unirlo con saltos de línea
       const errorMessage = Array.isArray(errorData.message)
         ? errorData.message.join('\n')
         : errorData.message || 'Error en la petición';
@@ -75,9 +74,19 @@ const handleResponse = async (response: Response) => {
     return null;
   }
 
+  // Si se solicita un blob, retornar los datos binarios directamente
+  if (responseType === 'blob') {
+    return response.blob();
+  }
+
   const contentType = response.headers.get('content-type');
   if (!contentType || !contentType.includes('application/json')) {
-    return null;
+    // Si no es JSON pero tampoco se pidió un blob, intentar retornar texto o null
+    try {
+      return await response.text();
+    } catch {
+      return null;
+    }
   }
 
   try {
@@ -88,15 +97,41 @@ const handleResponse = async (response: Response) => {
   }
 };
 
+/**
+ * Helper para construir URLs con parámetros de consulta de forma segura
+ */
+const buildUrl = (url: string, params?: Record<string, unknown>) => {
+  if (!params) return `${baseURL}${url}`;
+  
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      query.append(key, String(value));
+    }
+  });
+
+  const queryString = query.toString();
+  if (!queryString) return `${baseURL}${url}`;
+
+  const separator = url.includes('?') ? '&' : '?';
+  return `${baseURL}${url}${separator}${queryString}`;
+};
+
 export const api = {
-  get: async <T>(url: string, params?: Record<string, unknown>): Promise<T> => {
+  get: async <T>(url: string, options?: Record<string, unknown>): Promise<T> => {
     try {
-      const queryString = params ? `?${new URLSearchParams(params as Record<string, string>)}` : '';
-      const response = await fetch(`${baseURL}${url}${queryString}`, {
+      // Extraer responseType si existe para pasarlo al manejador
+      const responseType = options?.responseType as string | undefined;
+      // Eliminar responseType de los parámetros de consulta si no queremos que se envíe al backend
+      const queryParams = { ...options };
+      delete queryParams.responseType;
+
+      const fullUrl = buildUrl(url, queryParams);
+      const response = await fetch(fullUrl, {
         headers: getHeaders(),
       });
 
-      return handleResponse(response);
+      return handleResponse(response, responseType);
     } catch (error) {
       if (error instanceof Error && error.message === 'Sesión expirada') {
         handleUnauthorized();
@@ -105,7 +140,7 @@ export const api = {
     }
   },
 
-  post: async <T>(url: string, data: Record<string, unknown> | FormData): Promise<T> => {
+  post: async <T>(url: string, data: Record<string, unknown> | FormData, options?: { responseType?: string }): Promise<T> => {
     try {
       const isFormData = data instanceof FormData;
       const body = isFormData ? data : JSON.stringify(data);
@@ -116,7 +151,7 @@ export const api = {
         body,
       });
 
-      return handleResponse(response);
+      return handleResponse(response, options?.responseType);
     } catch (error) {
       if (error instanceof Error && error.message === 'Sesión expirada') {
         handleUnauthorized();
@@ -193,4 +228,4 @@ export const api = {
       throw error;
     }
   },
-}; 
+};

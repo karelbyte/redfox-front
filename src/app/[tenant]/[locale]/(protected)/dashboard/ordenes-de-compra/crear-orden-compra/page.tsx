@@ -144,7 +144,6 @@ export default function CreatePurchaseOrderPage() {
         code: formData.code.trim(),
         date: formData.date,
         provider_id: formData.provider_id,
-        ...(formData.warehouse_id ? { warehouse_id: formData.warehouse_id } : {}),
         ...(formData.document.trim() ? { document: formData.document.trim() } : {}),
         amount: 0,
         notes: formData.notes?.trim() || '',

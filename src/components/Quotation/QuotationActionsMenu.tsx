@@ -55,13 +55,6 @@ export function QuotationActionsMenu({
     },
   ];
 
-  if (quotation.status !== QuotationStatus.CONVERTED) {
-    items.push({
-      icon: <PencilIcon className="h-4 w-4" />,
-      label: tCommon('actions.edit'),
-      onClick: () => onEdit(quotation),
-    });
-  }
 
   if (canConvertToSale()) {
     items.push({
@@ -72,6 +65,13 @@ export function QuotationActionsMenu({
     });
   }
 
+  if (quotation.status !== QuotationStatus.CONVERTED) {
+    items.push({
+      icon: <PencilIcon className="h-4 w-4" />,
+      label: tCommon('actions.edit'),
+      onClick: () => onEdit(quotation),
+    });
+  }
   if (quotation.status !== QuotationStatus.CONVERTED) {
     items.push({
       icon: <TrashIcon className="h-4 w-4" />,

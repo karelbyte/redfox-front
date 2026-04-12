@@ -4176,9 +4176,11 @@
     "title": "Email Configuration",
     "back": "Back",
     "form": {
-      "host": "SMTP Server",
+      "provider": "Email Provider",
+      "apiKey": "API Key",
+      "host": "SMTP Host",
       "port": "Port",
-      "user": "Username",
+      "user": "User",
       "password": "Password",
       "fromEmail": "Sender Email",
       "fromName": "Sender Name",
@@ -4188,6 +4190,8 @@
       "testSuccess": "Connection Successful!",
       "testFailed": "Connection Failed",
       "placeholders": {
+        "provider": "Select a provider",
+        "apiKey": "Your service API Key",
         "host": "e.g: smtp.gmail.com",
         "user": "e.g: your@email.com",
         "password": "Your app password",

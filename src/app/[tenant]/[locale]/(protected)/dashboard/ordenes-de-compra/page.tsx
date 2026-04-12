@@ -122,11 +122,15 @@ export default function PurchaseOrdersPage() {
     }
   };
 
-  const handleApprove = async () => {
+  const handleApprove = async (sendEmail = false, email?: string) => {
     if (!purchaseOrderToApprove) return;
 
     try {
-      const result = await purchaseOrdersService.approvePurchaseOrder(purchaseOrderToApprove.id);
+      const result = await purchaseOrdersService.approvePurchaseOrder(
+        purchaseOrderToApprove.id, 
+        sendEmail, 
+        email
+      );
       setApprovalResult(result);
       fetchPurchaseOrders(currentPage);
       setPurchaseOrderToApprove(null);
@@ -244,8 +248,12 @@ export default function PurchaseOrdersPage() {
             toastService.success(t('messages.purchaseOrderUpdated'));
           } else {
             // Crear nueva orden
-            await purchaseOrdersService.createPurchaseOrder(formData);
+            const newOrder = await purchaseOrdersService.createPurchaseOrder(formData);
             toastService.success(t('messages.purchaseOrderCreated'));
+            handleDrawerClose();
+            // Redirigir a la vista de detalles de la nueva orden
+            router.push(`/${locale}/dashboard/ordenes-de-compra/ordenes-de-compra/${newOrder.id}`);
+            return; // No refrescar la lista aquí ya que estamos navegando fuera
           }
           handleFormSuccess();
         } catch (error) {

@@ -9,7 +9,7 @@ import { CheckCircleIcon, EnvelopeIcon, ExclamationTriangleIcon } from '@heroico
 interface ApprovePurchaseOrderModalProps {
   purchaseOrder: PurchaseOrder | null;
   onClose: () => void;
-  onConfirm: (sendEmail: boolean) => void;
+  onConfirm: (sendEmail: boolean, emailOverride?: string) => void;
 }
 
 export default function ApprovePurchaseOrderModal({
@@ -19,6 +19,7 @@ export default function ApprovePurchaseOrderModal({
 }: ApprovePurchaseOrderModalProps) {
   const t = useTranslations('pages.purchaseOrders');
   const [sendEmail, setSendEmail] = useState(false);
+  const [email, setEmail] = useState('');
   const [hasEmailConfig, setHasEmailConfig] = useState(false);
   const [checkingEmail, setCheckingEmail] = useState(true);
 
@@ -26,6 +27,7 @@ export default function ApprovePurchaseOrderModal({
     if (!purchaseOrder) return;
     setCheckingEmail(true);
     setSendEmail(false);
+    setEmail(purchaseOrder.provider?.email || '');
     emailConfigService.getConfig()
       .then(() => setHasEmailConfig(true))
       .catch(() => setHasEmailConfig(false))
@@ -82,18 +84,36 @@ export default function ApprovePurchaseOrderModal({
             )}
 
             {/* Checkbox */}
-            <label className={`flex items-center gap-2 cursor-pointer ${!canSendEmail ? 'opacity-40 cursor-not-allowed' : ''}`}>
+            <label className={`flex items-center gap-2 cursor-pointer mb-3 ${!hasEmailConfig ? 'opacity-40 cursor-not-allowed' : ''}`}>
               <input
                 type="checkbox"
                 checked={sendEmail}
-                disabled={!canSendEmail}
+                disabled={!hasEmailConfig}
                 onChange={(e) => setSendEmail(e.target.checked)}
                 className="h-4 w-4 rounded border-gray-300"
               />
               <span className="text-sm text-gray-700">
-                {t('approveModal.sendEmailToProvider', { email: purchaseOrder.provider.email || '' })}
+                {t('approveModal.emailSection')}
               </span>
             </label>
+
+            {/* Email Input */}
+            {sendEmail && (
+              <div className="mt-2 pl-6">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                  placeholder="email@proveedor.com"
+                />
+                {!providerHasEmail && email === '' && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {t('approveModal.noProviderEmail', { name: purchaseOrder.provider.name })}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -106,7 +126,7 @@ export default function ApprovePurchaseOrderModal({
             {t('actions.cancel')}
           </button>
           <button
-            onClick={() => onConfirm(sendEmail)}
+            onClick={() => onConfirm(sendEmail, email)}
             className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
           >
             {t('actions.approve')}

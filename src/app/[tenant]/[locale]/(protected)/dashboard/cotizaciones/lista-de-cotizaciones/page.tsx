@@ -17,7 +17,6 @@ import { useRouter, useParams } from 'next/navigation';
 import { Btn } from '@/components/atoms';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
-import { QuotationPDFService } from '@/services/quotation-pdf.service';
 import HelpButton from "@/components/Help/HelpButton";
 import { quotationsHelp } from "@/components/Help/configs/quotations.help";
 
@@ -124,37 +123,20 @@ const QuotationListPage = () => {
 
   const handleGeneratePDF = async (quotation: Quotation) => {
     try {
-      // Cargar los detalles de la cotización
-      const detailsResponse = await quotationService.getQuotationDetails(quotation.id, 1, 1000);
+      const blob = await quotationService.downloadPDF(quotation.id, locale);
       
-      // Preparar las traducciones para el PDF
-      const pdfTranslations = {
-        title: t('messages.pdfTitle'),
-        code: t('table.code'),
-        date: t('table.date'),
-        validUntil: t('table.validUntil'),
-        client: t('table.client'),
-        warehouse: t('table.warehouse'),
-        status: t('table.status'),
-        product: t('details.table.product'),
-        quantity: t('details.table.quantity'),
-        price: t('details.table.price'),
-        discount: t('details.table.discount'),
-        subtotal: t('details.table.subtotal'),
-        total: t('details.labels.total'),
-        tax: t('details.labels.tax'),
-        notes: t('details.labels.notes'),
-        footer: t('messages.pdfFooter'),
-        page: t('messages.pdfPage')
-      };
-
-      // Generar el PDF
-      const pdfService = new QuotationPDFService(locale);
-      await pdfService.generatePDF(quotation, detailsResponse.data, pdfTranslations);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `cotizacion-${quotation.code}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
       
       toastService.success(t('messages.pdfGenerated'));
     } catch (error) {
-      console.error('Error generating PDF:', error);
+      console.error('Error downloading PDF:', error);
       toastService.error(t('messages.errorGeneratingPDF'));
     }
   };

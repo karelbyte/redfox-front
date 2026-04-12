@@ -4187,6 +4187,8 @@
     "title": "Configuración de Correo",
     "back": "Volver",
     "form": {
+      "provider": "Proveedor de Correo",
+      "apiKey": "API Key",
       "host": "Servidor SMTP",
       "port": "Puerto",
       "user": "Usuario",
@@ -4199,6 +4201,8 @@
       "testSuccess": "¡Conexión Exitosa!",
       "testFailed": "Error en la Conexión",
       "placeholders": {
+        "provider": "Selecciona un proveedor",
+        "apiKey": "Tu API Key de servicio",
         "host": "ej: smtp.gmail.com",
         "user": "ej: tu@email.com",
         "password": "Tu contraseña de aplicación",

@@ -24,6 +24,8 @@ export default function EmailConfigForm() {
   const [hasExistingConfig, setHasExistingConfig] = useState(false);
 
   const [formData, setFormData] = useState({
+    provider: 'smtp',
+    apiKey: '',
     host: '',
     port: 587,
     user: '',
@@ -52,9 +54,11 @@ export default function EmailConfigForm() {
       setIsLoading(true);
       const config = await emailConfigService.getConfig();
       setFormData({
-        host: config.host,
-        port: config.port,
-        user: config.user,
+        provider: config.provider || 'smtp',
+        apiKey: config.apiKey || '',
+        host: config.host || '',
+        port: config.port || 587,
+        user: config.user || '',
         password: '', // Don't load password for security
         fromEmail: config.fromEmail,
         fromName: config.fromName,
@@ -68,8 +72,10 @@ export default function EmailConfigForm() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : name === 'port' ? parseInt(value) : value,
@@ -77,7 +83,11 @@ export default function EmailConfigForm() {
   };
 
   const handleSave = async () => {
-    if (!formData.host || !formData.port || !formData.user || !formData.password || !formData.fromEmail) {
+    const isSmtp = formData.provider === 'smtp';
+    const hasRequiredSmtp = isSmtp && formData.host && formData.port && formData.user && formData.password;
+    const hasRequiredApi = !isSmtp && formData.apiKey;
+
+    if (!formData.fromEmail || (!hasRequiredSmtp && !hasRequiredApi)) {
       toastService.error(t('form.errors.requiredFields'));
       return;
     }
@@ -101,7 +111,11 @@ export default function EmailConfigForm() {
   };
 
   const handleTest = async () => {
-    if (!formData.host || !formData.port || !formData.user || !formData.password || !formData.fromEmail) {
+    const isSmtp = formData.provider === 'smtp';
+    const hasRequiredSmtp = isSmtp && formData.host && formData.port && formData.user && formData.password;
+    const hasRequiredApi = !isSmtp && formData.apiKey;
+
+    if (!formData.fromEmail || (!hasRequiredSmtp && !hasRequiredApi)) {
       toastService.error(t('form.errors.requiredFields'));
       return;
     }
@@ -142,44 +156,90 @@ export default function EmailConfigForm() {
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label={t('form.host')}
-              name="host"
-              value={formData.host}
-              onChange={handleChange}
-              placeholder={t('form.placeholders.host')}
-              required
-            />
-            <Input
-              label={t('form.port')}
-              name="port"
-              type="number"
-              value={formData.port}
-              onChange={handleChange}
-              placeholder="587"
-              required
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">
+                {t('form.provider')}
+              </label>
+              <select
+                name="provider"
+                value={formData.provider}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 text-sm"
+              >
+                <option value="smtp">SMTP</option>
+                <option value="resend">Resend</option>
+                <option value="sendgrid">SendGrid</option>
+                <option value="postmark">Postmark</option>
+                <option value="mailgun">Mailgun</option>
+                <option value="brevo">Brevo</option>
+              </select>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label={t('form.user')}
-              name="user"
-              value={formData.user}
-              onChange={handleChange}
-              placeholder={t('form.placeholders.user')}
-              required
-            />
-            <Input
-              label={t('form.password')}
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder={t('form.placeholders.password')}
-              required
-            />
-          </div>
+          {formData.provider === 'smtp' ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label={t('form.host')}
+                  name="host"
+                  value={formData.host}
+                  onChange={handleChange}
+                  placeholder={t('form.placeholders.host')}
+                  required
+                />
+                <Input
+                  label={t('form.port')}
+                  name="port"
+                  type="number"
+                  value={formData.port}
+                  onChange={handleChange}
+                  placeholder="587"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label={t('form.user')}
+                  name="user"
+                  value={formData.user}
+                  onChange={handleChange}
+                  placeholder={t('form.placeholders.user')}
+                  required
+                />
+                <Input
+                  label={t('form.password')}
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder={t('form.placeholders.password')}
+                  required
+                />
+              </div>
+            </>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label={t('form.apiKey')}
+                name="apiKey"
+                value={formData.apiKey}
+                onChange={handleChange}
+                placeholder={t('form.placeholders.apiKey')}
+                required
+              />
+              {(formData.provider === 'mailgun' || formData.provider === 'brevo') && (
+                <Input
+                  label={formData.provider === 'mailgun' ? 'User (postmaster@domain)' : 'Login Email'}
+                  name="user"
+                  value={formData.user}
+                  onChange={handleChange}
+                  placeholder={formData.provider === 'mailgun' ? 'postmaster@mg.tuempresa.com' : 'tu@email.com'}
+                  required
+                />
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input

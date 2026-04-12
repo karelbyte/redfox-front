@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, Fragment } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import {
@@ -111,16 +111,16 @@ export default function ImportProvidersPage() {
 
       {queued ? (
         <div className="bg-white rounded-xl border p-10 text-center space-y-5">
-          <div className="flex items-center justify-center">
-            <div className="h-16 w-16 rounded-full border-4 animate-spin" style={{ borderColor: 'rgb(var(--color-primary-200))', borderTopColor: 'rgb(var(--color-primary-600))' }} />
+          <div className="flex items-center justify-center text-green-500">
+            <CheckCircleIcon className="h-16 w-16" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-gray-800">
               {locale === 'zh' ? '导入正在后台处理中' : locale === 'en' ? 'Import is being processed in the background' : 'Importación procesándose en segundo plano'}
             </h2>
             <p className="text-sm text-gray-500 mt-2">{queued.message}</p>
-            <p className="text-xs text-gray-400 mt-3">
-              {locale === 'zh' ? '完成后您将在通知铃中收到通知。' : locale === 'en' ? 'You will receive a notification in the bell when done.' : 'Recibirás una notificación en el bell cuando termine.'}
+            <p className="text-lg text-gray-400 mt-3">
+              {locale === 'zh' ? '完成后您将在通知铃中收到通知。' : locale === 'en' ? 'You will receive a notification in the bell when done.' : 'Recibirás una notificación en el sistema cuando termine.'}
             </p>
           </div>
           <div className="flex gap-3 justify-center pt-2">
@@ -194,8 +194,8 @@ export default function ImportProvidersPage() {
                   {groups.map(group => {
                     const groupFields = FIELDS.filter(f => f.group === group);
                     return (
-                      <>
-                        <tr key={`group-${group}`} className="border-t-2 border-gray-200">
+                      <Fragment key={group}>
+                        <tr className="border-t-2 border-gray-200">
                           <td colSpan={5} className={`px-4 py-2 text-xs font-semibold text-gray-600 ${GROUP_COLORS[group]}`}>
                             {GROUP_LABELS[group][locale] || GROUP_LABELS[group].es}
                           </td>
@@ -209,7 +209,7 @@ export default function ImportProvidersPage() {
                             <td className="px-4 py-3"><code className="text-gray-500 font-mono text-xs">{f.example}</code></td>
                           </tr>
                         ))}
-                      </>
+                      </Fragment>
                     );
                   })}
                 </tbody>

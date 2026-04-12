@@ -166,11 +166,11 @@ export default function PurchaseOrderDetailsPage() {
     setShowApproveModal(true);
   };
 
-  const handleConfirmApprove = async (sendEmail: boolean) => {
+  const handleConfirmApprove = async (sendEmail: boolean, email?: string) => {
     if (!purchaseOrder) return;
 
     try {
-      await purchaseOrdersService.approvePurchaseOrder(purchaseOrderId, sendEmail);
+      await purchaseOrdersService.approvePurchaseOrder(purchaseOrderId, sendEmail, email);
       toastService.success(t('approveOrder.success'));
       fetchPurchaseOrder();
       setShowApproveModal(false);

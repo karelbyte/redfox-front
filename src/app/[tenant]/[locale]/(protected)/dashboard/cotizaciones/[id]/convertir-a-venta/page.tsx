@@ -190,17 +190,19 @@ export default function ConvertToSalePage() {
 
       {/* Info banner */}
       <div className="mb-6 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm text-blue-800">
-        {locale === 'en'
-          ? 'Select the warehouse for each tangible product. Services and digital products are included automatically. You can proceed even if some products have insufficient stock.'
-          : 'Selecciona el almacén para cada producto tangible. Los servicios y productos digitales se incluyen automáticamente. Puedes proceder aunque algunos productos no tengan stock suficiente.'}
+        {locale === 'zh'
+          ? '为每个实体产品选择仓库。服务和数字产品将自动包含在内。'
+          : locale === 'en'
+            ? 'Select the warehouse for each tangible product. Services and digital products are included automatically.'
+            : 'Selecciona el almacén para cada producto tangible. Los servicios y productos digitales se incluyen automáticamente.'}
       </div>
 
       {/* Productos tangibles */}
       {tangibleItems.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
             <h2 className="font-semibold text-gray-800">
-              {locale === 'en' ? 'Tangible products — select warehouse' : 'Productos tangibles — selecciona almacén'}
+              {locale === 'zh' ? '实体产品 — 选择仓库' : locale === 'en' ? 'Tangible products — select warehouse' : 'Productos tangibles — selecciona almacén'}
             </h2>
           </div>
           <div className="divide-y divide-gray-100">
@@ -212,7 +214,7 @@ export default function ConvertToSalePage() {
                     <p className="font-medium text-gray-900 truncate">{item.detail.product.name}</p>
                     <p className="text-xs text-gray-500">{item.detail.product.sku}</p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {locale === 'en' ? 'Qty:' : 'Cant:'} <span className="font-semibold">{item.detail.quantity}</span>
+                      {locale === 'zh' ? '数量:' : locale === 'en' ? 'Qty:' : 'Cant:'} <span className="font-semibold">{item.detail.quantity}</span>
                       {' · '}
                       {formatCurrency(Number(item.detail.price))}
                     </p>
@@ -223,12 +225,12 @@ export default function ConvertToSalePage() {
                     {item.loadingStock ? (
                       <div className="flex items-center gap-2 text-xs text-gray-400">
                         <Loading size="sm" />
-                        {locale === 'en' ? 'Loading stock...' : 'Cargando stock...'}
+                        {locale === 'zh' ? '正在加载库存...' : locale === 'en' ? 'Loading stock...' : 'Cargando stock...'}
                       </div>
                     ) : item.warehouseOptions.length === 0 ? (
                       <div className="flex items-center gap-1.5 text-xs text-amber-600">
                         <ExclamationTriangleIcon className="h-4 w-4 flex-shrink-0" />
-                        {locale === 'en' ? 'No stock in any warehouse' : 'Sin stock en ningún almacén'}
+                        {locale === 'zh' ? '所有仓库均无库存' : locale === 'en' ? 'No stock in any warehouse' : 'Sin stock en ningún almacén'}
                       </div>
                     ) : (
                       <div>
@@ -237,10 +239,10 @@ export default function ConvertToSalePage() {
                           onChange={e => setWarehouse(item.detail.id, e.target.value)}
                           className="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:border-primary-500 bg-white"
                         >
-                          <option value="">{locale === 'en' ? '— No warehouse —' : '— Sin almacén —'}</option>
+                          <option value="">{locale === 'zh' ? '— 未选择仓库 —' : locale === 'en' ? '— No warehouse —' : '— Sin almacén —'}</option>
                           {item.warehouseOptions.map(w => (
                             <option key={w.id} value={w.id}>
-                              {w.name} — {locale === 'en' ? 'Stock:' : 'Stock:'} {w.totalStock}
+                              {w.name} — {locale === 'zh' ? '库存:' : locale === 'en' ? 'Stock:' : 'Stock:'} {w.totalStock}
                             </option>
                           ))}
                         </select>
@@ -251,8 +253,8 @@ export default function ConvertToSalePage() {
                           return opt ? (
                             <p className={`text-xs mt-1 flex items-center gap-1 ${enough ? 'text-green-600' : 'text-amber-600'}`}>
                               {enough
-                                ? <><CheckCircleIcon className="h-3.5 w-3.5" /> {locale === 'en' ? 'Sufficient stock' : 'Stock suficiente'}</>
-                                : <><ExclamationTriangleIcon className="h-3.5 w-3.5" /> {locale === 'en' ? `Only ${opt.totalStock} available` : `Solo ${opt.totalStock} disponibles`}</>
+                                ? <><CheckCircleIcon className="h-3.5 w-3.5" /> {locale === 'zh' ? '库存充足' : locale === 'en' ? 'Sufficient stock' : 'Stock suficiente'}</>
+                                : <><ExclamationTriangleIcon className="h-3.5 w-3.5" /> {locale === 'zh' ? `仅剩 ${opt.totalStock} 件可用` : locale === 'en' ? `Only ${opt.totalStock} available` : `Solo ${opt.totalStock} disponibles`}</>
                               }
                             </p>
                           ) : null;
@@ -269,10 +271,10 @@ export default function ConvertToSalePage() {
 
       {/* Productos no tangibles */}
       {nonTangibleItems.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
             <h2 className="font-semibold text-gray-800">
-              {locale === 'en' ? 'Services & digital products — included automatically' : 'Servicios y productos digitales — se incluyen automáticamente'}
+              {locale === 'zh' ? '服务和数字产品 — 自动包含' : locale === 'en' ? 'Services & digital products — included automatically' : 'Servicios y productos digitales — se incluyen automáticamente'}
             </h2>
           </div>
           <div className="divide-y divide-gray-100">
@@ -293,17 +295,17 @@ export default function ConvertToSalePage() {
       )}
 
       {/* Método de pago */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
         <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
           <h2 className="font-semibold text-gray-800">
-            {locale === 'en' ? 'Payment method' : 'Método de pago'}
+            {locale === 'zh' ? '付款方式' : locale === 'en' ? 'Payment method' : 'Método de pago'}
           </h2>
         </div>
         <div className="px-6 py-4 flex flex-col sm:flex-row gap-3">
           {[
-            { value: 'cash', icon: <BanknotesIcon className="h-4 w-4" />, label: locale === 'en' ? 'Cash' : 'Efectivo', disabled: false },
-            { value: 'card', icon: <CreditCardIcon className="h-4 w-4" />, label: locale === 'en' ? 'Card' : 'Tarjeta', disabled: false },
-            { value: 'credit', icon: <ClockIcon className="h-4 w-4" />, label: locale === 'en' ? 'Credit' : 'Crédito', disabled: !clientHasCredit },
+            { value: 'cash', icon: <BanknotesIcon className="h-4 w-4" />, label: locale === 'zh' ? '现金' : locale === 'en' ? 'Cash' : 'Efectivo', disabled: false },
+            { value: 'card', icon: <CreditCardIcon className="h-4 w-4" />, label: locale === 'zh' ? '银行卡' : locale === 'en' ? 'Card' : 'Tarjeta', disabled: false },
+            { value: 'credit', icon: <ClockIcon className="h-4 w-4" />, label: locale === 'zh' ? '信用支付' : locale === 'en' ? 'Credit' : 'Crédito', disabled: !clientHasCredit },
           ].map(opt => (
             <label
               key={opt.value}
@@ -330,7 +332,7 @@ export default function ConvertToSalePage() {
                 <span className="text-sm font-medium text-gray-800">{opt.label}</span>
                 {opt.value === 'credit' && !clientHasCredit && (
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {locale === 'en' ? 'Client has no active credit' : 'El cliente no tiene crédito activo'}
+                    {locale === 'zh' ? '客户无有效信用额度' : locale === 'en' ? 'Client has no active credit' : 'El cliente no tiene crédito activo'}
                   </p>
                 )}
               </div>
@@ -340,10 +342,10 @@ export default function ConvertToSalePage() {
       </div>
 
       {/* Opciones de procesamiento */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
         <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
           <h2 className="font-semibold text-gray-800">
-            {locale === 'en' ? 'Processing options' : 'Opciones de procesamiento'}
+            {locale === 'zh' ? '处理选项' : locale === 'en' ? 'Processing options' : 'Opciones de procesamiento'}
           </h2>
         </div>
         <div className="px-6 py-4 space-y-4">
@@ -361,12 +363,14 @@ export default function ConvertToSalePage() {
             />
             <div>
               <p className="text-sm font-semibold text-gray-800">
-                {locale === 'en' ? 'Close sale' : 'Cerrar venta'}
+                {locale === 'zh' ? '完成销售' : locale === 'en' ? 'Close sale' : 'Cerrar venta'}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
-                {locale === 'en'
-                  ? 'Deducts inventory, registers in cash register and creates accounts receivable if credit.'
-                  : 'Descuenta inventario, registra en caja y crea cuenta por cobrar si es crédito.'}
+                {locale === 'zh'
+                  ? '扣减库存，登记入账，若是信用支付则创建应收账款。'
+                  : locale === 'en'
+                    ? 'Deducts inventory, registers in cash register and creates accounts receivable if credit.'
+                    : 'Descuenta inventario, registra en caja y crea cuenta por cobrar si es crédito.'}
               </p>
             </div>
           </label>
@@ -386,12 +390,14 @@ export default function ConvertToSalePage() {
             />
             <div>
               <p className="text-sm font-semibold text-gray-800">
-                {locale === 'en' ? 'Create invoice' : 'Crear factura'}
+                {locale === 'zh' ? '创建发票' : locale === 'en' ? 'Create invoice' : 'Crear factura'}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
-                {locale === 'en'
-                  ? 'Generates a draft invoice linked to this sale.'
-                  : 'Genera una factura en borrador vinculada a esta venta.'}
+                {locale === 'zh'
+                  ? '生成与此销售关联的发票草稿。'
+                  : locale === 'en'
+                    ? 'Generates a draft invoice linked to this sale.'
+                    : 'Genera una factura en borrador vinculada a esta venta.'}
               </p>
             </div>
           </label>
@@ -408,16 +414,20 @@ export default function ConvertToSalePage() {
             />
             <div>
               <p className="text-sm font-semibold text-gray-800">
-                {locale === 'en' ? 'Stamp CFDI' : 'Timbrar CFDI'}
+                {locale === 'zh' ? '开具电子发票 (CFDI)' : locale === 'en' ? 'Stamp CFDI' : 'Timbrar CFDI'}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
                 {!hasActivePack
-                  ? (locale === 'en'
-                      ? 'No active certification pack configured. Configure one in Settings → SAT Packs.'
-                      : 'No hay un pack de certificación activo. Configura uno en Configuración → Packs SAT.')
-                  : (locale === 'en'
-                      ? 'Sends the invoice to the SAT for electronic stamping. Requires active certification pack.'
-                      : 'Envía la factura al SAT para su timbrado electrónico. Requiere pack de certificación activo.')}
+                  ? (locale === 'zh'
+                      ? '未配置有效的认证包。请在 设置 → SAT 认证包 中进行配置。'
+                      : locale === 'en'
+                        ? 'No active certification pack configured. Configure one in Settings → SAT Packs.'
+                        : 'No hay un pack de certificación activo. Configura uno en Configuración → Packs SAT.')
+                  : (locale === 'zh'
+                      ? '将发票发送至 SAT 进行电子认证。需要有效的认证包。'
+                      : locale === 'en'
+                        ? 'Sends the invoice to the SAT for electronic stamping. Requires active certification pack.'
+                        : 'Envía la factura al SAT para su timbrado electrónico. Requiere pack de certificación activo.')}
               </p>
             </div>
           </label>
@@ -425,9 +435,9 @@ export default function ConvertToSalePage() {
       </div>
 
       {/* Resumen y acción */}
-      <div className="flex items-center justify-between bg-white rounded-xl shadow-sm border border-gray-200 px-6 py-4">
+      <div className="flex items-center justify-between bg-white rounded-xl border border-gray-200 px-6 py-4">
         <div>
-          <p className="text-sm text-gray-500">{locale === 'en' ? 'Total' : 'Total'}</p>
+          <p className="text-sm text-gray-500">{locale === 'zh' ? '总计' : locale === 'en' ? 'Total' : 'Total'}</p>
           <p className="text-xl font-bold" style={{ color: `rgb(var(--color-primary-800))` }}>
             {formatCurrency(quotation.total)}
           </p>
@@ -446,7 +456,7 @@ export default function ConvertToSalePage() {
             className="!bg-green-600 hover:!bg-green-700"
           >
             {converting
-              ? (locale === 'en' ? 'Converting...' : 'Convirtiendo...')
+              ? (locale === 'zh' ? '转换中...' : locale === 'en' ? 'Converting...' : 'Convirtiendo...')
               : t('actions.convertToSale')}
           </Btn>
         </div>
