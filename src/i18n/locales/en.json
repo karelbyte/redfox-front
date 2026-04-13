@@ -3709,7 +3709,9 @@
       "inventory": "Inventory",
       "sale": "Sales",
       "quotation": "Quotations",
-      "invoice": "Invoices"
+      "invoice": "Invoices",
+      "shipment": "Shipments",
+      "admin_message": "Administrator Message"
     },
     "priority": {
       "low": "Low",

@@ -3673,7 +3673,9 @@
       "inventory": "库存",
       "sale": "销售",
       "quotation": "报价单",
-      "invoice": "发票"
+      "invoice": "发票",
+      "shipment": "发货",
+      "admin_message": "管理员消息"
     },
     "priority": {
       "low": "低",

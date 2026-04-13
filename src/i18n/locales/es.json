@@ -3719,7 +3719,9 @@
       "inventory": "Inventario",
       "sale": "Ventas",
       "quotation": "Cotizaciones",
-      "invoice": "Facturas"
+      "invoice": "Facturas",
+      "shipment": "Envios",
+      "admin_message": "Mensaje del Administrador"
     },
     "priority": {
       "low": "Baja",
