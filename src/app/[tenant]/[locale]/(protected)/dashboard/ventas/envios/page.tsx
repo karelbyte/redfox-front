@@ -14,6 +14,7 @@ import ShipmentFormDrawer from '@/components/Shipment/ShipmentFormDrawer';
 import ConfirmStatusModal from '@/components/Shipment/ConfirmStatusModal';
 import HelpButton from '@/components/Help/HelpButton';
 import { getShipmentsHelp } from '@/components/Help/configs/shipments.help';
+import { usePermissions } from '@/hooks/usePermissions';
 
 const dict = {
   es: {
@@ -131,6 +132,7 @@ export default function GlobalShipmentsPage() {
   const { tenant, locale } = useParams();
   const currentLocale = (locale as string) === 'en' ? 'en' : (locale as string) === 'zh' ? 'zh' : 'es';
   const t = dict[currentLocale];
+  const { can } = usePermissions();
 
   const trackingUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/${tenant}/rastrear`
@@ -267,6 +269,10 @@ export default function GlobalShipmentsPage() {
 
     return actions;
   };
+
+  if (!can(['shipment_module_view'])) {
+    return <div className="p-6 text-gray-500">Sin permisos para ver este módulo.</div>;
+  }
 
   return (
     <div className="p-6">

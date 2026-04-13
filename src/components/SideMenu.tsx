@@ -805,7 +805,7 @@ export function SideMenu() {
             name: locale === 'en' ? 'Shipments' : locale === 'zh' ? '物流 / 发货' : 'Logística / Envíos',
             translationKey: "shipments",
             path: getLocalizedPath("/dashboard/ventas/envios"),
-            howCan: ["withdrawal_module_view"],
+            howCan: ["shipment_module_view"],
             icon: (
               <svg
                 className="w-5 h-5"
