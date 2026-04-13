@@ -75,6 +75,20 @@ export interface OperationalAnalytics {
   }>;
 }
 
+export interface ExtendedAnalytics {
+  salesByPaymentMethod: Array<{ method: string; count: number; revenue: number }>;
+  salesByDayOfWeek: Array<{ day: string; sales: number; revenue: number }>;
+  salesByUser: Array<{ userId: string; userName: string; sales: number; revenue: number }>;
+  inventoryByWarehouse: Array<{ warehouseId: string; warehouseName: string; value: number; products: number }>;
+  slowMovingProducts: Array<{ productId: string; productName: string; lastMovement: string | null; stock: number }>;
+  receivablesAging: Array<{ bucket: string; count: number; amount: number }>;
+  expensesByCategory: Array<{ categoryId: string; categoryName: string; amount: number; count: number }>;
+  incomeVsExpenses: Array<{ month: string; income: number; expenses: number }>;
+  topClients: Array<{ clientId: string; clientName: string; totalPurchases: number; totalSpent: number }>;
+  shipmentsByStatus: Array<{ status: string; count: number }>;
+  avgDeliveryTimeByCarrier: Array<{ carrier: string; avgDays: number; shipments: number }>;
+}
+
 export interface DashboardAnalytics {
   sales: SalesAnalytics;
   inventory: InventoryAnalytics;
@@ -111,6 +125,10 @@ class AnalyticsService {
 
   async getOperationalAnalytics(): Promise<OperationalAnalytics> {
     return await api.get<OperationalAnalytics>('/analytics/operational');
+  }
+
+  async getExtendedAnalytics(): Promise<ExtendedAnalytics> {
+    return await api.get<ExtendedAnalytics>('/analytics/extended');
   }
 
   async getDashboardAnalytics(startDate?: string, endDate?: string): Promise<DashboardAnalytics> {

@@ -6,13 +6,23 @@ import { useTranslations } from 'next-intl';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useTheme } from '@/context/ThemeContext';
 import { useLocaleUtils } from '@/hooks/useLocale';
-import { analyticsService, DashboardAnalytics } from '@/services/analytics.service';
+import { analyticsService, DashboardAnalytics, ExtendedAnalytics } from '@/services/analytics.service';
 import Loading from '@/components/Loading/Loading';
 import AnalyticsCard from '@/components/Analytics/AnalyticsCard';
 import SalesChart from '@/components/Analytics/SalesChart';
 import InventoryChart from '@/components/Analytics/InventoryChart';
 import RevenueChart from '@/components/Analytics/RevenueChart';
 import TopProductsChart from '@/components/Analytics/TopProductsChart';
+import PaymentMethodChart from '@/components/Analytics/PaymentMethodChart';
+import DayOfWeekChart from '@/components/Analytics/DayOfWeekChart';
+import SalesByUserChart from '@/components/Analytics/SalesByUserChart';
+import InventoryByWarehouseChart from '@/components/Analytics/InventoryByWarehouseChart';
+import ReceivablesAgingChart from '@/components/Analytics/ReceivablesAgingChart';
+import ExpensesByCategoryChart from '@/components/Analytics/ExpensesByCategoryChart';
+import IncomeVsExpensesChart from '@/components/Analytics/IncomeVsExpensesChart';
+import TopClientsChart from '@/components/Analytics/TopClientsChart';
+import ShipmentStatusChart from '@/components/Analytics/ShipmentStatusChart';
+import CarrierDeliveryChart from '@/components/Analytics/CarrierDeliveryChart';
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
@@ -22,6 +32,7 @@ export default function DashboardPage() {
   const { formatCurrency } = useLocaleUtils();
   
   const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
+  const [extended, setExtended] = useState<ExtendedAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<{
     startDate?: string;
@@ -35,11 +46,12 @@ export default function DashboardPage() {
   const loadAnalyticsData = async () => {
     try {
       setLoading(true);
-      const data = await analyticsService.getDashboardAnalytics(
-        dateRange.startDate,
-        dateRange.endDate
-      );
+      const [data, ext] = await Promise.all([
+        analyticsService.getDashboardAnalytics(dateRange.startDate, dateRange.endDate),
+        analyticsService.getExtendedAnalytics(),
+      ]);
       setAnalytics(data);
+      setExtended(ext);
     } catch (error) {
       console.error('Error loading analytics data:', error);
     } finally {
@@ -438,6 +450,104 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {can(['analytics_module_view']) && extended && (
+          <>
+            {/* Ventas — métodos de pago, día de semana, vendedor */}
+            <div className="mt-8 mb-2">
+              <h2 className="text-base font-semibold" style={{ color: themeColors.primary }}>
+                {t('analytics.salesSection')}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              {[
+                { title: t('analytics.salesByPaymentMethod'), data: extended.salesByPaymentMethod, Chart: PaymentMethodChart, empty: extended.salesByPaymentMethod.length === 0 },
+                { title: t('analytics.salesByDayOfWeek'), data: extended.salesByDayOfWeek, Chart: DayOfWeekChart, empty: extended.salesByDayOfWeek.length === 0 },
+                { title: t('analytics.salesByUser'), data: extended.salesByUser, Chart: SalesByUserChart, empty: extended.salesByUser.length === 0 },
+              ].map(({ title, data, Chart, empty }) => (
+                <div key={title} className="overflow-hidden" style={{ backgroundColor: 'white', border: `1px solid ${themeColors.border}`, borderRadius: '8px' }}>
+                  <div className="px-6 py-4" style={{ backgroundColor: themeColors.light, borderBottom: `1px solid ${themeColors.border}`, borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+                    <h3 className="text-lg font-semibold" style={{ color: themeColors.primary }}>{title}</h3>
+                  </div>
+                  <div className="p-6">
+                    {empty ? <div className="h-80 flex items-center justify-center"><p className="text-gray-400 text-sm">{t('analytics.noExtendedData')}</p></div>
+                      : <Chart data={data as any} themeColors={themeColors} />}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Inventario — por almacén */}
+            <div className="mb-2">
+              <h2 className="text-base font-semibold" style={{ color: themeColors.primary }}>
+                {t('analytics.inventorySection')}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {[
+                { title: t('analytics.inventoryByWarehouse'), data: extended.inventoryByWarehouse, Chart: InventoryByWarehouseChart, empty: extended.inventoryByWarehouse.length === 0 },
+                { title: t('analytics.topClients'), data: extended.topClients, Chart: TopClientsChart, empty: extended.topClients.length === 0 },
+              ].map(({ title, data, Chart, empty }) => (
+                <div key={title} className="overflow-hidden" style={{ backgroundColor: 'white', border: `1px solid ${themeColors.border}`, borderRadius: '8px' }}>
+                  <div className="px-6 py-4" style={{ backgroundColor: themeColors.light, borderBottom: `1px solid ${themeColors.border}`, borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+                    <h3 className="text-lg font-semibold" style={{ color: themeColors.primary }}>{title}</h3>
+                  </div>
+                  <div className="p-6">
+                    {empty ? <div className="h-80 flex items-center justify-center"><p className="text-gray-400 text-sm">{t('analytics.noExtendedData')}</p></div>
+                      : <Chart data={data as any} themeColors={themeColors} />}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Finanzas — ingresos vs gastos, gastos por categoría, aging CxC */}
+            <div className="mb-2">
+              <h2 className="text-base font-semibold" style={{ color: themeColors.primary }}>
+                {t('analytics.financialSection')}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              {[
+                { title: t('analytics.incomeVsExpenses'), data: extended.incomeVsExpenses, Chart: IncomeVsExpensesChart, empty: extended.incomeVsExpenses.length === 0 },
+                { title: t('analytics.expensesByCategory'), data: extended.expensesByCategory, Chart: ExpensesByCategoryChart, empty: extended.expensesByCategory.length === 0 },
+                { title: t('analytics.receivablesAging'), data: extended.receivablesAging, Chart: ReceivablesAgingChart, empty: extended.receivablesAging.every(r => r.amount === 0) },
+              ].map(({ title, data, Chart, empty }) => (
+                <div key={title} className="overflow-hidden" style={{ backgroundColor: 'white', border: `1px solid ${themeColors.border}`, borderRadius: '8px' }}>
+                  <div className="px-6 py-4" style={{ backgroundColor: themeColors.light, borderBottom: `1px solid ${themeColors.border}`, borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+                    <h3 className="text-lg font-semibold" style={{ color: themeColors.primary }}>{title}</h3>
+                  </div>
+                  <div className="p-6">
+                    {empty ? <div className="h-80 flex items-center justify-center"><p className="text-gray-400 text-sm">{t('analytics.noExtendedData')}</p></div>
+                      : <Chart data={data as any} themeColors={themeColors} />}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Logística — envíos por estado, tiempo por paquetería */}
+            <div className="mb-2">
+              <h2 className="text-base font-semibold" style={{ color: themeColors.primary }}>
+                {t('analytics.shipmentsSection')}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {[
+                { title: t('analytics.shipmentsByStatus'), data: extended.shipmentsByStatus, Chart: ShipmentStatusChart, empty: extended.shipmentsByStatus.length === 0 },
+                { title: t('analytics.carrierDeliveryTime'), data: extended.avgDeliveryTimeByCarrier, Chart: CarrierDeliveryChart, empty: extended.avgDeliveryTimeByCarrier.length === 0 },
+              ].map(({ title, data, Chart, empty }) => (
+                <div key={title} className="overflow-hidden" style={{ backgroundColor: 'white', border: `1px solid ${themeColors.border}`, borderRadius: '8px' }}>
+                  <div className="px-6 py-4" style={{ backgroundColor: themeColors.light, borderBottom: `1px solid ${themeColors.border}`, borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+                    <h3 className="text-lg font-semibold" style={{ color: themeColors.primary }}>{title}</h3>
+                  </div>
+                  <div className="p-6">
+                    {empty ? <div className="h-80 flex items-center justify-center"><p className="text-gray-400 text-sm">{t('analytics.noExtendedData')}</p></div>
+                      : <Chart data={data as any} themeColors={themeColors} />}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
