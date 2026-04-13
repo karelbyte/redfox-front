@@ -170,6 +170,7 @@
     "certificationPacks": "SAT Packs",
     "auditLogs": "Audit Logs",
     "finance": "Finance",
+    "shipments": "Shipments",
     "expenses": "Expenses",
     "accountsReceivable": "Accounts Receivable",
     "accountsPayable": "Accounts Payable",
@@ -2171,6 +2172,40 @@
           "fiscalStatus": "Fiscal status",
           "invoice": "Invoice"
         }
+      }
+    },
+    "shipments": {
+      "title": "Shipments",
+      "addShipment": "Add Shipment",
+      "noShipments": "No shipments registered",
+      "noShipmentsDesc": "Register a physical shipment using a carrier.",
+      "trackingUrl": "Tracking URL",
+      "trackingNumber": "Tracking Number",
+      "tracking": "Tracking",
+      "carrier": "Carrier",
+      "status": "Status",
+      "cost": "Cost",
+      "notes": "Notes",
+      "actions": "Actions",
+      "estimatedDelivery": "Estimated Delivery",
+      "form": {
+        "title": "Register Shipment",
+        "save": "Save Shipment",
+        "carrierPlaceholder": "Ex: DHL, FedEx",
+        "trackingPlaceholder": "Ex: 1234567890",
+        "urlPlaceholder": "https://...",
+        "costPlaceholder": "Ex: 150.00",
+        "errors": {
+          "carrierRequired": "Carrier is required"
+        }
+      },
+      "statuses": {
+        "PENDING": "Pending",
+        "PACKING": "Packing",
+        "SHIPPED": "Shipped",
+        "DELIVERED": "Delivered",
+        "RETURNED": "Returned",
+        "FAILED": "Failed"
       }
     },
     "pos": {

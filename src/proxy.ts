@@ -16,6 +16,7 @@ export default function proxy(request: NextRequest) {
 
     const segments = pathname.split('/').filter(Boolean);
     const authPaths = ['login', 'register', 'forgot-password', 'reset-password', 'activate', 'theme-demo'];
+    const publicPaths = ['rastrear'];
 
     // Helper to create redirect URL with preserved search params
     const createRedirect = (newPath: string) => {
@@ -86,6 +87,10 @@ export default function proxy(request: NextRequest) {
     if (segments.length > 0 && !locales.includes(secondSegment as any)) {
         if (authPaths.includes(secondSegment)) {
             // Ya tiene estructura /[tenant]/[authPath], es válida
+            return NextResponse.next();
+        }
+
+        if (publicPaths.includes(secondSegment)) {
             return NextResponse.next();
         }
 

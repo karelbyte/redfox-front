@@ -170,6 +170,7 @@
     "certificationPacks": "Packs SAT",
     "auditLogs": "Logs de Auditoría",
     "finance": "Finanzas",
+    "shipments": "Logística / Envíos",
     "expenses": "Gastos",
     "accountsReceivable": "Cuentas por Cobrar",
     "accountsPayable": "Cuentas por Pagar",
@@ -2153,6 +2154,40 @@
           "fiscalStatus": "Estado fiscal",
           "invoice": "Factura"
         }
+      }
+    },
+    "shipments": {
+      "title": "Envíos",
+      "addShipment": "Agregar Envío",
+      "noShipments": "No hay envíos registrados",
+      "noShipmentsDesc": "Registra un envío físico usando una paquetería.",
+      "trackingUrl": "URL de Rastreo",
+      "trackingNumber": "Número de Guía",
+      "tracking": "Rastreo",
+      "carrier": "Paquetería",
+      "status": "Estado",
+      "cost": "Costo",
+      "notes": "Notas",
+      "actions": "Acciones",
+      "estimatedDelivery": "Fecha estimada",
+      "form": {
+        "title": "Registrar Envío",
+        "save": "Guardar Envío",
+        "carrierPlaceholder": "Ej: DHL, FedEx",
+        "trackingPlaceholder": "Ej: 1234567890",
+        "urlPlaceholder": "https://...",
+        "costPlaceholder": "Ej: 150.00",
+        "errors": {
+          "carrierRequired": "La paquetería es requerida"
+        }
+      },
+      "statuses": {
+        "PENDING": "Pendiente",
+        "PACKING": "Empacando",
+        "SHIPPED": "En camino",
+        "DELIVERED": "Entregado",
+        "RETURNED": "Devuelto",
+        "FAILED": "Fallido"
       }
     },
     "pos": {

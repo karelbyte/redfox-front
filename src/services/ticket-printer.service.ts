@@ -345,8 +345,7 @@ export class TicketPrinterService {
     lines.push('');
     lines.push(this.centerText(labels.powered));
     lines.push('');
-    lines.push(this.centerText(new Date().toLocaleDateString(locale)));
-    lines.push('');
+    lines.push(this.centerText(new Date().toLocaleDateString(locale)));    lines.push('');
     
     return lines.join('\n');
   }

@@ -14,6 +14,7 @@ import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AddProductForm, { AddProductFormRef } from '@/components/Sale/AddProductForm';
 import SaleProductsTable from '@/components/Sale/SaleProductsTable';
+import ShipmentsSection from '@/components/Sale/ShipmentsSection';
 import CloseSaleModal from '@/components/Sale/CloseSaleModal';
 import SaleCloseResultModal from '@/components/Sale/SaleCloseResultModal';
 import Loading from '@/components/Loading/Loading';
@@ -584,6 +585,8 @@ export default function SaleDetailsPage() {
           </div>
         )}
       </div>
+
+      <ShipmentsSection saleId={sale.id} />
 
       {/* Drawer para agregar producto */}
       <Drawer
