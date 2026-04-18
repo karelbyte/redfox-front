@@ -78,7 +78,7 @@ class ProviderImportService {
     const ex1       = FIELDS.map((_, i) => q(EXAMPLES[0][i] ?? '')).join(',');
     const ex2       = FIELDS.map((_, i) => q(EXAMPLES[1][i] ?? '')).join(',');
 
-    const csv = [headerRow, reqRow, ex1, ex2].join('\r\n');
+    const csv = headerRow;
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

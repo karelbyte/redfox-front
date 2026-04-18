@@ -137,13 +137,26 @@ export default function InventoryTable({
                 </td>
               )}
               {isVisible('quantity') && (
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <span className="font-medium">{item.quantity}</span>
-                  <span className="text-gray-500 ml-1">
-                    {typeof item.product.measurement_unit === "object"
-                      ? item.product.measurement_unit.code
-                      : "pz"}
-                  </span>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div className="flex items-center">
+                    <span className={`${
+                      (item.product.stock_min ?? 0) > 0 && Number(item.quantity) <= Number(item.product.stock_min)
+                        ? 'text-red-600 font-bold flex items-center gap-1'
+                        : 'text-gray-900'
+                    }`}>
+                      {item.quantity}
+                      {(item.product.stock_min ?? 0) > 0 && Number(item.quantity) <= Number(item.product.stock_min) && (
+                        <Tooltip content={t('table.lowStockWarning', { default: 'Stock bajo' })} placement="right">
+                          <span>⚠️</span>
+                        </Tooltip>
+                      )}
+                    </span>
+                    <span className="text-gray-500 ml-1">
+                      {typeof item.product.measurement_unit === "object"
+                        ? item.product.measurement_unit.code
+                        : "pz"}
+                    </span>
+                  </div>
                 </td>
               )}
               {isVisible('price') && (

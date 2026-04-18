@@ -1048,8 +1048,10 @@
         "defaultInvoiceUse": "CFDI Use",
         "isMain": "Primary Profile",
         "placeholders": {
-          "taxDocument": "Ex: RUC 20123456789",
-          "taxName": "Ex: Company S.A. de C.V."
+          "taxDocument": "Ex: XAXX010101000"
+        },
+        "descriptions": {
+          "taxName": "Name or Business Name as it appears in the Tax Identification Cedula (CIF). For natural persons: Name(s), First Surname and Second Surname. For legal entities: Business Name. ! IMPORTANT !: Do NOT capture in this field the Capital Regime (e.g., SA de CV, S de RL, etc.)"
         },
         "table": {
           "taxDocument": "RFC / Tax ID",
@@ -1126,7 +1128,7 @@
           "addressZip": "Ex: 86500",
           "addressState": "Ex: Sonora",
           "addressCountry": "Ex: MEX",
-          "taxDocument": "Ex: RUC 20123456789",
+          "taxDocument": "Ex: XAXX010101000",
           "taxSystem": "Ex: 601",
           "defaultInvoiceUse": "Ex: G01"
         },
@@ -1282,8 +1284,11 @@
         "defaultInvoiceUse": "CFDI Use",
         "isMain": "Primary Profile",
         "placeholders": {
-          "taxDocument": "Ex: RUC 20123456789",
+          "taxDocument": "Ex: XAXX010101000",
           "taxName": "Ex: Empresa S.A. de C.V."
+        },
+        "descriptions": {
+          "taxName": "Name or Business Name as it appears in the Tax Identification Cedula (CIF).\nFor natural persons: Name(s), First Surname and Second Surname.\nFor legal entities: Business Name.\n! IMPORTANT !: Do NOT capture in this field the Capital Regime (e.g., SA de CV, S de RL, etc.)"
         },
         "errors": {
           "taxDocumentRequired": "Tax document is required",

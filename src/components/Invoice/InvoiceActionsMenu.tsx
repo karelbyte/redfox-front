@@ -29,7 +29,7 @@ export function InvoiceActionsMenu({
 
   const canEdit = invoice.status === 'DRAFT';
   const canDelete = invoice.status === 'DRAFT';
-  const canGenerateCFDI = invoice.status === 'DRAFT';
+  const canGenerateCFDI = invoice.status === 'DRAFT' || invoice.status === 'FAILED_CFDI';
   const canCancelCFDI = invoice.status === 'SENT' || invoice.status === 'PAID';
   const canDownload = invoice.status === 'SENT' || invoice.status === 'PAID' || invoice.status === 'CANCELLED';
 

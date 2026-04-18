@@ -1063,7 +1063,7 @@
         "defaultInvoiceUse": "Uso de CFDI",
         "isMain": "Perfil Principal",
         "placeholders": {
-          "taxDocument": "Ej: RUC 20123456789",
+          "taxDocument": "Ej: XAXX010101000",
           "taxName": "Ej: Empresa S.A. de C.V."
         },
         "table": {
@@ -1269,8 +1269,11 @@
         "defaultInvoiceUse": "Uso de CFDI",
         "isMain": "Perfil Principal",
         "placeholders": {
-          "taxDocument": "Ej: RUC 20123456789",
+          "taxDocument": "Ej: XAXX010101000",
           "taxName": "Ej: Empresa S.A. de C.V."
+        },
+        "descriptions": {
+          "taxName": "Nombre o Razón social tal como viene en la cédula fiscal de identificación (CIF).\nPara el caso de personas físicas: Nombre(s), Apellido paterno y Apellido materno.\nPara el caso de personas morales: Razón Social.\n! IMPORTANTE !: NO se debe capturar en este campo el Régimen de Capital (ej: SA de CV, S de RL, etc)"
         },
         "errors": {
           "taxDocumentRequired": "El RFC es requerido",

@@ -206,20 +206,24 @@ const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFo
                 <Input
                     label={t('taxDocument')}
                     value={formData.tax_document}
-                    onChange={(e) => setFormData(prev => ({ ...prev, tax_document: e.target.value }))}
+                    onChange={(e) => setFormData(prev => ({ ...prev, tax_document: e.target.value.toUpperCase() }))}
                     error={errors.tax_document}
                     placeholder={t('placeholders.taxDocument')}
                     required
                 />
 
-                <Input
-                    label={t('taxName')}
-                    value={formData.tax_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, tax_name: e.target.value }))}
-                    error={errors.tax_name}
-                    placeholder={t('placeholders.taxName')}
-                    required
-                />
+                <div>
+                    <Input
+                        label={t('taxName')}
+                        value={formData.tax_name}
+                        onChange={(e) => setFormData(prev => ({ ...prev, tax_name: e.target.value }))}
+                        error={errors.tax_name}
+                        required
+                    />
+                    <p className="text-xs text-gray-600 mt-2 whitespace-pre-line">
+                        {t2('descriptions.taxName')}
+                    </p>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <CustomSelect

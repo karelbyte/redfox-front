@@ -1048,8 +1048,10 @@
         "defaultInvoiceUse": "CFDI 用途",
         "isMain": "主要档案",
         "placeholders": {
-          "taxDocument": "例：RUC 20123456789",
-          "taxName": "例：Company S.A. de C.V."
+          "taxDocument": "例：XAXX010101000"
+        },
+        "descriptions": {
+          "taxName": "法定名称或商业名称，应与税务识别证（CIF）中的名称相同。对于自然人：名字、父姓和母姓。对于法人实体：企业名称。! 重要 !：请勿在此字段输入资本制度类型（如 SA de CV、S de RL 等）"
         },
         "table": {
           "taxDocument": "RFC / 税号",
@@ -1125,7 +1127,7 @@
           "addressZip": "例：86500",
           "addressState": "例：Sonora",
           "addressCountry": "例：MEX",
-          "taxDocument": "例：RUC 20123456789",
+          "taxDocument": "例：XAXX010101000",
           "taxSystem": "例：601",
           "defaultInvoiceUse": "例：G01"
         },
@@ -1281,8 +1283,11 @@
         "defaultInvoiceUse": "CFDI 用途",
         "isMain": "主要档案",
         "placeholders": {
-          "taxDocument": "例：RUC 20123456789",
+          "taxDocument": "例：XAXX010101000",
           "taxName": "例：Empresa S.A. de C.V."
+        },
+        "descriptions": {
+          "taxName": "法定名称或商业名称，应与税务识别证（CIF）中的名称相同。\n对于自然人：名字、父姓和母姓。\n对于法人实体：企业名称。\n! 重要 !：请勿在此字段输入资本制度类型（如 SA de CV、S de RL 等）"
         },
         "errors": {
           "taxDocumentRequired": "税务文件为必填项",

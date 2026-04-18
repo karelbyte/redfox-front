@@ -1,14 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Webhook, WebhookEvent, WebhookStatus, webhookService } from '@/services/webhooks.service';
-import { Btn } from '@/components/atoms';
 
-interface WebhookFormProps {
-  webhook?: Webhook;
-  onSave: (webhook: Webhook) => Promise<void>;
-  onCancel: () => void;
-  isLoading: boolean;
+export interface WebhookFormRef {
+  submit: () => void;
+  reset: () => void;
+}
+
+export interface WebhookFormProps {
+  webhook: Webhook | null;
+  onClose: () => void;
+  onSuccess: () => void;
+  onSavingChange?: (isSaving: boolean) => void;
+  onValidChange?: (isValid: boolean) => void;
   locale: string;
 }
 
@@ -160,31 +165,26 @@ const statusLabelsByLocale = {
   },
 } as const;
 
-export const WebhookForm: React.FC<WebhookFormProps> = ({
-  webhook,
-  onSave,
-  onCancel,
-  isLoading,
-  locale,
-}) => {
-  const localeKey = locale === 'en' ? 'en' : locale === 'zh' ? 'zh' : 'es';
-  const t = webhookFormTranslations[localeKey];
+export const WebhookForm = forwardRef<WebhookFormRef, WebhookFormProps>(
+  ({ webhook, onSuccess, onSavingChange, onValidChange, locale }, ref) => {
+    const localeKey = locale === 'en' ? 'en' : locale === 'zh' ? 'zh' : 'es';
+    const t = webhookFormTranslations[localeKey];
 
-  const [formData, setFormData] = useState<FormData>({
-    name: webhook?.name || '',
-    url: webhook?.url || '',
-    event: webhook?.event || WebhookEvent.SALE_CREATED,
-    status: webhook?.status || WebhookStatus.ACTIVE,
-    retry_count: webhook?.retry_count || 3,
-    timeout_ms: webhook?.timeout_ms || 5000,
-    headers: JSON.stringify(webhook?.headers || {}, null, 2),
-  });
+    const [formData, setFormData] = useState<FormData>({
+      name: webhook?.name || '',
+      url: webhook?.url || '',
+      event: webhook?.event || WebhookEvent.SALE_CREATED,
+      status: webhook?.status || WebhookStatus.ACTIVE,
+      retry_count: webhook?.retry_count || 3,
+      timeout_ms: webhook?.timeout_ms || 5000,
+      headers: JSON.stringify(webhook?.headers || {}, null, 2),
+    });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSaving, setIsSaving] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [isSaving, setIsSaving] = useState(false);
 
-  const availableEvents = webhookService.getAvailableEvents();
-  const availableStatuses = webhookService.getAvailableStatuses();
+    const availableEvents = webhookService.getAvailableEvents();
+    const availableStatuses = webhookService.getAvailableStatuses();
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -214,7 +214,9 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const isValid = Object.keys(newErrors).length === 0;
+    onValidChange?.(isValid);
+    return isValid;
   };
 
   const isValidUrl = (url: string): boolean => {
@@ -243,14 +245,14 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
 
     setIsSaving(true);
+    onSavingChange?.(true);
+
     try {
       const webhookData = {
         ...formData,
@@ -258,22 +260,42 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
       };
 
       if (webhook?.id) {
-        const updated = await webhookService.updateWebhook(webhook.id, webhookData);
-        await onSave(updated);
+        await webhookService.updateWebhook(webhook.id, webhookData);
       } else {
-        const created = await webhookService.createWebhook(webhookData);
-        await onSave(created);
+        await webhookService.createWebhook(webhookData);
       }
+
+      onSuccess();
     } catch (error) {
       console.error('Error al guardar webhook:', error);
       setErrors({ submit: t.errors.saveError });
     } finally {
       setIsSaving(false);
+      onSavingChange?.(false);
     }
   };
 
+  const handleReset = () => {
+    setFormData({
+      name: webhook?.name || '',
+      url: webhook?.url || '',
+      event: webhook?.event || WebhookEvent.SALE_CREATED,
+      status: webhook?.status || WebhookStatus.ACTIVE,
+      retry_count: webhook?.retry_count || 3,
+      timeout_ms: webhook?.timeout_ms || 5000,
+      headers: JSON.stringify(webhook?.headers || {}, null, 2),
+    });
+    setErrors({});
+    onValidChange?.(true);
+  };
+
+  useImperativeHandle(ref, () => ({
+    submit: handleSubmit,
+    reset: handleReset,
+  }));
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6">
         {/* Nombre */}
         <div>
@@ -419,16 +441,6 @@ export const WebhookForm: React.FC<WebhookFormProps> = ({
           </div>
         )}
       </div>
-
-      {/* Botones */}
-      <div className="flex gap-3 pt-2">
-        <Btn type="submit" disabled={isSaving || isLoading} variant="primary" size="md">
-          {isSaving ? t.labels.saving : webhook ? t.labels.update : t.labels.create}
-        </Btn>
-        <Btn type="button" onClick={onCancel} disabled={isSaving || isLoading} variant="outline" size="md">
-          {t.labels.cancel}
-        </Btn>
-      </div>
-    </form>
+    </div>
   );
-};
+});

@@ -21,6 +21,7 @@ const FIELDS = [
   { name: 'inventory_strategy', req: false, type: 'opción',  desc: { es: 'Estrategia de inventario: fifo | fefo | average. Si se omite, se usa average (promedio ponderado).', en: 'Inventory strategy: fifo | fefo | average. Default: average.', zh: '库存策略：fifo | fefo | average。默认：average（加权平均）。' },                        example: 'average' },
   { name: 'brand',              req: false, type: 'texto',   desc: { es: 'Nombre exacto de la marca. Debe existir previamente en el sistema.', en: 'Exact brand name. Must already exist in the system.', zh: '品牌名称（须已存在于系统中）' },          example: 'Lala' },
   { name: 'category',           req: false, type: 'texto',   desc: { es: 'Nombre exacto de la categoría. Debe existir previamente en el sistema.', en: 'Exact category name. Must already exist in the system.', zh: '分类名称（须已存在于系统中）' },             example: 'Lácteos' },
+  { name: 'iva16',              req: false, type: 'booleano', desc: { es: 'IVA 16%: 0=No asignar IVA, 1=Asignar IVA 16% automáticamente (busca impuesto con código "IVA" y porcentaje 16)', en: 'IVA 16%: 0=No assign VAT, 1=Auto-assign 16% VAT (looks for tax with code "IVA" and 16% rate)', zh: 'IVA 16%：0=不分配增值税，1=自动分配16%增值税（查找代码为"IVA"且税率为16%的税种）' }, example: '1' },
   { name: 'barcode',            req: false, type: 'texto',   desc: { es: 'Código de barras EAN-13 o UPC', en: 'EAN-13 or UPC barcode', zh: 'EAN-13 或 UPC 条形码' },                                                       example: '7501055300018' },
   { name: 'min_stock',          req: false, type: 'entero',  desc: { es: 'Stock mínimo para alertas. Si se omite, queda en 0 (sin alerta).', en: 'Minimum stock for alerts. Default: 0 (no alert).', zh: '库存预警最低值。默认：0（无预警）。' },                                example: '10' },
   { name: 'weight',             req: false, type: 'decimal', desc: { es: 'Peso en kilogramos', en: 'Weight in kilograms', zh: '重量（千克）' },                                                            example: '1.0' },
@@ -35,6 +36,7 @@ const TYPE_COLORS: Record<string, string> = {
   entero:  'bg-indigo-50 text-indigo-700',
   opción:  'bg-amber-50 text-amber-700',
   código:  'bg-teal-50 text-teal-700',
+  booleano: 'bg-green-50 text-green-700',
 };
 
 export default function ImportProductsPage() {

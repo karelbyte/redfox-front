@@ -22,6 +22,7 @@ const FIELDS = [
   { name: 'inventory_strategy', req: false },
   { name: 'brand',              req: false },
   { name: 'category',           req: false },
+  { name: 'iva16',              req: false },
   { name: 'barcode',            req: false },
   { name: 'min_stock',          req: false },
   { name: 'weight',             req: false },
@@ -42,8 +43,8 @@ const OPT_LABEL: Record<string, string> = {
 };
 
 const EXAMPLES = [
-  ['Leche Entera 1L', 'LECH-001', '50211503', 'LTR', 'Leche entera pasteurizada 1 litro', '25.00', 'tangible', 'average', 'Lala', 'Lácteos', '7501055300018', '10', '1.0', '0.10', '0.25', '0.10'],
-  ['Servicio de Instalación', 'SERV-001', '81111500', 'E48', 'Servicio técnico de instalación', '500.00', 'service', 'average', '', 'Servicios', '', '0', '', '', '', ''],
+  ['Leche Entera 1L', 'LECH-001', '50211503', 'LTR', 'Leche entera pasteurizada 1 litro', '25.00', 'tangible', 'average', 'Lala', 'Lácteos', '1', '7501055300018', '10', '1.0', '0.10', '0.25', '0.10'],
+  ['Servicio de Instalación', 'SERV-001', '81111500', 'E48', 'Servicio técnico de instalación', '500.00', 'service', 'average', '', 'Servicios', '0', '', '0', '', '', '', ''],
 ];
 
 function getHeaders() {
@@ -93,7 +94,7 @@ class ProductImportService {
     const example1   = FIELDS.map((_, i) => q(EXAMPLES[0][i] ?? '')).join(',');
     const example2   = FIELDS.map((_, i) => q(EXAMPLES[1][i] ?? '')).join(',');
 
-    const csv = [headerRow, reqRow, example1, example2].join('\r\n');
+    const csv = headerRow;
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
