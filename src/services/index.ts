@@ -20,6 +20,7 @@ export { usersService } from './users.service';
 export { warehouseOpeningsService } from './warehouse-openings.service';
 export { warehouseAdjustmentService } from './warehouse-adjustments.service';
 export { warehousesService } from './warehouses.service';
+export { webhookService } from './webhooks.service';
 export { permissionsService } from './permissions.service';
 export { returnService } from './returns.service';
 export { purchaseOrdersService } from './purchase-orders.service';

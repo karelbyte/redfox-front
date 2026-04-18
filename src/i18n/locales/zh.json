@@ -163,6 +163,7 @@
     "emailConfig": "邮件配置",
     "paymentGateway": "支付网关",
     "backup": "备份",
+    "webhooks": "网络钩子",
     "returns": "退货",
     "invoices": "发票",
     "createInvoice": "创建发票",
@@ -241,7 +242,6 @@
       "analytics": {
         "noData": "暂无数据",
         "totalSales": "总销售额",
-        "totalRevenue": "总收入",
         "totalProducts": "产品总数",
         "inventoryValue": "库存价值",
         "averageTicket": "平均客单价",
@@ -254,7 +254,6 @@
         "lowStockAlert": "库存不足预警",
         "sales": "销售",
         "revenue": "收入",
-        "products": "产品",
         "value": "价值",
         "invoiced": "已开票",
         "collected": "已收款",
@@ -291,7 +290,31 @@
         "salesSection": "销售分析",
         "inventorySection": "库存与客户",
         "financialSection": "财务",
-        "shipmentsSection": "物流"
+        "shipmentsSection": "物流",
+        "advancedSection": "高级分析",
+        "salesForecasting": "销售预测",
+        "productProfitability": "产品盈利能力",
+        "monthOverMonthComparison": "月环比比较",
+        "forecastDisclaimer": "预测基于历史数据，可能因市场条件而异。",
+        "profitabilityDisclaimer": "盈利能力按销售价格计算利润率。",
+        "unitsSold": "销售单位",
+        "profitMargin": "利润率",
+        "totalRevenue": "总收入",
+        "actual": "实际",
+        "forecast": "预测",
+        "growth": "增长",
+        "metrics": {
+          "sales": "销售",
+          "revenue": "收入",
+          "orders": "订单",
+          "customers": "客户",
+          "monthOverMonth": "月环比"
+        },
+        "chartTypes": {
+          "bar": "柱状图",
+          "line": "线图"
+        },
+        "products": "产品"
       }
     },
     "auditLogs": {
@@ -322,6 +345,47 @@
       },
       "messages": {
         "errorLoading": "加载审计日志出错"
+      }
+    },
+    "webhooks": {
+      "title": "网络钩子",
+      "subtitle": "配置发送到外部服务的事件",
+      "table": {
+        "name": "名称",
+        "event": "事件",
+        "url": "URL",
+        "status": "状态",
+        "lastTriggered": "上次触发",
+        "actions": "操作"
+      },
+      "form": {
+        "name": "网络钩子名称",
+        "namePlaceholder": "例如：销售网络钩子",
+        "url": "目标URL",
+        "urlPlaceholder": "https://example.com/webhook",
+        "event": "要触发的事件",
+        "status": "状态",
+        "retryCount": "重试次数",
+        "timeoutMs": "超时时间（毫秒）",
+        "headers": "自定义标头（JSON）",
+        "save": "保存网络钩子",
+        "cancel": "取消",
+        "edit": "编辑",
+        "delete": "删除"
+      },
+      "messages": {
+        "webhookCreated": "网络钩子创建成功",
+        "webhookUpdated": "网络钩子更新成功",
+        "webhookDeleted": "网络钩子删除成功",
+        "errorCreating": "创建网络钩子出错",
+        "errorUpdating": "更新网络钩子出错",
+        "errorDeleting": "删除网络钩子出错",
+        "errorLoading": "加载网络钩子出错"
+      },
+      "empty": {
+        "title": "未配置网络钩子",
+        "description": "点击「新建网络钩子」添加一个。",
+        "noResults": "未找到网络钩子"
       }
     },
     "warehouses": {

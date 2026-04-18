@@ -163,6 +163,7 @@
     "emailConfig": "Email Configuration",
     "paymentGateway": "Payment Gateway",
     "backup": "Backup",
+    "webhooks": "Webhooks",
     "returns": "Returns",
     "invoices": "Invoices",
     "createInvoice": "Create Invoice",
@@ -241,7 +242,6 @@
       "analytics": {
         "noData": "No data available",
         "totalSales": "Total Sales",
-        "totalRevenue": "Total Revenue",
         "totalProducts": "Total Products",
         "inventoryValue": "Inventory Value",
         "averageTicket": "Average Ticket",
@@ -254,7 +254,6 @@
         "lowStockAlert": "Low Stock Alert",
         "sales": "Sales",
         "revenue": "Revenue",
-        "products": "Products",
         "value": "Value",
         "invoiced": "Invoiced",
         "collected": "Collected",
@@ -291,7 +290,31 @@
         "salesSection": "Sales Analysis",
         "inventorySection": "Inventory & Clients",
         "financialSection": "Financials",
-        "shipmentsSection": "Logistics"
+        "shipmentsSection": "Logistics",
+        "advancedSection": "Advanced Analytics",
+        "salesForecasting": "Sales Forecasting",
+        "productProfitability": "Product Profitability",
+        "monthOverMonthComparison": "Month-over-Month Comparison",
+        "forecastDisclaimer": "Forecasts are based on historical data and may vary depending on market conditions.",
+        "profitabilityDisclaimer": "Profitability is calculated as profit margin over selling price.",
+        "unitsSold": "Units Sold",
+        "profitMargin": "Profit Margin",
+        "totalRevenue": "Total Revenue",
+        "actual": "Actual",
+        "forecast": "Forecast",
+        "growth": "Growth",
+        "metrics": {
+          "sales": "Sales",
+          "revenue": "Revenue",
+          "orders": "Orders",
+          "customers": "Customers",
+          "monthOverMonth": "Month-over-Month"
+        },
+        "chartTypes": {
+          "bar": "Bar",
+          "line": "Line"
+        },
+        "products": "Products"
       }
     },
     "auditLogs": {
@@ -322,6 +345,47 @@
       },
       "messages": {
         "errorLoading": "Error loading audit logs"
+      }
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "subtitle": "Configure events to be sent to external services",
+      "table": {
+        "name": "Name",
+        "event": "Event",
+        "url": "URL",
+        "status": "Status",
+        "lastTriggered": "Last Triggered",
+        "actions": "Actions"
+      },
+      "form": {
+        "name": "Webhook Name",
+        "namePlaceholder": "E.g.: Sales webhook",
+        "url": "Destination URL",
+        "urlPlaceholder": "https://example.com/webhook",
+        "event": "Event to trigger",
+        "status": "Status",
+        "retryCount": "Number of retries",
+        "timeoutMs": "Timeout (ms)",
+        "headers": "Custom headers (JSON)",
+        "save": "Save Webhook",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "messages": {
+        "webhookCreated": "Webhook created successfully",
+        "webhookUpdated": "Webhook updated successfully",
+        "webhookDeleted": "Webhook deleted successfully",
+        "errorCreating": "Error creating webhook",
+        "errorUpdating": "Error updating webhook",
+        "errorDeleting": "Error deleting webhook",
+        "errorLoading": "Error loading webhooks"
+      },
+      "empty": {
+        "title": "No webhooks configured",
+        "description": "Click on 'New Webhook' to add one.",
+        "noResults": "No webhooks found"
       }
     },
     "warehouses": {
@@ -1090,7 +1154,6 @@
         "clientCreated": "Client created successfully",
         "clientUpdated": "Client updated successfully",
         "clientDeleted": "Client deleted successfully",
-        "deleteSuccess": "Clients deleted successfully",
         "errorLoading": "Error loading clients",
         "errorCreating": "Error creating client",
         "errorUpdating": "Error updating client",

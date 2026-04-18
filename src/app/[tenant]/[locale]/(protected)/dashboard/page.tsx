@@ -23,6 +23,9 @@ import IncomeVsExpensesChart from '@/components/Analytics/IncomeVsExpensesChart'
 import TopClientsChart from '@/components/Analytics/TopClientsChart';
 import ShipmentStatusChart from '@/components/Analytics/ShipmentStatusChart';
 import CarrierDeliveryChart from '@/components/Analytics/CarrierDeliveryChart';
+import { SalesForecastingChart } from '@/components/Analytics/SalesForecastingChart';
+import { ProductProfitabilityChart } from '@/components/Analytics/ProductProfitabilityChart';
+import { MonthOverMonthComparisonChart } from '@/components/Analytics/MonthOverMonthComparisonChart';
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
@@ -33,6 +36,11 @@ export default function DashboardPage() {
   
   const [analytics, setAnalytics] = useState<DashboardAnalytics | null>(null);
   const [extended, setExtended] = useState<ExtendedAnalytics | null>(null);
+  const [advancedAnalytics, setAdvancedAnalytics] = useState<{
+    salesForecasting: any;
+    productProfitability: any;
+    monthOverMonthComparison: any;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<{
     startDate?: string;
@@ -52,6 +60,18 @@ export default function DashboardPage() {
       ]);
       setAnalytics(data);
       setExtended(ext);
+
+      // Load advanced analytics
+      const [forecasting, profitability, comparison] = await Promise.all([
+        analyticsService.getSalesForecasting(),
+        analyticsService.getProductProfitability(),
+        analyticsService.getMonthOverMonthComparison(),
+      ]);
+      setAdvancedAnalytics({
+        salesForecasting: forecasting,
+        productProfitability: profitability,
+        monthOverMonthComparison: comparison,
+      });
     } catch (error) {
       console.error('Error loading analytics data:', error);
     } finally {
@@ -546,6 +566,110 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </>
+        )}
+
+        {/* Advanced Analytics Section */}
+        {can(['analytics_module_view']) && advancedAnalytics && (
+          <>
+            <div className="mb-2">
+              <h2 className="text-base font-semibold" style={{ color: themeColors.primary }}>
+                {t('analytics.advancedSection')}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {/* Sales Forecasting */}
+              <div 
+                className="overflow-hidden"
+                style={{
+                  backgroundColor: 'white',
+                  border: `1px solid ${themeColors.border}`,
+                  borderRadius: '8px'
+                }}
+              >
+                <div 
+                  className="px-6 py-4"
+                  style={{ 
+                    backgroundColor: themeColors.light,
+                    borderBottom: `1px solid ${themeColors.border}`,
+                    borderTopLeftRadius: '8px',
+                    borderTopRightRadius: '8px'
+                  }}
+                >
+                  <h3 
+                    className="text-lg font-semibold"
+                    style={{ color: themeColors.primary }}
+                  >
+                    {t('analytics.salesForecasting')}
+                  </h3>
+                </div>
+                <div className="p-6">
+                  <SalesForecastingChart data={advancedAnalytics.salesForecasting} />
+                </div>
+              </div>
+
+              {/* Product Profitability */}
+              <div 
+                className="overflow-hidden"
+                style={{
+                  backgroundColor: 'white',
+                  border: `1px solid ${themeColors.border}`,
+                  borderRadius: '8px'
+                }}
+              >
+                <div 
+                  className="px-6 py-4"
+                  style={{ 
+                    backgroundColor: themeColors.light,
+                    borderBottom: `1px solid ${themeColors.border}`,
+                    borderTopLeftRadius: '8px',
+                    borderTopRightRadius: '8px'
+                  }}
+                >
+                  <h3 
+                    className="text-lg font-semibold"
+                    style={{ color: themeColors.primary }}
+                  >
+                    {t('analytics.productProfitability')}
+                  </h3>
+                </div>
+                <div className="p-6">
+                  <ProductProfitabilityChart data={advancedAnalytics.productProfitability.products} />
+                </div>
+              </div>
+            </div>
+
+            {/* Month over Month Comparison - Full Width */}
+            <div className="mb-8">
+              <div 
+                className="overflow-hidden"
+                style={{
+                  backgroundColor: 'white',
+                  border: `1px solid ${themeColors.border}`,
+                  borderRadius: '8px'
+                }}
+              >
+                <div 
+                  className="px-6 py-4"
+                  style={{ 
+                    backgroundColor: themeColors.light,
+                    borderBottom: `1px solid ${themeColors.border}`,
+                    borderTopLeftRadius: '8px',
+                    borderTopRightRadius: '8px'
+                  }}
+                >
+                  <h3 
+                    className="text-lg font-semibold"
+                    style={{ color: themeColors.primary }}
+                  >
+                    {t('analytics.monthOverMonthComparison')}
+                  </h3>
+                </div>
+                <div className="p-6">
+                  <MonthOverMonthComparisonChart data={advancedAnalytics.monthOverMonthComparison} />
+                </div>
+              </div>
             </div>
           </>
         )}

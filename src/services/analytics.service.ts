@@ -89,6 +89,27 @@ export interface ExtendedAnalytics {
   avgDeliveryTimeByCarrier: Array<{ carrier: string; avgDays: number; shipments: number }>;
 }
 
+export interface SalesForecastingData {
+  historicalSales: Array<{ month: string; sales: number; revenue: number }>;
+  forecast: Array<{ month: string; predictedSales: number; confidence: number }>;
+}
+
+export interface ProductProfitabilityData {
+  products: Array<{
+    productName: string;
+    unitsSold: number;
+    profitMargin: number;
+    totalRevenue: number;
+  }>;
+}
+
+export interface MonthOverMonthComparisonData {
+  sales: Array<{ month: string; value: number; growth: number }>;
+  revenue: Array<{ month: string; value: number; growth: number }>;
+  orders: Array<{ month: string; value: number; growth: number }>;
+  customers: Array<{ month: string; value: number; growth: number }>;
+}
+
 export interface DashboardAnalytics {
   sales: SalesAnalytics;
   inventory: InventoryAnalytics;
@@ -140,6 +161,18 @@ class AnalyticsService {
     const url = `/analytics/dashboard${queryString ? `?${queryString}` : ''}`;
     
     return await api.get<DashboardAnalytics>(url);
+  }
+
+  async getSalesForecasting(): Promise<SalesForecastingData> {
+    return await api.get<SalesForecastingData>('/analytics/sales-forecasting');
+  }
+
+  async getProductProfitability(): Promise<ProductProfitabilityData> {
+    return await api.get<ProductProfitabilityData>('/analytics/product-profitability');
+  }
+
+  async getMonthOverMonthComparison(): Promise<MonthOverMonthComparisonData> {
+    return await api.get<MonthOverMonthComparisonData>('/analytics/month-over-month');
   }
 }
 

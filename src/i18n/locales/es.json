@@ -163,6 +163,7 @@
     "emailConfig": "Configuración de Correo",
     "paymentGateway": "Pasarela de Pago",
     "backup": "Respaldo",
+    "webhooks": "Webhooks",
     "returns": "Devoluciones",
     "invoices": "Facturas",
     "createInvoice": "Crear Factura",
@@ -241,7 +242,6 @@
       "analytics": {
         "noData": "No hay datos disponibles",
         "totalSales": "Ventas Totales",
-        "totalRevenue": "Ingresos Totales",
         "totalProducts": "Productos Totales",
         "inventoryValue": "Valor del Inventario",
         "averageTicket": "Ticket Promedio",
@@ -254,7 +254,6 @@
         "lowStockAlert": "Alerta de Bajo Stock",
         "sales": "Ventas",
         "revenue": "Ingresos",
-        "products": "Productos",
         "value": "Valor",
         "invoiced": "Facturado",
         "collected": "Cobrado",
@@ -291,7 +290,31 @@
         "salesSection": "Análisis de Ventas",
         "inventorySection": "Inventario y Clientes",
         "financialSection": "Finanzas",
-        "shipmentsSection": "Logística"
+        "shipmentsSection": "Logística",
+        "advancedSection": "Analytics Avanzados",
+        "salesForecasting": "Pronóstico de Ventas",
+        "productProfitability": "Rentabilidad de Productos",
+        "monthOverMonthComparison": "Comparación Mes a Mes",
+        "forecastDisclaimer": "Los pronósticos se basan en datos históricos y pueden variar según condiciones del mercado.",
+        "profitabilityDisclaimer": "La rentabilidad se calcula como margen de ganancia sobre el precio de venta.",
+        "unitsSold": "Unidades Vendidas",
+        "profitMargin": "Margen de Ganancia",
+        "totalRevenue": "Ingresos Totales",
+        "actual": "Real",
+        "forecast": "Pronóstico",
+        "growth": "Crecimiento",
+        "metrics": {
+          "sales": "Ventas",
+          "revenue": "Ingresos",
+          "orders": "Pedidos",
+          "customers": "Clientes",
+          "monthOverMonth": "Mes a Mes"
+        },
+        "chartTypes": {
+          "bar": "Barras",
+          "line": "Líneas"
+        },
+        "products": "Productos"
       }
     },
     "auditLogs": {
@@ -322,6 +345,47 @@
       },
       "messages": {
         "errorLoading": "Error al cargar los logs de auditoría"
+      }
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "subtitle": "Configura eventos que se enviarán a servicios externos",
+      "table": {
+        "name": "Nombre",
+        "event": "Evento",
+        "url": "URL",
+        "status": "Estado",
+        "lastTriggered": "Último disparo",
+        "actions": "Acciones"
+      },
+      "form": {
+        "name": "Nombre del Webhook",
+        "namePlaceholder": "Ej: Webhook de ventas",
+        "url": "URL destino",
+        "urlPlaceholder": "https://example.com/webhook",
+        "event": "Evento a disparar",
+        "status": "Estado",
+        "retryCount": "Número de reintentos",
+        "timeoutMs": "Timeout (ms)",
+        "headers": "Headers personalizados (JSON)",
+        "save": "Guardar Webhook",
+        "cancel": "Cancelar",
+        "edit": "Editar",
+        "delete": "Eliminar"
+      },
+      "messages": {
+        "webhookCreated": "Webhook creado exitosamente",
+        "webhookUpdated": "Webhook actualizado exitosamente",
+        "webhookDeleted": "Webhook eliminado exitosamente",
+        "errorCreating": "Error al crear el webhook",
+        "errorUpdating": "Error al actualizar el webhook",
+        "errorDeleting": "Error al eliminar el webhook",
+        "errorLoading": "Error al cargar los webhooks"
+      },
+      "empty": {
+        "title": "No hay webhooks configurados",
+        "description": "Haz clic en 'Nuevo Webhook' para agregar uno.",
+        "noResults": "No se encontraron webhooks"
       }
     },
     "warehouses": {
@@ -1077,7 +1141,6 @@
         "clientCreated": "Cliente creado correctamente",
         "clientUpdated": "Cliente actualizado correctamente",
         "clientDeleted": "Cliente eliminado correctamente",
-        "deleteSuccess": "Clientes eliminados correctamente",
         "errorLoading": "Error al cargar los clientes",
         "errorCreating": "Error al crear el cliente",
         "errorUpdating": "Error al actualizar el cliente",
