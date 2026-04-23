@@ -14,6 +14,7 @@ import Tooltip from "@/components/atoms/Tooltip";
 import { useFavorites } from "@/hooks/useFavorites";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { getMenuIcon, getMenuIconByPath } from "@/components/MenuIcons";
 export function MainMenu() {
   const { currentTheme } = useTheme();
   const { isSearchOpen, openSearch, closeSearch } = useGlobalSearch();
@@ -64,6 +65,9 @@ export function MainMenu() {
                     .slice(0, 2)
                     .map((w: string) => w.charAt(0).toUpperCase())
                     .join('');
+                  const icon = fav.translationKey 
+                    ? getMenuIcon(fav.translationKey) 
+                    : getMenuIconByPath(fav.path);
                   return (
                     <div key={fav.path} className="relative group">
                       <Tooltip content={displayName} placement="bottom">
@@ -71,7 +75,7 @@ export function MainMenu() {
                           href={tenant ? `/${tenant}/${locale}${fav.path}` : fav.path}
                           className="flex items-center justify-center w-8 h-8 rounded-md transition-colors hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-gray-200 text-xs font-semibold flex-shrink-0"
                         >
-                          {initials}
+                          {icon || initials}
                         </Link>
                       </Tooltip>
                       <button

@@ -32,7 +32,7 @@ function writeToStorage(items: FavoriteItem[]) {
  * Extrae el path base quitando el prefijo /{tenant}/{locale}
  * Ej: /redfox/es/dashboard/clientes → /dashboard/clientes
  */
-function toBasePath(path: string): string {
+export function toBasePath(path: string): string {
   // Quitar prefijo /{tenant}/{locale} si existe
   const match = path.match(/^\/[^/]+\/(?:es|en|zh)(\/.*)?$/);
   if (match) return match[1] || '/';
