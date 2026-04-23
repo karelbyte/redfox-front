@@ -12,6 +12,7 @@ import { ArrowLeftIcon, PlusIcon, CheckCircleIcon, ClockIcon, XCircleIcon } from
 import { useLocaleUtils } from '@/hooks/useLocale';
 import PaymentComplementModal from '@/components/Invoice/PaymentComplementModal';
 import CancelPaymentComplementModal from '@/components/Invoice/CancelPaymentComplementModal';
+import { InvoicePDFButton, InvoiceXMLButton } from '@/components/Invoice/InvoiceDownloadButtons';
 
 export default function InvoiceDetailsPage() {
   const t = useTranslations('pages.invoices');
@@ -19,7 +20,7 @@ export default function InvoiceDetailsPage() {
   const params = useParams();
   const invoiceId = params.id as string;
   const { formatCurrency, formatDate } = useLocaleUtils();
-  
+
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [payments, setPayments] = useState<InvoicePayment[]>([]);
@@ -33,6 +34,8 @@ export default function InvoiceDetailsPage() {
       loadInvoiceDetails();
     }
   }, [invoiceId]);
+
+  const canDownload = (status: string) => status === 'stamped';
 
   const loadInvoiceDetails = async () => {
     try {
@@ -166,10 +169,10 @@ export default function InvoiceDetailsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div 
+          <div
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
-            style={{ 
-              boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+            style={{
+              boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
             }}
           >
             <h3 className="text-lg font-medium text-gray-900 mb-4">{t('details.invoiceInfo')}</h3>
@@ -205,10 +208,10 @@ export default function InvoiceDetailsPage() {
             )}
           </div>
 
-          <div 
+          <div
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
-            style={{ 
-              boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+            style={{
+              boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
             }}
           >
             <h3 className="text-lg font-medium text-gray-900 mb-4">{t('details.products')}</h3>
@@ -266,10 +269,10 @@ export default function InvoiceDetailsPage() {
         </div>
 
         <div className="space-y-6">
-          <div 
+          <div
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
-            style={{ 
-              boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+            style={{
+              boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
             }}
           >
             <h3 className="text-lg font-medium text-gray-900 mb-4">{t('details.summary')}</h3>
@@ -292,10 +295,10 @@ export default function InvoiceDetailsPage() {
           </div>
 
           {invoice.cfdi_uuid && (
-            <div 
+            <div
               className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
-              style={{ 
-                boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)` 
+              style={{
+                boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`
               }}
             >
               <h3 className="text-lg font-medium text-gray-900 mb-4">{t('details.cfdi')}</h3>
@@ -374,20 +377,31 @@ export default function InvoiceDetailsPage() {
                       <td className="px-4 py-3 text-sm text-gray-600">{payment.payment_form}</td>
                       <td className="px-4 py-3 text-xs text-gray-500 font-mono">{payment.cfdi_complement_uuid || '—'}</td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full font-medium ${
-                          payment.status === InvoicePaymentStatus.STAMPED ? 'bg-green-100 text-green-700'
-                          : payment.status === InvoicePaymentStatus.CANCELLED ? 'bg-red-100 text-red-600'
-                          : 'bg-yellow-100 text-yellow-700'
-                        }`}>
+                        <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full font-medium ${payment.status === InvoicePaymentStatus.STAMPED ? 'bg-green-100 text-green-700'
+                            : payment.status === InvoicePaymentStatus.CANCELLED ? 'bg-red-100 text-red-600'
+                              : 'bg-yellow-100 text-yellow-700'
+                          }`}>
                           {payment.status === InvoicePaymentStatus.STAMPED
                             ? <CheckCircleIcon className="h-3 w-3" />
                             : payment.status === InvoicePaymentStatus.CANCELLED
-                            ? <XCircleIcon className="h-3 w-3" />
-                            : <ClockIcon className="h-3 w-3" />}
+                              ? <XCircleIcon className="h-3 w-3" />
+                              : <ClockIcon className="h-3 w-3" />}
                           {t(`payments.status.${payment.status}`)}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 flex gap-2">
+                        {canDownload(payment.status) && (
+                          <>
+                            <InvoicePDFButton
+                              invoiceId={payment.id}
+                              invoiceCode={invoice.code + '-P' + payment.payment_number}
+                            />
+                            <InvoiceXMLButton
+                              invoiceId={payment.id}
+                              invoiceCode={invoice.code + '-P' + payment.payment_number}
+                            />
+                          </>
+                        )}
                         {payment.status === InvoicePaymentStatus.STAMPED && invoice.status !== 'CANCELLED' && (
                           <button
                             onClick={() => setPaymentToCancel(payment)}
