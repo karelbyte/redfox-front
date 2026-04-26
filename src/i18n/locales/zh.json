@@ -77,6 +77,7 @@
       "noData": "暂无数据",
       "noResults": "未找到结果",
       "errorLoading": "加载数据出错",
+      "syncSuccess": "同步成功",
       "successCreated": "{item} 创建成功",
       "successUpdated": "{item} 更新成功",
       "successDeleted": "{item} 删除成功",
@@ -115,7 +116,8 @@
     },
     "table": {
       "columns": "列",
-      "lowStockWarning": "库存不足"
+      "lowStockWarning": "库存不足",
+      "actions": "操作"
     }
   },
   "navigation": {
@@ -2900,8 +2902,25 @@
         "name": "名称",
         "description": "描述",
         "configuration": "配置",
+        "emitters": "发射器",
         "isActive": "启用",
         "isDefault": "默认"
+      },
+      "emitters": {
+        "title": "发射器",
+        "newEmitter": "新发射器",
+        "editEmitter": "编辑发射器",
+        "emptyState": {
+          "title": "没有发射器",
+          "description": "未找到发射器。添加第一个发射器以开始使用。"
+        },
+        "messages": {
+          "created": "发射器创建成功",
+          "updated": "发射器更新成功",
+          "deleted": "发射器删除成功",
+          "errorSaving": "保存发射器时出错",
+          "requiredFields": "标识符和名称是必需的"
+        }
       },
       "table": {
         "name": "名称",

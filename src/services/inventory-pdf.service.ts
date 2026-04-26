@@ -8,14 +8,17 @@ interface InventoryPDFTranslations {
   generatedOn: string;
   page: string;
   footer: string;
+  filteredBy: string;
+  brand: string;
+  category: string;
+  searchTerm: string;
   // table headers
   product: string;
   sku: string;
-  brand: string;
-  category: string;
+  brandHeader: string;
+  categoryHeader: string;
   strategy: string;
   quantity: string;
-  unit: string;
   unitPrice: string;
   taxRate: string;
   subtotal: string;
@@ -71,7 +74,7 @@ export class InventoryPDFService {
     return items.reduce((sum, item) => sum + InventoryPDFService.itemValue(item), 0);
   }
 
-  private addHeader(t: InventoryPDFTranslations, warehouseName: string, currency: string) {
+  private addHeader(t: InventoryPDFTranslations, warehouseName: string, currency: string, filters?: { brand?: string; category?: string; searchTerm?: string }) {
     // Título
     this.doc.setFont('helvetica', 'bold');
     this.doc.setFontSize(16);
@@ -90,7 +93,22 @@ export class InventoryPDFService {
     this.doc.setFontSize(8);
     this.doc.text(`${t.generatedOn}: ${this.fmtDate(new Date())}`, this.pageWidth / 2, this.currentY, { align: 'center' });
     this.doc.setTextColor(0, 0, 0);
-    this.currentY += 8;
+    this.currentY += 5;
+
+    // Filtros aplicados
+    if (filters && (filters.brand || filters.category || filters.searchTerm)) {
+      this.doc.setFontSize(8);
+      this.doc.setTextColor(80, 80, 80);
+      let filterText = t.filteredBy + ': ';
+      const filterParts: string[] = [];
+      if (filters.brand) filterParts.push(`${t.brand} = ${filters.brand}`);
+      if (filters.category) filterParts.push(`${t.category} = ${filters.category}`);
+      if (filters.searchTerm) filterParts.push(`${t.searchTerm} = ${filters.searchTerm}`);
+      filterText += filterParts.join(', ');
+      this.doc.text(filterText, this.pageWidth / 2, this.currentY, { align: 'center' });
+      this.doc.setTextColor(0, 0, 0);
+      this.currentY += 5;
+    }
 
     // Línea separadora
     this.doc.setDrawColor(200, 200, 200);
@@ -115,6 +133,7 @@ export class InventoryPDFService {
       const category = typeof item.product.category === 'object' ? (item.product.category as any)?.name || '' : '';
       const unit = typeof item.product.measurement_unit === 'object' ? (item.product.measurement_unit as any)?.code || '' : '';
       const strategy = this.strategyLabel(item.product.inventory_strategy || 'average', t);
+      const quantityWithUnit = unit ? `${qty} ${unit}` : qty.toString();
 
       return [
         item.product.name,
@@ -122,8 +141,7 @@ export class InventoryPDFService {
         brand,
         category,
         strategy,
-        qty.toString(),
-        unit,
+        quantityWithUnit,
         this.fmt(price, currency),
         taxRate > 0 ? `${taxRate}%` : '-',
         this.fmt(subtotal, currency),
@@ -132,10 +150,19 @@ export class InventoryPDFService {
 
     autoTable(this.doc, {
       startY: this.currentY,
-      head: [[
-        t.product, t.sku, t.brand, t.category, t.strategy,
-        t.quantity, t.unit, t.unitPrice, t.taxRate, t.subtotal,
-      ]],
+      head: [
+        [
+          { content: t.product, styles: { halign: 'left' } },
+          { content: t.sku, styles: { halign: 'right' } },
+          { content: t.brand, styles: { halign: 'right' } },
+          { content: t.category, styles: { halign: 'right' } },
+          { content: t.strategy, styles: { halign: 'right' } },
+          { content: t.quantity, styles: { halign: 'right' } },
+          { content: t.unitPrice, styles: { halign: 'right' } },
+          { content: t.taxRate, styles: { halign: 'right' } },
+          { content: t.subtotal, styles: { halign: 'right' } },
+        ]
+      ],
       body: rows,
       theme: 'striped',
       headStyles: {
@@ -143,20 +170,18 @@ export class InventoryPDFService {
         textColor: 255,
         fontStyle: 'bold',
         fontSize: 7.5,
-        halign: 'center',
       },
       bodyStyles: { fontSize: 7, cellPadding: 1.8 },
       columnStyles: {
-        0: { cellWidth: 'auto', halign: 'left' },   // producto
-        1: { cellWidth: 20, halign: 'center' },      // sku
-        2: { cellWidth: 22, halign: 'left' },        // marca
-        3: { cellWidth: 22, halign: 'left' },        // categoría
-        4: { cellWidth: 18, halign: 'center' },      // estrategia
-        5: { cellWidth: 16, halign: 'right' },       // cantidad
-        6: { cellWidth: 12, halign: 'center' },      // unidad
-        7: { cellWidth: 24, halign: 'right' },       // precio unitario
-        8: { cellWidth: 14, halign: 'center' },      // impuesto
-        9: { cellWidth: 26, halign: 'right' },       // subtotal
+        0: { cellWidth: 'auto', halign: 'left' },   // producto (izquierda)
+        1: { cellWidth: 20, halign: 'right' },      // sku (derecha)
+        2: { cellWidth: 22, halign: 'right' },      // marca (derecha)
+        3: { cellWidth: 22, halign: 'right' },      // categoría (derecha)
+        4: { cellWidth: 18, halign: 'right' },      // estrategia (derecha)
+        5: { cellWidth: 28, halign: 'right' },      // cantidad con unidad (derecha)
+        6: { cellWidth: 24, halign: 'right' },      // precio unitario (derecha)
+        7: { cellWidth: 14, halign: 'right' },      // impuesto (derecha)
+        8: { cellWidth: 26, halign: 'right' },      // subtotal (derecha)
       },
       margin: { left: this.margin, right: this.margin },
       styles: { overflow: 'linebreak' },
@@ -208,9 +233,10 @@ export class InventoryPDFService {
     warehouseName: string,
     currency: string,
     t: InventoryPDFTranslations,
+    filters?: { brand?: string; category?: string; searchTerm?: string },
     filename?: string,
   ): void {
-    this.addHeader(t, warehouseName, currency);
+    this.addHeader(t, warehouseName, currency, filters);
     this.addTable(items, t, currency);
     this.addSummary(items, t, currency);
     this.addFooter(t);

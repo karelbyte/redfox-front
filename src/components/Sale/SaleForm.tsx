@@ -5,10 +5,10 @@ import { useTranslations } from 'next-intl';
 import { saleService } from '@/services/sales.service';
 import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
-import { Sale, SaleFormData, PaymentMethod } from '@/types/sale';
+import { Sale, SaleFormData, PaymentMethod, CardType } from '@/types/sale';
 import { Client } from '@/types/client';
 import { Input, SelectWithAdd } from '@/components/atoms';
-import { BanknotesIcon, CreditCardIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { BanknotesIcon, CreditCardIcon, ClockIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import Drawer from '@/components/Drawer/Drawer';
 import ClientForm from '@/components/Client/ClientForm';
 import { ClientFormRef } from '@/components/Client/ClientForm';
@@ -41,6 +41,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
       client_id: '',
       amount: 0,
       payment_method: PaymentMethod.CASH,
+      card_type: null,
     });
 
     const [clients, setClients] = useState<Client[]>([]);
@@ -65,6 +66,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
           client_id: sale.client.id,
           amount: parseFloat(sale.amount),
           payment_method: sale.payment_method || PaymentMethod.CASH,
+          card_type: sale.card_type || null,
         });
       } else {
         setFormData({
@@ -74,6 +76,7 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
           client_id: '',
           amount: 0,
           payment_method: PaymentMethod.CASH,
+          card_type: null,
         });
       }
     }, [sale]);
@@ -212,11 +215,31 @@ const SaleForm = forwardRef<SaleFormRef, SaleFormProps>(
                 <input
                   type="radio"
                   value={PaymentMethod.CARD}
-                  checked={formData.payment_method === PaymentMethod.CARD}
-                  onChange={() => setFormData(prev => ({ ...prev, payment_method: PaymentMethod.CARD }))}
+                  checked={formData.payment_method === PaymentMethod.CARD && formData.card_type === CardType.CREDIT}
+                  onChange={() => setFormData(prev => ({ ...prev, payment_method: PaymentMethod.CARD, card_type: CardType.CREDIT }))}
                 />
                 <CreditCardIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-sm">{t('form.paymentMethods.card')}</span>
+                <span className="text-sm">{t('form.cardTypes.credit')}</span>
+              </label>
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="radio"
+                  value={PaymentMethod.CARD}
+                  checked={formData.payment_method === PaymentMethod.CARD && formData.card_type === CardType.DEBIT}
+                  onChange={() => setFormData(prev => ({ ...prev, payment_method: PaymentMethod.CARD, card_type: CardType.DEBIT }))}
+                />
+                <CreditCardIcon className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">{t('form.cardTypes.debit')}</span>
+              </label>
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="radio"
+                  value={PaymentMethod.TRANSFER}
+                  checked={formData.payment_method === PaymentMethod.TRANSFER}
+                  onChange={() => setFormData(prev => ({ ...prev, payment_method: PaymentMethod.TRANSFER, card_type: null }))}
+                />
+                <ArrowPathIcon className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">{t('form.paymentMethods.transfer')}</span>
               </label>
               {(() => {
                 const selectedClient = clients.find(c => c.id === formData.client_id);

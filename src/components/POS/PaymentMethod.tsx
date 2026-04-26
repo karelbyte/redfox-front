@@ -6,17 +6,21 @@ import { Input } from '@/components/atoms';
 
 interface PaymentMethodProps {
   paymentMethod: 'cash' | 'card';
+  cardType?: 'credit' | 'debit' | null;
   cashAmount: number;
   total?: number;
   onPaymentMethodChange: (method: 'cash' | 'card') => void;
+  onCardTypeChange: (type: 'credit' | 'debit' | null) => void;
   onCashAmountChange: (amount: number) => void;
   getChange: () => number;
 }
 
 export default function PaymentMethod({
   paymentMethod,
+  cardType,
   cashAmount,
   onPaymentMethodChange,
+  onCardTypeChange,
   onCashAmountChange,
   getChange
 }: PaymentMethodProps) {
@@ -52,6 +56,37 @@ export default function PaymentMethod({
           </label>
         </div>
       </div>
+
+      {/* Tipo de tarjeta */}
+      {paymentMethod === 'card' && (
+        <div className="mb-6">
+          <h3 className="font-medium mb-3">{t('payment.cardType')}</h3>
+          <div className="space-y-2 ml-4">
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="card_type"
+                value="credit"
+                checked={cardType === 'credit'}
+                onChange={(e) => onCardTypeChange(e.target.value as 'credit' | 'debit' | null)}
+                className="text-primary-600"
+              />
+              <span>{t('payment.creditCard')}</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="card_type"
+                value="debit"
+                checked={cardType === 'debit'}
+                onChange={(e) => onCardTypeChange(e.target.value as 'credit' | 'debit' | null)}
+                className="text-primary-600"
+              />
+              <span>{t('payment.debitCard')}</span>
+            </label>
+          </div>
+        </div>
+      )}
 
       {/* Efectivo recibido */}
       {paymentMethod === 'cash' && (

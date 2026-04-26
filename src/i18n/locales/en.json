@@ -74,9 +74,10 @@
     "messages": {
       "confirmDelete": "Are you sure you want to delete {item}? This action cannot be undone.",
       "confirmClose": "Are you sure you want to close {item}? This action cannot be undone.",
-      "noData": "No data",
+      "noData": "No data available",
       "noResults": "No results found",
       "errorLoading": "Error loading data",
+      "syncSuccess": "Sync successful",
       "successCreated": "{item} created successfully",
       "successUpdated": "{item} updated successfully",
       "successDeleted": "{item} deleted successfully",
@@ -115,7 +116,8 @@
     },
     "table": {
       "columns": "Columns",
-      "lowStockWarning": "Low stock"
+      "lowStockWarning": "Low stock",
+      "actions": "Actions"
     }
   },
   "navigation": {
@@ -2008,9 +2010,14 @@
         "paymentMethods": {
           "cash": "Cash",
           "card": "Card",
+          "transfer": "Transfer",
           "credit": "Credit",
           "creditLimit": "Credit limit",
           "days": "days"
+        },
+        "cardTypes": {
+          "credit": "Credit",
+          "debit": "Debit"
         },
         "placeholders": {
           "code": "Ex: SAL-2024-001",
@@ -2265,7 +2272,15 @@
           "name": "Name",
           "totalAmount": "Total Amount",
           "fiscalStatus": "Fiscal status",
-          "invoice": "Invoice"
+          "invoice": "Invoice",
+          "paymentMethod": "Payment Method"
+        },
+        "paymentMethods": {
+          "cash": "Cash",
+          "creditCard": "Credit Card",
+          "debitCard": "Debit Card",
+          "transfer": "Transfer",
+          "credit": "Credit"
         }
       }
     },
@@ -2337,7 +2352,9 @@
         "title": "Payment Method",
         "selectMethod": "Select payment method",
         "cash": "Cash",
-        "card": "Card",
+        "creditCard": "Credit Card",
+        "debitCard": "Debit Card",
+        "transfer": "Transfer",
         "credit": "Credit",
         "creditLimit": "Credit limit",
         "days": "days",
@@ -2349,6 +2366,7 @@
         "processing": "Processing...",
         "downloadTicket": "Download Ticket",
         "generateInvoice": "Generate fiscal invoice (CFDI)",
+        "selectEmitter": "Select emitter",
         "generateInvoiceHint": "Will be automatically stamped upon confirmation"
       },
       "messages": {
@@ -2935,8 +2953,25 @@
         "name": "Name",
         "description": "Description",
         "configuration": "Configuration",
+        "emitters": "Emitters",
         "isActive": "Active",
         "isDefault": "Default"
+      },
+      "emitters": {
+        "title": "Emitters",
+        "newEmitter": "New Emitter",
+        "editEmitter": "Edit Emitter",
+        "emptyState": {
+          "title": "No emitters",
+          "description": "No emitters found. Add the first emitter to get started."
+        },
+        "messages": {
+          "created": "Emitter created successfully",
+          "updated": "Emitter updated successfully",
+          "deleted": "Emitter deleted successfully",
+          "errorSaving": "Error saving emitter",
+          "requiredFields": "Identifier and Name are required"
+        }
       },
       "table": {
         "name": "Name",

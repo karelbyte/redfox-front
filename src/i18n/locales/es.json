@@ -77,6 +77,7 @@
       "noData": "No hay datos",
       "noResults": "No se encontraron resultados",
       "errorLoading": "Error al cargar los datos",
+      "syncSuccess": "Sincronización exitosa",
       "successCreated": "{item} creado exitosamente",
       "successUpdated": "{item} actualizado exitosamente",
       "successDeleted": "{item} eliminado exitosamente",
@@ -115,7 +116,8 @@
     },
     "table": {
       "columns": "Columnas",
-      "lowStockWarning": "Stock bajo"
+      "lowStockWarning": "Stock bajo",
+      "actions": "Acciones"
     }
   },
   "navigation": {
@@ -1984,9 +1986,14 @@
         "paymentMethods": {
           "cash": "Efectivo",
           "card": "Tarjeta",
+          "transfer": "Transferencia",
           "credit": "Crédito",
           "creditLimit": "Límite de crédito",
           "days": "días"
+        },
+        "cardTypes": {
+          "credit": "Crédito",
+          "debit": "Débito"
         },
         "placeholders": {
           "code": "Ej: SAL-2024-001",
@@ -2245,7 +2252,15 @@
           "name": "Nombre",
           "totalAmount": "Monto Total",
           "fiscalStatus": "Estado fiscal",
-          "invoice": "Factura"
+          "invoice": "Factura",
+          "paymentMethod": "Método de Pago"
+        },
+        "paymentMethods": {
+          "cash": "Efectivo",
+          "creditCard": "Tarjeta de Crédito",
+          "debitCard": "Tarjeta de Débito",
+          "transfer": "Transferencia",
+          "credit": "Crédito"
         }
       }
     },
@@ -2332,7 +2347,9 @@
         "title": "Método de Pago",
         "selectMethod": "Seleccionar método de pago",
         "cash": "Efectivo",
-        "card": "Tarjeta",
+        "creditCard": "Tarjeta de crédito",
+        "debitCard": "Tarjeta de débito",
+        "transfer": "Transferencia",
         "credit": "Crédito",
         "creditLimit": "Límite de crédito",
         "days": "días",
@@ -2344,6 +2361,7 @@
         "processing": "Procesando...",
         "downloadTicket": "Descargar Ticket",
         "generateInvoice": "Generar factura fiscal (CFDI)",
+        "selectEmitter": "Seleccionar emisor",
         "generateInvoiceHint": "Se generará y timbará automáticamente al confirmar"
       },
       "messages": {
@@ -2930,8 +2948,25 @@
         "name": "Nombre",
         "description": "Descripción",
         "configuration": "Configuración",
+        "emitters": "Emisores",
         "isActive": "Activo",
         "isDefault": "Por defecto"
+      },
+      "emitters": {
+        "title": "Emisores",
+        "newEmitter": "Nuevo Emisor",
+        "editEmitter": "Editar Emisor",
+        "emptyState": {
+          "title": "No hay emisores",
+          "description": "No se encontraron emisores. Agrega el primer emisor para comenzar."
+        },
+        "messages": {
+          "created": "Emisor creado exitosamente",
+          "updated": "Emisor actualizado exitosamente",
+          "deleted": "Emisor eliminado exitosamente",
+          "errorSaving": "Error al guardar el emisor",
+          "requiredFields": "Identificador y Nombre son requeridos"
+        }
       },
       "table": {
         "name": "Nombre",

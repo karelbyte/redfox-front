@@ -52,8 +52,8 @@ class InvoiceService {
     return response;
   }
 
-  async generateCFDI(id: string): Promise<Invoice> {
-    const response = await api.post<Invoice>(`/invoices/${id}/generate-cfdi`, {});
+  async generateCFDI(id: string, options?: any, emitterId?: string): Promise<Invoice> {
+    const response = await api.post<Invoice>(`/invoices/${id}/generate-cfdi`, { options, emitterId });
     return response;
   }
 

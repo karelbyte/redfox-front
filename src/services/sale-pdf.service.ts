@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Sale, SaleDetail } from '@/types/sale';
+import { Sale, SaleDetail, PaymentMethod, CardType } from '@/types/sale';
 import { companySettingsService } from '@/services/company-settings.service';
 import type { CompanySettings } from '@/types/company-settings';
 import { API_BASE_URL } from '@/lib/config';
@@ -12,6 +12,8 @@ interface PDFTranslations {
   client: string;
   destination: string;
   status: string;
+  paymentMethod: string;
+  fiscalStatus: string;
   product: string;
   sku: string;
   brand: string;
@@ -25,6 +27,18 @@ interface PDFTranslations {
   statusClosed: string;
   page: string;
   locale?: string;
+  paymentMethods?: {
+    cash: string;
+    creditCard: string;
+    debitCard: string;
+    transfer: string;
+    credit: string;
+  };
+  fiscalStatuses?: {
+    receiptOnly: string;
+    invoicedDirect: string;
+    invoicedGlobal: string;
+  };
 }
 
 export class SalePDFService {
@@ -257,7 +271,63 @@ export class SalePDFService {
     const statusText = sale.status === 'CLOSED' ? translations.statusClosed : translations.statusOpen;
     this.drawText(this.getSafeText(statusText, '—').toUpperCase(), rightColumn + 20, this.currentY);
 
+    this.currentY += 6;
+
+    // Método de pago y estado fiscal
+    this.doc.setFont('helvetica', 'bold');
+    this.drawText(`${this.getSafeText(translations.paymentMethod, 'Método de Pago')}:`, leftColumn, this.currentY);
+    this.doc.setFont('helvetica', 'normal');
+    const paymentMethodText = this.getPaymentMethodText(sale, translations);
+    this.drawText(paymentMethodText, leftColumn + 20, this.currentY);
+
+    this.doc.setFont('helvetica', 'bold');
+    this.drawText(`${this.getSafeText(translations.fiscalStatus, 'Estado Fiscal')}:`, rightColumn, this.currentY);
+    this.doc.setFont('helvetica', 'normal');
+    const fiscalStatusText = this.getFiscalStatusText(sale, translations);
+    this.drawText(fiscalStatusText, rightColumn + 20, this.currentY);
+
     this.currentY += 12;
+  }
+
+  private getPaymentMethodText(sale: Sale, translations: PDFTranslations): string {
+    if (!sale.payment_method) return '—';
+    
+    if (sale.payment_method === PaymentMethod.CASH) {
+      return translations.paymentMethods?.cash || 'Efectivo';
+    }
+    
+    if (sale.payment_method === PaymentMethod.CARD) {
+      if (sale.card_type === CardType.CREDIT) {
+        return translations.paymentMethods?.creditCard || 'Tarjeta de Crédito';
+      }
+      if (sale.card_type === CardType.DEBIT) {
+        return translations.paymentMethods?.debitCard || 'Tarjeta de Débito';
+      }
+    }
+    
+    if (sale.payment_method === PaymentMethod.CREDIT) {
+      return translations.paymentMethods?.credit || 'Crédito';
+    }
+    
+    if (sale.payment_method === PaymentMethod.TRANSFER) {
+      return translations.paymentMethods?.transfer || 'Transferencia';
+    }
+    
+    return sale.payment_method;
+  }
+
+  private getFiscalStatusText(sale: Sale, translations: PDFTranslations): string {
+    if (!sale.pack_fiscal_status) return translations.fiscalStatuses?.receiptOnly || 'Solo nota';
+    
+    if (sale.pack_fiscal_status === 'INVOICED_DIRECT') {
+      return translations.fiscalStatuses?.invoicedDirect || 'Facturada directa';
+    }
+    
+    if (sale.pack_fiscal_status === 'INVOICED_GLOBAL') {
+      return translations.fiscalStatuses?.invoicedGlobal || 'Facturada global';
+    }
+    
+    return translations.fiscalStatuses?.receiptOnly || 'Solo nota';
   }
 
   private addClientInfo(sale: Sale, translations: PDFTranslations) {
@@ -344,8 +414,8 @@ export class SalePDFService {
       },
       columnStyles: {
         0: { cellWidth: 'auto', halign: 'left' },
-        1: { cellWidth: 18, halign: 'center' },
-        2: { cellWidth: 18, halign: 'center' },
+        1: { cellWidth: 18, halign: 'right' },
+        2: { cellWidth: 18, halign: 'right' },
         3: { cellWidth: 24, halign: 'right' },
         4: { cellWidth: 24, halign: 'right' },
         5: { cellWidth: 22, halign: 'right' },

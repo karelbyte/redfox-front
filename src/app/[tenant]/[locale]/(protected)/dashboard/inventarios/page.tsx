@@ -9,6 +9,10 @@ import { inventoryService } from "@/services/inventory.service";
 import { warehousesService } from "@/services/warehouses.service";
 import { Warehouse } from "@/types/warehouse";
 import { toastService } from "@/services/toast.service";
+import { brandService } from "@/services/brand.service";
+import { categoriesService } from "@/services/categories.service";
+import { Brand } from "@/types/brand";
+import { Category } from "@/types/category";
 import InventoryTable from "@/components/Inventory/InventoryTable";
 import ProductDetailsModal from "@/components/Inventory/ProductDetailsModal";
 import Pagination from "@/components/Pagination/Pagination";
@@ -20,7 +24,8 @@ import ColumnSelector from "@/components/Table/ColumnSelector";
 import HelpButton from "@/components/Help/HelpButton";
 import { inventoryHelp } from "@/components/Help/configs/inventory.help";
 import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
-import { Btn } from "@/components/atoms";
+import { Btn, SearchInput } from "@/components/atoms";
+import Select from "@/components/atoms/Select";
 import { InventoryPDFService } from "@/services/inventory-pdf.service";
 
 export default function InventariosPage() {
@@ -44,6 +49,11 @@ export default function InventariosPage() {
   const [total, setTotal] = useState(0);
   const [warehouseValue, setWarehouseValue] = useState(0);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedBrandId, setSelectedBrandId] = useState<string>("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
   const availableColumns = [
     { key: "product", label: t("table.product") },
@@ -78,6 +88,19 @@ export default function InventariosPage() {
     }
   }, [t]);
 
+  const fetchBrandsAndCategories = useCallback(async () => {
+    try {
+      const [brandsResponse, categoriesResponse] = await Promise.all([
+        brandService.getBrands(1, ''),
+        categoriesService.getCategories(1, ''),
+      ]);
+      setBrands(brandsResponse.data || []);
+      setCategories(categoriesResponse.data || []);
+    } catch {
+      // Silencioso, no es crítico
+    }
+  }, []);
+
   const fetchWarehouseDetails = useCallback(async () => {
     if (!selectedWarehouseId) return;
 
@@ -98,7 +121,10 @@ export default function InventariosPage() {
       setLoadingInventory(true);
       const response: InventoryResponse = await inventoryService.getInventory(
         selectedWarehouseId,
-        page
+        page,
+        searchTerm || undefined,
+        selectedBrandId || undefined,
+        selectedCategoryId || undefined
       );
       setInventoryItems(response.data);
       setTotalPages(response.meta?.totalPages || 1);
@@ -119,11 +145,12 @@ export default function InventariosPage() {
     } finally {
       setLoadingInventory(false);
     }
-  }, [selectedWarehouseId, t]);
+  }, [selectedWarehouseId, searchTerm, selectedBrandId, selectedCategoryId, t]);
 
   useEffect(() => {
     fetchClosedWarehouses();
-  }, [fetchClosedWarehouses]);
+    fetchBrandsAndCategories();
+  }, [fetchClosedWarehouses, fetchBrandsAndCategories]);
 
   useEffect(() => {
     if (selectedWarehouseId) {
@@ -143,6 +170,16 @@ export default function InventariosPage() {
     setSelectedWarehouseId(warehouseId);
     setCurrentPage(1);
     setInventoryItems([]);
+  };
+
+  const handleBrandChange = (brandId: string) => {
+    setSelectedBrandId(brandId);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategoryId(categoryId);
+    setCurrentPage(1);
   };
 
   const handleViewProduct = (item: InventoryItem) => {
@@ -179,9 +216,18 @@ export default function InventariosPage() {
     if (!selectedWarehouseId || !selectedWarehouse) return;
     try {
       setIsPrinting(true);
-      const allResponse = await inventoryService.getInventoryAll(selectedWarehouseId);
+      const allResponse = await inventoryService.getInventoryAll(
+        selectedWarehouseId,
+        searchTerm || undefined,
+        selectedBrandId || undefined,
+        selectedCategoryId || undefined
+      );
       const currency = selectedWarehouse.currency?.code || 'MXN';
       const isEn = locale === 'en';
+
+      // Obtener nombres de marca y categoría seleccionados
+      const selectedBrand = brands.find(b => b.id === selectedBrandId);
+      const selectedCategory = categories.find(c => c.id === selectedCategoryId);
 
       const translations = {
         title: isEn ? 'Warehouse Inventory' : 'Inventario del Almacén',
@@ -189,26 +235,37 @@ export default function InventariosPage() {
         generatedOn: isEn ? 'Generated on' : 'Generado el',
         page: isEn ? 'Page' : 'Página',
         footer: isEn ? 'Automatically generated document — Nitro' : 'Documento generado automáticamente — Nitro',
-        product: isEn ? 'Product' : 'Producto',
-        sku: 'SKU',
+        filteredBy: isEn ? 'Filtered by' : 'Filtrado por',
         brand: isEn ? 'Brand' : 'Marca',
         category: isEn ? 'Category' : 'Categoría',
+        searchTerm: isEn ? 'Search term' : 'Término de búsqueda',
+        // table headers
+        product: isEn ? 'Product' : 'Producto',
+        sku: 'SKU',
+        brandHeader: isEn ? 'Brand' : 'Marca',
+        categoryHeader: isEn ? 'Category' : 'Categoría',
         strategy: isEn ? 'Strategy' : 'Estrategia',
         quantity: isEn ? 'Qty' : 'Cant.',
-        unit: isEn ? 'Unit' : 'Unidad',
         unitPrice: isEn ? 'Unit Price' : 'Precio Unit.',
         taxRate: isEn ? 'Tax' : 'Impuesto',
         subtotal: 'Subtotal',
+        // summary
         totalProducts: isEn ? 'Total products' : 'Total productos',
         totalUnits: isEn ? 'Total units' : 'Total unidades',
         warehouseValue: isEn ? 'Warehouse value' : 'Valor del almacén',
+        // strategy labels
         fifo: 'FIFO',
         fefo: 'FEFO',
         average: isEn ? 'Average' : 'Promedio',
       };
 
+      const filters: { brand?: string; category?: string; searchTerm?: string } = {};
+      if (selectedBrand) filters.brand = selectedBrand.description;
+      if (selectedCategory) filters.category = selectedCategory.name;
+      if (searchTerm) filters.searchTerm = searchTerm;
+
       const svc = new InventoryPDFService(locale);
-      svc.generate(allResponse.data, selectedWarehouse.name, currency, translations);
+      svc.generate(allResponse.data, selectedWarehouse.name, currency, translations, filters);
     } catch {
       toastService.error(t('messages.errorLoadingInventory'));
     } finally {
@@ -353,7 +410,65 @@ export default function InventariosPage() {
             </div>
 
             {selectedWarehouseId && (
-              <div className="flex justify-end mb-6">
+
+              <div className="flex justify-between mb-2 gap-2">
+                {/* Cambiamos justify-baseline por w-full y flex-1 en los hijos */}
+                <div className="flex flex-1 gap-2 mr-12">
+
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {locale === 'zh' ? '搜索 (SKU, 名称, 描述)' : locale === 'en' ? 'Search (SKU, Name, Description)' : 'Buscar por (SKU, Nombre, Descripción)'}
+                    </label>
+                    <SearchInput
+                      className="w-full" // Asegúrate que el componente use esta prop
+                      placeholder={locale === 'zh' ? '搜索...' : locale === 'en' ? 'Search...' : 'Buscar...'}
+                      value={searchTerm}
+                      onSearch={(term: string) => {
+                        setSearchTerm(term);
+                        setCurrentPage(1);
+                      }}
+                      onClear={() => {
+                        setSearchTerm("");
+                        setCurrentPage(1);
+                      }}
+                    />
+                  </div>
+
+                  <div className="w-96">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {locale === 'zh' ? '品牌' : locale === 'en' ? 'Brand' : 'Marca'}
+                    </label>
+                    <Select
+                      id="brand-select"
+                      label=""
+                      options={[
+                        { value: "", label: locale === 'zh' ? '所有品牌' : locale === 'en' ? 'All brands' : 'Todas las marcas' },
+                        ...brands.map((b) => ({ value: b.id, label: b.description }))
+                      ]}
+                      value={selectedBrandId}
+                      onChange={(e) => handleBrandChange(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="w-96">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {locale === 'zh' ? '类别' : locale === 'en' ? 'Category' : 'Categoría'}
+                    </label>
+                    <Select
+                      id="category-select"
+                      className="w-full"
+                      label=""
+                      options={[
+                        { value: "", label: locale === 'zh' ? '所有类别' : locale === 'en' ? 'All categories' : 'Todas las categorías' },
+                        ...categories.map((c) => ({ value: c.id, label: c.name }))
+                      ]}
+                      value={selectedCategoryId}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
+                    />
+                  </div>
+
+                </div>
+
                 <ColumnSelector
                   columns={availableColumns}
                   visibleColumns={visibleColumns}

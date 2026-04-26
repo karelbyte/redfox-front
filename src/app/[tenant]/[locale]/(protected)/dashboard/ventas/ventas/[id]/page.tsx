@@ -9,7 +9,7 @@ import { inventoryService, InventoryProduct } from '@/services/inventory.service
 import { toastService } from '@/services/toast.service';
 import { SalePDFService } from '@/services/sale-pdf.service';
 import { API_BASE_URL } from '@/lib/config';
-import { Sale, SaleDetail, SaleCloseResponse, SaleStatus } from '@/types/sale';
+import { Sale, SaleDetail, SaleCloseResponse, SaleStatus, PaymentMethod, CardType } from '@/types/sale';
 import { Btn } from '@/components/atoms';
 import Drawer from '@/components/Drawer/Drawer';
 import AddProductForm, { AddProductFormRef } from '@/components/Sale/AddProductForm';
@@ -153,6 +153,8 @@ export default function SaleDetailsPage() {
         client: tPdf('client'),
         destination: tPdf('destination'),
         status: tPdf('status'),
+        paymentMethod: t('details.labels.paymentMethod'),
+        fiscalStatus: t('details.labels.fiscalStatus'),
         product: tPdf('product'),
         sku: tPdf('sku'),
         brand: tPdf('brand'),
@@ -164,7 +166,19 @@ export default function SaleDetailsPage() {
         footer: t('messages.pdfFooter'),
         statusOpen: tPdf('statusOpen'),
         statusClosed: tPdf('statusClosed'),
-        page: tPdf('page')
+        page: tPdf('page'),
+        paymentMethods: {
+          cash: t('details.paymentMethods.cash'),
+          creditCard: t('details.paymentMethods.creditCard'),
+          debitCard: t('details.paymentMethods.debitCard'),
+          transfer: t('details.paymentMethods.transfer'),
+          credit: t('details.paymentMethods.credit')
+        },
+        fiscalStatuses: {
+          receiptOnly: t('fiscalStatus.RECEIPT_ONLY'),
+          invoicedDirect: t('fiscalStatus.INVOICED_DIRECT'),
+          invoicedGlobal: t('fiscalStatus.INVOICED_GLOBAL')
+        }
       };
       
       // Generar el PDF usando el nuevo servicio
@@ -405,6 +419,22 @@ export default function SaleDetailsPage() {
             <div>
               <span className="text-sm font-medium text-gray-500">{t('details.labels.totalAmount')}:</span>
               <p className="text-sm font-semibold text-gray-900">{formatCurrency(parseFloat(sale.amount))}</p>
+            </div>
+            <div>
+              <span className="text-sm font-medium text-gray-500">{t('details.labels.paymentMethod')}:</span>
+              <p className="text-sm text-gray-900">
+                {sale.payment_method === PaymentMethod.CASH
+                  ? t('details.paymentMethods.cash')
+                  : sale.payment_method === PaymentMethod.CARD
+                  ? sale.card_type === CardType.CREDIT
+                    ? t('details.paymentMethods.creditCard')
+                    : t('details.paymentMethods.debitCard')
+                  : sale.payment_method === PaymentMethod.TRANSFER
+                  ? t('details.paymentMethods.transfer')
+                  : sale.payment_method === PaymentMethod.CREDIT
+                  ? t('details.paymentMethods.credit')
+                  : sale.payment_method}
+              </p>
             </div>
             {sale.pack_fiscal_status && (
               <div className="col-span-2">

@@ -9,7 +9,7 @@ import { cashRegisterService } from '@/services/cash-register.service';
 import { ticketPrinterService } from '@/services/ticket-printer.service';
 import { invoiceService } from '@/services/invoices.service';
 import { toastService } from '@/services/toast.service';
-import { SaleFormData, PaymentMethod } from '@/types/sale';
+import { SaleFormData, PaymentMethod, CardType } from '@/types/sale';
 import { Client } from '@/types/client';
 import { CashRegister } from '@/types/cash-register';
 import Drawer from '@/components/Drawer/Drawer';
@@ -37,6 +37,7 @@ export default function POSPage() {
   const [isSavingClient, setIsSavingClient] = useState(false);
   const [isClientFormValid, setIsClientFormValid] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CASH);
+  const [cardType, setCardType] = useState<CardType | null>(null);
   const [cashAmount, setCashAmount] = useState<number>(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [currentCashRegister, setCurrentCashRegister] = useState<CashRegister | null>(null);
@@ -235,7 +236,7 @@ export default function POSPage() {
     }
   };
 
-  const handleCheckout = async (generateInvoice: boolean = false) => {
+  const handleCheckout = async (generateInvoice: boolean = false, emitterId?: string) => {
     if (cart.length === 0) {
       toastService.error(t('messages.emptyCart'));
       return;
@@ -253,14 +254,15 @@ export default function POSPage() {
 
     try {
       setLoading(true);
-      
+
       const saleData: SaleFormData = {
         code: `POS-${Date.now()}`,
         destination: 'Venta POS',
         client_id: selectedClient,
-        type: 'POS',
         amount: getTotal(),
+        type: 'POS',
         payment_method: paymentMethod,
+        card_type: cardType,
       };
 
       const sale = await saleService.createSale(saleData);
@@ -284,7 +286,7 @@ export default function POSPage() {
             withdrawal_id: sale.id,
             invoice_code: invoiceCode,
           });
-          await invoiceService.generateCFDI(invoice.id);
+          await invoiceService.generateCFDI(invoice.id, undefined, emitterId);
           toastService.success(t('messages.invoiceGenerated'));
         } catch (invoiceError) {
           console.error('Error generating invoice:', invoiceError);
@@ -295,7 +297,7 @@ export default function POSPage() {
 
       // Obtener los detalles de la venta para el ticket
       const saleDetails = await saleService.getSaleDetails(sale.id);
-      
+// ...
       // Obtener información del cliente
       const selectedClientData = clients.find(client => client.id === selectedClient);
       
@@ -351,6 +353,9 @@ export default function POSPage() {
           } else if (paymentMethod === PaymentMethod.CARD) {
             transactionDescription = `Venta POS con Tarjeta - ${sale.code}`;
             transactionPaymentMethod = 'card';
+          } else if (paymentMethod === PaymentMethod.TRANSFER) {
+            transactionDescription = `Venta POS por Transferencia - ${sale.code}`;
+            transactionPaymentMethod = 'cash';
           }
 
           await cashRegisterService.createCashTransaction({
@@ -376,6 +381,7 @@ export default function POSPage() {
       toastService.success(t('messages.saleCompleted'));
       clearCart();
       setPaymentMethod(PaymentMethod.CASH);
+      setCardType(null);
       setCashAmount(0);
       setShowPaymentModal(false);
       
@@ -498,9 +504,11 @@ export default function POSPage() {
         onConfirm={handleCheckout}
         total={getTotal()}
         paymentMethod={paymentMethod}
+        cardType={cardType}
         cashAmount={cashAmount}
         loading={loading}
         onPaymentMethodChange={setPaymentMethod}
+        onCardTypeChange={setCardType}
         onCashAmountChange={setCashAmount}
         getChange={getChange}
         selectedClient={clients.find(c => c.id === selectedClient)}

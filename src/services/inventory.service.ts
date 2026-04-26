@@ -87,19 +87,24 @@ class InventoryService {
     return response.data || [];
   }
 
-  async getInventoryAll(warehouseId: string): Promise<InventoryResponse> {
+  async getInventoryAll(warehouseId: string, term?: string, brandId?: string, categoryId?: string): Promise<InventoryResponse> {
     const params = new URLSearchParams();
     params.append('warehouse_id', warehouseId);
     params.append('limit', '9999');
+    if (term) params.append('term', term);
+    if (brandId) params.append('brand_id', brandId);
+    if (categoryId) params.append('category_id', categoryId);
     const response = await api.get<InventoryResponse>(`/inventory?${params.toString()}`);
     return response;
   }
 
-  async getInventory(warehouseId: string, page?: number, term?: string): Promise<InventoryResponse> {
+  async getInventory(warehouseId: string, page?: number, term?: string, brandId?: string, categoryId?: string): Promise<InventoryResponse> {
     const params = new URLSearchParams();
     params.append('warehouse_id', warehouseId);
     if (page) params.append('page', page.toString());
     if (term) params.append('term', term);
+    if (brandId) params.append('brand_id', brandId);
+    if (categoryId) params.append('category_id', categoryId);
     
     const queryString = params.toString();
     const url = `/inventory${queryString ? `?${queryString}` : ''}`;

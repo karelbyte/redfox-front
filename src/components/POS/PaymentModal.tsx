@@ -1,21 +1,25 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { BanknotesIcon, CreditCardIcon, XMarkIcon, ClockIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
-import { Input, Btn } from '@/components/atoms';
+import { BanknotesIcon, CreditCardIcon, XMarkIcon, ClockIcon, DocumentTextIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { Input, Btn, Select } from '@/components/atoms';
 import { Client } from '@/types/client';
-import { PaymentMethod } from '@/types/sale';
+import { PaymentMethod, CardType } from '@/types/sale';
+import { CertificationPackEmitter } from '@/types/certification-pack';
+import { certificationPackService } from '@/services/certification-packs.service';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (generateInvoice: boolean) => void;
+  onConfirm: (generateInvoice: boolean, emitterId?: string) => void;
   paymentMethod: PaymentMethod;
+  cardType?: CardType | null;
   cashAmount: number;
   total: number;
   loading: boolean;
   onPaymentMethodChange: (method: PaymentMethod) => void;
+  onCardTypeChange: (type: CardType | null) => void;
   onCashAmountChange: (amount: number) => void;
   getChange: () => number;
   selectedClient?: Client | null;
@@ -26,25 +30,21 @@ const PaymentModal = React.memo(({
   onClose,
   onConfirm,
   paymentMethod,
+  cardType,
   cashAmount,
   total,
   loading,
   onPaymentMethodChange,
+  onCardTypeChange,
   onCashAmountChange,
   getChange,
   selectedClient
 }: PaymentModalProps) => {
   const t = useTranslations('pages.pos');
   const [generateInvoice, setGenerateInvoice] = useState(false);
-
-  if (!isOpen) return null;
-
-  const handleConfirm = () => {
-    if (paymentMethod === PaymentMethod.CASH && cashAmount < total) {
-      return;
-    }
-    onConfirm(generateInvoice);
-  };
+  const [emitters, setEmitters] = useState<CertificationPackEmitter[]>([]);
+  const [selectedEmitter, setSelectedEmitter] = useState<string | null>(null);
+  const [loadingEmitters, setLoadingEmitters] = useState(false);
 
   const isCashInsufficient = paymentMethod === PaymentMethod.CASH && cashAmount < total;
   const hasActiveCredit = selectedClient?.credit?.is_active === true;
@@ -53,6 +53,35 @@ const PaymentModal = React.memo(({
 
   // El cliente puede facturar si está sincronizado con el PAC y tiene datos fiscales
   const canGenerateInvoice = !!(selectedClient?.pack_client_id && selectedClient?.taxData?.length);
+
+  useEffect(() => {
+    const fetchEmitters = async () => {
+      if (isOpen && canGenerateInvoice) {
+        setLoadingEmitters(true);
+        try {
+          const data = await certificationPackService.getAvailableEmitters();
+          setEmitters(data || []);
+          if (data && data.length > 0 && data[0].id) {
+            setSelectedEmitter(data[0].id);
+          }
+        } catch (error) {
+          console.error('Error fetching emitters:', error);
+        } finally {
+          setLoadingEmitters(false);
+        }
+      }
+    };
+    fetchEmitters();
+  }, [isOpen, canGenerateInvoice]);
+
+  if (!isOpen) return null;
+
+  const handleConfirm = () => {
+    if (paymentMethod === PaymentMethod.CASH && cashAmount < total) {
+      return;
+    }
+    onConfirm(generateInvoice, generateInvoice ? (selectedEmitter || undefined) : undefined);
+  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -98,12 +127,40 @@ const PaymentModal = React.memo(({
                 <input
                   type="radio"
                   value={PaymentMethod.CARD}
-                  checked={paymentMethod === PaymentMethod.CARD}
-                  onChange={(e) => onPaymentMethodChange(e.target.value as PaymentMethod)}
+                  checked={paymentMethod === PaymentMethod.CARD && cardType === CardType.CREDIT}
+                  onChange={(e) => {
+                    onPaymentMethodChange(PaymentMethod.CARD);
+                    onCardTypeChange(CardType.CREDIT);
+                  }}
                   className="text-primary-600"
                 />
                 <CreditCardIcon className="h-5 w-5" />
-                <span className="font-medium">{t('payment.card')}</span>
+                <span className="font-medium">{t('payment.creditCard')}</span>
+              </label>
+              <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  value={PaymentMethod.CARD}
+                  checked={paymentMethod === PaymentMethod.CARD && cardType === CardType.DEBIT}
+                  onChange={(e) => {
+                    onPaymentMethodChange(PaymentMethod.CARD);
+                    onCardTypeChange(CardType.DEBIT);
+                  }}
+                  className="text-primary-600"
+                />
+                <CreditCardIcon className="h-5 w-5" />
+                <span className="font-medium">{t('payment.debitCard')}</span>
+              </label>
+              <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  value={PaymentMethod.TRANSFER}
+                  checked={paymentMethod === PaymentMethod.TRANSFER}
+                  onChange={(e) => onPaymentMethodChange(e.target.value as PaymentMethod)}
+                  className="text-primary-600"
+                />
+                <ArrowPathIcon className="h-5 w-5" />
+                <span className="font-medium">{t('payment.transfer')}</span>
               </label>
               {hasActiveCredit && (
                 <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
@@ -172,6 +229,19 @@ const PaymentModal = React.memo(({
                   <span className="text-xs text-gray-500">{t('payment.generateInvoiceHint')}</span>
                 </div>
               </label>
+            </div>
+          )}
+
+          {/* Selector de emisor */}
+          {generateInvoice && canGenerateInvoice && emitters.length > 0 && (
+            <div className="mb-6">
+              <Select
+                label={t('payment.selectEmitter')}
+                value={selectedEmitter || ''}
+                onChange={(e) => setSelectedEmitter(e.target.value || null)}
+                disabled={loadingEmitters}
+                options={emitters.filter(e => e.id).map(emitter => ({ value: emitter.id, label: emitter.name }))}
+              />
             </div>
           )}
 

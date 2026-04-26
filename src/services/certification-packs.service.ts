@@ -1,5 +1,5 @@
 import { api } from './api';
-import { CertificationPack, CertificationPackFormData } from '@/types/certification-pack';
+import { CertificationPack, CertificationPackFormData, CertificationPackEmitter } from '@/types/certification-pack';
 
 class CertificationPackService {
   async getAll(): Promise<CertificationPack[]> {
@@ -9,6 +9,11 @@ class CertificationPackService {
 
   async getActive(): Promise<CertificationPack | null> {
     const response = await api.get<CertificationPack | null>('/certification-packs/active');
+    return response;
+  }
+
+  async getAvailableEmitters(): Promise<CertificationPackEmitter[]> {
+    const response = await api.get<CertificationPackEmitter[]>('/certification-packs/available-emitters');
     return response;
   }
 
@@ -34,6 +39,20 @@ class CertificationPackService {
 
   async delete(id: string): Promise<void> {
     await api.delete(`/certification-packs/${id}`);
+  }
+
+  async addEmitter(packId: string, emitter: Omit<CertificationPackEmitter, 'id'>): Promise<CertificationPackEmitter> {
+    const response = await api.post<CertificationPackEmitter>(`/certification-packs/${packId}/emitters`, emitter);
+    return response;
+  }
+
+  async updateEmitter(packId: string, emitterId: string, emitter: Omit<CertificationPackEmitter, 'id'>): Promise<CertificationPackEmitter> {
+    const response = await api.patch<CertificationPackEmitter>(`/certification-packs/${packId}/emitters/${emitterId}`, emitter);
+    return response;
+  }
+
+  async removeEmitter(packId: string, emitterId: string): Promise<void> {
+    await api.delete(`/certification-packs/${packId}/emitters/${emitterId}`);
   }
 }
 

@@ -26,6 +26,12 @@ export enum PaymentMethod {
   CASH = 'cash',
   CARD = 'card',
   CREDIT = 'credit',
+  TRANSFER = 'transfer',
+}
+
+export enum CardType {
+  CREDIT = 'credit',
+  DEBIT = 'debit',
 }
 
 export interface Sale {
@@ -36,6 +42,7 @@ export interface Sale {
   amount: string;
   status: SaleStatus;
   payment_method: PaymentMethod;
+  card_type?: CardType | null;
   created_at: string;
   /** Estado fiscal: solo nota, facturada directa o facturada global */
   invoice_id?: string | null;
@@ -52,6 +59,7 @@ export interface SaleFormData {
   status?: SaleStatus;
   type: string;
   payment_method?: PaymentMethod;
+  card_type?: CardType | null;
 }
 
 export interface SaleDetailFormData {

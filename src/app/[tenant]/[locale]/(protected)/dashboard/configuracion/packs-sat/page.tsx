@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
+import { useParams, useRouter } from 'next/navigation';
 import { Btn, SearchInput, EmptyState } from '@/components/atoms';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { CertificationPack } from '@/types/certification-pack';
@@ -19,6 +20,9 @@ import { certificationPacksHelp } from '@/components/Help/configs/certification-
 export default function CertificationPacksPage() {
   const t = useTranslations('pages.certificationPacks');
   const tCommon = useTranslations('common');
+  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale as string;
   const { can } = usePermissions();
   const [packs, setPacks] = useState<CertificationPack[]>([]);
   const [loading, setLoading] = useState(true);
@@ -110,6 +114,10 @@ export default function CertificationPacksPage() {
     }
   };
 
+  const handleManageEmitters = (pack: CertificationPack) => {
+    router.push(`/${locale}/dashboard/configuracion/packs-sat/${pack.id}/emisores`);
+  };
+
   const handleDrawerClose = () => {
     setShowDrawer(false);
     setEditingPack(null);
@@ -169,6 +177,7 @@ export default function CertificationPacksPage() {
             onEdit={handleEditPack}
             onDelete={handleDeletePack}
             onSetDefault={handleSetDefault}
+            onManageEmitters={handleManageEmitters}
           />
         </div>
       )}

@@ -9,7 +9,7 @@ export interface TicketData {
   saleDetails: SaleDetail[];
   client: Client | null;
   cashierName?: string;
-  paymentMethod: 'cash' | 'card' | 'credit';
+  paymentMethod: 'cash' | 'card' | 'credit' | 'transfer';
   cashAmount?: number;
   change?: number;
   locale?: string;

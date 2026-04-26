@@ -164,7 +164,7 @@ export default function VentasPage() {
         saleDetails: details,
         client: sale.client,
         cashierName: 'POS System',
-        paymentMethod: (sale.payment_method as 'cash' | 'card' | 'credit') || 'cash',
+        paymentMethod: (sale.payment_method as 'cash' | 'card' | 'credit' | 'transfer') || 'cash',
         locale,
         labels: {
           ticket: tPos('ticket.ticket', { default: 'Ticket' }),

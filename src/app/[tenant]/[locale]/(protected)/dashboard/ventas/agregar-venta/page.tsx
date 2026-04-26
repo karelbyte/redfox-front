@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowLeftIcon, BanknotesIcon, CreditCardIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, BanknotesIcon, CreditCardIcon, ClockIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { saleService } from '@/services/sales.service';
 import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
-import { SaleFormData, PaymentMethod } from '@/types/sale';
+import { SaleFormData, PaymentMethod, CardType } from '@/types/sale';
 import { Client } from '@/types/client';
 import { Btn, Input, SelectWithAdd } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
@@ -33,7 +33,9 @@ export default function AddSalePage() {
     amount: 0,
     type: 'WITHDRAWAL',
     payment_method: PaymentMethod.CASH,
+    card_type: null,
   });
+  const [cardType, setCardType] = useState<CardType | null>(null);
   const [errors, setErrors] = useState<{ code?: string; destination?: string; client_id?: string }>({});
 
   // Drawer de clientes
@@ -80,6 +82,7 @@ export default function AddSalePage() {
         amount: formData.amount,
         type: formData.type,
         payment_method: formData.payment_method,
+        card_type: cardType,
       });
       toastService.success(t('messages.saleCreated'));
       router.push(`/${tenant}/${locale}/dashboard/ventas/ventas/${sale.id}`);
@@ -183,11 +186,42 @@ export default function AddSalePage() {
                 <input
                   type="radio"
                   value={PaymentMethod.CARD}
-                  checked={formData.payment_method === PaymentMethod.CARD}
-                  onChange={() => set('payment_method', PaymentMethod.CARD)}
+                  checked={formData.payment_method === PaymentMethod.CARD && cardType === CardType.CREDIT}
+                  onChange={() => {
+                    set('payment_method', PaymentMethod.CARD);
+                    setCardType(CardType.CREDIT);
+                  }}
                 />
                 <CreditCardIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-sm">{t('form.paymentMethods.card')}</span>
+                <span className="text-sm">{t('form.cardTypes.credit')}</span>
+              </label>
+
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="radio"
+                  value={PaymentMethod.CARD}
+                  checked={formData.payment_method === PaymentMethod.CARD && cardType === CardType.DEBIT}
+                  onChange={() => {
+                    set('payment_method', PaymentMethod.CARD);
+                    setCardType(CardType.DEBIT);
+                  }}
+                />
+                <CreditCardIcon className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">{t('form.cardTypes.debit')}</span>
+              </label>
+
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <input
+                  type="radio"
+                  value={PaymentMethod.TRANSFER}
+                  checked={formData.payment_method === PaymentMethod.TRANSFER}
+                  onChange={() => {
+                    set('payment_method', PaymentMethod.TRANSFER);
+                    setCardType(null);
+                  }}
+                />
+                <ArrowPathIcon className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">{t('form.paymentMethods.transfer')}</span>
               </label>
 
               {selectedClient?.credit?.is_active && (
