@@ -9,6 +9,8 @@ import {
   ClockIcon, ChevronDownIcon, ChevronUpIcon,
 } from '@heroicons/react/24/outline';
 import { clientImportService, ClientImportResult, ImportLog } from '@/services/client-import.service';
+import { usePermissions } from '@/hooks/usePermissions';
+import PermissionEmptyState from '@/components/atoms/PermissionEmptyState';
 
 const FIELDS = [
   // Datos del cliente
@@ -55,6 +57,11 @@ export default function ImportClientsPage() {
   const router = useRouter();
   const params = useParams();
   const tenant = params?.tenant as string;
+  const { can } = usePermissions();
+
+  if (!can(["client_import_csv"])) {
+    return <PermissionEmptyState />;
+  }
 
   const [file, setFile] = useState<File | null>(null);
   const [importing, setImporting] = useState(false);

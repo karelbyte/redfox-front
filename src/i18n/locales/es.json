@@ -487,6 +487,7 @@
       "noProducts": "No hay productos",
       "noProductsDesc": "Haz clic en 'Nuevo Producto' para agregar uno.",
       "noResultsDesc": "No se encontraron resultados",
+      "noPermission": "No tienes permisos para ver esta página",
       "importFromPack": "Importar del Pack",
       "importingFromPack": "Importando...",
       "form": {
@@ -2873,6 +2874,7 @@
         "password": "Contraseña",
         "roles": "Roles",
         "status": "Estado activo",
+        "admin": "Administrador",
         "placeholders": {
           "name": "Ingrese el nombre completo",
           "email": "Ingrese el correo electrónico",

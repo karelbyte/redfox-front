@@ -125,6 +125,11 @@ export default function UserDetailsPage() {
             </p>
           </div>
         </div>
+        <Btn
+          onClick={() => router.push(`/${locale}/dashboard/configuracion/usuarios/${userId}/atribuciones`)}
+        >
+          {locale === 'es' ? 'Atribuciones' : locale === 'zh' ? '属性' : 'Attributions'}
+        </Btn>
       </div>
 
       {/* Content */}

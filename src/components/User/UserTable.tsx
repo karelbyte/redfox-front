@@ -2,8 +2,10 @@
 
 import { useTranslations } from 'next-intl';
 import { User } from "@/types/user";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Btn } from "@/components/atoms";
+import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
+import { usePermissions } from '@/hooks/usePermissions';
+import { useRouter, useParams } from 'next/navigation';
+import { EyeIcon, PencilIcon, TrashIcon, KeyIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 
 interface UserTableProps {
   users: User[];
@@ -21,6 +23,12 @@ export default function UserTable({
   visibleColumns = ['name', 'email', 'roles', 'status', 'createdAt', 'actions']
 }: UserTableProps) {
   const t = useTranslations('pages.users');
+  const tCommon = useTranslations('common');
+  const { can } = usePermissions();
+  const router = useRouter();
+  const params = useParams();
+  const tenant = params?.tenant as string;
+  const locale = params?.locale as string || 'es';
   
   if (!Array.isArray(users)) {
     return null;
@@ -84,7 +92,16 @@ export default function UserTable({
             <tr key={user.id} className="hover:bg-gray-50 transition-colors">
               {visibleColumns.includes('name') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {user.name}
+                  <div className="flex items-center gap-2">
+                    {user.name}
+                    {user.admin && (
+                      <ShieldCheckIcon 
+                        className="h-5 w-5" 
+                        style={{ color: 'rgb(var(--color-primary-600))' }} 
+                        title="Administrador"
+                      />
+                    )}
+                  </div>
                 </td>
               )}
               {visibleColumns.includes('email') && (
@@ -115,30 +132,14 @@ export default function UserTable({
               )}
               {visibleColumns.includes('actions') && (
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <Btn
-                      onClick={() => onEdit(user)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<PencilIcon className="h-4 w-4" />}
-                      title={t('actions.edit')}
-                    />
-                    <Btn
-                      onClick={() => onViewDetails(user)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<EyeIcon className="h-4 w-4" />}
-                      title={t('actions.viewDetails')}
-                    />
-                    <Btn
-                      onClick={() => onDelete(user)}
-                      variant="ghost"
-                      size="sm"
-                      leftIcon={<TrashIcon className="h-4 w-4" />}
-                      title={t('actions.delete')}
-                      style={{ color: '#dc2626' }}
-                    />
-                  </div>
+                  <UserActionsMenu
+                    user={user}
+                    onViewDetails={onViewDetails}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    tenant={tenant}
+                    locale={locale}
+                  />
                 </td>
               )}
             </tr>
@@ -147,4 +148,70 @@ export default function UserTable({
       </table>
     </div>
   );
-} 
+}
+
+interface UserActionsMenuProps {
+  user: User;
+  onViewDetails: (user: User) => void;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
+  tenant: string;
+  locale: string;
+}
+
+function UserActionsMenu({
+  user,
+  onViewDetails,
+  onEdit,
+  onDelete,
+  tenant,
+  locale,
+}: UserActionsMenuProps) {
+  const t = useTranslations('pages.users');
+  const tCommon = useTranslations('common');
+  const { can } = usePermissions();
+  const router = useRouter();
+
+  const menuItems: ActionMenuItem[] = [
+    ...(can(['user_update'])
+      ? [
+          {
+            icon: <KeyIcon className="h-4 w-4" />,
+            label: locale === 'es' ? 'Atribuciones' : locale === 'zh' ? '属性' : 'Attributions',
+            color: '#0891b2',
+            onClick: () => {
+              router.push(`/${tenant}/${locale}/dashboard/configuracion/usuarios/${user.id}/atribuciones`);
+            },
+          },
+          {
+            icon: <EyeIcon className="h-4 w-4" />,
+            label: t('actions.viewDetails'),
+            onClick: () => {
+              onViewDetails(user);
+            },
+          },
+          {
+            icon: <PencilIcon className="h-4 w-4" />,
+            label: tCommon('actions.edit'),
+            onClick: () => {
+              onEdit(user);
+            },
+          },
+        ]
+      : []),
+    ...(can(['user_delete'])
+      ? [
+          {
+            icon: <TrashIcon className="h-4 w-4" />,
+            label: tCommon('actions.delete'),
+            color: '#dc2626',
+            onClick: () => {
+              onDelete(user);
+            },
+          },
+        ]
+      : []),
+  ];
+
+  return <ActionsMenu items={menuItems} />;
+}

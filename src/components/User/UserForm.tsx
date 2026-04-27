@@ -27,6 +27,7 @@ interface UserFormData {
   password: string;
   roleIds: string[];
   status: boolean;
+  admin: boolean;
 }
 
 interface UserFormErrors {
@@ -45,7 +46,8 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
       email: '',
       password: '',
       roleIds: [],
-      status: true
+      status: true,
+      admin: false
     });
     const [errors, setErrors] = useState<UserFormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,9 +64,10 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
         setFormData({
           name: user.name,
           email: user.email,
-          password: '', // No mostrar contraseña existente
+          password: '',
           roleIds: user.roles.map(role => role.id),
-          status: user.status
+          status: user.status,
+          admin: user.admin || false
         });
       }
     }, [user]);
@@ -141,7 +144,8 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
             name: formData.name,
             email: formData.email,
             roleIds: formData.roleIds,
-            status: formData.status
+            status: formData.status,
+            admin: formData.admin
           };
           
           if (formData.password.trim()) {
@@ -151,12 +155,12 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
           await usersService.updateUser(user.id, updateData);
           toastService.success(t('messages.userUpdated'));
         } else {
-          // Create new user
           const createData: CreateUserRequest = {
             name: formData.name,
             email: formData.email,
             password: formData.password,
-            roleIds: formData.roleIds
+            roleIds: formData.roleIds,
+            admin: formData.admin
           };
           
           await usersService.createUser(createData);
@@ -249,6 +253,15 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
               onChange={(e) => handleInputChange('status', e.target.checked)}
             />
           </div>
+
+          {/* Admin */}
+          <div>
+            <Checkbox
+              label={t('form.admin')}
+              checked={formData.admin}
+              onChange={(e) => handleInputChange('admin', e.target.checked)}
+            />
+          </div>
         </div>
       </div>
     );
@@ -257,4 +270,4 @@ const UserForm = forwardRef<UserFormRef, UserFormProps>(
 
 UserForm.displayName = 'UserForm';
 
-export default UserForm; 
+export default UserForm;

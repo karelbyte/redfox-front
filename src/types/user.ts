@@ -5,6 +5,7 @@ export interface User {
   roles: UserRole[];
   permissions: string[];
   status: boolean;
+  admin: boolean;
   created_at: string;
 }
 
@@ -31,6 +32,7 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   roleIds: string[];
+  admin?: boolean;
 }
 
 export interface UpdateUserRequest {
@@ -39,6 +41,7 @@ export interface UpdateUserRequest {
   password?: string;
   roleIds?: string[];
   status?: boolean;
+  admin?: boolean;
 }
 
 export interface UserWithPermissionDescriptions {

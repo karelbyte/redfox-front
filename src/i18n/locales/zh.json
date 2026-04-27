@@ -487,6 +487,7 @@
       "noProducts": "暂无产品",
       "noProductsDesc": "点击「新建产品」添加一个。",
       "noResultsDesc": "未找到结果",
+      "noPermission": "您没有权限查看此页面",
       "importFromPack": "从套餐导入",
       "importingFromPack": "导入中...",
       "form": {
@@ -2827,6 +2828,7 @@
         "password": "密码",
         "roles": "角色",
         "status": "启用状态",
+        "admin": "管理员",
         "placeholders": {
           "name": "输入全名",
           "email": "输入邮箱地址",

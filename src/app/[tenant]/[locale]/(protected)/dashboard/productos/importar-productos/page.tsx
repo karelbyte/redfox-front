@@ -9,6 +9,8 @@ import {
   ClockIcon, ChevronDownIcon, ChevronUpIcon,
 } from '@heroicons/react/24/outline';
 import { productImportService, ImportResult, ImportLog } from '@/services/product-import.service';
+import { usePermissions } from '@/hooks/usePermissions';
+import PermissionEmptyState from '@/components/atoms/PermissionEmptyState';
 
 const FIELDS = [
   { name: 'name',               req: true,  type: 'texto',   desc: { es: 'Nombre del producto', en: 'Product name', zh: '产品名称' },                                                                                                                    example: 'Leche Entera 1L' },
@@ -44,6 +46,11 @@ export default function ImportProductsPage() {
   const router = useRouter();
   const params = useParams();
   const tenant = params?.tenant as string;
+  const { can } = usePermissions();
+
+  if (!can(["product_import_csv"])) {
+    return <PermissionEmptyState />;
+  }
 
   const [file, setFile] = useState<File | null>(null);
   const [importing, setImporting] = useState(false);

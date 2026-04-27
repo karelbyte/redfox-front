@@ -240,7 +240,7 @@ const PaymentModal = React.memo(({
                 value={selectedEmitter || ''}
                 onChange={(e) => setSelectedEmitter(e.target.value || null)}
                 disabled={loadingEmitters}
-                options={emitters.filter(e => e.id).map(emitter => ({ value: emitter.id, label: emitter.name }))}
+                options={emitters.filter(e => e.id).map(emitter => ({ value: emitter.id!, label: emitter.name }))}
               />
             </div>
           )}

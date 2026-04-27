@@ -7,6 +7,7 @@ import { ProductFormRef } from '@/components/Product/ProductForm';
 import { toastService } from '@/services/toast.service';
 import { Btn } from '@/components/atoms';
 import { usePermissions } from '@/hooks/usePermissions';
+import PermissionEmptyState from '@/components/atoms/PermissionEmptyState';
 
 export default function AgregarProductoPage() {
   const t = useTranslations('pages.products');
@@ -30,7 +31,7 @@ export default function AgregarProductoPage() {
   };
 
   if (!can(["product_create"])) {
-    return <div>{t("noPermission")}</div>;
+    return <PermissionEmptyState />;
   }
 
   return (

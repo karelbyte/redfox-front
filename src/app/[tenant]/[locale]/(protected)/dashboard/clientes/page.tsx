@@ -250,7 +250,7 @@ export default function ClientsPage() {
         </div>
         <div className="flex items-center gap-2">
 
-          {can(["client_create"]) && (
+          {can(["client_import_from_pack"]) && (
             <Btn
               variant="secondary"
               onClick={handleImportFromPack}
@@ -260,7 +260,7 @@ export default function ClientsPage() {
               {isImporting ? t("importingFromPack") : t("importFromPack")}
             </Btn>
           )}
-          {can(["client_create"]) && (
+          {can(["client_import_csv"]) && (
             <Btn
               variant="outline"
               onClick={() => router.push(`/${tenant}/${locale}/dashboard/clientes/importar-clientes`)}

@@ -295,21 +295,25 @@ export default function ListProductsPage() {
         </div>
         {can(["product_create"]) && (
           <div className="flex gap-2">
-            <Btn
-              variant="secondary"
-              onClick={handleImportFromPack}
-              disabled={isImporting}
-              leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
-            >
-              {isImporting ? t("importingFromPack") : t("importFromPack")}
-            </Btn>
-            <Btn
-              variant="outline"
-              onClick={() => router.push(`/${params?.tenant}/${locale}/dashboard/productos/importar-productos`)}
-              leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
-            >
-              {locale === 'zh' ? '导入 CSV' : locale === 'en' ? 'Import CSV' : 'Importar CSV'}
-            </Btn>
+            {can(["product_import_from_pack"]) && (
+              <Btn
+                variant="secondary"
+                onClick={handleImportFromPack}
+                disabled={isImporting}
+                leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
+              >
+                {isImporting ? t("importingFromPack") : t("importFromPack")}
+              </Btn>
+            )}
+            {can(["product_import_csv"]) && (
+              <Btn
+                variant="outline"
+                onClick={() => router.push(`/${params?.tenant}/${locale}/dashboard/productos/importar-productos`)}
+                leftIcon={<ArrowDownTrayIcon className="h-5 w-5" />}
+              >
+                {locale === 'zh' ? '导入 CSV' : locale === 'en' ? 'Import CSV' : 'Importar CSV'}
+              </Btn>
+            )}
             <Btn
               onClick={() => {
                 setEditingProduct(null);
