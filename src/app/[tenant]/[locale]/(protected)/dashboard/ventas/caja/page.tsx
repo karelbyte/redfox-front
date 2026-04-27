@@ -7,14 +7,16 @@ import { toastService } from '@/services/toast.service';
 import { CashRegister, CashTransaction } from '@/types/cash-register';
 import CashRegisterModal from '@/components/POS/CashRegisterModal';
 import CashDrawerModal from '@/components/POS/CashDrawerModal';
-import { 
-    BanknotesIcon, 
-    PlusIcon, 
-    CogIcon, 
+import CashRegisterSelector from '@/components/POS/CashRegisterSelector';
+import {
+    BanknotesIcon,
+    PlusIcon,
+    CogIcon,
     DocumentTextIcon,
     ClockIcon,
     ArrowPathIcon,
-    EyeIcon
+    EyeIcon,
+    ArrowsRightLeftIcon
 } from '@heroicons/react/24/outline';
 import { Btn } from '@/components/atoms';
 import HelpButton from '@/components/Help/HelpButton';
@@ -25,7 +27,9 @@ export default function CashRegisterPage() {
     const tCash = useTranslations('pages.cashRegister');
     const locale = useLocale();
     const [currentCashRegister, setCurrentCashRegister] = useState<CashRegister | null>(null);
+    const [availableCashRegisters, setAvailableCashRegisters] = useState<CashRegister[]>([]);
     const [showCashRegisterModal, setShowCashRegisterModal] = useState(false);
+    const [showCashRegisterSelector, setShowCashRegisterSelector] = useState(false);
     const [showCashDrawerModal, setShowCashDrawerModal] = useState(false);
     const [cashLoading, setCashLoading] = useState(false);
     const [transactions, setTransactions] = useState<CashTransaction[]>([]);
@@ -50,27 +54,48 @@ export default function CashRegisterPage() {
 
     const fetchCurrentCashRegister = async () => {
         try {
-            const cashRegister = await cashRegisterService.getCurrentCashRegister();
-            setCurrentCashRegister(cashRegister);
-            // Reset el flag si se encuentra una caja
-            if (cashRegister) {
+            const authorizedRegisters = await cashRegisterService.getAuthorizedOpenCashRegisters();
+            setAvailableCashRegisters(authorizedRegisters);
+
+            if (authorizedRegisters.length === 0) {
+                setCurrentCashRegister(null);
+                setShowCashRegisterSelector(false);
+                if (!hasShownNoCashToast) {
+                    toastService.info(tCash('messages.noCashRegisterActive'));
+                    setHasShownNoCashToast(true);
+                }
+            } else if (authorizedRegisters.length === 1) {
+                setCurrentCashRegister(authorizedRegisters[0]);
+                setShowCashRegisterSelector(false);
+                setHasShownNoCashToast(false);
+            } else {
+                setShowCashRegisterSelector(true);
                 setHasShownNoCashToast(false);
             }
         } catch (error) {
-            // Mostrar toast informativo cuando no hay caja abierta (solo una vez)
-            if (error instanceof Error && 
-                (error.message.includes('no open cash register') || 
+            if (error instanceof Error &&
+                (error.message.includes('no open cash register') ||
                  error.message.includes('There is no open cash register currently'))) {
                 if (!hasShownNoCashToast) {
                     toastService.info(tCash('messages.noCashRegisterActive'));
                     setHasShownNoCashToast(true);
                 }
             } else {
-                // Solo mostrar error en consola para errores reales
                 console.error('Error fetching current cash register:', error);
                 toastService.error(tCash('messages.errorFetchingInfo'));
             }
             setCurrentCashRegister(null);
+        }
+    };
+
+    const handleSelectCashRegister = (cashRegister: CashRegister) => {
+        setCurrentCashRegister(cashRegister);
+        setShowCashRegisterSelector(false);
+    };
+
+    const handleSwitchCashRegister = () => {
+        if (availableCashRegisters.length > 1) {
+            setShowCashRegisterSelector(true);
         }
     };
 
@@ -229,7 +254,7 @@ export default function CashRegisterPage() {
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="p-6">
             {/* Header */}
             <div className="mb-8">
                 <div className="flex items-center gap-3">
@@ -290,7 +315,7 @@ export default function CashRegisterPage() {
 
                             {/* Actions */}
                             {currentCashRegister.status === 'open' && (
-                                <div className="space-y-3">
+                                <div className="grid grid-cols-2 gap-3">
                                     <Btn
                                         onClick={() => setShowCashRegisterModal(true)}
                                         disabled={cashLoading}
@@ -300,10 +325,21 @@ export default function CashRegisterPage() {
                                         <CogIcon className="h-4 w-4 mr-2" />
                                         {tCash('actions.updateBalance')}
                                     </Btn>
+                                    {availableCashRegisters.length > 1 && (
+                                        <Btn
+                                            onClick={handleSwitchCashRegister}
+                                            disabled={cashLoading}
+                                            className="w-full"
+                                            variant="outline"
+                                        >
+                                            <ArrowsRightLeftIcon className="h-4 w-4 mr-2" />
+                                            {tCash('actions.switchCashRegister')}
+                                        </Btn>
+                                    )}
                                     <Btn
                                         onClick={handleCashDrawer}
                                         disabled={cashLoading}
-                                        className="w-full"
+                                        className="w-full mt-3"
                                         variant="outline"
                                     >
                                         <EyeIcon className="h-4 w-4 mr-2" />
@@ -419,6 +455,14 @@ export default function CashRegisterPage() {
                 onClose={() => setShowCashDrawerModal(false)}
                 onConfirm={handleCashDrawerConfirm}
                 loading={cashLoading}
+                currentCashRegister={currentCashRegister}
+            />
+
+            <CashRegisterSelector
+                isOpen={showCashRegisterSelector}
+                onClose={() => setShowCashRegisterSelector(false)}
+                cashRegisters={availableCashRegisters}
+                onSelect={handleSelectCashRegister}
                 currentCashRegister={currentCashRegister}
             />
         </div>

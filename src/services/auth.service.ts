@@ -22,9 +22,10 @@ interface LoginResponse {
     organization_referrer_code?: string;
     permissions: string[];
     status: boolean;
+    admin: boolean;
     created_at: string;
   };
-}
+};
 
 export const authService = {
   async login(email: string, password: string): Promise<void> {

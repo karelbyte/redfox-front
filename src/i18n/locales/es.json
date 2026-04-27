@@ -157,6 +157,7 @@
     "addSale": "Añadir Venta",
     "pos": "POS",
     "cashRegister": "Caja",
+    "cashRegisters": "Cajas",
     "users": "Usuarios",
     "companySettings": "Generales de empresa",
     "whatsAppBot": "Bot de WhatsApp",
@@ -2448,7 +2449,12 @@
         "createNew": "Crear Nueva",
         "searchPlaceholder": "Buscar cajas registradoras...",
         "loading": "Cargando cajas...",
-        "noRegistersFound": "No se encontraron cajas registradoras"
+        "noRegistersFound": "No se encontraron cajas registradoras",
+        "selectCashRegister": "Seleccionar Caja",
+        "multipleAvailable": "Tienes acceso a múltiples cajas abiertas",
+        "noAuthorized": "No tienes cajas autorizadas abiertas",
+        "switchCashRegister": "Cambiar Caja",
+        "workingIn": "Trabajando en"
       },
       "cashDrawer": {
         "title": "Corte de Caja",
@@ -2475,6 +2481,61 @@
         "adjust": "Ajustar"
       }
     },
+    "cashRegisters": {
+      "title": "Cajas Registradoras",
+      "subtitle": "Gestión de cajas registradoras",
+      "table": {
+        "code": "Código",
+        "name": "Nombre",
+        "currentAmount": "Balance Actual",
+        "status": "Estado",
+        "statusOpen": "Abierta",
+        "statusClosed": "Cerrada",
+        "openedAt": "Abierta el",
+        "openedBy": "Abierta por",
+        "actions": "Acciones"
+      },
+      "status": {
+        "open": "Abierta",
+        "closed": "Cerrada"
+      },
+      "form": {
+        "name": "Nombre",
+        "namePlaceholder": "Nombre de la caja",
+        "description": "Descripción",
+        "descriptionPlaceholder": "Descripción opcional",
+        "initialAmount": "Monto Inicial",
+        "initialAmountHelp": "Monto inicial con el que se abre la caja",
+        "validation": {
+          "nameRequired": "El nombre es requerido",
+          "invalidAmount": "El monto debe ser mayor o igual a 0"
+        }
+      },
+      "actions": {
+        "create": "Crear Caja",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "view": "Ver Detalles",
+        "back": "Volver"
+      },
+      "empty": {
+        "title": "No hay cajas registradoras",
+        "description": "Crea tu primera caja registradora para comenzar"
+      },
+      "deleteCashRegister": "Eliminar Caja Registradora",
+      "messages": {
+        "errorLoading": "Error al cargar cajas registradoras",
+        "cashRegisterCreated": "Caja registradora creada exitosamente",
+        "cashRegisterUpdated": "Caja registradora actualizada exitosamente",
+        "cashRegisterDeleted": "Caja registradora eliminada exitosamente",
+        "errorCreating": "Error al crear caja registradora",
+        "errorUpdating": "Error al actualizar caja registradora",
+        "errorDeleting": "Error al eliminar caja registradora",
+        "confirmDelete": "¿Estás seguro de que deseas eliminar la caja registradora \"{{name}}\"?"
+      }
+    },
     "cashRegister": {
       "title": "Caja Registradora",
       "subtitle": "Gestión y control de caja registradora",
@@ -2491,7 +2552,9 @@
       "actions": {
         "updateBalance": "Actualizar Balance",
         "cashDrawer": "Corte de Caja",
-        "initializeCash": "Inicializar Caja"
+        "initializeCash": "Inicializar Caja",
+        "back": "Volver",
+        "switchCashRegister": "Cambiar de Caja"
       },
       "transactions": {
         "title": "Transacciones",

@@ -7,6 +7,7 @@ import {
   ShoppingCartIcon,
   ArrowLeftIcon,
   BanknotesIcon,
+  ArrowsRightLeftIcon,
 } from "@heroicons/react/24/outline";
 import { Btn, SelectWithAdd } from "@/components/atoms";
 import { Client } from "@/types/client";
@@ -28,6 +29,7 @@ interface POSCartProps {
   onInitializeCash: () => void;
   onCashDrawer: () => void;
   onOpenCashBalance: () => void;
+  onSwitchCashRegister?: () => void;
   loading?: boolean;
 }
 
@@ -37,6 +39,7 @@ const POSCart = (
     onAddClient,
     onCheckout,
     onOpenCashBalance,
+    onSwitchCashRegister,
   }: POSCartProps) => {
   const t = useTranslations("pages.pos");
   const locale = useLocale();
@@ -71,6 +74,16 @@ const POSCart = (
           </Btn>
           <h2 className="text-lg font-semibold">{t("cart.title")}</h2>
           <div className="flex items-center space-x-2">
+            {onSwitchCashRegister && (
+              <Btn
+                variant="ghost"
+                size="sm"
+                onClick={onSwitchCashRegister}
+                leftIcon={<ArrowsRightLeftIcon className="h-4 w-4" />}
+              >
+                {t("cashRegister.switchCashRegister")}
+              </Btn>
+            )}
             <Btn
               variant="ghost"
               size="sm"

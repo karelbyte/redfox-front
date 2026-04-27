@@ -21,6 +21,7 @@ interface User {
   organization_slug?: string;
   organization_referrer_code?: string;
   status: boolean;
+  admin: boolean;
   created_at: string;
 }
 

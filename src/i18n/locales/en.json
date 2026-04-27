@@ -157,6 +157,7 @@
     "addSale": "Add Sale",
     "pos": "POS",
     "cashRegister": "Cash Register",
+    "cashRegisters": "Cash Registers",
     "users": "Users",
     "companySettings": "Company settings",
     "whatsAppBot": "WhatsApp Bot",
@@ -2453,7 +2454,12 @@
         "createNew": "Create New",
         "searchPlaceholder": "Search cash registers...",
         "loading": "Loading registers...",
-        "noRegistersFound": "No cash registers found"
+        "noRegistersFound": "No cash registers found",
+        "selectCashRegister": "Select Cash Register",
+        "multipleAvailable": "You have access to multiple open cash registers",
+        "noAuthorized": "You have no authorized open cash registers",
+        "switchCashRegister": "Switch Cash Register",
+        "workingIn": "Working in"
       },
       "cashDrawer": {
         "title": "Cash Drawer",
@@ -2480,6 +2486,61 @@
         "adjust": "Adjust"
       }
     },
+    "cashRegisters": {
+      "title": "Cash Registers",
+      "subtitle": "Cash register management",
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "currentAmount": "Current Balance",
+        "status": "Status",
+        "statusOpen": "Open",
+        "statusClosed": "Closed",
+        "openedAt": "Opened At",
+        "openedBy": "Opened By",
+        "actions": "Actions"
+      },
+      "status": {
+        "open": "Open",
+        "closed": "Closed"
+      },
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Cash register name",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional description",
+        "initialAmount": "Initial Amount",
+        "initialAmountHelp": "Initial amount to open the cash register with",
+        "validation": {
+          "nameRequired": "Name is required",
+          "invalidAmount": "Amount must be greater than or equal to 0"
+        }
+      },
+      "actions": {
+        "create": "Create Cash Register",
+        "edit": "Edit",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "save": "Save",
+        "view": "View Details",
+        "back": "Back"
+      },
+      "empty": {
+        "title": "No cash registers",
+        "description": "Create your first cash register to get started"
+      },
+      "deleteCashRegister": "Delete Cash Register",
+      "messages": {
+        "errorLoading": "Error loading cash registers",
+        "cashRegisterCreated": "Cash register created successfully",
+        "cashRegisterUpdated": "Cash register updated successfully",
+        "cashRegisterDeleted": "Cash register deleted successfully",
+        "errorCreating": "Error creating cash register",
+        "errorUpdating": "Error updating cash register",
+        "errorDeleting": "Error deleting cash register",
+        "confirmDelete": "Are you sure you want to delete the cash register \"{{name}}\"?"
+      }
+    },
     "cashRegister": {
       "title": "Cash Register",
       "subtitle": "Cash register management and control",
@@ -2496,7 +2557,9 @@
       "actions": {
         "updateBalance": "Update Balance",
         "cashDrawer": "Cash Drawer",
-        "initializeCash": "Initialize Cash Register"
+        "initializeCash": "Initialize Cash Register",
+        "back": "Back",
+        "switchCashRegister": "Switch Cash Register"
       },
       "transactions": {
         "title": "Transactions",

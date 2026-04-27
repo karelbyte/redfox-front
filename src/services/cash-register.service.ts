@@ -91,18 +91,27 @@ class CashRegisterService {
       console.log('🏦 Current cash register:', response);
       return response;
     } catch (error) {
-      // Manejar el error específico de "no open cash register" sin mostrar error en consola
       if (error instanceof Error) {
-        if (error.message.includes('no open cash register') || 
+        if (error.message.includes('no open cash register') ||
             error.message.includes('There is no open cash register currently')) {
           console.log('ℹ️ No open cash register found - this is normal when no cash register is active');
           return null;
         }
       }
-      
-      // Solo mostrar error en consola para errores reales (no 404 de "no cash register")
       console.error('❌ Error getting current cash register:', error);
       return null;
+    }
+  }
+
+  async getAuthorizedOpenCashRegisters(): Promise<CashRegister[]> {
+    try {
+      console.log('🏦 Fetching authorized open cash registers...');
+      const response = await api.get<CashRegister[]>('/cash-registers/authorized-open');
+      console.log('🏦 Authorized open cash registers:', response);
+      return response || [];
+    } catch (error) {
+      console.error('❌ Error getting authorized open cash registers:', error);
+      return [];
     }
   }
 

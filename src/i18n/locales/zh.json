@@ -157,6 +157,7 @@
     "addSale": "添加销售",
     "pos": "POS",
     "cashRegister": "收银机",
+    "cashRegisters": "收银机管理",
     "users": "用户",
     "companySettings": "公司设置",
     "whatsAppBot": "WhatsApp 机器人",
@@ -2402,7 +2403,12 @@
         "createNew": "创建新",
         "searchPlaceholder": "搜索收银机...",
         "loading": "加载收银机中...",
-        "noRegistersFound": "未找到收银机"
+        "noRegistersFound": "未找到收银机",
+        "selectCashRegister": "选择收银机",
+        "multipleAvailable": "您有多个开放的收银机",
+        "noAuthorized": "您没有授权的开放收银机",
+        "switchCashRegister": "切换收银机",
+        "workingIn": "工作中"
       },
       "cashDrawer": {
         "title": "现金抽屉",
@@ -2429,6 +2435,61 @@
         "adjust": "调整"
       }
     },
+    "cashRegisters": {
+      "title": "收银机",
+      "subtitle": "收银机管理",
+      "table": {
+        "code": "代码",
+        "name": "名称",
+        "currentAmount": "当前余额",
+        "status": "状态",
+        "statusOpen": "开启",
+        "statusClosed": "关闭",
+        "openedAt": "开启时间",
+        "openedBy": "开启者",
+        "actions": "操作"
+      },
+      "status": {
+        "open": "开启",
+        "closed": "关闭"
+      },
+      "form": {
+        "name": "名称",
+        "namePlaceholder": "收银机名称",
+        "description": "描述",
+        "descriptionPlaceholder": "可选描述",
+        "initialAmount": "初始金额",
+        "initialAmountHelp": "开启收银机的初始金额",
+        "validation": {
+          "nameRequired": "名称为必填项",
+          "invalidAmount": "金额必须大于或等于 0"
+        }
+      },
+      "actions": {
+        "create": "创建收银机",
+        "edit": "编辑",
+        "delete": "删除",
+        "save": "保存",
+        "cancel": "取消",
+        "view": "查看详情",
+        "back": "返回"
+      },
+      "empty": {
+        "title": "没有收银机",
+        "description": "创建您的第一个收银机以开始"
+      },
+      "deleteCashRegister": "删除收银机",
+      "messages": {
+        "errorLoading": "加载收银机时出错",
+        "cashRegisterCreated": "收银机创建成功",
+        "cashRegisterUpdated": "收银机更新成功",
+        "cashRegisterDeleted": "收银机删除成功",
+        "errorCreating": "创建收银机时出错",
+        "errorUpdating": "更新收银机时出错",
+        "errorDeleting": "删除收银机时出错",
+        "confirmDelete": "您确定要删除收银机 \"{{name}}\" 吗？"
+      }
+    },
     "cashRegister": {
       "title": "收银机",
       "subtitle": "收银机管理与控制",
@@ -2445,7 +2506,9 @@
       "actions": {
         "updateBalance": "更新余额",
         "cashDrawer": "现金抽屉",
-        "initializeCash": "初始化收银机"
+        "initializeCash": "初始化收银机",
+        "back": "返回",
+        "switchCashRegister": "切换收银机"
       },
       "transactions": {
         "title": "交易",

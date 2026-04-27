@@ -21,6 +21,7 @@ import PaymentModal from '@/components/POS/PaymentModal';
 import CashRegisterModal from '@/components/POS/CashRegisterModal';
 import CashDrawerModal from '@/components/POS/CashDrawerModal';
 import CashBalance from '@/components/POS/CashBalance';
+import CashRegisterSelector from '@/components/POS/CashRegisterSelector';
 import { useCart } from '@/context/CartContext';
 import HelpButton from '@/components/Help/HelpButton';
 import { posHelp } from '@/components/Help/configs/pos.help';
@@ -41,7 +42,9 @@ export default function POSPage() {
   const [cashAmount, setCashAmount] = useState<number>(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [currentCashRegister, setCurrentCashRegister] = useState<CashRegister | null>(null);
+  const [availableCashRegisters, setAvailableCashRegisters] = useState<CashRegister[]>([]);
   const [showCashRegisterModal, setShowCashRegisterModal] = useState(false);
+  const [showCashRegisterSelector, setShowCashRegisterSelector] = useState(false);
   const [showCashDrawerModal, setShowCashDrawerModal] = useState(false);
   const [showCashBalanceDrawer, setShowCashBalanceDrawer] = useState(false);
   const [cashLoading, setCashLoading] = useState(false);
@@ -128,17 +131,34 @@ export default function POSPage() {
 
   const fetchCurrentCashRegister = useCallback(async () => {
     try {
-      const cashRegister = await cashRegisterService.getCurrentCashRegister();
-      setCurrentCashRegister(cashRegister);
-      
-      // Si no hay caja abierta, mostrar toast informativo
-      if (!cashRegister) {
+      const authorizedRegisters = await cashRegisterService.getAuthorizedOpenCashRegisters();
+      setAvailableCashRegisters(authorizedRegisters);
+
+      if (authorizedRegisters.length === 0) {
+        setCurrentCashRegister(null);
+        setShowCashRegisterSelector(false);
         toastService.info(t('messages.noCashRegisterInfo'));
+      } else if (authorizedRegisters.length === 1) {
+        setCurrentCashRegister(authorizedRegisters[0]);
+        setShowCashRegisterSelector(false);
+      } else {
+        setShowCashRegisterSelector(true);
       }
     } catch {
-      // No mostrar error si no hay caja activa
     }
-  }, [t]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSelectCashRegister = useCallback((cashRegister: CashRegister) => {
+    setCurrentCashRegister(cashRegister);
+    setShowCashRegisterSelector(false);
+  }, []);
+
+  const handleSwitchCashRegister = useCallback(() => {
+    if (availableCashRegisters.length > 1) {
+      setShowCashRegisterSelector(true);
+    }
+  }, [availableCashRegisters]);
 
   const handleInitializeCash = () => {
     setShowCashRegisterModal(true);
@@ -441,6 +461,7 @@ export default function POSPage() {
               onInitializeCash={handleInitializeCash}
               onCashDrawer={handleCashDrawer}
               onOpenCashBalance={handleOpenCashBalance}
+              onSwitchCashRegister={availableCashRegisters.length > 1 ? handleSwitchCashRegister : undefined}
               loading={cashLoading}
             />
           </div>
@@ -531,6 +552,15 @@ export default function POSPage() {
         loading={cashLoading}
         currentCashRegister={currentCashRegister}
       />
+
+      {/* Modal de selección de caja */}
+      <CashRegisterSelector
+        isOpen={showCashRegisterSelector}
+        onClose={() => setShowCashRegisterSelector(false)}
+        cashRegisters={availableCashRegisters}
+        onSelect={handleSelectCashRegister}
+        currentCashRegister={currentCashRegister}
+      />
     </div>
   );
-} 
+}
