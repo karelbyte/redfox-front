@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useAuth } from "@/context/AuthContext";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarSolid } from "@heroicons/react/24/solid";
@@ -35,6 +36,7 @@ export function SideMenu() {
   const locale = useLocale();
   const t = useTranslations("navigation");
   const { can } = usePermissions();
+  const { user } = useAuth();
   const { isFavorite, toggle } = useFavorites();
 
   const tenant = params?.tenant as string;
@@ -1067,7 +1069,7 @@ export function SideMenu() {
               </svg>
             ),
           },
-          {
+          ...(user?.admin ? [{
             name: t("subscription"),
             translationKey: "subscription",
             path: getLocalizedPath("/dashboard/suscripcion"),
@@ -1078,7 +1080,7 @@ export function SideMenu() {
                   d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
               </svg>
             ),
-          },
+          }] : []),
           {
             name: t("roles"),
             translationKey: "roles",

@@ -176,25 +176,29 @@ export function UserMenu() {
               <ThemeSelectorCompact />
             </div>
 
+            {user?.admin && (
+              <div className="py-1" role="menu">
+                <button
+                  onClick={() => {
+                    router.push(`/${tenant}/${locale}/dashboard/suscripcion`);
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 transition-colors"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
+                    e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#374151";
+                  }}
+                  role="menuitem"
+                >
+                  {t('userMenu.subscription')}
+                </button>
+              </div>
+            )}
             <div className="py-1" role="menu">
-              <button
-                onClick={() => {
-                  router.push(`/${tenant}/${locale}/dashboard/suscripcion`);
-                  setIsMenuOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 transition-colors"
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = `rgb(var(--color-primary-50))`;
-                  e.currentTarget.style.color = `rgb(var(--color-primary-600))`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                  e.currentTarget.style.color = "#374151";
-                }}
-                role="menuitem"
-              >
-                {t('userMenu.subscription')}
-              </button>
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 transition-colors"
