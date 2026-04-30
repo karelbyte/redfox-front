@@ -6,6 +6,24 @@ import { locales, type Locale } from '@/i18n/config';
 
 const LANGUAGE_STORAGE_KEY = 'nitro-language';
 
+function mapBrowserLanguageToLocale(browserLanguage: string): string | null {
+  const languageMap: Record<string, string> = {
+    'en': 'en',
+    'en-US': 'en',
+    'en-GB': 'en',
+    'es': 'es',
+    'es-ES': 'es',
+    'es-MX': 'es',
+    'es-419': 'es',
+    'zh': 'zh',
+    'zh-CN': 'zh',
+    'zh-TW': 'zh',
+  };
+
+  const normalizedLang = browserLanguage.toLowerCase().trim();
+  return languageMap[normalizedLang] || languageMap[browserLanguage] || null;
+}
+
 export function LanguageInitializer() {
   const router = useRouter();
   const pathname = usePathname();
@@ -16,16 +34,37 @@ export function LanguageInitializer() {
   }, []);
 
   useEffect(() => {
-    // Only run on client side
     if (!isClient || typeof window === 'undefined') return;
 
     try {
-      // Get stored language
       const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
       const searchParams = window.location.search;
 
+      if (!storedLanguage) {
+        const browserLanguage = navigator.language || 'es';
+        const mappedLanguage = mapBrowserLanguageToLocale(browserLanguage);
+        
+        if (mappedLanguage && locales.includes(mappedLanguage as any)) {
+          localStorage.setItem(LANGUAGE_STORAGE_KEY, mappedLanguage);
+          
+          const pathSegments = pathname.split('/').filter(Boolean);
+          const localeIndices = pathSegments.reduce((acc, segment, index) => {
+            if (locales.includes(segment as any)) {
+              acc.push(index);
+            }
+            return acc;
+          }, [] as number[]);
+
+          if (localeIndices.length === 0) {
+            const newPathname = '/' + pathSegments.join('/') + `/${mappedLanguage}` + searchParams;
+            console.log('[LanguageInitializer] Redirecting to detected language:', newPathname);
+            router.replace(newPathname);
+            return;
+          }
+        }
+      }
+
       if (storedLanguage && locales.includes(storedLanguage as Locale)) {
-        // Extract current locale from pathname
         const pathSegments = pathname.split('/').filter(Boolean);
         const localeIndices = pathSegments.reduce((acc, segment, index) => {
           if (locales.includes(segment as Locale)) {
@@ -36,9 +75,7 @@ export function LanguageInitializer() {
 
         const currentLocale = localeIndices.length > 0 ? pathSegments[localeIndices[0]] : null;
 
-        // If the stored language is different from the current path locale
         if (currentLocale && currentLocale !== storedLanguage) {
-          // Replace the FIRST found locale and remove others
           let newSegments = [...pathSegments];
           newSegments[localeIndices[0]] = storedLanguage;
 
@@ -50,7 +87,6 @@ export function LanguageInitializer() {
           console.log('[LanguageInitializer] Redirecting to change locale:', newPathname);
           router.replace(newPathname);
         } else if (localeIndices.length > 1) {
-          // If the locale is correct but there are duplicates, clean them up
           let newSegments = [...pathSegments];
           for (let i = localeIndices.length - 1; i > 0; i--) {
             newSegments.splice(localeIndices[i], 1);
@@ -65,6 +101,5 @@ export function LanguageInitializer() {
     }
   }, [pathname, router, isClient]);
 
-  // This component doesn't render anything
   return null;
 }

@@ -13,7 +13,7 @@ import AuthThemeSelector from '@/components/AuthThemeSelector';
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '', companyName: '', email: '',
-    password: '', password_confirmation: '', referrer_code: '',
+    password: '', password_confirmation: '', referrer_code: '', language: '',
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +43,15 @@ export default function RegisterPage() {
     if (companyNameError) { toastService.error(companyNameError); return; }
     setLoading(true);
     try {
-      await authService.register(formData);
+      // Obtener idioma guardado en localStorage
+      const storedLanguage = typeof window !== 'undefined' 
+        ? localStorage.getItem('nitro-language') 
+        : locale;
+      
+      await authService.register({
+        ...formData,
+        language: storedLanguage || locale
+      });
       toastService.success(t('success'));
       router.push(`/${locale}/login`);
     } catch {}

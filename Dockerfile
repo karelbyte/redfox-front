@@ -3,9 +3,11 @@ FROM node:22-slim AS base
 
 
 ARG NEXT_PUBLIC_URL_API
+ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
 # (Opcional) Si la necesitas también en ejecución:
 ENV NEXT_PUBLIC_URL_API=$NEXT_PUBLIC_URL_API
+ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 # 1. Dependencias
 FROM base AS deps
 RUN apt-get update && apt-get install -y libc6 python3 make g++ && rm -rf /var/lib/apt/lists/*
