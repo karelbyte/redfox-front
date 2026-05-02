@@ -30,7 +30,6 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'pos_cart';
 
-// Singleton para el estado del carrito
 class CartStateManager {
   private static instance: CartStateManager;
   private cart: CartItem[] = [];
@@ -38,7 +37,6 @@ class CartStateManager {
   private listeners: Set<(cart: CartItem[], selectedClient: string) => void> = new Set();
 
   private constructor() {
-    // Solo cargar desde localStorage en el cliente
     if (typeof window !== 'undefined') {
       this.loadFromStorage();
     }
@@ -46,7 +44,6 @@ class CartStateManager {
 
   static getInstance(): CartStateManager {
     if (typeof window === 'undefined') {
-      // En SSR, crear una instancia temporal sin localStorage
       return new CartStateManager();
     }
     
@@ -57,7 +54,6 @@ class CartStateManager {
   }
 
   private loadFromStorage() {
-    // Solo ejecutar en el cliente
     if (typeof window === 'undefined') return;
 
     try {
@@ -95,7 +91,6 @@ class CartStateManager {
   }
 
   private saveToStorage() {
-    // Solo ejecutar en el cliente
     if (typeof window === 'undefined') return;
 
     try {
@@ -107,7 +102,6 @@ class CartStateManager {
   }
 
   private notifyListeners() {
-    // Solo notificar en el cliente
     if (typeof window !== 'undefined') {
       this.listeners.forEach(listener => listener([...this.cart], this.selectedClient));
     }
@@ -117,7 +111,6 @@ class CartStateManager {
     const subtotalNoTax = quantity * price;
     let totalTax = 0;
 
-    // Calcular impuestos desde el array modern taxes[]
     if (product.product.taxes && product.product.taxes.length > 0) {
       product.product.taxes.forEach(tax => {
         if (tax.type === 'PERCENTAGE') {
@@ -127,10 +120,8 @@ class CartStateManager {
         }
       });
     } 
-    // Fallback al campo legacy tax (si no hay array de taxes)
     else if (product.product.tax) {
       const tax = product.product.tax;
-      // En el legacy a veces el campo es 'percentage' en lugar de 'value' según inventory.service.ts
       const percentage = (tax as any).percentage ?? (tax as any).value ?? 0;
       totalTax += subtotalNoTax * (percentage / 100);
     }
@@ -189,7 +180,6 @@ class CartStateManager {
 
   subscribe(listener: (cart: CartItem[], selectedClient: string) => void) {
     this.listeners.add(listener);
-    // Notificar inmediatamente con el estado actual solo en el cliente
     if (typeof window !== 'undefined') {
       listener([...this.cart], this.selectedClient);
     }
@@ -222,7 +212,6 @@ class CartStateManager {
     try {
       const existingItem = this.cart.find(item => item.product.id === product.id);
       
-      // Determinar el precio a usar: precio pasado, precio base del producto, o precio del inventario
       let productPrice: number;
       let priceMode: string;
       if (price !== undefined) {

@@ -14,8 +14,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     const params = useParams();
     const rawTenant = params?.tenant as string;
 
-    // Si rawTenant es un local (ej: 'es'), entonces no es un inquilino
-    const tenant = rawTenant && !locales.includes(rawTenant as any) ? rawTenant : undefined;
+        const tenant = rawTenant && !locales.includes(rawTenant as any) ? rawTenant : undefined;
 
     const value = {
         tenant,

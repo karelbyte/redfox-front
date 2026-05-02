@@ -14,5 +14,5 @@ export interface PermissionGroup {
 
 export interface RolePermissions {
   roleId: string;
-  permissions: string[]; // Array de IDs de permisos
+  permissions: string[];
 } 

@@ -43,7 +43,6 @@ const SearchSelect = ({
 }: SearchSelectProps) => {
   const t = useTranslations('forms.components.searchSelect');
   
-  // Usar traducciones por defecto si no se proporcionan textos personalizados
   const defaultLoadingText = loadingText || t('loading');
   const defaultNoResultsText = noResultsText || t('noResults');
   const defaultNoOptionsText = noOptionsText || t('noOptions');
@@ -57,7 +56,6 @@ const SearchSelect = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  // Función para buscar opciones en el servidor
   const searchOptions = useCallback(async (term: string) => {
     try {
       setIsLoading(true);
@@ -71,17 +69,15 @@ const SearchSelect = ({
     }
   }, [onSearch]);
 
-  // Debounce para la búsqueda
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    // Buscar siempre que no esté deshabilitado (incluso con término vacío)
     if (!disabled) {
       searchTimeoutRef.current = setTimeout(() => {
         searchOptions(searchTerm);
-      }, 300); // 300ms de debounce
+      }, 300);
     }
 
     return () => {
@@ -91,15 +87,12 @@ const SearchSelect = ({
     };
   }, [searchTerm, searchOptions, disabled]);
 
-  // Cargar opciones iniciales cuando se abre el dropdown
   useEffect(() => {
     if (isOpen && options.length === 0 && !searchTerm && !disabled) {
-      // Cargar opciones iniciales cuando se abre el dropdown
       searchOptions('');
     }
   }, [isOpen, options.length, searchTerm, searchOptions, disabled]);
 
-  // Cargar la opción seleccionada cuando cambia el value
   useEffect(() => {
     if (value && options.length > 0) {
       const option = options.find(opt => opt.id === value);
@@ -111,9 +104,7 @@ const SearchSelect = ({
     }
   }, [value, options]);
 
-  // Cerrar dropdown cuando se hace clic fuera
   useEffect(() => {
-    // Solo ejecutar en el cliente
     if (typeof window === 'undefined') return;
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -146,7 +137,6 @@ const SearchSelect = ({
     setSearchTerm(e.target.value);
   };
 
-  // Estilos base siguiendo el tema del Select original
   const baseButtonStyles: React.CSSProperties = {
     border: `1px solid rgb(var(--color-secondary-300))`,
   };
@@ -157,7 +147,6 @@ const SearchSelect = ({
 
   const buttonStyles = error ? { ...baseButtonStyles, ...errorButtonStyles } : baseButtonStyles;
 
-  // Lógica de scroll condicional (igual que SelectWithAddScrolled)
   const shouldAddScroll = options.length > 8;
   const maxHeight = shouldAddScroll ? '200px' : 'auto';
 

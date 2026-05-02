@@ -46,29 +46,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initAuth = async () => {
       try {
         if (typeof window !== 'undefined') {
-          // Verificar si hay un token válido antes de intentar obtener el usuario
           if (authService.isAuthenticated()) {
             const currentUser = await authService.getCurrentUser();
             setUser(currentUser);
           } else {
-            // Si no hay token válido, limpiar el estado
             authService.clearAuth();
             setUser(null);
           }
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
-        // En caso de error, limpiar el estado de autenticación
-        if (typeof window !== 'undefined') {
-          authService.clearAuth();
-        }
+        authService.clearAuth();
         setUser(null);
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Solo ejecutar en el cliente
     if (typeof window !== 'undefined') {
       initAuth();
     } else {
@@ -136,7 +130,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(currentUser);
 
       if (currentUser?.organization_slug) {
-        // Guardar el tenant en una cookie para el middleware
         document.cookie = `last_tenant=${currentUser.organization_slug}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=strict`;
         router.push(`/${currentUser.organization_slug}/${locale}/dashboard`);
       } else {
@@ -154,7 +147,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       authService.logout();
       setUser(null);
-      // Usar router.push sin locale - el middleware lo agregará automáticamente
       router.push('/login');
     } catch (error) {
       console.error('Error during logout:', error);

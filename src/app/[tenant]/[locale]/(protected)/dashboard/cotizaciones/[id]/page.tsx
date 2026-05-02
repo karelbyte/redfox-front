@@ -43,7 +43,6 @@ const QuotationDetailsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Drawer states
   const [showProductDrawer, setShowProductDrawer] = useState(false);
   const [editingDetail, setEditingDetail] = useState<QuotationDetail | null>(null);
   const [productDrawerData, setProductDrawerData] = useState<ProductDrawerData>({
@@ -58,15 +57,12 @@ const QuotationDetailsPage = () => {
   const [savingProduct, setSavingProduct] = useState(false);
   const [isDrawerFormValid, setIsDrawerFormValid] = useState(false);
   
-  // Delete confirmation modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [detailToDelete, setDetailToDelete] = useState<QuotationDetail | null>(null);
 
-  // Convert to sale modal
   const [convertModalOpen, setConvertModalOpen] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
 
-  // Email modal
   const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   useEffect(() => {
@@ -115,7 +111,6 @@ const QuotationDetailsPage = () => {
     try {
       const response = await productService.getProducts(1, term);
       
-      // Merge with existing products so we have prices available when selected
       setProducts(prevProducts => {
         const currentProducts = [...prevProducts];
         response.data.forEach(newProduct => {
@@ -174,7 +169,7 @@ const QuotationDetailsPage = () => {
     setProductDrawerData({
       product_id: detail.product.id,
       quantity: detail.quantity.toString(),
-      price_id: 'custom', // Por defecto usar custom al editar
+      price_id: 'custom',
       custom_price: detail.price.toString(),
       discount_percentage: detail.discount_percentage.toString(),
       discount_amount: detail.discount_amount.toString(),
@@ -199,12 +194,10 @@ const QuotationDetailsPage = () => {
       errors.quantity = t('form.errors.quantityRequired');
     }
 
-    // Validar que se haya seleccionado un precio (base, lista o personalizado)
     if (!productDrawerData.price_id) {
       errors.price = t('form.errors.priceRequired');
     }
 
-    // Si es precio personalizado, validar que tenga valor
     if (productDrawerData.price_id === 'custom') {
       if (!productDrawerData.custom_price || Number(productDrawerData.custom_price) < 0) {
         errors.custom_price = t('form.errors.priceRequired');
@@ -225,7 +218,6 @@ const QuotationDetailsPage = () => {
     return isValid;
   };
 
-  // Validar formulario cuando cambian los datos
   useEffect(() => {
     if (showProductDrawer) {
       validateProductForm();
@@ -240,18 +232,14 @@ const QuotationDetailsPage = () => {
     try {
       setSavingProduct(true);
       
-      // Determinar el precio a usar
       let finalPrice: number;
       const selectedProduct = products.find(p => p.id === productDrawerData.product_id);
       
       if (productDrawerData.price_id === 'base') {
-        // Usar precio base del producto
         finalPrice = selectedProduct?.base_price || 0;
       } else if (productDrawerData.price_id === 'custom') {
-        // Usar precio personalizado
         finalPrice = Number(productDrawerData.custom_price);
       } else if (productDrawerData.price_id) {
-        // Usar precio de la lista
         const selectedPrice = selectedProduct?.prices.find(p => p.id === productDrawerData.price_id);
         finalPrice = selectedPrice?.price || 0;
       } else {
@@ -276,7 +264,7 @@ const QuotationDetailsPage = () => {
 
       setShowProductDrawer(false);
       loadDetails();
-      loadQuotation(); // Reload to get updated totals
+      loadQuotation();
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
@@ -297,7 +285,7 @@ const QuotationDetailsPage = () => {
       setDeleteModalOpen(false);
       setDetailToDelete(null);
       loadDetails();
-      loadQuotation(); // Reload to get updated totals
+      loadQuotation();
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
@@ -621,7 +609,7 @@ const QuotationDetailsPage = () => {
               setProductDrawerData(prev => ({
                 ...prev,
                 product_id: selectedId,
-                price_id: 'base', // Seleccionar precio base por defecto
+                price_id: 'base',
                 custom_price: ''
               }));
             }}

@@ -18,21 +18,16 @@ export function useOfflineInit() {
     initialized.current = true;
 
     const init = async () => {
-      // Primero, migrar la base de datos si es necesario
       try {
         await migrateDatabase();
       } catch (error) {
         console.error('Database migration failed:', error);
-        // Continuar de todos modos
       }
 
-      // Esperar un poco para no bloquear la carga inicial
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (navigator.onLine) {
-        console.log('🔄 Initializing offline capabilities...');
         
-        // Precargar datos en segundo plano
         try {
           await cacheManager.preloadProviders();
           await cacheManager.preloadClients();
@@ -40,7 +35,6 @@ export function useOfflineInit() {
           console.error('Error preloading data:', error);
         }
 
-        // Limpiar datos antiguos
         try {
           await cacheManager.cleanOldData();
         } catch (error) {
@@ -51,7 +45,6 @@ export function useOfflineInit() {
 
     init();
 
-    // Limpiar datos antiguos cada 24 horas
     const cleanupInterval = setInterval(async () => {
       if (navigator.onLine) {
         try {
@@ -61,7 +54,7 @@ export function useOfflineInit() {
           console.error('Error in periodic cleanup:', error);
         }
       }
-    }, 24 * 60 * 60 * 1000); // 24 horas
+    }, 24 * 60 * 60 * 1000);
 
     return () => {
       clearInterval(cleanupInterval);

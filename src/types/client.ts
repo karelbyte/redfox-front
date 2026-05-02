@@ -60,8 +60,7 @@ export interface Client {
   updated_at: string;
   deleted_at: string | null;
 
-  // Campos legacy para compatibilidad durante la transición (si se necesitan)
-  tax_document?: string;
+    tax_document?: string;
   tax_system?: string;
   default_invoice_use?: string;
 }

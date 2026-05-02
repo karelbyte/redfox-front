@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
-// Definición de tipos
 export type ThemeType = 'red' | 'blue' | 'gray' | 'green-gray' | 'brown'
 
 export interface ThemeContextType {
@@ -17,7 +16,6 @@ export interface ThemeContextType {
   }
 }
 
-// Configuración de los temas
 const themeConfig = {
   red: {
     name: 'Rojo',
@@ -186,14 +184,11 @@ const themeConfig = {
   }
 }
 
-// Crear el contexto
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-// Proveedor del contexto
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>('green-gray')
 
-  // Cargar tema desde localStorage al montar el componente
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -207,24 +202,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  // Aplicar las variables CSS cuando cambie el tema
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
         const theme = themeConfig[currentTheme]
         const root = document.documentElement
 
-        // Aplicar variables CSS para primary
         Object.entries(theme.colors.primary).forEach(([shade, rgb]) => {
           root.style.setProperty(`--color-primary-${shade}`, rgb)
         })
 
-        // Aplicar variables CSS para secondary
         Object.entries(theme.colors.secondary).forEach(([shade, rgb]) => {
           root.style.setProperty(`--color-secondary-${shade}`, rgb)
         })
 
-        // Aplicar colores para el scrollbar
         const scrollbarColor = currentTheme === 'red' ? '#ef4444' : 
                               currentTheme === 'blue' ? '#3b82f6' : 
                               currentTheme === 'gray' ? '#6b7280' : 
@@ -232,7 +223,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         
         root.style.setProperty('--scrollbar-thumb', scrollbarColor)
         
-        // Actualizar clases del body para el tema
         document.body.setAttribute('data-theme', currentTheme)
       } catch (error) {
         console.warn('Error applying theme CSS variables:', error)
@@ -270,7 +260,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Hook para usar el contexto
 export function useTheme() {
   const context = useContext(ThemeContext)
   if (context === undefined) {

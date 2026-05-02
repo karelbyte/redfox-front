@@ -1,6 +1,5 @@
 import type { AbstractIntlMessages } from 'next-intl';
 
-// Tipos para las traducciones
 export interface TranslationMessages extends AbstractIntlMessages {
   common: {
     actions: {
@@ -354,7 +353,6 @@ export interface TranslationMessages extends AbstractIntlMessages {
   };
 }
 
-// Tipos para los parámetros de traducción
 export interface TranslationParams {
   item?: string;
   name?: string;

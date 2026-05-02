@@ -57,8 +57,8 @@ export interface ConvertWithdrawalData {
 }
 
 export interface GlobalInvoiceFormData {
-  from: string;  // ISO date (YYYY-MM-DD)
-  to: string;    // ISO date (YYYY-MM-DD)
+  from: string;
+  to: string;
   periodicity: 'day' | 'week' | 'fortnight' | 'month' | 'two_months';
 }
 

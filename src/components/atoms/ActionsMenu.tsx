@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, Fragment } from 'react';
-import { createPortal } from 'react-dom'; // Importa createPortal para el Portal real
+import { createPortal } from 'react-dom';
 import {
   useFloating,
   offset,
@@ -12,8 +12,8 @@ import {
   useClick,
   useRole,
   useDismiss,
-  FloatingPortal, // Floating UI tiene su propio componente Portal
-} from '@floating-ui/react'; // Importa desde Floating UI
+  FloatingPortal,
+} from '@floating-ui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import Tooltip from './Tooltip';
@@ -34,19 +34,17 @@ export default function ActionsMenu({ items, title }: ActionsMenuProps) {
   const tCommon = useTranslations('common');
   const [isOpen, setIsOpen] = useState(false);
 
-  // Configuración de Floating UI para posicionamiento y comportamiento
   const { x, y, refs, strategy, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
     middleware: [
-      offset(10), // Espacio entre el botón y el menú
-      flip(), // Gira el menú si no cabe
-      shift({ padding: 10 }), // Desplaza el menú si no cabe
+      offset(10),
+      flip(),
+      shift({ padding: 10 }),
     ],
-    whileElementsMounted: autoUpdate, // Actualiza la posición automáticamente
+    whileElementsMounted: autoUpdate,
   });
 
-  // Configuración de interacciones (clic, descartar al hacer clic fuera)
   const click = useClick(context);
   const dismiss = useDismiss(context);
   const role = useRole(context);
@@ -82,8 +80,8 @@ export default function ActionsMenu({ items, title }: ActionsMenuProps) {
               position: strategy,
               top: y ?? 0,
               left: x ?? 0,
-              width: 'max-content', // Ajusta el ancho al contenido
-              zIndex: 9999, // Asegura que esté por encima de todo
+              width: 'max-content',
+              zIndex: 9999,
             }}
             {...getFloatingProps()}
             className="rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-100 overflow-hidden"
@@ -94,7 +92,7 @@ export default function ActionsMenu({ items, title }: ActionsMenuProps) {
                   key={index}
                   onClick={() => {
                     item.onClick();
-                    setIsOpen(false); // Cierra el menú al hacer clic en un elemento
+                    setIsOpen(false);
                   }}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition-colors group"
                 >

@@ -57,14 +57,13 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
     const [errors, setErrors] = useState<FormErrors>({});
     const [selectedInventoryProduct, setSelectedInventoryProduct] = useState<InventoryProduct | null>(null);
 
-    // Cargar datos del producto a editar
     useEffect(() => {
       if (saleDetail) {
         setFormData({
           product_id: saleDetail.product.id,
           quantity: saleDetail.quantity,
           price: saleDetail.price,
-          warehouse_id: '', // Se establecerá cuando se cargue la información del inventario
+          warehouse_id: '',
         });
 
         setProductDrawerData({
@@ -75,7 +74,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
           warehouse_id: '',
         });
         
-        // Cargar la información del inventario para obtener el warehouse_id
         const loadInventoryInfo = async () => {
           const inventoryProduct = await getInventoryProductById(saleDetail.product.id);
           if (inventoryProduct) {
@@ -95,7 +93,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       }
     }, [saleDetail]);
 
-    // Función para buscar productos en inventario
     const searchInventoryProducts = async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
         const response = await inventoryService.getInventoryProducts(1, term);
@@ -114,7 +111,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       }
     };
 
-    // Función para obtener el producto de inventario completo cuando se selecciona
     const getInventoryProductById = async (productId: string): Promise<InventoryProduct | null> => {
       try {
         const response = await inventoryService.getInventoryProducts(1, '');
@@ -126,7 +122,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       }
     };
 
-    // Manejar selección de producto
     const handleProductSelection = async (productId: string) => {
       setFormData(prev => ({ ...prev, product_id: productId }));
       setProductDrawerData(prev => ({ ...prev, product_id: productId }));
@@ -135,8 +130,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
         const inventoryProduct = await getInventoryProductById(productId);
         if (inventoryProduct) {
           setSelectedInventoryProduct(inventoryProduct);
-          // Establecer el precio base como precio por defecto y el warehouse_id
-          // Para service/digital, warehouse puede ser null
           const warehouseId = inventoryProduct.warehouse?.id ?? '';
           setFormData(prev => ({ 
             ...prev, 
@@ -159,7 +152,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       }
     };
 
-    // Manejar cambio de precio seleccionado
     const handlePriceChange = (priceId: string) => {
       if (!selectedInventoryProduct) return;
 
@@ -186,7 +178,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
       }));
     };
 
-    // Manejar cambio de precio personalizado
     const handleCustomPriceChange = (value: number) => {
       setProductDrawerData(prev => ({
         ...prev,
@@ -225,7 +216,6 @@ const AddProductForm = forwardRef<AddProductFormRef, AddProductFormProps>(
 
     useEffect(() => {
       validateForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData]);
 
     const handleSubmit = async (): Promise<SaleDetailFormData | null> => {

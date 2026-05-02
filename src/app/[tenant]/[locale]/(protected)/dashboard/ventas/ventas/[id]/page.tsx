@@ -82,10 +82,8 @@ export default function SaleDetailsPage() {
       fetchSale();
       fetchProducts();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
-  // Debounced search effect para productos disponibles
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -102,7 +100,6 @@ export default function SaleDetailsPage() {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, showProductsGrid]);
 
   const fetchAvailableProducts = async (term: string = '') => {
@@ -145,7 +142,6 @@ export default function SaleDetailsPage() {
     try {
       setIsGeneratingPDF(true);
       
-      // Preparar traducciones para el PDF
       const translations = {
         title: t('messages.pdfTitle'),
         code: tPdf('code'),
@@ -181,7 +177,6 @@ export default function SaleDetailsPage() {
         }
       };
       
-      // Generar el PDF usando el nuevo servicio
       const pdfService = new SalePDFService(locale);
       await pdfService.generatePDF(sale, products, translations);
       
@@ -203,15 +198,15 @@ export default function SaleDetailsPage() {
     try {
       await saleService.deleteSaleDetail(sale.id, detailId);
       toastService.success(t('deleteProduct.success'));
-      fetchSale(); // Recargar los datos de la venta
-      fetchProducts(); // Recargar los productos
+      fetchSale();
+      fetchProducts();
     } catch (error) {
       if (error instanceof Error) {
         toastService.error(error.message);
       } else {
         toastService.error(t('deleteProduct.error'));
       }
-      throw error; // Re-lanzar para que el modal maneje el error
+      throw error;
     }
   };
 

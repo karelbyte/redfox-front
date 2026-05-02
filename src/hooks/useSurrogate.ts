@@ -20,8 +20,7 @@ export function useSurrogate(code: string, options: UseSurrogateOptions = {}) {
       setError(null);
       const result = await surrogateService.getNextCode(code);
       
-      // Verificar que la respuesta tenga la estructura esperada
-      if (result && typeof result === 'object' && 'next_code' in result) {
+            if (result && typeof result === 'object' && 'next_code' in result) {
         setSuggestedCode(result.next_code);
       } else {
         throw new Error('Invalid response format from surrogate service');
@@ -29,7 +28,7 @@ export function useSurrogate(code: string, options: UseSurrogateOptions = {}) {
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Error loading suggestion');
       setError(error);
-      setSuggestedCode(''); // Limpiar sugerencia en caso de error
+      setSuggestedCode('');
       
       if (onError) {
         onError(error);
@@ -47,9 +46,7 @@ export function useSurrogate(code: string, options: UseSurrogateOptions = {}) {
       setError(null);
       const result = await surrogateService.useNextCode(code);
       
-      // Verificar que la respuesta tenga la estructura esperada
-      if (result && typeof result === 'object' && 'next_code' in result) {
-        // Actualizar la sugerencia para el próximo uso
+            if (result && typeof result === 'object' && 'next_code' in result) {
         await loadSuggestion();
         return result.next_code;
       } else {
@@ -89,17 +86,14 @@ export function useSurrogate(code: string, options: UseSurrogateOptions = {}) {
   };
 }
 
-// Hook específico para clientes
 export function useClientSurrogate(options?: UseSurrogateOptions) {
   return useSurrogate('client', options);
 }
 
-// Hook específico para productos
 export function useProductSurrogate(options?: UseSurrogateOptions) {
   return useSurrogate('product', options);
 }
 
-// Hook específico para facturas
 export function useInvoiceSurrogate(options?: UseSurrogateOptions) {
   return useSurrogate('invoice', options);
 }

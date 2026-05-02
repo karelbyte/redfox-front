@@ -9,7 +9,6 @@ interface SearchState {
   search_expense: string;
   search_account_receivable: string;
   
-  // Actions
   setSearchClient: (value: string) => void;
   setSearchProduct: (value: string) => void;
   setSearchProvider: (value: string) => void;
@@ -18,7 +17,6 @@ interface SearchState {
   setSearchExpense: (value: string) => void;
   setSearchAccountReceivable: (value: string) => void;
   
-  // Clear all
   clearAllSearches: () => void;
 }
 

@@ -28,21 +28,18 @@ export class NitroDB extends Dexie {
     constructor() {
         super('NitroDB');
 
-        // Versión 1 - Inicial
         this.version(1).stores({
             providers: 'id, code, name, email, status, created_at',
             pendingOperations: '++id, type, entity, entityId, timestamp',
             syncMetadata: 'key'
         });
 
-        // Versión 2 - Agregar índice deleted_at para limpieza de caché
         this.version(2).stores({
             providers: 'id, code, name, email, status, created_at, deleted_at',
             pendingOperations: '++id, type, entity, entityId, timestamp, retries',
             syncMetadata: 'key'
         });
 
-        // Versión 3 - Agregar tabla de clientes
         this.version(3).stores({
             providers: 'id, code, name, email, status, created_at, deleted_at',
             clients: 'id, code, name, email, status, created_at, deleted_at',

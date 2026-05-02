@@ -3,13 +3,10 @@
 import { forwardRef, ButtonHTMLAttributes } from 'react'
 import { Loader2 } from 'lucide-react'
 
-// Tipos de variantes del botón
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success'
 
-// Tipos de tamaño del botón
 type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
-// Props del componente
 interface BtnProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'size'> {
   /** Variante visual del botón */
   variant?: ButtonVariant
@@ -45,10 +42,8 @@ const Btn = forwardRef<HTMLButtonElement, BtnProps>(
     },
     ref
   ) => {
-    // Determinar si el botón está deshabilitado
     const isDisabled = disabled || loading
 
-    // Estilos base comunes
     const baseStyles = {
       display: 'inline-flex',
       alignItems: 'center',
@@ -62,7 +57,6 @@ const Btn = forwardRef<HTMLButtonElement, BtnProps>(
       width: fullWidth ? '100%' : 'auto',
     }
 
-    // Estilos por tamaño
     const sizeStyles = {
       xs: {
         padding: '0.25rem 0.5rem',
@@ -96,7 +90,6 @@ const Btn = forwardRef<HTMLButtonElement, BtnProps>(
       },
     }
 
-    // Estilos por variante
     const getVariantStyles = () => {
       switch (variant) {
         case 'primary':
@@ -150,11 +143,9 @@ const Btn = forwardRef<HTMLButtonElement, BtnProps>(
       }
     }
 
-    // Estilos de hover
     const getHoverStyles = () => {
       if (isDisabled) return {}
       
-      // Detectar si es solo un ícono (no tiene children pero sí tiene leftIcon o rightIcon)
       const isIconOnly = !children && (leftIcon || rightIcon)
       
       switch (variant) {
@@ -215,33 +206,28 @@ const Btn = forwardRef<HTMLButtonElement, BtnProps>(
       }
     }
 
-    // Combinar todos los estilos
     const buttonStyles = {
       ...baseStyles,
       ...sizeStyles[size],
       ...getVariantStyles(),
     }
 
-    // Manejadores de eventos
     const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!isDisabled) {
         const isIconOnly = !children && (leftIcon || rightIcon)
         const currentColor = e.currentTarget.style.color
         
-        // Si es un ícono con color personalizado, oscurecer ese color
         if (isIconOnly && currentColor) {
-          // Mapeo de colores comunes a sus versiones más oscuras
           const colorMap: { [key: string]: string } = {
-            '#dc2626': '#991b1b', // rojo danger
+            '#dc2626': '#991b1b',
             'rgb(220, 38, 38)': '#991b1b',
-            '#059669': '#065f46', // verde success
+            '#059669': '#065f46',
             'rgb(5, 150, 105)': '#065f46',
           }
           
           const darkerColor = colorMap[currentColor] || currentColor
           e.currentTarget.style.color = darkerColor
         } else {
-          // Comportamiento normal
           const hoverStyles = getHoverStyles()
           Object.assign(e.currentTarget.style, hoverStyles)
         }
@@ -253,11 +239,9 @@ const Btn = forwardRef<HTMLButtonElement, BtnProps>(
         const isIconOnly = !children && (leftIcon || rightIcon)
         const currentColor = props.style?.color
         
-        // Si es un ícono con color personalizado, restaurar el color original
         if (isIconOnly && currentColor) {
           e.currentTarget.style.color = currentColor
         } else {
-          // Comportamiento normal
           const originalStyles = getVariantStyles()
           Object.assign(e.currentTarget.style, originalStyles)
         }
@@ -303,7 +287,6 @@ Btn.displayName = 'Btn'
 
 export default Btn
 
-// Hook para facilitar el uso con diferentes variantes
 export const useBtnVariants = () => ({
   primary: (props: Omit<BtnProps, 'variant'>) => <Btn variant="primary" {...props} />,
   secondary: (props: Omit<BtnProps, 'variant'>) => <Btn variant="secondary" {...props} />,
@@ -313,5 +296,4 @@ export const useBtnVariants = () => ({
   success: (props: Omit<BtnProps, 'variant'>) => <Btn variant="success" {...props} />,
 })
 
-// Exports adicionales
 export type { BtnProps, ButtonVariant, ButtonSize } 

@@ -52,7 +52,6 @@ export default function POSPage() {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialFetchDone = useRef(false);
 
-  // Hook para manejar el carrito con persistencia
   const { cart, addToCart, clearCart, getTotal, selectedClient } = useCart();
 
   const handleAddToCart = (product: InventoryProduct) => {
@@ -69,29 +68,24 @@ export default function POSPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Debounced search effect
   useEffect(() => {
-    // Clear previous timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    // Set new timeout for search
     searchTimeoutRef.current = setTimeout(() => {
       if (searchTerm.trim()) {
         searchProducts(searchTerm);
       } else {
         fetchProducts();
       }
-    }, 500); // 500ms delay
+    }, 500);
 
-    // Cleanup function
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
   const fetchProducts = useCallback(async () => {
@@ -177,17 +171,14 @@ export default function POSPage() {
       setCashLoading(true);
       
       if (currentCashRegister) {
-        // Actualizar balance existente
         await cashRegisterService.updateCashRegister(currentCashRegister.id, {
           current_amount: initialAmount
         });
         toastService.success(t('messages.cashRegisterUpdated'));
       } else if (selectedCashRegister) {
-        // Abrir caja existente seleccionada
         await cashRegisterService.openCashRegister(initialAmount, selectedCashRegister.name, selectedCashRegister.description);
         toastService.success(t('messages.cashRegisterOpened'));
       } else {
-        // Crear y abrir nueva caja
         await cashRegisterService.openCashRegister(initialAmount, 'Caja Principal', 'Caja principal del POS');
         toastService.success(t('messages.cashRegisterInitialized'));
       }
@@ -214,7 +205,6 @@ export default function POSPage() {
         return;
       }
 
-      // Crear transacción de caja
       await cashRegisterService.createCashTransaction({
         cash_register_id: currentCashRegister.id,
         type: data.type === 'closing' ? 'adjustment' : 'adjustment',
@@ -224,7 +214,6 @@ export default function POSPage() {
         payment_method: 'cash'
       });
 
-      // Si es cierre, cerrar la caja
       if (data.type === 'closing') {
         await cashRegisterService.closeCashRegister(currentCashRegister.id, data.amount, data.description);
         toastService.success(t('messages.cashRegisterClosed'));
@@ -298,7 +287,6 @@ export default function POSPage() {
 
       await saleService.closeSale(sale.id);
 
-      // Si se solicitó factura fiscal, convertir la venta a factura y generar CFDI
       if (generateInvoice && selectedClient) {
         try {
           const invoiceCode = `FAC-${sale.code}`;
@@ -311,23 +299,18 @@ export default function POSPage() {
         } catch (invoiceError) {
           console.error('Error generating invoice:', invoiceError);
           toastService.warning(t('messages.invoiceGenerationError'));
-          // La venta ya está guardada, no bloqueamos el flujo
         }
       }
 
-      // Obtener los detalles de la venta para el ticket
       const saleDetails = await saleService.getSaleDetails(sale.id);
-// ...
-      // Obtener información del cliente
       const selectedClientData = clients.find(client => client.id === selectedClient);
       
-      // Generar e imprimir el ticket
       try {
         const ticketData = {
           sale: sale,
           saleDetails: saleDetails.data || [],
           client: selectedClientData || null,
-          cashierName: 'POS System', // Se puede obtener del contexto de usuario
+          cashierName: 'POS System',
           paymentMethod: paymentMethod,
           cashAmount: paymentMethod === PaymentMethod.CASH ? cashAmount : undefined,
           change: paymentMethod === PaymentMethod.CASH ? getChange() : undefined,
@@ -351,56 +334,33 @@ export default function POSPage() {
             posSystem: t('ticket.posSystem', { default: 'POS System' }),
           },
         };
-        
+
         await ticketPrinterService.printTicket(ticketData);
         toastService.success(t('messages.ticketPrinted'));
       } catch (error) {
         console.error('Error printing ticket:', error);
-        // No fallar la venta si hay error en la impresión
         toastService.warning(t('messages.ticketPrintError'));
       }
 
-      // Registrar transacción de caja solo si NO es crédito
       if (paymentMethod !== PaymentMethod.CREDIT && currentCashRegister && currentCashRegister.status === 'open') {
         try {
           const transactionType: 'sale' | 'adjustment' = 'sale';
-          let transactionDescription = '';
-          let transactionPaymentMethod: 'cash' | 'card' | 'mixed' = 'cash';
-
-          if (paymentMethod === PaymentMethod.CASH) {
-            transactionDescription = `Venta POS en Efectivo - ${sale.code}`;
-            transactionPaymentMethod = 'cash';
-          } else if (paymentMethod === PaymentMethod.CARD) {
-            transactionDescription = `Venta POS con Tarjeta - ${sale.code}`;
-            transactionPaymentMethod = 'card';
-          } else if (paymentMethod === PaymentMethod.TRANSFER) {
-            transactionDescription = `Venta POS por Transferencia - ${sale.code}`;
-            transactionPaymentMethod = 'cash';
-          }
-
           await cashRegisterService.createCashTransaction({
             cash_register_id: currentCashRegister.id,
             type: transactionType,
             amount: getTotal(),
-            description: transactionDescription,
-            reference: sale.code,
-            payment_method: transactionPaymentMethod,
+            description: `Venta POS - ${sale.code}`,
+            reference: `SALE-${sale.id}`,
+            payment_method: paymentMethod === PaymentMethod.CASH ? 'cash' : 'card',
             sale_id: sale.id
           });
 
-          // Actualizar el balance de la caja
-          console.log('💰 Fetching updated cash register...');
           await fetchCurrentCashRegister();
-          console.log('💰 Cash register updated successfully');
         } catch (error) {
-          console.error('❌ Error registering cash transaction:', error);
-          // No fallar la venta si hay error en la transacción de caja
+          console.error('Error registering cash transaction:', error);
+          toastService.warning(t('messages.cashTransactionError'));
         }
       }
-
-      toastService.success(t('messages.saleCompleted'));
-      clearCart();
-      setPaymentMethod(PaymentMethod.CASH);
       setCardType(null);
       setCashAmount(0);
       setShowPaymentModal(false);
@@ -430,7 +390,6 @@ export default function POSPage() {
     setShowPaymentModal(true);
   };
 
-  // Handlers para el drawer de clientes
   const handleClientDrawerClose = () => {
     setShowClientDrawer(false);
     setIsSavingClient(false);

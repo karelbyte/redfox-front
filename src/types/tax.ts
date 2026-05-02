@@ -1,4 +1,3 @@
-// Definición del tipo de impuesto
 export const TaxType = {
   PERCENTAGE: 'PERCENTAGE',
   FIXED: 'FIXED'
@@ -6,7 +5,6 @@ export const TaxType = {
 
 export type TaxType = typeof TaxType[keyof typeof TaxType];
 
-// Interfaz principal del impuesto
 export interface Tax {
   id: string;
   code: string;

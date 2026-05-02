@@ -63,7 +63,6 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       }
     }, [opening, warehouseId]);
 
-    // Fetch product details when product is selected
     useEffect(() => {
       const fetchProductDetails = async () => {
         if (formData.productId && !opening) {
@@ -71,10 +70,8 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
             const product = await productService.getProductById(formData.productId);
             setSelectedProduct(product);
 
-            // Build available prices
             const prices: Array<{ value: string; label: string }> = [];
 
-            // Add base price
             if (product.base_price !== undefined && product.base_price !== null) {
               prices.push({
                 value: product.base_price.toString(),
@@ -82,7 +79,6 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
               });
             }
 
-            // Add prices from price list
             if (product.prices && product.prices.length > 0) {
               product.prices.forEach(price => {
                 prices.push({
@@ -92,7 +88,6 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
               });
             }
 
-            // Add custom price option
             prices.push({
               value: 'custom',
               label: t('form.customPrice')
@@ -100,7 +95,6 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
 
             setAvailablePrices(prices);
 
-            // Set default price to base price if available
             if (prices.length > 0 && prices[0].value !== 'custom') {
               setSelectedPriceOption(prices[0].value);
               setFormData(prev => ({ ...prev, price: parseFloat(prices[0].value) }));
@@ -116,10 +110,8 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       fetchProductDetails();
     }, [formData.productId, opening, t]);
 
-    // Función para buscar productos - memoizada para evitar llamadas innecesarias
     const searchProducts = useCallback(async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
-        // Usar la API con el parámetro term para búsquedas reales en el servidor
         const response = await productService.getProducts(1, term.trim());
         const products = response.data || [];
         
@@ -138,7 +130,6 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       const newErrors: FormErrors = {};
       let isValid = true;
 
-      // Solo validar productId si no estamos editando (cuando opening es null)
       if (!opening && !formData.productId) {
         newErrors.productId = t('form.errors.productRequired');
         isValid = false;
@@ -170,7 +161,6 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
     const onSavingChangeRef = useRef(onSavingChange);
     const onValidChangeRef = useRef(onValidChange);
 
-    // Actualizar las refs cuando cambien los valores
     useEffect(() => {
       formDataRef.current = formData;
     }, [formData]);
@@ -196,14 +186,12 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
     }, [onValidChange]);
 
     const handleSubmit = async () => {
-      // Evitar múltiples ejecuciones
       if (isSubmittingRef.current) {
         return;
       }
       
       isSubmittingRef.current = true;
 
-      // Usar los valores de las refs para evitar dependencias
       const currentFormData = formDataRef.current;
       const currentOpening = openingRef.current;
       const currentT = tRef.current;
@@ -211,7 +199,6 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       const currentOnSavingChange = onSavingChangeRef.current;
       const currentOnValidChange = onValidChangeRef.current;
 
-      // Validar formulario directamente sin dependencias
       const newErrors: FormErrors = {};
       let isValid = true;
 
@@ -241,14 +228,12 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
       try {
         currentOnSavingChange?.(true);
         if (currentOpening) {
-          // Editar apertura existente
           await warehouseOpeningsService.updateWarehouseOpening(currentOpening.id, {
             quantity: currentFormData.quantity,
             price: currentFormData.price
           });
           toastService.success(currentT('messages.openingUpdated'));
         } else {
-          // Crear nueva apertura
           await warehouseOpeningsService.createWarehouseOpening(currentFormData);
           toastService.success(currentT('messages.openingCreated'));
         }

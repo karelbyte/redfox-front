@@ -10,7 +10,6 @@ export async function migrateDatabase() {
   try {
     console.log('🔄 Checking database version...');
     
-    // Dexie maneja automáticamente las migraciones
     await db.open();
     
     console.log('✅ Database ready');
@@ -20,13 +19,11 @@ export async function migrateDatabase() {
   } catch (error) {
     console.error('❌ Database error:', error);
     
-    // En desarrollo, simplemente borramos y recreamos
     console.log('🗑️ Deleting old database...');
     try {
       await db.delete();
       console.log('✅ Database deleted, will be recreated automatically');
       
-      // Recargar la página para que se recree limpia
       window.location.reload();
     } catch (deleteError) {
       console.error('Failed to delete database:', deleteError);
@@ -50,7 +47,6 @@ export async function resetDatabase() {
   }
 }
 
-// Exponer función global para desarrollo
 if (typeof window !== 'undefined') {
   (window as any).resetDB = resetDatabase;
   console.log('💡 Tip: Run resetDB() in console to reset the database');

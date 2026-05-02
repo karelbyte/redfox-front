@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import { NotificationType, NotificationPriority, Notification } from '@/types/notification';
 
-// Notificación efímera generada por el toastService
-// Solo vive en memoria — desaparece al refrescar
 export interface ToastNotification {
   id: string;
   title: string;
@@ -27,7 +25,6 @@ export const useToastNotificationStore = create<ToastNotificationStore>((set, ge
   },
 }));
 
-// Helper para construir una Notification completa desde un ToastNotification
 export function toastToNotification(t: ToastNotification): Notification {
   return {
     id: t.id,
@@ -38,6 +35,6 @@ export function toastToNotification(t: ToastNotification): Notification {
     isRead: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    userId: 'local', // efímera, no viene del servidor
+    userId: 'local',
   };
 }

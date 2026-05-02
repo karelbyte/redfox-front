@@ -56,7 +56,6 @@ export function SideMenu() {
     };
   }, []);
 
-  // Load expanded menu and collapsed state from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
@@ -96,7 +95,6 @@ export function SideMenu() {
     const newExpandedMenu = expandedMenu === path ? null : path;
     setExpandedMenu(newExpandedMenu);
 
-    // Save to localStorage
     if (typeof window !== "undefined") {
       try {
         if (newExpandedMenu) {
@@ -110,13 +108,10 @@ export function SideMenu() {
     }
   };
 
-  // Handle click on menu item with submenus
   const handleMenuClick = (item: MenuItem) => {
     if (item.subItems) {
-      // If clicking on a different menu, expand it and close others
       if (expandedMenu !== item.path) {
         setExpandedMenu(item.path);
-        // Save to localStorage
         if (typeof window !== "undefined") {
           try {
             localStorage.setItem(EXPANDED_MENU_STORAGE_KEY, item.path);
@@ -125,22 +120,18 @@ export function SideMenu() {
           }
         }
 
-        // Navigate to the first submenu if we're not already on a submenu of this item
         const isOnSubmenuOfThisItem = item.subItems.some(
           (subItem) => pathname === subItem.path
         );
         if (!isOnSubmenuOfThisItem && item.subItems.length > 0) {
-          // Navigate to the first submenu
           router.push(item.subItems[0].path);
         }
       } else {
-        // If clicking on the same menu, toggle it
         toggleSubmenu(item.path);
       }
     }
   };
 
-  // Función para construir rutas con tenant y locale
   const getLocalizedPath = useCallback((path: string) => `/${tenant}/${locale}${path}`, [tenant, locale]);
 
   const menuItems: MenuItem[] = useMemo(
@@ -1219,7 +1210,6 @@ export function SideMenu() {
     [t, getLocalizedPath]
   );
 
-  // Auto-expand menu when on a submenu page
   useEffect(() => {
     const currentMenuItem = menuItems.find((item) =>
       item.subItems?.some((subItem) => pathname === subItem.path)
@@ -1227,7 +1217,6 @@ export function SideMenu() {
 
     if (currentMenuItem && expandedMenu !== currentMenuItem.path) {
       setExpandedMenu(currentMenuItem.path);
-      // Save to localStorage
       if (typeof window !== "undefined") {
         try {
           localStorage.setItem(EXPANDED_MENU_STORAGE_KEY, currentMenuItem.path);
@@ -1238,29 +1227,22 @@ export function SideMenu() {
     }
   }, [pathname, expandedMenu, menuItems]);
 
-  // Función para verificar si un elemento del menú debe mostrarse
   const shouldShowMenuItem = (item: MenuItem): boolean => {
-    // Si no tiene permisos definidos, siempre se muestra
     if (!item.howCan || item.howCan.length === 0) {
       return true;
     }
 
-    // Verificar si el usuario tiene al menos uno de los permisos requeridos
     return can(item.howCan);
   };
 
-  // Función para verificar si un subelemento debe mostrarse
   const shouldShowSubItem = (subItem: { name: string; path: string; icon: React.ReactNode; howCan?: string[] }): boolean => {
-    // Si no tiene permisos definidos, siempre se muestra
     if (!subItem.howCan || subItem.howCan.length === 0) {
       return true;
     }
 
-    // Verificar si el usuario tiene al menos uno de los permisos requeridos
     return can(subItem.howCan);
   };
 
-  // Filtrar elementos del menú basándose en permisos
   const filteredMenuItems = menuItems.filter(shouldShowMenuItem);
 
   return (
@@ -1290,7 +1272,6 @@ export function SideMenu() {
             );
             const isExpanded = expandedMenu === item.path;
 
-            // Filtrar subelementos basándose en permisos
             const filteredSubItems = item.subItems?.filter(shouldShowSubItem) || [];
             const hrefWhenCollapsed = item.subItems && filteredSubItems.length > 0
               ? filteredSubItems[0].path
@@ -1342,27 +1323,21 @@ export function SideMenu() {
                 }
                 setHoveredCollapsedItem(item.path);
 
-                // Calcular posición del popover
                 const trigger = e.currentTarget;
                 const triggerRect = trigger.getBoundingClientRect();
                 const viewportHeight = window.innerHeight;
 
-                // Estimar altura del popover (cada item ~40px + padding)
                 const estimatedPopoverHeight = options.length * 40 + 16;
 
-                // Verificar si se sale por abajo
                 const spaceBelow = viewportHeight - triggerRect.bottom;
                 const spaceAbove = triggerRect.top;
 
                 if (spaceBelow < estimatedPopoverHeight && spaceAbove > spaceBelow) {
-                  // No hay espacio abajo pero sí arriba, alinear al bottom
                   setPopoverPosition({ bottom: 0 });
                 } else if (spaceBelow < estimatedPopoverHeight) {
-                  // No hay espacio suficiente, calcular top para que quepa
                   const maxTop = Math.max(0, viewportHeight - estimatedPopoverHeight - triggerRect.top - 20);
                   setPopoverPosition({ top: -Math.abs(triggerRect.bottom - viewportHeight + 20) });
                 } else {
-                  // Hay espacio, posición normal
                   setPopoverPosition({ top: 0 });
                 }
               };

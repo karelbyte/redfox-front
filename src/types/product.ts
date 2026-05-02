@@ -35,7 +35,7 @@ export interface Product {
   length: number;
   brand: Brand | string;
   category: Category | string;
-  tax?: Tax | string; // legacy — usar taxes[]
+  tax?: Tax | string;
   taxes: Tax[];
   measurement_unit: MeasurementUnit | string;
   is_active: boolean;

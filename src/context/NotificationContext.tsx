@@ -12,7 +12,6 @@ interface NotificationContextType {
   loading: boolean;
   error: string | null;
   
-  // Actions
   fetchNotifications: (filters?: NotificationFilters) => Promise<void>;
   markAsRead: (id: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
@@ -20,7 +19,6 @@ interface NotificationContextType {
   deleteAllRead: () => Promise<void>;
   refreshUnreadCount: () => Promise<void>;
   
-  // Real-time
   addNotification: (notification: Notification) => void;
 }
 
@@ -85,7 +83,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   const isLocalNotification = (id: string) => id.startsWith('toast-');
 
   const markAsRead = useCallback(async (id: string) => {
-    // Notificaciones locales (toast) — solo actualizar estado
     if (isLocalNotification(id)) {
       setState(prev => {
         const notification = prev.notifications.find(n => n.id === id);
@@ -115,12 +112,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   const markAllAsRead = useCallback(async () => {
     try {
-      // Marcar locales en estado
       setState(prev => ({
         notifications: prev.notifications.map(n => ({ ...n, isRead: true })),
         unreadCount: 0,
       }));
-      // Marcar en servidor solo las no-locales
       await notificationService.markAllAsRead();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error marking all notifications as read');
@@ -129,7 +124,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   }, []);
 
   const deleteNotification = useCallback(async (id: string) => {
-    // Notificaciones locales (toast) — solo eliminar del estado
     if (isLocalNotification(id)) {
       setState(prev => {
         const notification = prev.notifications.find(n => n.id === id);
@@ -157,12 +151,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   const deleteAllRead = useCallback(async () => {
     try {
-      // Eliminar locales del estado directamente
       setState(prev => ({
         ...prev,
         notifications: prev.notifications.filter(n => !n.isRead),
       }));
-      // Eliminar del servidor solo las no-locales
       await notificationService.deleteAllRead();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error deleting read notifications');
@@ -180,23 +172,20 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     });
   }, []);
 
-  // Initial load and real-time subscription
   useEffect(() => {
     if (!user) return;
 
     fetchNotifications();
     refreshUnreadCount();
 
-    // Subscribe to real-time notifications — pasamos los IDs ya conocidos para evitar duplicados
     const unsubscribe = notificationService.subscribeToNotifications(
       user.id,
       addNotification,
     );
 
     return unsubscribe;
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user]);
 
-  // Consume toast notifications from the bridge store and add them to the bell
   const consume = useToastNotificationStore((s) => s.consume);
   useEffect(() => {
     const interval = setInterval(() => {

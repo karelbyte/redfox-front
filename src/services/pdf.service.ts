@@ -34,26 +34,21 @@ export class PDFService {
   generateTablePDF(data: PDFTableData, options: PDFOptions = {}): void {
     const { title, subtitle, filename, orientation } = options;
 
-    // Configurar fuente y colores
-    this.doc.setFont('helvetica');
+        this.doc.setFont('helvetica');
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
 
-    // Título
-    if (title) {
+        if (title) {
       this.doc.text(title, 20, 20);
     }
 
-    // Subtítulo
     if (subtitle) {
       this.doc.setFontSize(12);
       this.doc.text(subtitle, 20, 30);
     }
 
-    // Generar tabla
     this.generateTable(data, title ? 40 : 20, orientation);
 
-    // Guardar PDF
     this.doc.save(filename || 'report.pdf');
   }
 
@@ -63,18 +58,16 @@ export class PDFService {
   private generateTable(data: PDFTableData, startY: number, orientation?: 'portrait' | 'landscape'): void {
     const { headers, rows } = data;
     const pageWidth = this.doc.internal.pageSize.getWidth();
-    const margin = orientation === 'landscape' ? 10 : 15; // Márgenes más pequeños en horizontal
+    const margin = orientation === 'landscape' ? 10 : 15;
     const tableWidth = pageWidth - (margin * 2);
 
-    // Calcular anchos de columna personalizados basados en el contenido y orientación
     const colWidths = this.calculateColumnWidths(headers, rows, tableWidth);
 
     let currentY = startY;
-    const rowHeight = orientation === 'landscape' ? 10 : 12; // Filas más pequeñas en horizontal
-    const headerHeight = orientation === 'landscape' ? 12 : 14; // Headers más pequeños en horizontal
+    const rowHeight = orientation === 'landscape' ? 10 : 12;
+    const headerHeight = orientation === 'landscape' ? 12 : 14;
 
-    // Estilos para encabezados
-    this.doc.setFillColor(248, 249, 250); // Color gris muy claro
+    this.doc.setFillColor(248, 249, 250);
     this.doc.setFontSize(orientation === 'landscape' ? 8 : 9); // Fuente más pequeña en horizontal
     this.doc.setFont('helvetica', 'bold');
     this.doc.setTextColor(0, 0, 0); // Texto negro
@@ -166,13 +159,11 @@ export class PDFService {
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
 
-    // Título
-    if (title) {
+        if (title) {
       this.doc.text(title, 20, 20);
     }
 
-    // Contenido
-    this.doc.setFontSize(12);
+        this.doc.setFontSize(12);
     let currentY = title ? 35 : 20;
 
     content.forEach((line) => {
@@ -197,8 +188,7 @@ export class PDFService {
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
 
-    // Título
-    if (title) {
+        if (title) {
       this.doc.text(title, 20, 20);
     }
 
@@ -254,18 +244,17 @@ export class PDFService {
     const margin = 20;
     const pageWidth = this.doc.internal.pageSize.getWidth();
 
-    // Título del documento
+     // Título del documento
     this.doc.setFontSize(18);
     this.doc.setFont('helvetica', 'bold');
     this.doc.text('RECEPCIÓN DE MERCADERÍA', pageWidth / 2, currentY, { align: 'center' });
     currentY += 15;
 
-    // Información de la recepción
+     // Información de la recepción
     this.doc.setFontSize(12);
     this.doc.setFont('helvetica', 'normal');
 
-    // Código y fecha
-    this.doc.text(`Código: ${reception.code}`, margin, currentY);
+        this.doc.text(`Código: ${reception.code}`, margin, currentY);
     this.doc.text(`Fecha: ${new Date(reception.date).toLocaleDateString('es-ES')}`, pageWidth - margin - 60, currentY);
     currentY += 10;
 
@@ -423,18 +412,17 @@ export class PDFService {
     const margin = 20;
     const pageWidth = this.doc.internal.pageSize.getWidth();
 
-    // Título del documento
+     // Título del documento
     this.doc.setFontSize(18);
     this.doc.setFont('helvetica', 'bold');
     this.doc.text('NOTA DE VENTA', pageWidth / 2, currentY, { align: 'center' });
     currentY += 15;
 
-    // Información de la venta
+     // Información de la venta
     this.doc.setFontSize(12);
     this.doc.setFont('helvetica', 'normal');
 
-    // Código y fecha
-    this.doc.text(`Código: ${sale.code}`, margin, currentY);
+        this.doc.text(`Código: ${sale.code}`, margin, currentY);
     this.doc.text(`Fecha: ${new Date(sale.created_at).toLocaleDateString('es-ES')}`, pageWidth - margin - 60, currentY);
     currentY += 10;
 
@@ -585,16 +573,14 @@ export class PDFService {
     const pageWidth = this.doc.internal.pageSize.getWidth();
     let currentY = 20;
 
-    // Configurar fuente y colores
-    this.doc.setFont('helvetica');
+        this.doc.setFont('helvetica');
     this.doc.setFontSize(16);
     this.doc.setTextColor(0, 0, 0);
 
-    // Título
-    this.doc.text('ORDEN DE COMPRA', pageWidth / 2, currentY, { align: 'center' });
+        this.doc.text('ORDEN DE COMPRA', pageWidth / 2, currentY, { align: 'center' });
     currentY += 15;
 
-    // Información de la orden
+     // Información de la orden
     this.doc.setFontSize(12);
     this.doc.text(`Código: ${purchaseOrder.code}`, margin, currentY);
     currentY += 8;
