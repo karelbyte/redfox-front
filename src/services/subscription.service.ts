@@ -51,4 +51,11 @@ export const subscriptionService = {
   async getPlans(): Promise<Plan[]> {
     return await api.get<Plan[]>('/subscriptions/plans');
   },
+
+  async processManualPayment(subscriptionId: string, amount?: number, notes?: string) {
+    return await api.post(`/admin/subscriptions/${subscriptionId}/manual-payment`, {
+      amount,
+      notes,
+    });
+  },
 };

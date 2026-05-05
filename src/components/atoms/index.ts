@@ -24,4 +24,4 @@ export { default as SearchSelect } from './SearchSelect'
 
 export { SurrogateInput } from './SurrogateInput'
 
- 
+export { default as Tooltip } from './Tooltip'
