@@ -73,7 +73,7 @@ const RoleDetailsPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push(`/${params.tenant}/${locale}/dashboard/configuracion/roles`)}
             className="flex items-center mb-4 hover:opacity-80 transition-opacity"
             style={{ color: 'rgb(var(--color-primary-600))' }}
           >
