@@ -148,7 +148,7 @@ export default function WarehouseOpeningTable({
               {isVisible('brand') && (
                 <td className={`${tdBase} ${hiddenMd}`}>
                   {opening.product.brand && typeof opening.product.brand === 'object'
-                    ? opening.product.brand.description
+                    ? opening.product.brand.code
                     : opening.product.brand}
                 </td>
               )}

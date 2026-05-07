@@ -71,7 +71,7 @@ export default function SaleCloseResultModal({ closeResult, onClose }: SaleClose
                   
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">{t('details.completedAt')}:</span>
-                    <span className="text-sm text-gray-900 font-semibold">{formatDate(closeResult.completedAt)}</span>
+                    <span className="text-sm text-gray-900 font-semibold">{formatDate(closeResult.closedAt)}</span>
                   </div>
                 </div>
               </div>

@@ -260,7 +260,7 @@ export default function InventariosPage() {
       };
 
       const filters: { brand?: string; category?: string; searchTerm?: string } = {};
-      if (selectedBrand) filters.brand = selectedBrand.description;
+      if (selectedBrand) filters.brand = selectedBrand.code;
       if (selectedCategory) filters.category = selectedCategory.name;
       if (searchTerm) filters.searchTerm = searchTerm;
 

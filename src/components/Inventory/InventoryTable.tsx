@@ -125,7 +125,7 @@ export default function InventoryTable({
               {isVisible('brand') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {item.product.brand && typeof item.product.brand === "object"
-                    ? item.product.brand.description
+                    ? item.product.brand.code
                     : item.product.brand}
                 </td>
               )}

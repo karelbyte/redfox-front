@@ -147,4 +147,5 @@ export interface SaleCloseResponse {
   totalQuantity: number;
   message: string;
   completedAt: string;
+  closedAt: string;
 } 

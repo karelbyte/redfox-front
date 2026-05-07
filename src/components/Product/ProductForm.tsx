@@ -646,7 +646,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
 
             <TextArea
               id="description"
-              label={`${t('form.description')} *`}
+              label={t('form.description')}
               value={formData.description}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, description: e.target.value }))
@@ -703,7 +703,7 @@ const ProductForm = forwardRef<ProductFormRef, ProductFormProps>(
               }
               options={brands.map((brand) => ({
                 value: brand.id.toString(),
-                label: brand.description,
+                label: brand.code,
               }))}
               showAddButton={true}
               onAddClick={() => setShowBrandDrawer(true)}

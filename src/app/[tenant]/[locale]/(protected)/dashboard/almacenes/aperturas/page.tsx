@@ -330,11 +330,11 @@ export default function OpeningsPage() {
       </div>
 
       <div className="flex justify-end mb-6">
-        <ColumnSelector
+       {openings && openings.length > 0 &&  <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}
           onChange={toggleColumn}
-        />
+        />}
       </div>
 
       {loading ? (

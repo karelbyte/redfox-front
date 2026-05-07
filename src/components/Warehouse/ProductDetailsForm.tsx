@@ -174,7 +174,7 @@ const ProductDetailsForm = forwardRef<
                 style={{ borderColor: `rgb(var(--color-primary-300))` }}
               >
                 {product.brand && typeof product.brand === "object"
-                  ? product.brand.description
+                  ? product.brand.code
                   : product.brand}
               </div>
             </div>

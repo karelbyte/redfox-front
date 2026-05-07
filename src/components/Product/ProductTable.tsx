@@ -45,6 +45,7 @@ export default function ProductTable({
 
   return (
     <div
+      data-testid="products-table"
       className="bg-white rounded-lg overflow-hidden"
       style={{
         boxShadow: `0 4px 6px -1px rgba(var(--color-primary-500), 0.1), 0 2px 4px -1px rgba(var(--color-primary-500), 0.06)`

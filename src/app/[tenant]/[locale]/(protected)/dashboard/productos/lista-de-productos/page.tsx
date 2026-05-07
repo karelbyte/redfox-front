@@ -282,7 +282,7 @@ export default function ListProductsPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6" data-testid="products-page">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <h1
@@ -413,7 +413,7 @@ export default function ListProductsPage() {
         />
       ) : (
         <>
-          <div className="mt-6">
+          <div className="mt-6" data-testid="products-table-container">
             <ProductTable
               products={products}
               onEdit={handleEdit}

@@ -73,7 +73,7 @@ export interface ReceptionDetail {
     length: number;
     brand: {
       id: string;
-      name: string;
+      code: string;
       description: string;
     };
     category: {

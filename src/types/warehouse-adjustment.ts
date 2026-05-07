@@ -61,6 +61,7 @@ export interface WarehouseAdjustmentDetail {
     brand: {
       id: string;
       name: string;
+      code: string;
       description: string;
     };
     category: {
