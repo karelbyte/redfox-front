@@ -1909,7 +1909,8 @@
         "pdfTitle": "报价单",
         "pdfPage": "页",
         "emailRequired": "电子邮件是必填项",
-        "invalidEmails": "无效的电子邮件: {emails}"
+        "invalidEmails": "无效的电子邮件: {emails}",
+        "emailQueued": "正在处理发送。完成后您将收到通知。"
       },
       "details": {
         "title": "报价单 {code}",

@@ -212,11 +212,11 @@ export default function ReturnsPage() {
       </div>
 
       <div className="flex justify-end mb-6">
-        <ColumnSelector
+        {totalPages > 1 && <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}
           onChange={toggleColumn}
-        />
+        />}
       </div>
 
       {/* Content */}

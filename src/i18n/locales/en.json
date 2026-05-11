@@ -1054,7 +1054,7 @@
         "title": "Tax Data",
         "newTaxData": "New Tax Profile",
         "editTaxData": "Edit Tax Profile",
-        "taxDocument": "RFC / Tax ID",
+        "taxDocument": "Tax ID",
         "taxName": "Legal Name",
         "taxSystem": "Tax Regime",
         "defaultInvoiceUse": "CFDI Use",
@@ -1066,7 +1066,7 @@
           "taxName": "Name or Business Name as it appears in the Tax Identification Cedula (CIF). For natural persons: Name(s), First Surname and Second Surname. For legal entities: Business Name. ! IMPORTANT !: Do NOT capture in this field the Capital Regime (e.g., SA de CV, S de RL, etc.)"
         },
         "table": {
-          "taxDocument": "RFC / Tax ID",
+          "taxDocument": "Tax ID",
           "taxName": "Legal Name",
           "taxSystem": "Tax Regime",
           "defaultInvoiceUse": "CFDI Use",
@@ -1290,7 +1290,7 @@
         "title": "Tax Data",
         "newTaxData": "New Tax Profile",
         "editTaxData": "Edit Tax Profile",
-        "taxDocument": "RFC / Tax ID",
+        "taxDocument": "Tax ID",
         "taxName": "Legal Name",
         "taxSystem": "Fiscal Regime",
         "defaultInvoiceUse": "CFDI Use",
@@ -1910,7 +1910,8 @@
         "pdfTitle": "Quotation",
         "pdfPage": "Page",
         "emailRequired": "Email is required",
-        "invalidEmails": "Invalid emails: {emails}"
+        "invalidEmails": "Invalid emails: {emails}",
+        "emailQueued": "Sending is being processed. You will receive a notification when it's complete."
       },
       "details": {
         "title": "Quotation {code}",

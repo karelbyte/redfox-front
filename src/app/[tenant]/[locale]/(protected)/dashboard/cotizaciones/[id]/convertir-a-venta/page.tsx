@@ -4,14 +4,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { useLocaleUtils } from '@/hooks/useLocale';
-import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon, BanknotesIcon, CreditCardIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon, BanknotesIcon, CreditCardIcon, ClockIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { quotationService } from '@/services/quotations.service';
 import { inventoryService, InventoryProduct } from '@/services/inventory.service';
 import { certificationPackService } from '@/services/certification-packs.service';
 import { clientsService } from '@/services/clients.service';
 import { toastService } from '@/services/toast.service';
 import { Quotation, QuotationDetail } from '@/types/quotation';
-import { Btn } from '@/components/atoms';
+import { PaymentMethod, CardType } from '@/types/sale';
+import { CertificationPackEmitter } from '@/types/certification-pack';
+import { Btn, Select } from '@/components/atoms';
 import Loading from '@/components/Loading/Loading';
 
 interface ItemAssignment {
@@ -36,7 +38,11 @@ export default function ConvertToSalePage() {
   const [assignments, setAssignments] = useState<ItemAssignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [converting, setConverting] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'credit'>('cash');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CASH);
+  const [cardType, setCardType] = useState<CardType | null>(null);
+  const [emitters, setEmitters] = useState<CertificationPackEmitter[]>([]);
+  const [selectedEmitter, setSelectedEmitter] = useState<string | null>(null);
+  const [loadingEmitters, setLoadingEmitters] = useState(false);
   const [closeSale, setCloseSale] = useState(true);
   const [createInvoice, setCreateInvoice] = useState(false);
   const [stampInvoice, setStampInvoice] = useState(false);
@@ -52,6 +58,22 @@ export default function ConvertToSalePage() {
         certificationPackService.getActive().catch(() => null),
       ]);
       setHasActivePack(!!activePack);
+
+      // Cargar emisores si hay pack activo
+      if (activePack) {
+        setLoadingEmitters(true);
+        try {
+          const availableEmitters = await certificationPackService.getAvailableEmitters();
+          setEmitters(availableEmitters || []);
+          if (availableEmitters && availableEmitters.length > 0) {
+            setSelectedEmitter(availableEmitters[0].id || null);
+          }
+        } catch (error) {
+          console.error('Error loading emitters:', error);
+        } finally {
+          setLoadingEmitters(false);
+        }
+      }
 
       // Verificar crédito del cliente
       if (q?.client?.id) {
@@ -135,6 +157,8 @@ export default function ConvertToSalePage() {
         close_sale: closeSale,
         create_invoice: createInvoice,
         stamp_invoice: stampInvoice,
+        card_type: paymentMethod === PaymentMethod.CARD ? (cardType ?? undefined) : undefined,
+        emitter_id: (createInvoice || stampInvoice) ? (selectedEmitter ?? undefined) : undefined,
       });
       toastService.success(result.message);
       router.push(`/${tenant}/${locale}/dashboard/cotizaciones/${quotationId}`);
@@ -301,43 +325,69 @@ export default function ConvertToSalePage() {
             {locale === 'zh' ? '付款方式' : locale === 'en' ? 'Payment method' : 'Método de pago'}
           </h2>
         </div>
-        <div className="px-6 py-4 flex flex-col sm:flex-row gap-3">
+        <div className="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { value: 'cash', icon: <BanknotesIcon className="h-4 w-4" />, label: locale === 'zh' ? '现金' : locale === 'en' ? 'Cash' : 'Efectivo', disabled: false },
-            { value: 'card', icon: <CreditCardIcon className="h-4 w-4" />, label: locale === 'zh' ? '银行卡' : locale === 'en' ? 'Card' : 'Tarjeta', disabled: false },
-            { value: 'credit', icon: <ClockIcon className="h-4 w-4" />, label: locale === 'zh' ? '信用支付' : locale === 'en' ? 'Credit' : 'Crédito', disabled: !clientHasCredit },
-          ].map(opt => (
-            <label
-              key={opt.value}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all flex-1 ${
-                opt.disabled
-                  ? 'opacity-40 cursor-not-allowed border-gray-200'
-                  : paymentMethod === opt.value
-                    ? 'border-primary-500 bg-primary-50 cursor-pointer'
-                    : 'border-gray-200 hover:border-gray-300 cursor-pointer'
-              }`}
-              style={!opt.disabled && paymentMethod === opt.value ? { borderColor: `rgb(var(--color-primary-500))`, backgroundColor: `rgb(var(--color-primary-50))` } : {}}
-            >
-              <input
-                type="radio"
-                name="payment_method"
-                value={opt.value}
-                checked={paymentMethod === opt.value}
-                disabled={opt.disabled}
-                onChange={() => !opt.disabled && setPaymentMethod(opt.value as 'cash' | 'card' | 'credit')}
-                className="sr-only"
-              />
-              <span className="text-gray-500">{opt.icon}</span>
-              <div>
-                <span className="text-sm font-medium text-gray-800">{opt.label}</span>
-                {opt.value === 'credit' && !clientHasCredit && (
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {locale === 'zh' ? '客户无有效信用额度' : locale === 'en' ? 'Client has no active credit' : 'El cliente no tiene crédito activo'}
-                  </p>
-                )}
-              </div>
-            </label>
-          ))}
+            { value: PaymentMethod.CASH, icon: <BanknotesIcon className="h-4 w-4" />, label: locale === 'zh' ? '现金' : locale === 'en' ? 'Cash' : 'Efectivo', disabled: false },
+            { 
+              value: PaymentMethod.CARD, 
+              icon: <CreditCardIcon className="h-4 w-4" />, 
+              label: locale === 'zh' ? '信用卡' : locale === 'en' ? 'Credit Card' : 'Tarjeta de Crédito', 
+              disabled: false,
+              cardType: CardType.CREDIT 
+            },
+            { 
+              value: PaymentMethod.CARD, 
+              icon: <CreditCardIcon className="h-4 w-4" />, 
+              label: locale === 'zh' ? '借记卡' : locale === 'en' ? 'Debit Card' : 'Tarjeta de Débito', 
+              disabled: false,
+              cardType: CardType.DEBIT 
+            },
+            { value: PaymentMethod.TRANSFER, icon: <ArrowPathIcon className="h-4 w-4" />, label: locale === 'zh' ? '转账' : locale === 'en' ? 'Transfer' : 'Transferencia', disabled: false },
+            { value: PaymentMethod.CREDIT, icon: <ClockIcon className="h-4 w-4" />, label: locale === 'zh' ? '信用支付' : locale === 'en' ? 'Credit' : 'Crédito', disabled: !clientHasCredit },
+          ].map((opt, idx) => {
+            const isSelected = paymentMethod === opt.value && (opt.value !== PaymentMethod.CARD || cardType === opt.cardType);
+            return (
+              <label
+                key={`${opt.value}-${idx}`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all ${
+                  opt.disabled
+                    ? 'opacity-40 cursor-not-allowed border-gray-200'
+                    : isSelected
+                      ? 'border-primary-500 bg-primary-50 cursor-pointer'
+                      : 'border-gray-200 hover:border-gray-300 cursor-pointer'
+                }`}
+                style={!opt.disabled && isSelected ? { borderColor: `rgb(var(--color-primary-500))`, backgroundColor: `rgb(var(--color-primary-50))` } : {}}
+              >
+                <input
+                  type="radio"
+                  name="payment_method"
+                  value={opt.value}
+                  checked={isSelected}
+                  disabled={opt.disabled}
+                  onChange={() => {
+                    if (!opt.disabled) {
+                      setPaymentMethod(opt.value);
+                      if (opt.value === PaymentMethod.CARD) {
+                        setCardType(opt.cardType || null);
+                      } else {
+                        setCardType(null);
+                      }
+                    }
+                  }}
+                  className="sr-only"
+                />
+                <span className="text-gray-500">{opt.icon}</span>
+                <div>
+                  <span className="text-sm font-medium text-gray-800">{opt.label}</span>
+                  {opt.value === PaymentMethod.CREDIT && !clientHasCredit && (
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {locale === 'zh' ? '客户无有效信用额度' : locale === 'en' ? 'Client has no active credit' : 'El cliente no tiene crédito activo'}
+                    </p>
+                  )}
+                </div>
+              </label>
+            );
+          })}
         </div>
       </div>
 
@@ -431,6 +481,22 @@ export default function ConvertToSalePage() {
               </p>
             </div>
           </label>
+
+          {/* Selector de emisor */}
+          {(createInvoice || stampInvoice) && hasActivePack && emitters.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-2 duration-300">
+              <Select
+                label={locale === 'zh' ? '选择开票人' : locale === 'en' ? 'Select Emitter' : 'Seleccionar Emisor'}
+                value={selectedEmitter || ''}
+                onChange={(e) => setSelectedEmitter(e.target.value || null)}
+                disabled={loadingEmitters}
+                options={emitters.filter(e => e.id).map(emitter => ({ value: emitter.id!, label: emitter.name }))}
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                {locale === 'zh' ? '选择将用于为此销售开具发票的税务实体。' : locale === 'en' ? 'Select the tax entity that will be used to invoice this sale.' : 'Selecciona la entidad fiscal que se usará para facturar esta venta.'}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

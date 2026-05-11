@@ -439,11 +439,11 @@ export default function InventariosPage() {
                       {locale === 'zh' ? '品牌' : locale === 'en' ? 'Brand' : 'Marca'}
                     </label>
                     <Select
+                      isClearable={true}
                       id="brand-select"
                       label=""
                       options={[
-                        { value: "", label: locale === 'zh' ? '所有品牌' : locale === 'en' ? 'All brands' : 'Todas las marcas' },
-                        ...brands.map((b) => ({ value: b.id, label: b.description }))
+                        ...brands.map((b) => ({ value: b.id, label: b.code }))
                       ]}
                       value={selectedBrandId}
                       onChange={(e) => handleBrandChange(e.target.value)}
@@ -455,15 +455,16 @@ export default function InventariosPage() {
                       {locale === 'zh' ? '类别' : locale === 'en' ? 'Category' : 'Categoría'}
                     </label>
                     <Select
+                      isClearable={true}
                       id="category-select"
                       className="w-full"
                       label=""
                       options={[
-                        { value: "", label: locale === 'zh' ? '所有类别' : locale === 'en' ? 'All categories' : 'Todas las categorías' },
                         ...categories.map((c) => ({ value: c.id, label: c.name }))
                       ]}
                       value={selectedCategoryId}
                       onChange={(e) => handleCategoryChange(e.target.value)}
+                      onClear={() => handleCategoryChange('')}
                     />
                   </div>
 

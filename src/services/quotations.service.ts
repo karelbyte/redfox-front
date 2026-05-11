@@ -42,7 +42,13 @@ class QuotationService {
     id: string,
     items: { detail_id: string; warehouse_id?: string }[],
     paymentMethod?: string,
-    options?: { close_sale?: boolean; create_invoice?: boolean; stamp_invoice?: boolean },
+    options?: { 
+      close_sale?: boolean; 
+      create_invoice?: boolean; 
+      stamp_invoice?: boolean;
+      card_type?: string;
+      emitter_id?: string;
+    },
   ): Promise<ConvertToSaleResponse> {
     const response = await api.post<ConvertToSaleResponse>(`/quotations/${id}/convert-to-sale`, {
       items,
@@ -50,6 +56,8 @@ class QuotationService {
       close_sale: options?.close_sale,
       create_invoice: options?.create_invoice,
       stamp_invoice: options?.stamp_invoice,
+      card_type: options?.card_type,
+      emitter_id: options?.emitter_id,
     });
     return response;
   }

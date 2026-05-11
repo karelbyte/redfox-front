@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '', companyName: '', email: '',
     password: '', password_confirmation: '', referrer_code: '', language: '',
+    country: 'mx',
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +24,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const locale = useLocale();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -167,6 +168,23 @@ export default function RegisterPage() {
                 </button>
               </div>
               {passwordMismatch && <p className="mt-1 text-xs text-red-500">{t('passwordMismatch')}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium mb-1.5" style={{ color: `rgb(var(--color-secondary-700))` }}>
+                {locale === 'zh' ? '国家' : locale === 'en' ? 'Country' : 'País'}
+              </label>
+              <select
+                id="country"
+                name="country"
+                className={inputCls}
+                style={inputStyle(false)}
+                value={formData.country}
+                onChange={handleChange}
+              >
+                <option value="mx">{locale === 'zh' ? '墨西哥' : locale === 'en' ? 'Mexico' : 'México'}</option>
+                <option value="pe">{locale === 'zh' ? '秘鲁' : locale === 'en' ? 'Peru' : 'Perú'}</option>
+              </select>
             </div>
 
             <div>

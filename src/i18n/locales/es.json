@@ -1069,7 +1069,7 @@
         "title": "Datos Fiscales",
         "newTaxData": "Nuevo Perfil Fiscal",
         "editTaxData": "Editar Perfil Fiscal",
-        "taxDocument": "RFC / Tax ID",
+        "taxDocument": "Tax ID",
         "taxName": "Razón Social",
         "taxSystem": "Régimen Fiscal",
         "defaultInvoiceUse": "Uso de CFDI",
@@ -1079,7 +1079,7 @@
           "taxName": "Ej: Empresa S.A. de C.V."
         },
         "table": {
-          "taxDocument": "RFC / Tax ID",
+          "taxDocument": "Tax ID",
           "taxName": "Razón Social",
           "taxSystem": "Régimen Fiscal",
           "defaultInvoiceUse": "Uso de CFDI",
@@ -1275,7 +1275,7 @@
         "title": "Datos Fiscales",
         "newTaxData": "Nuevo Perfil Fiscal",
         "editTaxData": "Editar Perfil Fiscal",
-        "taxDocument": "RFC / Tax ID",
+        "taxDocument": "Tax ID",
         "taxName": "Razón Social",
         "taxSystem": "Régimen Fiscal",
         "defaultInvoiceUse": "Uso de CFDI",
@@ -1886,7 +1886,8 @@
         "pdfTitle": "Cotización",
         "pdfPage": "Página",
         "emailRequired": "El correo electrónico es requerido",
-        "invalidEmails": "Correos inválidos: {emails}"
+        "invalidEmails": "Correos inválidos: {emails}",
+        "emailQueued": "El envío se está procesando. Recibirás una notificación cuando se complete."
       },
       "details": {
         "title": "Cotización {code}",
@@ -4564,8 +4565,8 @@
       "description": "Completa los datos generales de tu empresa. Puedes actualizar esta información más tarde.",
       "legalName": "Razón Social",
       "legalNamePlaceholder": "Nombre legal de tu empresa",
-      "taxId": "RFC / Tax ID",
-      "taxIdPlaceholder": "RFC o identificador fiscal",
+      "taxId": "Tax ID",
+      "taxIdPlaceholder": "Identificador fiscal",
       "email": "Correo Electrónico",
       "emailPlaceholder": "correo@empresa.com",
       "phone": "Teléfono",

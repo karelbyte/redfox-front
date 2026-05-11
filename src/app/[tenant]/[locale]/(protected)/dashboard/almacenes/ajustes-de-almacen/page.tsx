@@ -206,11 +206,11 @@ export default function WarehouseAdjustmentsPage() {
       </div>
 
       <div className="mt-6 flex justify-end">
-        <ColumnSelector
+        {totalPages > 1 && <ColumnSelector
           columns={availableColumns}
           visibleColumns={visibleColumns}
           onChange={toggleColumn}
-        />
+        />}
       </div>
 
       {loading ? (

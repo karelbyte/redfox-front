@@ -48,7 +48,11 @@ export default function SendQuotationEmailModal({
       setIsSending(true);
       const res = await quotationService.sendEmail(quotationId, emailList, message, locale);
       if (res.sent) {
-        toastService.success(tCommon('messages.success', { default: 'Operación exitosa' }));
+        if (res.message === 'email_processing_queued') {
+          toastService.info(t('messages.emailQueued'));
+        } else {
+          toastService.success(tCommon('messages.success'));
+        }
         onClose();
       } else {
         toastService.error(res.message || tCommon('messages.error', { default: 'Ha ocurrido un error' }));

@@ -112,7 +112,7 @@ const WarehouseOpeningForm = forwardRef<WarehouseOpeningFormRef, WarehouseOpenin
 
     const searchProducts = useCallback(async (term: string): Promise<{ id: string; label: string; subtitle?: string }[]> => {
       try {
-        const response = await productService.getProducts(1, term.trim());
+        const response = await productService.getProducts(1, term.trim(), true, 'tangible');
         const products = response.data || [];
         
         return products.map(product => ({

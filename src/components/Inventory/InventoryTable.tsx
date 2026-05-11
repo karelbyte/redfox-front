@@ -153,7 +153,7 @@ export default function InventoryTable({
                     </span>
                     <span className="text-gray-500 ml-1">
                       {typeof item.product.measurement_unit === "object"
-                        ? item.product.measurement_unit.code
+                        ? item.product.measurement_unit.description
                         : "pz"}
                     </span>
                   </div>
