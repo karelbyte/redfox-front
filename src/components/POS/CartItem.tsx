@@ -1,10 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { XMarkIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, MinusIcon, PlusIcon, ScaleIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import { Btn, Select } from '@/components/atoms';
 import { InventoryProduct } from '@/services/inventory.service';
+
+/** Unidades de medida que implican venta por peso */
+const WEIGHT_UNITS = ['kg', 'g', 'lb', 'oz', 'kilo', 'kilogramo', 'gramo', 'libra', 'onza'];
 
 interface CartItemProps {
   item: {
@@ -19,6 +22,12 @@ interface CartItemProps {
   onUpdateQuantity: (productId: string, quantity: number) => void;
   onUpdatePrice: (productId: string, price: number, priceMode?: string) => void;
   onRemove: (productId: string) => void;
+  /** Callback para leer peso de la báscula para este item */
+  onReadScale?: (productId: string) => void;
+  /** Si la báscula está conectada */
+  scaleConnected?: boolean;
+  /** Si hay una lectura en curso */
+  scaleReading?: boolean;
 }
 
 interface PriceOption {
@@ -33,10 +42,28 @@ export default function CartItem({
   item,
   onUpdateQuantity,
   onUpdatePrice,
-  onRemove
+  onRemove,
+  onReadScale,
+  scaleConnected = false,
+  scaleReading = false,
 }: CartItemProps) {
   const t = useTranslations('pages.pos.cart');
   const [customPriceInput, setCustomPriceInput] = useState(item.price.toString());
+  const [quantityInput, setQuantityInput] = useState(item.quantity.toString());
+
+  /** Determina si el producto se vende por peso según su unidad de medida */
+  const isSoldByWeight = (): boolean => {
+    const unit = item.product.product.measurement_unit?.symbol?.toLowerCase() ||
+                 item.product.product.measurement_unit?.name?.toLowerCase() || '';
+    return WEIGHT_UNITS.some(w => unit.includes(w));
+  };
+
+  const sellByWeight = isSoldByWeight();
+
+  // Sincronizar input de cantidad con el estado externo
+  useEffect(() => {
+    setQuantityInput(item.quantity.toString());
+  }, [item.quantity]);
 
   const getDefaultPrice = (): number => {
     if (item.product.product.base_price !== undefined) {
@@ -160,30 +187,99 @@ export default function CartItem({
     setCustomPriceInput(item.price.toString());
   };
 
+  const handleQuantityInputChange = (value: string) => {
+    setQuantityInput(value);
+
+    if (value.trim() === '') {
+      return;
+    }
+
+    const numericValue = parseFloat(value);
+    if (Number.isNaN(numericValue) || numericValue < 0) {
+      return;
+    }
+
+    onUpdateQuantity(item.product.id, numericValue);
+  };
+
+  const handleQuantityInputBlur = () => {
+    if (quantityInput.trim() === '' || parseFloat(quantityInput) <= 0) {
+      setQuantityInput(item.quantity.toString());
+    }
+  };
+
   return (
     <div className="border rounded-lg p-3">
       <div className="flex items-center space-x-3">
         <div className="flex-1 min-w-0">
           <h3 className="font-medium text-sm truncate">{item.product.product.name}</h3>
-          <p className="text-xs text-gray-500">{item.product.product.sku}</p>
+          <p className="text-xs text-gray-500">
+            {item.product.product.sku}
+            {sellByWeight && item.product.product.measurement_unit?.symbol && (
+              <span className="ml-1 text-blue-500 font-medium">
+                ({item.product.product.measurement_unit.symbol})
+              </span>
+            )}
+          </p>
         </div>
 
+        {/* Controles de cantidad */}
         <div className="flex items-center space-x-1">
-          <Btn
-            variant="ghost"
-            size="sm"
-            onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
-          >
-            <MinusIcon className="h-3 w-3" />
-          </Btn>
-          <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
-          <Btn
-            variant="ghost"
-            size="sm"
-            onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
-          >
-            <PlusIcon className="h-3 w-3" />
-          </Btn>
+          {sellByWeight ? (
+            // Para productos por peso: input numérico + botón de báscula
+            <div className="flex items-center space-x-1">
+              <input
+                type="number"
+                min="0.001"
+                step="0.001"
+                value={quantityInput}
+                onChange={(e) => handleQuantityInputChange(e.target.value)}
+                onBlur={handleQuantityInputBlur}
+                className="w-20 px-2 py-1 rounded text-sm text-center text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors"
+                style={{
+                  border: `1px solid rgb(var(--color-secondary-300))`,
+                  ['--tw-ring-color' as string]: `rgb(var(--color-primary-500))`,
+                  ['--tw-ring-offset-color' as string]: 'white',
+                }}
+              />
+              {onReadScale && (
+                <Btn
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onReadScale(item.product.id)}
+                  disabled={!scaleConnected || scaleReading}
+                  title={
+                    !scaleConnected
+                      ? t('scaleNotConnected')
+                      : scaleReading
+                        ? t('scaleReading')
+                        : t('readScale')
+                  }
+                >
+                  <ScaleIcon className={`h-4 w-4 ${scaleConnected ? 'text-green-600' : 'text-gray-400'} ${scaleReading ? 'animate-pulse' : ''}`} />
+                </Btn>
+              )}
+            </div>
+          ) : (
+            // Para productos por unidad: botones +/-
+            <>
+              <Btn
+                variant="ghost"
+                size="sm"
+                onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
+              >
+                <MinusIcon className="h-3 w-3" />
+              </Btn>
+              <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
+              <Btn
+                variant="ghost"
+                size="sm"
+                onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
+              >
+                <PlusIcon className="h-3 w-3" />
+              </Btn>
+            </>
+          )}
         </div>
 
         <div className="w-52 space-y-2">

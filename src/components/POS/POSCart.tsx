@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   TrashIcon,
@@ -8,6 +8,7 @@ import {
   ArrowLeftIcon,
   BanknotesIcon,
   ArrowsRightLeftIcon,
+  ScaleIcon,
 } from "@heroicons/react/24/outline";
 import { Btn, SelectWithAdd } from "@/components/atoms";
 import { Client } from "@/types/client";
@@ -15,6 +16,8 @@ import CartItem from "./CartItem";
 
 import { useRouter, useParams } from "next/navigation";
 import { useCart } from '@/context/CartContext';
+import { useScale } from '@/hooks/useScale';
+import { toastService } from '@/services/toast.service';
 
 interface POSCartProps {
   clients: Client[];
@@ -45,6 +48,7 @@ const POSCart = (
   const locale = useLocale();
   const router = useRouter();
   const { cart, selectedClient, updateQuantity, updatePrice, removeFromCart, clearCart, getTotal, getTotalQuantity, setSelectedClient } = useCart();
+  const { isConnected, isReading, isSupported, error, connect, disconnect, readWeight } = useScale();
 
   const params = useParams();
   const tenant = params?.tenant as string;
@@ -61,6 +65,30 @@ const POSCart = (
     clearCart();
   };
 
+  const handleScaleToggle = async () => {
+    if (isConnected) {
+      await disconnect();
+      toastService.info(t("scale.disconnected"));
+    } else {
+      const success = await connect();
+      if (success) {
+        toastService.success(t("scale.connected"));
+      } else if (error) {
+        toastService.error(error);
+      }
+    }
+  };
+
+  const handleReadScale = useCallback(async (productId: string) => {
+    const weight = await readWeight();
+    if (weight !== null && weight > 0) {
+      updateQuantity(productId, weight);
+      toastService.success(`${t("scale.weightRead")}: ${weight.toFixed(3)}`);
+    } else {
+      toastService.error(t("scale.readError"));
+    }
+  }, [readWeight, updateQuantity, t]);
+
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="p-6 border-b">
@@ -74,6 +102,21 @@ const POSCart = (
           </Btn>
           <h2 className="text-lg font-semibold">{t("cart.title")}</h2>
           <div className="flex items-center space-x-2">
+            {/* Botón de báscula */}
+            {isSupported && (
+              <Btn
+                variant="ghost"
+                size="sm"
+                onClick={handleScaleToggle}
+                leftIcon={
+                  <ScaleIcon className={`h-4 w-4 ${isConnected ? 'text-green-600' : 'text-gray-400'}`} />
+                }
+              >
+                <span className={isConnected ? 'text-green-600' : ''}>
+                  {isConnected ? t("scale.connected") : t("scale.connect")}
+                </span>
+              </Btn>
+            )}
             {onSwitchCashRegister && (
               <Btn
                 variant="ghost"
@@ -135,6 +178,9 @@ const POSCart = (
               onUpdateQuantity={updateQuantity}
               onUpdatePrice={updatePrice}
               onRemove={removeFromCart}
+              onReadScale={handleReadScale}
+              scaleConnected={isConnected}
+              scaleReading={isReading}
             />
           ))}
 

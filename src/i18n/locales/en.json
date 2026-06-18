@@ -2357,7 +2357,10 @@
         "checkout": "Complete Sale",
         "processing": "Processing...",
         "selectedProducts": "Selected Products",
-        "cashBalance": "Cash Balance"
+        "cashBalance": "Cash Balance",
+        "scaleNotConnected": "Scale not connected",
+        "scaleReading": "Reading weight...",
+        "readScale": "Read weight from scale"
       },
       "payment": {
         "title": "Payment Method",
@@ -2493,6 +2496,14 @@
         "processing": "Processing...",
         "close": "Close Register",
         "adjust": "Adjust"
+      },
+      "scale": {
+        "connect": "Scale",
+        "connected": "Scale connected",
+        "disconnected": "Scale disconnected",
+        "weightRead": "Weight read",
+        "readError": "Could not read weight from scale",
+        "notSupported": "Your browser does not support scale connection (use Chrome or Edge)"
       }
     },
     "cashRegisters": {

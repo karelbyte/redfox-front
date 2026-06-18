@@ -2352,7 +2352,10 @@
         "checkout": "Completar Venta",
         "processing": "Procesando...",
         "selectedProducts": "Productos seleccionados",
-        "cashBalance": "Balance de Caja"
+        "cashBalance": "Balance de Caja",
+        "scaleNotConnected": "Báscula no conectada",
+        "scaleReading": "Leyendo peso...",
+        "readScale": "Leer peso de báscula"
       },
       "payment": {
         "title": "Método de Pago",
@@ -2488,6 +2491,14 @@
         "processing": "Procesando...",
         "close": "Cerrar Caja",
         "adjust": "Ajustar"
+      },
+      "scale": {
+        "connect": "Báscula",
+        "connected": "Báscula conectada",
+        "disconnected": "Báscula desconectada",
+        "weightRead": "Peso leído",
+        "readError": "No se pudo leer el peso de la báscula",
+        "notSupported": "Tu navegador no soporta conexión con báscula (usa Chrome o Edge)"
       }
     },
     "cashRegisters": {

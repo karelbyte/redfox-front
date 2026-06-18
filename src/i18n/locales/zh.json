@@ -2309,7 +2309,10 @@
         "checkout": "完成销售",
         "processing": "处理中...",
         "selectedProducts": "已选产品",
-        "cashBalance": "现金余额"
+        "cashBalance": "现金余额",
+        "scaleNotConnected": "电子秤未连接",
+        "scaleReading": "正在读取重量...",
+        "readScale": "从电子秤读取重量"
       },
       "payment": {
         "title": "付款方式",
@@ -2442,6 +2445,14 @@
         "processing": "处理中...",
         "close": "关闭收银机",
         "adjust": "调整"
+      },
+      "scale": {
+        "connect": "电子秤",
+        "connected": "电子秤已连接",
+        "disconnected": "电子秤已断开",
+        "weightRead": "读取重量",
+        "readError": "无法从电子秤读取重量",
+        "notSupported": "您的浏览器不支持电子秤连接（请使用Chrome或Edge）"
       }
     },
     "cashRegisters": {
