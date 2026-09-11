@@ -10,6 +10,15 @@ export interface Invoice {
   tax_amount: number;
   total_amount: number;
   status: InvoiceStatus;
+  /**
+   * Comprobante SUNAT asignado a la factura. Nulo en los packs que no numeran
+   * por serie, como el CFDI mexicano.
+   */
+  document_type?: string | null;
+  series?: string | null;
+  number?: number | null;
+  /** Moneda del comprobante en ISO 4217. Nulo usa la del pack. */
+  currency_code?: string | null;
   cfdi_uuid?: string | null;
   /** ID interno del comprobante en el PAC activo. Escalable para cualquier pack. */
   pack_invoice_id?: string | null;
@@ -37,6 +46,7 @@ export interface InvoiceFormData {
   code: string;
   date: string;
   client_id: string;
+  currency_code?: string;
   payment_method: PaymentMethod;
   payment_conditions?: string;
   notes?: string;

@@ -3,6 +3,7 @@ import { Client } from "@/types/client";
 import { PencilIcon, TrashIcon, CheckCircleIcon, MapPinIcon, IdentificationIcon, BanknotesIcon, ShoppingCartIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
+import { usePackCapabilities } from '@/hooks/usePackCapabilities';
 import { useRouter, useParams } from 'next/navigation';
 import Tooltip from '@/components/atoms/Tooltip';
 
@@ -236,12 +237,14 @@ function ClientActionsMenu({
   const tCredit = useTranslations('pages.clients.credit');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  // Los PAC sin catálogo de clientes (SUNAT) no tienen nada que sincronizar
+  const { capabilities } = usePackCapabilities();
   const router = useRouter();
 
   const menuItems: ActionMenuItem[] = [
     ...(can(['client_update'])
       ? [
-           ...(can(['client_update']) && onSync
+           ...(can(['client_update']) && onSync && capabilities.customerCatalog
       ? [
           {
             icon: <ArrowPathIcon className="h-4 w-4" />,

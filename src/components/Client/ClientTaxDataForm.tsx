@@ -1,5 +1,6 @@
 import { forwardRef, useImperativeHandle, useState, useEffect, useMemo } from "react";
 import { useTranslations } from 'next-intl';
+import { useCountryProfile } from '@/hooks/useCountryProfile';
 import { ClientTaxData } from "@/types/client";
 import { clientsService } from "@/services/clients.service";
 import { toastService } from "@/services/toast.service";
@@ -66,6 +67,9 @@ const REGIME_TYPES: Record<string, string[]> = {
 const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProps>(
     ({ clientId, taxData, onSuccess, onSavingChange }, ref) => {
         const t = useTranslations('pages.clients.taxData');
+        // Los campos fiscales dependen del país de la organización
+        const { country } = useCountryProfile();
+        const taxFields = country.customerTaxFields;
 
         const [formData, setFormData] = useState<FormData>({
             tax_document: taxData?.tax_document || "",
@@ -74,6 +78,20 @@ const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProp
             default_invoice_use: taxData?.default_invoice_use || "",
             is_main: taxData?.is_main || false,
         });
+
+        const isDocumentValid = (value: string): boolean => {
+            const { allowedLengths, numericOnly } = taxFields.document;
+
+            if (numericOnly && !/^\d+$/.test(value)) {
+                return false;
+            }
+
+            return allowedLengths.includes(value.length);
+        };
+
+        const documentLabel = t.has(`documentKinds.${taxFields.document.kind}`)
+            ? t(`documentKinds.${taxFields.document.kind}`)
+            : t('taxDocument');
 
         const personType = useMemo(() => {
             const cleanRfc = formData.tax_document.trim();
@@ -102,8 +120,9 @@ const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProp
 
         // Auto-adjust tax system when person type changes
         useEffect(() => {
+            if (!taxFields.taxSystem) return;
             if (personType === "BOTH") return;
-            
+
             const isValid = REGIME_TYPES[personType]?.includes(formData.tax_system);
             if (!isValid) {
                 const defaultRegime = personType === "MORAL" ? "601" : "605";
@@ -125,6 +144,8 @@ const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProp
 
         // Ensure default_invoice_use is valid for the current regime
         useEffect(() => {
+            if (!taxFields.invoiceUse) return;
+
             const availableUses = Object.entries(REGIME_INVOICE_USE_MAP)
                 .filter(([_, regimes]) => regimes.includes(formData.tax_system))
                 .map(([code]) => code);
@@ -159,9 +180,17 @@ const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProp
         const validateForm = (): boolean => {
             const newErrors: FormErrors = {};
             let isValid = true;
+            const document = formData.tax_document.trim();
 
-            if (!formData.tax_document.trim()) {
+            if (!document) {
                 newErrors.tax_document = t('errors.taxDocumentRequired');
+                isValid = false;
+            } else if (!isDocumentValid(document)) {
+                // El identificador fiscal lo define el país: la API lo rechaza
+                // al emitir, así que conviene avisar al guardar el cliente.
+                newErrors.tax_document = t('errors.taxDocumentFormat', {
+                    lengths: taxFields.document.allowedLengths.join(' o '),
+                });
                 isValid = false;
             }
 
@@ -203,9 +232,18 @@ const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProp
         return (
             <form className="space-y-6">
                 <Input
-                    label={t('taxDocument')}
+                    label={documentLabel}
                     value={formData.tax_document}
-                    onChange={(e) => setFormData(prev => ({ ...prev, tax_document: e.target.value.toUpperCase() }))}
+                    onChange={(e) => {
+                        const raw = e.target.value.toUpperCase();
+                        setFormData(prev => ({
+                            ...prev,
+                            tax_document: taxFields.document.numericOnly
+                                ? raw.replace(/\D/g, '')
+                                : raw,
+                        }));
+                    }}
+                    maxLength={Math.max(...taxFields.document.allowedLengths)}
                     error={errors.tax_document}
                     placeholder={t('placeholders.taxDocument')}
                     required
@@ -224,7 +262,9 @@ const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProp
                     </p>
                 </div>
 
+                {(taxFields.taxSystem || taxFields.invoiceUse) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {taxFields.taxSystem && (
                     <CustomSelect
                         label={t('taxSystem')}
                         value={formData.tax_system}
@@ -241,13 +281,17 @@ const ClientTaxDataForm = forwardRef<ClientTaxDataFormRef, ClientTaxDataFormProp
                             }));
                         }}
                     />
+                    )}
+                    {taxFields.invoiceUse && (
                     <CustomSelect
                         label={t('defaultInvoiceUse')}
                         value={formData.default_invoice_use}
                         options={invoiceUseOptions}
                         onChange={(e) => setFormData(prev => ({ ...prev, default_invoice_use: e.target.value }))}
                     />
+                    )}
                 </div>
+                )}
 
                 <Checkbox
                     id="is_main_tax"

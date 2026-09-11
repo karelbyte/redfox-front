@@ -20,6 +20,10 @@ interface LoginResponse {
     organization_id?: string;
     organization_slug?: string;
     organization_referrer_code?: string;
+  /** País de la organización en ISO 3166-1 alpha-2. */
+  organization_country?: string;
+  /** Moneda del país de la organización, en ISO 4217. */
+  organization_currency?: string;
     permissions: string[];
     status: boolean;
     admin: boolean;
@@ -65,7 +69,7 @@ export const authService = {
     }
   },
 
-  async register(data: { name: string; email: string; password: string; password_confirmation: string; companyName: string; referrer_code?: string; language?: string }): Promise<void> {
+  async register(data: { name: string; email: string; password: string; password_confirmation: string; companyName: string; referrer_code?: string; language?: string; country?: string }): Promise<void> {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
