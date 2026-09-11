@@ -1,20 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslations, useLocale } from 'next-intl';
 import { authService } from '@/services/auth.service';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toastService } from '@/services/toast.service';
+import { countriesService } from '@/services/countries.service';
+import { CountryProfile } from '@/types/country';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import AuthThemeSelector from '@/components/AuthThemeSelector';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '', companyName: '', email: '',
-    password: '', password_confirmation: '', referrer_code: '', language: '',
-    country: 'mx',
+    password: '', password_confirmation: '', referrer_code: '', language: '', country: '',
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +39,29 @@ export default function RegisterPage() {
 
   const slugPreview = formData.companyName.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '');
 
+  // El país determina los impuestos, unidades, monedas y la facturación
+  // electrónica con la que arranca la organización.
+  const [countries, setCountries] = useState<CountryProfile[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    countriesService
+      .getAll()
+      .then((list) => {
+        if (!active) return;
+        setCountries(list);
+        setFormData((prev) => (prev.country ? prev : { ...prev, country: list[0]?.code || '' }));
+      })
+      .catch(() => {
+        if (active) setCountries([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.password_confirmation) { toastService.error(t('passwordMismatch')); return; }
@@ -51,6 +75,7 @@ export default function RegisterPage() {
       
       await authService.register({
         ...formData,
+        country: formData.country || undefined,
         language: storedLanguage || locale
       });
       toastService.success(t('success'));
@@ -144,6 +169,18 @@ export default function RegisterPage() {
               )}
             </div>
 
+            {countries.length > 0 && (
+              <div>
+                <label htmlFor="country" className="block text-sm font-medium mb-1.5" style={{ color: `rgb(var(--color-secondary-700))` }}>{t('country')}</label>
+                <select id="country" name="country" required className={inputCls} style={inputStyle(false)} value={formData.country} onChange={handleChange}>
+                  {countries.map((country) => (
+                    <option key={country.code} value={country.code}>{country.name}</option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-gray-400">{t('countryHelp')}</p>
+              </div>
+            )}
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1.5" style={{ color: `rgb(var(--color-secondary-700))` }}>{t('email')}</label>
               <input id="email" name="email" type="email" required className={inputCls} style={inputStyle(false)} value={formData.email} onChange={handleChange} />
@@ -168,23 +205,6 @@ export default function RegisterPage() {
                 </button>
               </div>
               {passwordMismatch && <p className="mt-1 text-xs text-red-500">{t('passwordMismatch')}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="country" className="block text-sm font-medium mb-1.5" style={{ color: `rgb(var(--color-secondary-700))` }}>
-                {locale === 'zh' ? '国家' : locale === 'en' ? 'Country' : 'País'}
-              </label>
-              <select
-                id="country"
-                name="country"
-                className={inputCls}
-                style={inputStyle(false)}
-                value={formData.country}
-                onChange={handleChange}
-              >
-                <option value="mx">{locale === 'zh' ? '墨西哥' : locale === 'en' ? 'Mexico' : 'México'}</option>
-                <option value="pe">{locale === 'zh' ? '秘鲁' : locale === 'en' ? 'Peru' : 'Perú'}</option>
-              </select>
             </div>
 
             <div>

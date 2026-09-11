@@ -172,6 +172,7 @@
     "createInvoice": "Crear Factura",
     "invoiceList": "Lista de Facturas",
     "certificationPacks": "Packs SAT",
+    "documentSeries": "Series de comprobantes",
     "auditLogs": "Logs de Auditoría",
     "finance": "Finanzas",
     "shipments": "Logística / Envíos",
@@ -208,7 +209,9 @@
       "passwordMismatch": "Las contraseñas no coinciden",
       "companyNameInvalid": "El nombre de la organización solo puede contener letras y espacios, sin números ni caracteres especiales.",
       "companyNameTooShort": "El nombre de la organización debe tener al menos 3 caracteres.",
-      "slugPreview": "Tu identificador será"
+      "slugPreview": "Tu identificador será",
+      "country": "País",
+      "countryHelp": "Determina los impuestos, unidades y la facturación electrónica de tu empresa. No se puede cambiar después."
     },
     "activate": {
       "activating": "Activando tu cuenta...",
@@ -1289,7 +1292,8 @@
         },
         "errors": {
           "taxDocumentRequired": "El RFC es requerido",
-          "taxNameRequired": "La razón social es requerida"
+          "taxNameRequired": "La razón social es requerida",
+          "taxDocumentFormat": "El documento debe tener {lengths} dígitos"
         },
         "emptyState": {
           "title": "Datos Fiscales no registrados",
@@ -1353,6 +1357,10 @@
         },
         "table": {
           "actions": "Acciones"
+        },
+        "documentKinds": {
+          "RFC": "RFC",
+          "RUC_DNI": "RUC o DNI"
         }
       }
     },
@@ -2668,7 +2676,9 @@
         },
         "save": "Guardar",
         "cancel": "Cancelar",
-        "saving": "Guardando..."
+        "saving": "Guardando...",
+        "currency": "Moneda",
+        "currencyDefault": "Usar la moneda por defecto"
       },
       "drawer": {
         "createTitle": "Crear Factura",
@@ -3035,7 +3045,8 @@
         "configuration": "Configuración",
         "emitters": "Emisores",
         "isActive": "Activo",
-        "isDefault": "Por defecto"
+        "isDefault": "Por defecto",
+        "availableForCountry": "Packs disponibles para {country}"
       },
       "emitters": {
         "title": "Emisores",
@@ -3084,6 +3095,49 @@
       "deleteModal": {
         "title": "Eliminar Pack",
         "message": "¿Estás seguro de que deseas eliminar el pack \"{type}\"? Esta acción no se puede deshacer."
+      }
+    },
+    "documentSeries": {
+      "title": "Series de comprobantes",
+      "subtitle": "Numeración de facturas y boletas electrónicas",
+      "noData": "No hay series",
+      "noDataDesc": "Aún no has configurado ninguna serie. Crea la primera para poder emitir comprobantes.",
+      "notApplicable": {
+        "title": "No aplica a tu facturación",
+        "description": "El pack de certificación activo no numera los comprobantes por serie y correlativo, así que no hay nada que configurar aquí."
+      },
+      "documentTypes": {
+        "FACTURA": "Factura",
+        "BOLETA": "Boleta",
+        "NOTA_CREDITO": "Nota de crédito",
+        "NOTA_DEBITO": "Nota de débito"
+      },
+      "form": {
+        "documentType": "Tipo de comprobante",
+        "series": "Serie",
+        "seriesHint": "Una letra seguida de tres caracteres, como F001 para facturas o B001 para boletas.",
+        "isDefault": "Usar por defecto para este tipo de comprobante",
+        "correlativeWarning": "El correlativo empieza en 1 y solo avanza al emitir. No se puede modificar a mano: la numeración no admite huecos ni repeticiones."
+      },
+      "table": {
+        "series": "Serie",
+        "documentType": "Tipo",
+        "currentNumber": "Último emitido",
+        "status": "Estado",
+        "default": "Por defecto",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "create": "Nueva serie",
+        "setDefault": "Usar por defecto",
+        "activate": "Activar",
+        "deactivate": "Desactivar"
+      },
+      "messages": {
+        "successCreated": "Serie creada exitosamente",
+        "successUpdated": "Serie actualizada exitosamente",
+        "errorLoading": "Error al cargar las series",
+        "errorSaving": "Error al guardar la serie"
       }
     },
     "returns": {
@@ -4608,6 +4662,16 @@
         "accountUuid": "Account UUID",
         "accountUuidPlaceholder": "0000",
         "accountUuidHelp": "UUID de la cuenta (por defecto: 0000)"
+      },
+      "sunat": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "Token de tu proveedor",
+        "apiKeyHelp": "Token de acceso que te entrega tu proveedor de comprobantes electrónicos",
+        "ruc": "RUC del emisor",
+        "rucHelp": "11 dígitos. Es el RUC con el que se emiten los comprobantes.",
+        "invoiceSeries": "Serie de facturas",
+        "receiptSeries": "Serie de boletas",
+        "seriesHelp": "Al menos una serie es obligatoria. El correlativo arranca en 1 y lo gestiona el sistema."
       }
     },
     "complete": {

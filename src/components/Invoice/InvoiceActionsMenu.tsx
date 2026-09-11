@@ -4,8 +4,8 @@ import { useTranslations } from 'next-intl';
 import { Invoice } from '@/types/invoice';
 import { ActionMenuItem } from '@/components/atoms/ActionsMenu';
 import { PencilIcon, TrashIcon, EyeIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { InvoicePDFButton, InvoiceXMLButton } from './InvoiceDownloadButtons';
 import { FileCheck2 } from 'lucide-react';
+import { PackCapabilities } from '@/types/certification-pack';
 
 interface InvoiceActionsMenuProps {
   invoice: Invoice;
@@ -14,6 +14,11 @@ interface InvoiceActionsMenuProps {
   onDetails: (invoice: Invoice) => void;
   onGenerateCFDI: (invoice: Invoice) => void;
   onCancelCFDI: (invoice: Invoice) => void;
+  /**
+   * Capacidades del PAC activo. Llegan por parámetro porque esta función se
+   * invoca dentro del map de la tabla y no puede usar hooks propios.
+   */
+  capabilities?: PackCapabilities;
 }
 
 export function InvoiceActionsMenu({
@@ -23,6 +28,7 @@ export function InvoiceActionsMenu({
   onDetails,
   onGenerateCFDI,
   onCancelCFDI,
+  capabilities,
 }: InvoiceActionsMenuProps) {
   const t = useTranslations('pages.invoices');
   const tCommon = useTranslations('common');
@@ -30,8 +36,11 @@ export function InvoiceActionsMenu({
   const canEdit = invoice.status === 'DRAFT';
   const canDelete = invoice.status === 'DRAFT';
   const canGenerateCFDI = invoice.status === 'DRAFT' || invoice.status === 'FAILED_CFDI';
-  const canCancelCFDI = invoice.status === 'SENT' || invoice.status === 'PAID';
-  const canDownload = invoice.status === 'SENT' || invoice.status === 'PAID' || invoice.status === 'CANCELLED';
+  // El PAC puede no admitir la cancelación (SUNAT la resuelve con nota de
+  // crédito o comunicación de baja, no desde aquí).
+  const canCancelCFDI =
+    (invoice.status === 'SENT' || invoice.status === 'PAID') &&
+    capabilities?.cancellation !== false;
 
   const items: ActionMenuItem[] = [
     {

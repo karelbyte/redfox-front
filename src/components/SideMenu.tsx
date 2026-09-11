@@ -1409,6 +1409,18 @@ export function SideMenu() {
             ),
           },
           {
+            name: t("documentSeries"),
+            translationKey: "documentSeries",
+            path: getLocalizedPath("/dashboard/configuracion/series-comprobantes"),
+            howCan: ["certification_pack_module_view"],
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M7 7h10M7 11h10M7 15h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
+              </svg>
+            ),
+          },
+          {
             name: t("auditLogs"),
             translationKey: "auditLogs",
             path: getLocalizedPath("/dashboard/configuracion/logs-auditoria"),
@@ -1426,22 +1438,37 @@ export function SideMenu() {
     [t, getLocalizedPath]
   );
 
+  // Al navegar se despliega el menú al que pertenece la ruta, pero solo una
+  // vez por ruta: si dependiera de `expandedMenu`, cerrar el menú estando en
+  // una de sus páginas volvería a ejecutar este efecto y lo reabriría al
+  // instante, impidiendo cerrarlo.
+  const autoExpandedForPath = useRef<string | null>(null);
+
   useEffect(() => {
+    if (autoExpandedForPath.current === pathname) {
+      return;
+    }
+
+    autoExpandedForPath.current = pathname;
+
     const currentMenuItem = menuItems.find((item) =>
       item.subItems?.some((subItem) => pathname === subItem.path)
     );
 
-    if (currentMenuItem && expandedMenu !== currentMenuItem.path) {
-      setExpandedMenu(currentMenuItem.path);
-      if (typeof window !== "undefined") {
-        try {
-          localStorage.setItem(EXPANDED_MENU_STORAGE_KEY, currentMenuItem.path);
-        } catch (error) {
-          console.warn("Error saving expanded menu to localStorage:", error);
-        }
+    if (!currentMenuItem) {
+      return;
+    }
+
+    setExpandedMenu(currentMenuItem.path);
+
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(EXPANDED_MENU_STORAGE_KEY, currentMenuItem.path);
+      } catch (error) {
+        console.warn("Error saving expanded menu to localStorage:", error);
       }
     }
-  }, [pathname, expandedMenu, menuItems]);
+  }, [pathname, menuItems]);
 
   const shouldShowMenuItem = (item: MenuItem): boolean => {
     if (!item.howCan || item.howCan.length === 0) {

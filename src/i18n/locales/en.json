@@ -172,6 +172,7 @@
     "createInvoice": "Create Invoice",
     "invoiceList": "Invoice List",
     "certificationPacks": "SAT Packs",
+    "documentSeries": "Document series",
     "auditLogs": "Audit Logs",
     "finance": "Finance",
     "shipments": "Shipments",
@@ -208,7 +209,9 @@
       "passwordMismatch": "Passwords do not match",
       "companyNameInvalid": "Organization name can only contain letters and spaces, no numbers or special characters.",
       "companyNameTooShort": "Organization name must be at least 3 characters.",
-      "slugPreview": "Your identifier will be"
+      "slugPreview": "Your identifier will be",
+      "country": "Country",
+      "countryHelp": "Determines your company taxes, units and electronic invoicing. It cannot be changed later."
     },
     "activate": {
       "activating": "Activating your account...",
@@ -1304,7 +1307,8 @@
         },
         "errors": {
           "taxDocumentRequired": "Tax document is required",
-          "taxNameRequired": "Legal name is required"
+          "taxNameRequired": "Legal name is required",
+          "taxDocumentFormat": "The document must have {lengths} digits"
         },
         "emptyState": {
           "title": "Tax Data not registered",
@@ -1368,6 +1372,10 @@
         },
         "table": {
           "actions": "Actions"
+        },
+        "documentKinds": {
+          "RFC": "RFC",
+          "RUC_DNI": "RUC or DNI"
         }
       }
     },
@@ -2673,7 +2681,9 @@
         },
         "save": "Save",
         "cancel": "Cancel",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "currency": "Currency",
+        "currencyDefault": "Use the default currency"
       },
       "drawer": {
         "createTitle": "Create Invoice",
@@ -3040,7 +3050,8 @@
         "configuration": "Configuration",
         "emitters": "Emitters",
         "isActive": "Active",
-        "isDefault": "Default"
+        "isDefault": "Default",
+        "availableForCountry": "Packs available for {country}"
       },
       "emitters": {
         "title": "Emitters",
@@ -3089,6 +3100,49 @@
       "deleteModal": {
         "title": "Delete Pack",
         "message": "Are you sure you want to delete pack \"{type}\"? This action cannot be undone."
+      }
+    },
+    "documentSeries": {
+      "title": "Document series",
+      "subtitle": "Numbering for electronic invoices and receipts",
+      "noData": "No series yet",
+      "noDataDesc": "You have not configured any series yet. Create the first one to start issuing documents.",
+      "notApplicable": {
+        "title": "Not applicable to your billing",
+        "description": "The active certification pack does not number documents by series and correlative, so there is nothing to configure here."
+      },
+      "documentTypes": {
+        "FACTURA": "Invoice",
+        "BOLETA": "Sales receipt",
+        "NOTA_CREDITO": "Credit note",
+        "NOTA_DEBITO": "Debit note"
+      },
+      "form": {
+        "documentType": "Document type",
+        "series": "Series",
+        "seriesHint": "One letter followed by three characters, such as F001 for invoices or B001 for receipts.",
+        "isDefault": "Use by default for this document type",
+        "correlativeWarning": "The correlative starts at 1 and only advances when a document is issued. It cannot be edited by hand: the numbering allows no gaps or repeats."
+      },
+      "table": {
+        "series": "Series",
+        "documentType": "Type",
+        "currentNumber": "Last issued",
+        "status": "Status",
+        "default": "Default",
+        "actions": "Actions"
+      },
+      "actions": {
+        "create": "New series",
+        "setDefault": "Set as default",
+        "activate": "Activate",
+        "deactivate": "Deactivate"
+      },
+      "messages": {
+        "successCreated": "Series created successfully",
+        "successUpdated": "Series updated successfully",
+        "errorLoading": "Error loading series",
+        "errorSaving": "Error saving series"
       }
     },
     "returns": {
@@ -4599,6 +4653,16 @@
         "accountUuid": "Account UUID",
         "accountUuidPlaceholder": "0000",
         "accountUuidHelp": "Account UUID (default: 0000)"
+      },
+      "sunat": {
+        "apiKey": "API Key",
+        "apiKeyPlaceholder": "Your provider token",
+        "apiKeyHelp": "Access token provided by your electronic invoicing provider",
+        "ruc": "Issuer RUC",
+        "rucHelp": "11 digits. The RUC the documents are issued with.",
+        "invoiceSeries": "Invoice series",
+        "receiptSeries": "Sales receipt series",
+        "seriesHelp": "At least one series is required. The correlative starts at 1 and is managed by the system."
       }
     },
     "complete": {
