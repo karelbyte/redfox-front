@@ -1,179 +1,123 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { ThemeProvider } from '@/context/ThemeContext';
 import { MainMenu } from '../MainMenu';
-import { AuthContext } from '../../context/AuthContext';
-import { ThemeContext } from '../../context/ThemeContext';
 
-// Mock next/navigation
-const mockPush = jest.fn();
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-  }),
-  usePathname: () => '/dashboard',
+// MainMenu es la barra superior: este test verifica su propio comportamiento,
+// no el de los bloques que aloja, así que esos se sustituyen por marcadores.
+jest.mock('@/components/UserMenu', () => ({
+  UserMenu: () => <div data-testid="user-menu" />,
 }));
 
-// Mock user context
-const mockUser = {
-  id: 1,
-  email: 'test@example.com',
-  firstName: 'Test',
-  lastName: 'User',
-  roles: ['admin'],
-};
+jest.mock('@/components/Notifications/NotificationBell', () => ({
+  __esModule: true,
+  default: () => <div data-testid="notification-bell" />,
+}));
 
-const mockAuthContext = {
-  user: mockUser,
-  login: jest.fn(),
-  logout: jest.fn(),
-  isLoading: false,
-  isAuthenticated: true,
-};
+jest.mock('@/components/Subscription/TrialBanner', () => ({
+  TrialBanner: () => <div data-testid="trial-banner" />,
+}));
 
-const mockThemeContext = {
-  theme: 'light' as const,
-  toggleTheme: jest.fn(),
-};
+jest.mock('@/components/GlobalSearch/GlobalSearchModal', () => ({
+  __esModule: true,
+  default: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div data-testid="search-modal" /> : null,
+}));
 
-const renderWithProviders = (component: React.ReactElement) => {
+jest.mock('@/components/Support/SupportModal', () => ({
+  __esModule: true,
+  default: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div data-testid="support-modal" /> : null,
+}));
+
+const mockFavorites = jest.fn();
+jest.mock('@/hooks/useFavorites', () => ({
+  useFavorites: () => mockFavorites(),
+}));
+
+function renderMainMenu() {
   return render(
-    <AuthContext.Provider value={mockAuthContext}>
-      <ThemeContext.Provider value={mockThemeContext}>
-        {component}
-      </ThemeContext.Provider>
-    </AuthContext.Provider>
+    <ThemeProvider>
+      <MainMenu />
+    </ThemeProvider>,
   );
-};
+}
 
 describe('MainMenu', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    localStorage.clear();
+    mockFavorites.mockReturnValue({ favorites: [], toggle: jest.fn() });
   });
 
-  it('renders main menu items', () => {
-    renderWithProviders(<MainMenu />);
+  it('muestra el logotipo y los bloques de la barra', () => {
+    renderMainMenu();
 
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Products')).toBeInTheDocument();
-    expect(screen.getByText('Clients')).toBeInTheDocument();
-    expect(screen.getByText('Inventory')).toBeInTheDocument();
-    expect(screen.getByText('Sales')).toBeInTheDocument();
+    expect(screen.getByAltText('Nitro')).toBeInTheDocument();
+    expect(screen.getByTestId('notification-bell')).toBeInTheDocument();
+    expect(screen.getByTestId('user-menu')).toBeInTheDocument();
   });
 
-  it('highlights active menu item', () => {
-    renderWithProviders(<MainMenu />);
+  it('usa el logotipo del tema activo', () => {
+    localStorage.setItem('nitro-theme', 'blue');
 
-    const dashboardItem = screen.getByText('Dashboard').closest('a');
-    expect(dashboardItem).toHaveClass('bg-blue-100'); // Active state class
+    renderMainMenu();
+
+    expect(screen.getByAltText('Nitro')).toHaveAttribute('src', '/nitrob.png');
   });
 
-  it('navigates to correct route when menu item is clicked', () => {
-    renderWithProviders(<MainMenu />);
+  it('abre la búsqueda global al pulsar su botón', () => {
+    renderMainMenu();
 
-    const productsLink = screen.getByText('Products');
-    fireEvent.click(productsLink);
+    expect(screen.queryByTestId('search-modal')).not.toBeInTheDocument();
 
-    expect(mockPush).toHaveBeenCalledWith('/products');
+    // next-intl está simulado y devuelve la clave de traducción
+    fireEvent.click(screen.getByText('search'));
+
+    expect(screen.getByTestId('search-modal')).toBeInTheDocument();
   });
 
-  it('shows admin-only menu items for admin users', () => {
-    renderWithProviders(<MainMenu />);
+  it('abre el soporte al pulsar su botón', () => {
+    renderMainMenu();
 
-    expect(screen.getByText('Users')).toBeInTheDocument();
-    expect(screen.getByText('Settings')).toBeInTheDocument();
+    expect(screen.queryByTestId('support-modal')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '' }) || screen.getAllByRole('button')[1]);
+
+    expect(screen.getByTestId('support-modal')).toBeInTheDocument();
   });
 
-  it('hides admin-only menu items for non-admin users', () => {
-    const nonAdminContext = {
-      ...mockAuthContext,
-      user: { ...mockUser, roles: ['user'] },
-    };
+  it('muestra el aviso de prueba cuando no hay favoritos', () => {
+    renderMainMenu();
 
-    render(
-      <AuthContext.Provider value={nonAdminContext}>
-        <ThemeContext.Provider value={mockThemeContext}>
-          <MainMenu />
-        </ThemeContext.Provider>
-      </AuthContext.Provider>
-    );
-
-    expect(screen.queryByText('Users')).not.toBeInTheDocument();
-    expect(screen.queryByText('Settings')).not.toBeInTheDocument();
+    expect(screen.getByTestId('trial-banner')).toBeInTheDocument();
   });
 
-  it('shows correct icons for menu items', () => {
-    renderWithProviders(<MainMenu />);
+  describe('favoritos', () => {
+    it('los muestra en lugar del aviso de prueba', () => {
+      mockFavorites.mockReturnValue({
+        favorites: [{ path: '/dashboard/productos', name: 'Productos' }],
+        toggle: jest.fn(),
+      });
 
-    // Check that icons are rendered (assuming they have specific test IDs or classes)
-    const dashboardIcon = screen.getByTestId('dashboard-icon');
-    const productsIcon = screen.getByTestId('products-icon');
+      renderMainMenu();
 
-    expect(dashboardIcon).toBeInTheDocument();
-    expect(productsIcon).toBeInTheDocument();
-  });
+      expect(screen.queryByTestId('trial-banner')).not.toBeInTheDocument();
+      expect(screen.getByRole('link')).toHaveAttribute('href', '/dashboard/productos');
+    });
 
-  it('collapses menu when collapse button is clicked', () => {
-    renderWithProviders(<MainMenu />);
+    it('permite quitar uno de favoritos', () => {
+      const toggle = jest.fn();
+      mockFavorites.mockReturnValue({
+        favorites: [{ path: '/dashboard/productos', name: 'Productos' }],
+        toggle,
+      });
 
-    const collapseButton = screen.getByRole('button', { name: /collapse menu/i });
-    fireEvent.click(collapseButton);
+      renderMainMenu();
 
-    // Check that menu text is hidden in collapsed state
-    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
-    
-    // But icons should still be visible
-    expect(screen.getByTestId('dashboard-icon')).toBeInTheDocument();
-  });
+      fireEvent.click(screen.getByTitle('Quitar de favoritos'));
 
-  it('expands menu when expand button is clicked', () => {
-    renderWithProviders(<MainMenu />);
-
-    // First collapse the menu
-    const collapseButton = screen.getByRole('button', { name: /collapse menu/i });
-    fireEvent.click(collapseButton);
-
-    // Then expand it
-    const expandButton = screen.getByRole('button', { name: /expand menu/i });
-    fireEvent.click(expandButton);
-
-    // Menu text should be visible again
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Products')).toBeInTheDocument();
-  });
-
-  it('shows notification badge when there are notifications', () => {
-    const contextWithNotifications = {
-      ...mockAuthContext,
-      user: { ...mockUser, unreadNotifications: 3 },
-    };
-
-    render(
-      <AuthContext.Provider value={contextWithNotifications}>
-        <ThemeContext.Provider value={mockThemeContext}>
-          <MainMenu />
-        </ThemeContext.Provider>
-      </AuthContext.Provider>
-    );
-
-    const notificationBadge = screen.getByText('3');
-    expect(notificationBadge).toBeInTheDocument();
-    expect(notificationBadge).toHaveClass('bg-red-500'); // Notification badge styling
-  });
-
-  it('applies correct theme classes', () => {
-    const darkThemeContext = {
-      theme: 'dark' as const,
-      toggleTheme: jest.fn(),
-    };
-
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ThemeContext.Provider value={darkThemeContext}>
-          <MainMenu />
-        </ThemeContext.Provider>
-      </AuthContext.Provider>
-    );
-
-    const menuContainer = screen.getByRole('navigation');
-    expect(menuContainer).toHaveClass('bg-gray-800'); // Dark theme class
+      expect(toggle).toHaveBeenCalledWith(
+        expect.objectContaining({ path: '/dashboard/productos' }),
+      );
+    });
   });
 });

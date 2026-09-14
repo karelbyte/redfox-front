@@ -18,6 +18,9 @@ jest.mock('next/navigation', () => ({
   usePathname() {
     return '/';
   },
+  useParams() {
+    return {};
+  },
 }));
 
 // Mock next-intl
