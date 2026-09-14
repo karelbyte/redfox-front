@@ -1,323 +1,298 @@
-import { getProducts, getProduct, createProduct, updateProduct, deleteProduct, updateProductStock } from '../products.service';
-import { server } from '../../__mocks__/server';
 import { http, HttpResponse } from 'msw';
+import { productService } from '../products.service';
+import { server } from '../../__mocks__/server';
 
-// Mock the API base URL
-process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3000/api';
+// El cliente HTTP antepone la URL base de la API, así que los manejadores
+// aceptan cualquier origen.
+const PRODUCTS = '*/api/products';
 
-describe('ProductsService', () => {
+const product = {
+  id: 'prod-1',
+  name: 'Teclado mecánico',
+  sku: 'TEC-001',
+  description: 'Teclado mecánico retroiluminado',
+};
+
+const paginated = {
+  data: [product],
+  meta: { total: 1, page: 1, limit: 10, totalPages: 1 },
+};
+
+/** Captura la URL que recibe el servidor para comprobar cómo se construye. */
+function captureUrl(path: string, body: object = paginated) {
+  const seen: { url?: string } = {};
+
+  server.use(
+    http.get(path, ({ request }) => {
+      seen.url = request.url;
+      return HttpResponse.json(body);
+    }),
+  );
+
+  return seen;
+}
+
+describe('productService', () => {
   describe('getProducts', () => {
-    it('should fetch products successfully', async () => {
-      const result = await getProducts(1, 10);
+    it('devuelve la página de productos', async () => {
+      server.use(http.get(PRODUCTS, () => HttpResponse.json(paginated)));
 
-      expect(result).toEqual({
-        data: expect.arrayContaining([
-          expect.objectContaining({
-            id: 1,
-            name: 'Test Product 1',
-            price: 100.00,
-          }),
-        ]),
-        total: 2,
-        page: 1,
-        limit: 10,
-        totalPages: 1,
-      });
-    });
-
-    it('should fetch products with search parameter', async () => {
-      const result = await getProducts(1, 10, 'Test Product 1');
+      const result = await productService.getProducts();
 
       expect(result.data).toHaveLength(1);
-      expect(result.data[0].name).toBe('Test Product 1');
+      expect(result.data[0].name).toBe('Teclado mecánico');
+      expect(result.meta.total).toBe(1);
     });
 
-    it('should handle empty search results', async () => {
-      const result = await getProducts(1, 10, 'NonExistentProduct');
+    it('no envía parámetros cuando no se indican', async () => {
+      const seen = captureUrl(PRODUCTS);
 
-      expect(result.data).toHaveLength(0);
-      expect(result.total).toBe(0);
+      await productService.getProducts();
+
+      expect(seen.url).not.toContain('?');
     });
 
-    it('should handle API errors', async () => {
-      // Override the handler to return an error
+    it('traslada página, término, estado y tipo a la consulta', async () => {
+      const seen = captureUrl(PRODUCTS);
+
+      await productService.getProducts(2, 'teclado', false, 'TANGIBLE');
+
+      const query = new URL(seen.url as string).searchParams;
+      expect(query.get('page')).toBe('2');
+      expect(query.get('term')).toBe('teclado');
+      expect(query.get('is_active')).toBe('false');
+      expect(query.get('type')).toBe('TANGIBLE');
+    });
+
+    it('admite un resultado vacío', async () => {
       server.use(
-        http.get('/api/products', () => {
-          return new HttpResponse(null, { status: 500 });
-        })
+        http.get(PRODUCTS, () =>
+          HttpResponse.json({
+            data: [],
+            meta: { total: 0, page: 1, limit: 10, totalPages: 0 },
+          }),
+        ),
       );
 
-      await expect(getProducts(1, 10)).rejects.toThrow();
+      const result = await productService.getProducts(1, 'no-existe');
+
+      expect(result.data).toEqual([]);
+      expect(result.meta.total).toBe(0);
     });
 
-    it('should handle network errors', async () => {
-      // Override the handler to simulate network error
+    it('propaga el mensaje de error de la API', async () => {
       server.use(
-        http.get('/api/products', () => {
-          return HttpResponse.error();
-        })
+        http.get(PRODUCTS, () =>
+          HttpResponse.json({ message: 'Parámetros inválidos' }, { status: 400 }),
+        ),
       );
 
-      await expect(getProducts(1, 10)).rejects.toThrow();
+      await expect(productService.getProducts()).rejects.toThrow(
+        'Parámetros inválidos',
+      );
+    });
+
+    it('propaga los errores de red', async () => {
+      server.use(http.get(PRODUCTS, () => HttpResponse.error()));
+
+      await expect(productService.getProducts()).rejects.toThrow();
     });
   });
 
-  describe('getProduct', () => {
-    it('should fetch a single product successfully', async () => {
-      const result = await getProduct(1);
-
-      expect(result).toEqual(
-        expect.objectContaining({
-          id: 1,
-          name: 'Test Product 1',
-          price: 100.00,
-          stock: 10,
-        })
-      );
-    });
-
-    it('should handle product not found', async () => {
-      await expect(getProduct(999)).rejects.toThrow();
-    });
-
-    it('should handle API errors', async () => {
+  describe('getProductById', () => {
+    it('devuelve un producto', async () => {
       server.use(
-        http.get('/api/products/:id', () => {
-          return new HttpResponse(null, { status: 500 });
-        })
+        http.get(`${PRODUCTS}/:id`, () => HttpResponse.json(product)),
       );
 
-      await expect(getProduct(1)).rejects.toThrow();
+      await expect(productService.getProductById('prod-1')).resolves.toMatchObject({
+        id: 'prod-1',
+        sku: 'TEC-001',
+      });
+    });
+
+    it('falla cuando el producto no existe', async () => {
+      server.use(
+        http.get(`${PRODUCTS}/:id`, () =>
+          HttpResponse.json({ message: 'Producto no encontrado' }, { status: 404 }),
+        ),
+      );
+
+      await expect(productService.getProductById('desconocido')).rejects.toThrow(
+        'Producto no encontrado',
+      );
     });
   });
 
   describe('createProduct', () => {
-    it('should create a product successfully', async () => {
-      const newProduct = {
-        name: 'New Test Product',
-        description: 'New product description',
-        price: 200.00,
-        cost: 100.00,
-        stock: 15,
-        minStock: 5,
-        barcode: '1111111111',
-        categoryId: 1,
-        brandId: 1,
-      };
+    it('envía los campos como formulario', async () => {
+      const received: { name?: unknown; price?: unknown } = {};
 
-      const result = await createProduct(newProduct);
-
-      expect(result).toEqual(
-        expect.objectContaining({
-          id: expect.any(Number),
-          name: newProduct.name,
-          price: newProduct.price,
-          isActive: true,
-        })
+      server.use(
+        http.post(PRODUCTS, async ({ request }) => {
+          const form = await request.formData();
+          received.name = form.get('name');
+          received.price = form.get('base_price');
+          return HttpResponse.json(product, { status: 201 });
+        }),
       );
+
+      const created = await productService.createProduct({
+        name: 'Teclado mecánico',
+        base_price: 250,
+      } as never);
+
+      expect(received.name).toBe('Teclado mecánico');
+      expect(received.price).toBe('250');
+      expect(created.id).toBe('prod-1');
     });
 
-    it('should handle validation errors', async () => {
+    it('propaga los errores de validación', async () => {
       server.use(
-        http.post('/api/products', () => {
-          return HttpResponse.json(
-            { message: ['name should not be empty'] },
-            { status: 400 }
-          );
-        })
+        http.post(PRODUCTS, () =>
+          HttpResponse.json(
+            { message: ['El nombre es obligatorio', 'El SKU ya existe'] },
+            { status: 400 },
+          ),
+        ),
       );
 
-      const invalidProduct = {
-        name: '',
-        price: -10,
-      };
-
-      await expect(createProduct(invalidProduct as any)).rejects.toThrow();
-    });
-
-    it('should handle duplicate barcode error', async () => {
-      server.use(
-        http.post('/api/products', () => {
-          return HttpResponse.json(
-            { message: 'Barcode already exists' },
-            { status: 400 }
-          );
-        })
-      );
-
-      const duplicateProduct = {
-        name: 'Duplicate Product',
-        barcode: '1234567890', // Existing barcode
-        price: 100.00,
-      };
-
-      await expect(createProduct(duplicateProduct as any)).rejects.toThrow();
+      // Los mensajes en lista se unen en un solo error
+      await expect(
+        productService.createProduct({ name: '' } as never),
+      ).rejects.toThrow('El nombre es obligatorio\nEl SKU ya existe');
     });
   });
 
   describe('updateProduct', () => {
-    it('should update a product successfully', async () => {
-      const updateData = {
-        name: 'Updated Product Name',
-        price: 250.00,
-      };
+    it('actualiza contra el identificador indicado', async () => {
+      const seen: { url?: string } = {};
 
       server.use(
-        http.put('/api/products/:id', async ({ request }) => {
-          const body = await request.json();
-          return HttpResponse.json({
-            id: 1,
-            name: body.name,
-            price: body.price,
-            description: 'Test product description',
-            cost: 50.00,
-            stock: 10,
-            minStock: 5,
-            barcode: '1234567890',
-            isActive: true,
-          });
-        })
+        http.put(`${PRODUCTS}/:id`, ({ request }) => {
+          seen.url = request.url;
+          return HttpResponse.json({ ...product, name: 'Teclado actualizado' });
+        }),
       );
 
-      const result = await updateProduct(1, updateData);
+      const updated = await productService.updateProduct('prod-1', {
+        name: 'Teclado actualizado',
+      } as never);
 
-      expect(result.name).toBe(updateData.name);
-      expect(result.price).toBe(updateData.price);
+      expect(seen.url).toContain('/api/products/prod-1');
+      expect(updated.name).toBe('Teclado actualizado');
     });
 
-    it('should handle product not found', async () => {
+    it('falla cuando el producto no existe', async () => {
       server.use(
-        http.put('/api/products/:id', () => {
-          return new HttpResponse(null, { status: 404 });
-        })
+        http.put(`${PRODUCTS}/:id`, () =>
+          HttpResponse.json({ message: 'Producto no encontrado' }, { status: 404 }),
+        ),
       );
 
-      await expect(updateProduct(999, { name: 'Updated' })).rejects.toThrow();
-    });
-
-    it('should handle validation errors', async () => {
-      server.use(
-        http.put('/api/products/:id', () => {
-          return HttpResponse.json(
-            { message: ['price must be a positive number'] },
-            { status: 400 }
-          );
-        })
-      );
-
-      await expect(updateProduct(1, { price: -10 })).rejects.toThrow();
+      await expect(
+        productService.updateProduct('desconocido', { name: 'x' } as never),
+      ).rejects.toThrow('Producto no encontrado');
     });
   });
 
   describe('deleteProduct', () => {
-    it('should delete a product successfully', async () => {
+    it('elimina y no devuelve contenido', async () => {
       server.use(
-        http.delete('/api/products/:id', () => {
-          return HttpResponse.json({
-            id: 1,
-            name: 'Test Product 1',
-            isActive: false,
-          });
-        })
+        http.delete(`${PRODUCTS}/:id`, () => new HttpResponse(null, { status: 204 })),
       );
 
-      const result = await deleteProduct(1);
-
-      expect(result.isActive).toBe(false);
+      await expect(productService.deleteProduct('prod-1')).resolves.toBeUndefined();
     });
 
-    it('should handle product not found', async () => {
+    it('falla cuando el producto no existe', async () => {
       server.use(
-        http.delete('/api/products/:id', () => {
-          return new HttpResponse(null, { status: 404 });
-        })
+        http.delete(`${PRODUCTS}/:id`, () =>
+          HttpResponse.json({ message: 'Producto no encontrado' }, { status: 404 }),
+        ),
       );
 
-      await expect(deleteProduct(999)).rejects.toThrow();
+      await expect(productService.deleteProduct('desconocido')).rejects.toThrow(
+        'Producto no encontrado',
+      );
     });
   });
 
-  describe('updateProductStock', () => {
-    it('should update product stock successfully', async () => {
+  describe('deleteProducts', () => {
+    it('envía los identificadores al borrado masivo', async () => {
+      const received: { ids?: string[] } = {};
+
       server.use(
-        http.patch('/api/products/:id/stock', async ({ request }) => {
-          const body = await request.json();
-          const newStock = body.operation === 'add' ? 15 : 5; // 10 + 5 or 10 - 5
-          
-          return HttpResponse.json({
-            id: 1,
-            name: 'Test Product 1',
-            stock: newStock,
-            price: 100.00,
-            cost: 50.00,
-            minStock: 5,
-            barcode: '1234567890',
-            isActive: true,
-          });
-        })
+        http.post(`${PRODUCTS}/bulk-delete`, async ({ request }) => {
+          received.ids = ((await request.json()) as { ids: string[] }).ids;
+          return new HttpResponse(null, { status: 204 });
+        }),
       );
 
-      const result = await updateProductStock(1, 5, 'add');
+      await productService.deleteProducts(['prod-1', 'prod-2']);
 
-      expect(result.stock).toBe(15);
-    });
-
-    it('should handle insufficient stock error', async () => {
-      server.use(
-        http.patch('/api/products/:id/stock', () => {
-          return HttpResponse.json(
-            { message: 'Insufficient stock' },
-            { status: 400 }
-          );
-        })
-      );
-
-      await expect(updateProductStock(1, 20, 'subtract')).rejects.toThrow();
-    });
-
-    it('should handle invalid operation', async () => {
-      server.use(
-        http.patch('/api/products/:id/stock', () => {
-          return HttpResponse.json(
-            { message: 'Invalid operation' },
-            { status: 400 }
-          );
-        })
-      );
-
-      await expect(updateProductStock(1, 5, 'invalid' as any)).rejects.toThrow();
+      expect(received.ids).toEqual(['prod-1', 'prod-2']);
     });
   });
 
-  describe('error handling', () => {
-    it('should handle unauthorized requests', async () => {
+  describe('searchFromPack', () => {
+    it('no consulta a la API con un término vacío', async () => {
+      let called = false;
       server.use(
-        http.get('/api/products', () => {
-          return new HttpResponse(null, { status: 401 });
-        })
+        http.get(`${PRODUCTS}/search-from-pack`, () => {
+          called = true;
+          return HttpResponse.json([]);
+        }),
       );
 
-      await expect(getProducts(1, 10)).rejects.toThrow();
+      await expect(productService.searchFromPack('   ')).resolves.toEqual([]);
+      expect(called).toBe(false);
     });
 
-    it('should handle forbidden requests', async () => {
+    it('devuelve las sugerencias del pack', async () => {
       server.use(
-        http.post('/api/products', () => {
-          return new HttpResponse(null, { status: 403 });
-        })
+        http.get(`${PRODUCTS}/search-from-pack`, () =>
+          HttpResponse.json([{ key: '01010101', description: 'No existe en el catálogo' }]),
+        ),
       );
 
-      await expect(createProduct({} as any)).rejects.toThrow();
+      const result = await productService.searchFromPack('teclado');
+
+      expect(result).toHaveLength(1);
+      expect(result[0].key).toBe('01010101');
+    });
+  });
+
+  describe('importFromPack', () => {
+    it('exige conexión a internet', async () => {
+      const online = Object.getOwnPropertyDescriptor(navigator, 'onLine');
+      Object.defineProperty(navigator, 'onLine', { value: false, configurable: true });
+
+      try {
+        await expect(productService.importFromPack()).rejects.toThrow(
+          'Import from pack requires internet connection',
+        );
+      } finally {
+        if (online) Object.defineProperty(navigator, 'onLine', online);
+      }
+    });
+  });
+
+  describe('manejo de errores', () => {
+    it('traduce un 403 al mensaje de la API', async () => {
+      server.use(
+        http.get(PRODUCTS, () =>
+          HttpResponse.json({ message: 'No autorizado' }, { status: 403 }),
+        ),
+      );
+
+      await expect(productService.getProducts()).rejects.toThrow('No autorizado');
     });
 
-    it('should handle server errors', async () => {
-      server.use(
-        http.get('/api/products', () => {
-          return new HttpResponse(null, { status: 500 });
-        })
-      );
+    it('usa un mensaje genérico cuando el error no trae cuerpo', async () => {
+      server.use(http.get(PRODUCTS, () => new HttpResponse(null, { status: 500 })));
 
-      await expect(getProducts(1, 10)).rejects.toThrow();
+      await expect(productService.getProducts()).rejects.toThrow('Error en la petición');
     });
   });
 });
