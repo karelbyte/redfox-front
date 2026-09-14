@@ -4,6 +4,9 @@ import { Input, SearchSelect } from '@/components/atoms';
 import { SelectWithAdd } from '@/components/atoms';
 import { SearchSelectOption } from '@/components/atoms/SearchSelect';
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { usePackCapabilities } from '@/hooks/usePackCapabilities';
+import { currenciesService } from '@/services/currencies.service';
+import { Currency } from '@/types/currency';
 
 export interface InvoiceFormRef {
   submit: () => void;
@@ -34,6 +37,31 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
+
+  // La moneda del comprobante solo la usan los PAC que numeran por serie
+  // (SUNAT); en el resto no cambia nada, así que no se muestra.
+  const { capabilities } = usePackCapabilities();
+  const showCurrency = capabilities.documentSeries;
+
+  useEffect(() => {
+    if (!showCurrency) return;
+
+    let active = true;
+
+    currenciesService
+      .getCurrencies(1)
+      .then((response) => {
+        if (active) setCurrencies(response.data || []);
+      })
+      .catch(() => {
+        if (active) setCurrencies([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [showCurrency]);
 
   useEffect(() => {
     if (initialData) {
@@ -187,6 +215,27 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
           disabled={isSaving}
         />
       </div>
+
+      {showCurrency && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            {t('form.currency')}
+          </label>
+          <select
+            value={formData.currency_code || ''}
+            onChange={(e) => handleInputChange('currency_code', e.target.value)}
+            disabled={isSaving}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">{t('form.currencyDefault')}</option>
+            {currencies.map((currency) => (
+              <option key={currency.id} value={currency.code}>
+                {currency.code} — {currency.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">

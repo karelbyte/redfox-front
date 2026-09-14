@@ -19,6 +19,7 @@ export function getAllowedCertificationPackTypes(
   return [
     CertificationPackType.FACTURAAPI,
     CertificationPackType.FACTURA_GREEN,
+    CertificationPackType.FACTURA_SUNAT,
   ];
 }
 

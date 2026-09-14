@@ -20,6 +20,10 @@ interface User {
   organization_id?: string;
   organization_slug?: string;
   organization_referrer_code?: string;
+  /** País de la organización en ISO 3166-1 alpha-2. */
+  organization_country?: string;
+  /** Moneda del país de la organización, en ISO 4217. */
+  organization_currency?: string;
   status: boolean;
   admin: boolean;
   created_at: string;

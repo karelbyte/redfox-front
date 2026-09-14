@@ -4,6 +4,8 @@ import { Invoice } from '@/types/invoice';
 import ActionsMenu from '@/components/atoms/ActionsMenu';
 import { InvoiceActionsMenu } from './InvoiceActionsMenu';
 import { InvoicePDFButton, InvoiceXMLButton } from './InvoiceDownloadButtons';
+import { usePackCapabilities } from '@/hooks/usePackCapabilities';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 
 interface InvoiceTableProps {
   invoices: Invoice[];
@@ -68,11 +70,21 @@ export default function InvoiceTable({
     }
   };
 
+  const { capabilities } = usePackCapabilities();
+
   const canEdit = (status: string) => status === 'DRAFT';
   const canDelete = (status: string) => status === 'DRAFT';
   const canGenerateCFDI = (status: string) => status === 'DRAFT';
   const canCancelCFDI = (status: string) => status === 'SENT' || status === 'PAID';
-  const canDownload = (status: string) => status === 'SENT' || status === 'PAID' || status === 'CANCELLED';
+  const isIssued = (status: string) => status === 'SENT' || status === 'PAID' || status === 'CANCELLED';
+  // Los PAC que no sirven los archivos por la API (SUNAT) devuelven las URLs
+  // del PDF y el XML dentro de la respuesta del comprobante.
+  const canDownload = (status: string) => isIssued(status) && capabilities.documentDownload;
+
+  const packDocumentUrl = (invoice: Invoice, key: 'pdf_url' | 'xml_url'): string | null => {
+    const value = invoice.pack_invoice_response?.[key];
+    return typeof value === 'string' && value ? value : null;
+  };
 
   return (
     <div 
@@ -154,7 +166,14 @@ export default function InvoiceTable({
           {invoices.map((invoice) => (
             <tr key={invoice.id} className="hover:bg-primary-50 transition-colors">
               {visibleColumns.includes('code') && (
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{invoice.code}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {invoice.code}
+                  {invoice.series && invoice.number != null && (
+                    <span className="block text-xs text-gray-500 font-mono">
+                      {invoice.series}-{String(invoice.number).padStart(8, '0')}
+                    </span>
+                  )}
+                </td>
               )}
               {visibleColumns.includes('date') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -205,6 +224,25 @@ export default function InvoiceTable({
                         />
                       </>
                     )}
+                    {!capabilities.documentDownload &&
+                      isIssued(invoice.status) &&
+                      (['pdf_url', 'xml_url'] as const).map((key) => {
+                        const url = packDocumentUrl(invoice, key);
+
+                        return url ? (
+                          <a
+                            key={key}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={key === 'pdf_url' ? 'PDF' : 'XML'}
+                            className="inline-flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900"
+                          >
+                            {key === 'pdf_url' ? 'PDF' : 'XML'}
+                            <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5" />
+                          </a>
+                        ) : null;
+                      })}
                     <ActionsMenu
                       items={InvoiceActionsMenu({
                         invoice,
@@ -213,6 +251,7 @@ export default function InvoiceTable({
                         onDetails,
                         onGenerateCFDI,
                         onCancelCFDI,
+                        capabilities,
                       })}
                     />
                   </div>

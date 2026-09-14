@@ -4,6 +4,7 @@ import { PencilIcon, TrashIcon, QrCodeIcon, ArrowPathIcon, CheckCircleIcon } fro
 import { Btn } from "@/components/atoms";
 import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
+import { usePackCapabilities } from '@/hooks/usePackCapabilities';
 import Tooltip from '@/components/atoms/Tooltip';
 import { API_BASE_URL } from '@/lib/config';
 
@@ -269,9 +270,11 @@ function ProductActionsMenu({
   const t = useTranslations('pages.products');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
+  // Los PAC sin catálogo de productos (SUNAT) no tienen nada que sincronizar
+  const { capabilities } = usePackCapabilities();
 
   const menuItems: ActionMenuItem[] = [
-    ...(can(['product_update']) && onSync
+    ...(can(['product_update']) && onSync && capabilities.productCatalog
       ? [
           {
             icon: <ArrowPathIcon className="h-4 w-4" />,

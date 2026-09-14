@@ -172,6 +172,7 @@
     "createInvoice": "创建发票",
     "invoiceList": "发票列表",
     "certificationPacks": "SAT 套餐",
+    "documentSeries": "凭证编号系列",
     "auditLogs": "审计日志",
     "finance": "财务",
     "shipments": "物流 / 发货",
@@ -208,7 +209,9 @@
       "passwordMismatch": "两次密码不一致",
       "companyNameInvalid": "组织名称只能包含字母和空格，不能包含数字或特殊字符。",
       "companyNameTooShort": "组织名称至少需要 3 个字符。",
-      "slugPreview": "您的标识符将是"
+      "slugPreview": "您的标识符将是",
+      "country": "国家",
+      "countryHelp": "决定贵公司的税种、计量单位与电子开票方式，注册后不可更改。"
     },
     "activate": {
       "activating": "正在激活您的账户...",
@@ -1303,7 +1306,8 @@
         },
         "errors": {
           "taxDocumentRequired": "税务文件为必填项",
-          "taxNameRequired": "法定名称为必填项"
+          "taxNameRequired": "法定名称为必填项",
+          "taxDocumentFormat": "证件号长度必须为 {lengths} 位"
         },
         "emptyState": {
           "title": "未注册税务数据",
@@ -1367,6 +1371,10 @@
         },
         "table": {
           "actions": "操作"
+        },
+        "documentKinds": {
+          "RFC": "RFC",
+          "RUC_DNI": "RUC 或 DNI"
         }
       }
     },
@@ -2622,7 +2630,9 @@
         },
         "save": "保存",
         "cancel": "取消",
-        "saving": "保存中..."
+        "saving": "保存中...",
+        "currency": "币种",
+        "currencyDefault": "使用默认币种"
       },
       "drawer": {
         "createTitle": "创建发票",
@@ -2989,7 +2999,8 @@
         "configuration": "配置",
         "emitters": "发射器",
         "isActive": "启用",
-        "isDefault": "默认"
+        "isDefault": "默认",
+        "availableForCountry": "{country} 可用的认证包"
       },
       "emitters": {
         "title": "发射器",
@@ -3038,6 +3049,49 @@
       "deleteModal": {
         "title": "删除套餐",
         "message": "确定要删除套餐「{type}」吗？此操作无法撤销。"
+      }
+    },
+    "documentSeries": {
+      "title": "凭证编号系列",
+      "subtitle": "电子发票与销售凭证的编号",
+      "noData": "暂无编号系列",
+      "noDataDesc": "尚未配置任何编号系列。请先创建一个再开具凭证。",
+      "notApplicable": {
+        "title": "不适用于当前开票方式",
+        "description": "当前启用的认证包不按系列和序号编号凭证，因此此处无需配置。"
+      },
+      "documentTypes": {
+        "FACTURA": "发票",
+        "BOLETA": "销售凭证",
+        "NOTA_CREDITO": "贷记单",
+        "NOTA_DEBITO": "借记单"
+      },
+      "form": {
+        "documentType": "凭证类型",
+        "series": "系列",
+        "seriesHint": "一个字母加三个字符，例如发票用 F001，销售凭证用 B001。",
+        "isDefault": "设为该凭证类型的默认系列",
+        "correlativeWarning": "序号从 1 开始，仅在开具凭证时递增，不能手动修改：编号不允许出现跳号或重复。"
+      },
+      "table": {
+        "series": "系列",
+        "documentType": "类型",
+        "currentNumber": "最近开具",
+        "status": "状态",
+        "default": "默认",
+        "actions": "操作"
+      },
+      "actions": {
+        "create": "新建系列",
+        "setDefault": "设为默认",
+        "activate": "启用",
+        "deactivate": "停用"
+      },
+      "messages": {
+        "successCreated": "编号系列创建成功",
+        "successUpdated": "编号系列更新成功",
+        "errorLoading": "加载编号系列时出错",
+        "errorSaving": "保存编号系列时出错"
       }
     },
     "returns": {
@@ -4548,6 +4602,16 @@
         "accountUuid": "Account UUID",
         "accountUuidPlaceholder": "0000",
         "accountUuidHelp": "账户 UUID（默认：0000）"
+      },
+      "sunat": {
+        "apiKey": "API 密钥",
+        "apiKeyPlaceholder": "服务商令牌",
+        "apiKeyHelp": "电子凭证服务商提供的访问令牌",
+        "ruc": "开票方 RUC",
+        "rucHelp": "11 位数字，用于开具凭证的 RUC。",
+        "invoiceSeries": "发票系列",
+        "receiptSeries": "销售凭证系列",
+        "seriesHelp": "至少需要一个系列。序号从 1 开始，由系统管理。"
       }
     },
     "complete": {

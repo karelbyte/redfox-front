@@ -5,11 +5,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import { usersService } from '@/services/users.service';
 import { companySettingsService } from '@/services/company-settings.service';
 import { certificationPackService } from '@/services/certification-packs.service';
+import { useAvailablePackTypes } from '@/hooks/useAvailablePackTypes';
 import { toastService } from '@/services/toast.service';
 import Btn from '@/components/atoms/Btn';
 import { useAuth } from '@/context/AuthContext';
 import {
-  getAllowedCertificationPackTypes,
   isFacturaGreenRestricted,
 } from '@/lib/certification-pack-rules';
 import { CertificationPackType } from '@/types/certification-pack';
@@ -50,19 +50,18 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     }));
   };
   
-  const allowedPackTypes = getAllowedCertificationPackTypes(
-    user?.organization_referrer_code,
-  );
+  // La lista de packs la decide el backend a partir del país de la organización
+  const { types: allowedPackTypes } = useAvailablePackTypes();
   const facturaGreenRestricted = isFacturaGreenRestricted(
     user?.organization_referrer_code,
   );
+  const packNames: Record<string, string> = {
+    [CertificationPackType.FACTURA_GREEN]: 'Factura Green',
+    [CertificationPackType.FACTURAAPI]: 'Factura API',
+    [CertificationPackType.FACTURA_SUNAT]: 'SUNAT (Perú)',
+  };
   const availablePacks = [
-    ...(allowedPackTypes.includes(CertificationPackType.FACTURA_GREEN)
-      ? [{ id: 'FACTURA_GREEN', name: 'Factura Green' }]
-      : []),
-    ...(allowedPackTypes.includes(CertificationPackType.FACTURAAPI)
-      ? [{ id: 'FACTURAAPI', name: 'Factura API' }]
-      : []),
+    ...allowedPackTypes.map((type) => ({ id: type as string, name: packNames[type] || type })),
     ...(facturaGreenRestricted ? [] : [{ id: 'none', name: t('noPack') }]),
   ];
 
@@ -661,6 +660,76 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
         );
       }
 
+      if (selectedPack === CertificationPackType.FACTURA_SUNAT) {
+        const series = (packConfig.series || {}) as Record<string, string>;
+        const updateSeries = (key: string, value: string) =>
+          updatePackConfig('series', { ...series, [key]: value.toUpperCase() });
+
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('packConfig.sunat.apiKey')} *
+              </label>
+              <input
+                type="password"
+                value={packConfig.sunat_api_key || ''}
+                onChange={(e) => updatePackConfig('sunat_api_key', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                placeholder={t('packConfig.sunat.apiKeyPlaceholder')}
+              />
+              <p className="mt-1 text-xs text-gray-500">{t('packConfig.sunat.apiKeyHelp')}</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('packConfig.sunat.ruc')} *
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={11}
+                value={packConfig.ruc || ''}
+                onChange={(e) => updatePackConfig('ruc', e.target.value.replace(/\D/g, ''))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                placeholder="20123456789"
+              />
+              <p className="mt-1 text-xs text-gray-500">{t('packConfig.sunat.rucHelp')}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('packConfig.sunat.invoiceSeries')}
+                </label>
+                <input
+                  type="text"
+                  maxLength={4}
+                  value={series.factura || ''}
+                  onChange={(e) => updateSeries('factura', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                  placeholder="F001"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('packConfig.sunat.receiptSeries')}
+                </label>
+                <input
+                  type="text"
+                  maxLength={4}
+                  value={series.boleta || ''}
+                  onChange={(e) => updateSeries('boleta', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                  placeholder="B001"
+                />
+              </div>
+            </div>
+            <p className="-mt-2 text-xs text-gray-500">{t('packConfig.sunat.seriesHelp')}</p>
+          </div>
+        );
+      }
+
       return null;
     };
 
@@ -673,6 +742,14 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
           !!String(packConfig.api_key || '').trim() &&
           !!String(packConfig.tenant_id || '').trim() &&
           !!String(packConfig.business_uuid || '').trim()
+        );
+      }
+      if (selectedPack === CertificationPackType.FACTURA_SUNAT) {
+        const series = (packConfig.series || {}) as Record<string, string>;
+        return (
+          !!String(packConfig.sunat_api_key || '').trim() &&
+          /^\d{11}$/.test(String(packConfig.ruc || '').trim()) &&
+          (!!String(series.factura || '').trim() || !!String(series.boleta || '').trim())
         );
       }
       return true;

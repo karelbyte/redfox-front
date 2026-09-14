@@ -1,5 +1,5 @@
 import { api } from './api';
-import { CertificationPack, CertificationPackFormData, CertificationPackEmitter } from '@/types/certification-pack';
+import { ActivePackCapabilities, AvailablePackTypes, CertificationPack, CertificationPackFormData, CertificationPackEmitter } from '@/types/certification-pack';
 
 class CertificationPackService {
   async getAll(): Promise<CertificationPack[]> {
@@ -9,6 +9,24 @@ class CertificationPackService {
 
   async getActive(): Promise<CertificationPack | null> {
     const response = await api.get<CertificationPack | null>('/certification-packs/active');
+    return response;
+  }
+
+  /**
+   * Packs que admite el país de la organización. La regla vive en el backend
+   * para no tener que mantenerla también aquí.
+   */
+  async getAvailableTypes(): Promise<AvailablePackTypes> {
+    const response = await api.get<AvailablePackTypes>('/certification-packs/available-types');
+    return response;
+  }
+
+  /**
+   * Capacidades del PAC activo. Es la fuente para decidir qué partes de la UI
+   * tienen sentido con el pack configurado.
+   */
+  async getCapabilities(): Promise<ActivePackCapabilities> {
+    const response = await api.get<ActivePackCapabilities>('/certification-packs/capabilities');
     return response;
   }
 
