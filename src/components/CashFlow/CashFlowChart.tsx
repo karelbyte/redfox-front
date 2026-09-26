@@ -55,7 +55,7 @@ export default function CashFlowChart({ movements, isLoading }: CashFlowChartPro
     return acc;
   }, [] as typeof chartData);
 
-  const formatCurrencyCompact = (value: number) => formatCurrency(value, 'MXN', true);
+  const formatCurrencyCompact = (value: number) => formatCurrency(value, undefined, true);
 
   return (
     <div className="space-y-6">

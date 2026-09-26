@@ -5,6 +5,7 @@ import { XMarkIcon, MinusIcon, PlusIcon, ScaleIcon } from '@heroicons/react/24/o
 import { useTranslations } from 'next-intl';
 import { Btn, Select } from '@/components/atoms';
 import { InventoryProduct } from '@/services/inventory.service';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 /** Unidades de medida que implican venta por peso */
 const WEIGHT_UNITS = ['kg', 'g', 'lb', 'oz', 'kilo', 'kilogramo', 'gramo', 'libra', 'onza'];
@@ -48,6 +49,7 @@ export default function CartItem({
   scaleReading = false,
 }: CartItemProps) {
   const t = useTranslations('pages.pos.cart');
+  const { formatCurrency } = useLocaleUtils();
   const [customPriceInput, setCustomPriceInput] = useState(item.price.toString());
   const [quantityInput, setQuantityInput] = useState(item.quantity.toString());
 
@@ -81,7 +83,7 @@ export default function CartItem({
     if (item.product.product.base_price !== undefined) {
       options.push({
         value: 'base',
-        label: `${t('basePrice')}: $${item.product.product.base_price.toFixed(2)}`,
+        label: `${t('basePrice')}: ${formatCurrency(item.product.product.base_price)}`,
         price: item.product.product.base_price,
       });
     }
@@ -90,7 +92,7 @@ export default function CartItem({
       item.product.product.prices.forEach((price) => {
         options.push({
           value: `price:${price.id}`,
-          label: `${price.name}: $${price.price.toFixed(2)}`,
+          label: `${price.name}: ${formatCurrency(price.price)}`,
           price: price.price,
         });
       });
@@ -99,7 +101,7 @@ export default function CartItem({
     if (options.length === 0) {
       options.push({
         value: 'inventory',
-        label: `${t('price')}: $${getDefaultPrice().toFixed(2)}`,
+        label: `${t('price')}: ${formatCurrency(getDefaultPrice())}`,
         price: getDefaultPrice(),
       });
     }
@@ -313,10 +315,10 @@ export default function CartItem({
         </div>
 
         <div className="w-24 text-right">
-          <p className="text-sm font-semibold">${item.subtotal.toFixed(2)}</p>
+          <p className="text-sm font-semibold">{formatCurrency(item.subtotal)}</p>
           {item.tax_amount > 0 && (
             <p className="text-[10px] text-gray-400">
-              inc. ${item.tax_amount.toFixed(2)} tax
+              inc. {formatCurrency(item.tax_amount)} tax
             </p>
           )}
         </div>

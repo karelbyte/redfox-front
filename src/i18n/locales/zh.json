@@ -171,7 +171,7 @@
     "invoices": "发票",
     "createInvoice": "创建发票",
     "invoiceList": "发票列表",
-    "certificationPacks": "SAT 套餐",
+    "certificationPacks": "电子开票",
     "documentSeries": "凭证编号系列",
     "auditLogs": "审计日志",
     "finance": "财务",
@@ -507,7 +507,7 @@
         "slug": "别名",
         "description": "描述",
         "sku": "SKU",
-        "code": "SAT 编码",
+        "code": "商品税务编码",
         "barcode": "条形码",
         "weight": "重量",
         "width": "宽度",
@@ -558,7 +558,7 @@
           "nameRequired": "名称为必填项",
           "slugRequired": "别名为必填项",
           "descriptionRequired": "描述为必填项",
-          "codeRequired": "SAT 编码为必填项",
+          "codeRequired": "商品税务编码为必填项",
           "skuRequired": "SKU 为必填项",
           "categoryRequired": "分类为必填项",
           "brandRequired": "品牌为必填项",
@@ -585,7 +585,7 @@
       "table": {
         "name": "名称",
         "sku": "SKU",
-        "code": "SAT 编码",
+        "code": "税务编码",
         "brand": "品牌",
         "category": "分类",
         "measurementUnit": "计量单位",
@@ -639,7 +639,7 @@
         "export": "导出 PDF",
         "generating": "生成 PDF 中...",
         "product": "产品",
-        "code": "SAT 编码",
+        "code": "税务编码",
         "sku": "SKU",
         "brand": "品牌",
         "category": "分类",
@@ -1077,7 +1077,7 @@
           "actions": "操作"
         },
         "errors": {
-          "taxDocumentRequired": "RFC 为必填项",
+          "taxDocumentRequired": "税务证件为必填项",
           "taxNameRequired": "法定名称为必填项"
         },
         "messages": {
@@ -1305,7 +1305,7 @@
           "taxName": "法定名称或商业名称，应与税务识别证（CIF）中的名称相同。\n对于自然人：名字、父姓和母姓。\n对于法人实体：企业名称。\n! 重要 !：请勿在此字段输入资本制度类型（如 SA de CV、S de RL 等）"
         },
         "errors": {
-          "taxDocumentRequired": "税务文件为必填项",
+          "taxDocumentRequired": "税务证件为必填项",
           "taxNameRequired": "法定名称为必填项",
           "taxDocumentFormat": "证件号长度必须为 {lengths} 位"
         },
@@ -1969,7 +1969,15 @@
       "loginButton": "登录",
       "loggingIn": "登录中...",
       "forgotPassword": "忘记密码？",
-      "registerLink": "没有账户？立即注册"
+      "registerLink": "没有账户？立即注册",
+      "tagline": "为您的业务提供动力",
+      "features": {
+        "invoicing": "适配所在国家的电子发票",
+        "inventory": "支持FIFO、FEFO和平均库存策略",
+        "pos": "支持条形码扫描的销售终端",
+        "analytics": "实时分析与报告",
+        "languages": "多语言：西班牙语、英语和中文"
+      }
     },
     "forgotPassword": {
       "title": "找回密码",
@@ -2082,7 +2090,7 @@
         "printTicket": "打印小票",
         "refund": "退款",
         "refunded": "退款中...",
-        "cannotRefundInvoiced": "无法退款已开具 CFDI 的销售单"
+        "cannotRefundInvoiced": "无法退款已开票的销售单"
       },
       "messages": {
         "saleCreated": "销售单创建成功",
@@ -2337,7 +2345,7 @@
         "confirm": "确认付款",
         "processing": "处理中...",
         "downloadTicket": "下载小票",
-        "generateInvoice": "生成财税发票（CFDI）",
+        "generateInvoice": "生成财税凭证",
         "generateInvoiceHint": "确认后将自动盖章"
       },
       "messages": {
@@ -2567,7 +2575,7 @@
     },
     "invoices": {
       "title": "发票",
-      "subtitle": "发票与 CFDI 管理",
+      "subtitle": "发票与财税凭证管理",
       "searchInvoices": "",
       "create": {
         "title": "创建发票",
@@ -2594,8 +2602,8 @@
         "viewDetails": "查看详情",
         "edit": "编辑",
         "delete": "删除",
-        "generateCFDI": "生成 CFDI",
-        "cancelCFDI": "取消 CFDI",
+        "generateCFDI": "生成凭证",
+        "cancelCFDI": "取消凭证",
         "downloadPDF": "下载 PDF",
         "downloadXML": "下载 XML",
         "downloadingPDF": "下载 PDF 中...",
@@ -2645,18 +2653,18 @@
         "cancel": "取消"
       },
       "generateCFDIModal": {
-        "title": "生成 CFDI",
-        "message": "确定要为发票 {code} 生成 CFDI 吗？",
-        "confirm": "生成 CFDI",
+        "title": "生成凭证",
+        "message": "确定要为发票 {code} 生成财税凭证吗？",
+        "confirm": "生成凭证",
         "cancel": "取消",
         "generating": "生成中..."
       },
       "cancelCFDIModal": {
-        "title": "取消 CFDI",
-        "message": "确定要取消发票 {code} 的 CFDI 吗？",
+        "title": "取消凭证",
+        "message": "确定要取消发票 {code} 的财税凭证吗？",
         "reasonLabel": "取消原因",
         "reasonPlaceholder": "输入取消原因",
-        "confirm": "取消 CFDI",
+        "confirm": "取消凭证",
         "cancel": "取消",
         "cancelling": "取消中..."
       },
@@ -2680,7 +2688,7 @@
         "tax": "税务",
         "total": "合计",
         "summary": "摘要",
-        "cfdi": "CFDI",
+        "cfdi": "财税凭证",
         "uuid": "UUID",
         "facturapiId": "FacturaAPI ID",
         "packInvoiceId": "套餐 ID"
@@ -2718,8 +2726,8 @@
         "cancelError": "取消付款补充出错",
         "cancelComplement": "取消补充",
         "cancelComplementTitle": "取消付款补充",
-        "cancelComplementMessage": "此操作将在 SAT 取消补充。请选择取消原因。",
-        "cancelReason": "SAT 取消原因",
+        "cancelComplementMessage": "此操作将向税务机关取消该补充凭证。请选择取消原因。",
+        "cancelReason": "取消原因",
         "cancelling": "取消中...",
         "confirmCancel": "取消补充"
       },
@@ -2732,8 +2740,8 @@
         "invoiceCreated": "发票创建成功",
         "invoiceUpdated": "发票更新成功",
         "invoiceDeleted": "发票删除成功",
-        "cfdiGenerated": "CFDI 生成成功",
-        "cfdiCancelled": "CFDI 取消成功",
+        "cfdiGenerated": "财税凭证生成成功",
+        "cfdiCancelled": "财税凭证取消成功",
         "pdfDownloaded": "PDF 下载成功",
         "xmlDownloaded": "XML 下载成功",
         "errorLoadingClients": "加载客户出错"
@@ -2744,8 +2752,8 @@
         "saveInvoice": "保存发票出错",
         "createInvoice": "创建发票出错",
         "deleteInvoice": "删除发票出错",
-        "generateCFDI": "生成 CFDI 出错",
-        "cancelCFDI": "取消 CFDI 出错",
+        "generateCFDI": "生成财税凭证时出错",
+        "cancelCFDI": "取消财税凭证时出错",
         "downloadPDF": "下载 PDF 出错",
         "downloadXML": "下载 XML 出错",
         "loadInvoiceDetails": "加载发票详情出错"
@@ -2761,8 +2769,8 @@
       "namePlaceholder": "公司名称",
       "legalName": "法定名称",
       "legalNamePlaceholder": "法定/财税名称",
-      "taxId": "税号 / RFC",
-      "taxIdPlaceholder": "RFC 或等效",
+      "taxId": "税号",
+      "taxIdPlaceholder": "税号（RFC、RUC 或等效）",
       "address": "地址",
       "addressPlaceholder": "财税地址",
       "phone": "电话",
@@ -2987,8 +2995,8 @@
       }
     },
     "certificationPacks": {
-      "title": "SAT 套餐",
-      "subtitle": "开票认证套餐管理",
+      "title": "电子开票",
+      "subtitle": "管理电子开票服务商",
       "searchPlaceholder": "搜索套餐...",
       "noData": "暂无套餐",
       "noDataDesc": "未找到套餐。创建第一个套餐以开始使用。",
@@ -4523,13 +4531,18 @@
       "renewNow": "立即续费",
       "loading": "加载中...",
       "errorLoading": "无法加载订阅信息",
-      "errorLoadingSubscription": "加载订阅出错"
+      "errorLoadingSubscription": "加载订阅出错",
+      "descriptionMonthly": "包含所有功能，按月计费",
+      "descriptionYearly": "包含所有功能，按年计费",
+      "manageSubscription": "管理订阅",
+      "openingPortal": "正在打开…",
+      "manageNote": "随时更换卡片、查看发票或取消订阅。",
+      "portalError": "无法打开管理门户"
     },
     "payment": {
       "title": "激活订阅",
       "subtitle": "完成付款以不间断地继续使用 Nitro",
       "selectPlan": "选择您的套餐",
-      "saveMore": "节省超过 1 个月",
       "planSummary": "套餐摘要",
       "perMonth": "月",
       "perYear": "年",
@@ -4538,14 +4551,22 @@
       "feature2": "无限仓库",
       "feature3": "无限产品",
       "feature4": "所有库存策略",
-      "feature5": "电子开票（CFDI）",
+      "feature5": "电子开票",
       "feature6": "高级报表",
       "feature7": "REST API 和 Webhooks",
       "feature8": "优先支持",
       "paymentInfo": "付款信息",
       "securityNote": "您的信息受银行级加密保护。",
       "securityNote2": "我们不存储您的卡片数据。",
-      "errorLoading": "加载信息出错"
+      "errorLoading": "加载信息出错",
+      "saveMonths": "可省 {months} 个月",
+      "recommended": "推荐",
+      "descriptionMonthly": "包含所有功能，按月计费",
+      "descriptionYearly": "包含所有功能，按年计费",
+      "goToCheckout": "继续付款",
+      "redirecting": "正在跳转到 Stripe…",
+      "checkoutNote": "我们将带您前往 Stripe 的安全页面完成付款。",
+      "checkoutError": "无法打开付款页面"
     },
     "paymentForm": {
       "cardInfo": "卡片信息",

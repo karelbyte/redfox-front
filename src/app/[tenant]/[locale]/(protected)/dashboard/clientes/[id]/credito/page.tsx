@@ -101,7 +101,7 @@ export default function ClientCreditPage() {
                         <p className="text-2xl font-bold text-gray-900">
                             {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
                                 style: 'currency',
-                                currency: credit?.currency?.code || 'MXN'
+                                currency: credit?.currency?.code || undefined
                             }).format(credit?.credit_limit || 0)}
                         </p>
                     </div>
@@ -171,7 +171,7 @@ export default function ClientCreditPage() {
                                 <p className="text-xl font-bold text-gray-900">
                                     {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
                                         style: 'currency',
-                                        currency: credit?.currency?.code || 'MXN'
+                                        currency: credit?.currency?.code || undefined
                                     }).format(creditAnalysis.usedCredit)}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">
@@ -193,7 +193,7 @@ export default function ClientCreditPage() {
                                 <p className="text-xl font-bold text-green-700">
                                     {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
                                         style: 'currency',
-                                        currency: credit?.currency?.code || 'MXN'
+                                        currency: credit?.currency?.code || undefined
                                     }).format(creditAnalysis.availableCredit)}
                                 </p>
                             </div>
@@ -209,7 +209,7 @@ export default function ClientCreditPage() {
                                 <p className="text-xl font-bold text-blue-700">
                                     {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
                                         style: 'currency',
-                                        currency: credit?.currency?.code || 'MXN'
+                                        currency: credit?.currency?.code || undefined
                                     }).format(creditAnalysis.currentBalance)}
                                 </p>
                             </div>
@@ -225,7 +225,7 @@ export default function ClientCreditPage() {
                                 <p className="text-xl font-bold text-red-700">
                                     {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
                                         style: 'currency',
-                                        currency: credit?.currency?.code || 'MXN'
+                                        currency: credit?.currency?.code || undefined
                                     }).format(creditAnalysis.overdueBalance)}
                                 </p>
                             </div>
@@ -279,13 +279,13 @@ export default function ClientCreditPage() {
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
                                                         {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
                                                             style: 'currency',
-                                                            currency: credit?.currency?.code || 'MXN'
+                                                            currency: credit?.currency?.code || undefined
                                                         }).format(account.totalAmount)}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
                                                         {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
                                                             style: 'currency',
-                                                            currency: credit?.currency?.code || 'MXN'
+                                                            currency: credit?.currency?.code || undefined
                                                         }).format(account.remainingAmount)}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-center">

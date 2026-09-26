@@ -82,7 +82,14 @@ export default function InvoiceDetailsPage() {
     }
   };
 
-  const invoiceCurrency = invoice?.details?.[0]?.product?.currency?.code || 'MXN';
+  /**
+   * La factura guarda su propia moneda; solo si viniera sin ella se recurre a
+   * la de la organización, que formatCurrency aplica por defecto.
+   *
+   * Antes se leía la moneda del primer producto —que no la tiene— y se caía
+   * en un 'MXN' fijo, así que una boleta peruana se mostraba en pesos.
+   */
+  const invoiceCurrency = invoice?.currency_code || undefined;
 
   const fmt = (amount: number) => formatCurrency(amount, invoiceCurrency);
 

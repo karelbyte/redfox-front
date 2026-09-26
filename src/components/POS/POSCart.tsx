@@ -18,6 +18,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useCart } from '@/context/CartContext';
 import { useScale } from '@/hooks/useScale';
 import { toastService } from '@/services/toast.service';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface POSCartProps {
   clients: Client[];
@@ -45,6 +46,7 @@ const POSCart = (
     onSwitchCashRegister,
   }: POSCartProps) => {
   const t = useTranslations("pages.pos");
+  const { formatCurrency } = useLocaleUtils();
   const locale = useLocale();
   const router = useRouter();
   const { cart, selectedClient, updateQuantity, updatePrice, removeFromCart, clearCart, getTotal, getTotalQuantity, setSelectedClient } = useCart();
@@ -216,7 +218,7 @@ const POSCart = (
                     className="text-2xl font-bold ml-4"
                     style={{ color: `rgb(var(--color-primary-600))` }}
                   >
-                    ${getTotal().toFixed(2)}
+                    {formatCurrency(getTotal())}
                   </span>
                 </div>
               </div>

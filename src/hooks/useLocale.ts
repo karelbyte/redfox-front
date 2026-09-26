@@ -62,6 +62,13 @@ export function useLocaleUtils() {
 
   return {
     locale,
+    /**
+     * Moneda de la organización. Se expone para los pocos sitios que
+     * necesitan el código en sí —un PDF, un eje de gráfico— y no pueden
+     * dejar que formatCurrency lo resuelva por dentro. Antes esos sitios
+     * escribían 'MXN' a mano y una organización peruana veía pesos.
+     */
+    defaultCurrency,
     formatDate,
     formatDateShort,
     formatCurrency,

@@ -6,6 +6,7 @@ import { BanknotesIcon, PlusIcon, DocumentTextIcon, ClockIcon } from '@heroicons
 import { Btn } from '@/components/atoms';
 import { cashRegisterService } from '@/services/cash-register.service';
 import { CashTransaction } from '@/types/cash-register';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface CashBalanceProps {
   currentCashRegister?: {
@@ -28,6 +29,7 @@ const CashBalance = React.memo(({
   isOpen = false
 }: CashBalanceProps) => {
   const t = useTranslations('pages.pos');
+  const { formatCurrency } = useLocaleUtils();
   const [recentTransactions, setRecentTransactions] = useState<CashTransaction[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const [realBalance, setRealBalance] = useState<number>(0);
@@ -204,7 +206,7 @@ const CashBalance = React.memo(({
               {loadingBalance ? (
                 <span className="text-sm text-blue-600">{t('cashBalance.loadingBalance')}</span>
               ) : (
-                `$${realBalance.toFixed(2)}`
+                formatCurrency(realBalance)
               )}
             </span>
           </div>
@@ -216,7 +218,7 @@ const CashBalance = React.memo(({
               {loadingBalance ? (
                 <span className="text-sm text-green-600">{t('cashBalance.loadingBalance')}</span>
               ) : (
-                `$${cashAmount.toFixed(2)}`
+                formatCurrency(cashAmount)
               )}
             </span>
           </div>

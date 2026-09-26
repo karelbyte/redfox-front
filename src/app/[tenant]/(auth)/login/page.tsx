@@ -8,6 +8,15 @@ import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import AuthThemeSelector from "@/components/AuthThemeSelector";
 
+/** Cada punto del panel: su icono y la clave de su texto traducido. */
+const FEATURES = [
+  { icon: '🧾', key: 'features.invoicing' },
+  { icon: '📦', key: 'features.inventory' },
+  { icon: '🛒', key: 'features.pos' },
+  { icon: '📊', key: 'features.analytics' },
+  { icon: '🌐', key: 'features.languages' },
+] as const;
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,20 +75,18 @@ export default function LoginPage() {
           </div>
           <h1 className="text-3xl font-bold text-white mb-3">Nitro stock</h1>
           <p className="text-white/80 mb-10 text-base">
-            {locale === 'zh' ? '为您的业务提供动力' : locale === 'en' ? 'Power your business with smart tools' : 'El motor de tu negocio'}
+            {t('tagline')}
           </p>
           <div className="space-y-4 text-left">
-            {[
-              { icon: '🧾', es: 'Facturación CFDI 4.0 timbrada al instante', en: 'CFDI 4.0 invoicing in seconds', zh: '即时CFDI 4.0电子发票' },
-              { icon: '📦', es: 'Inventario con estrategias FIFO, FEFO y promedio', en: 'Inventory with FIFO, FEFO & average', zh: '支持FIFO、FEFO和平均库存策略' },
-              { icon: '🛒', es: 'Punto de venta con escáner de código de barras', en: 'POS with barcode scanner support', zh: '支持条形码扫描的销售终端' },
-              { icon: '📊', es: 'Analytics y reportes en tiempo real', en: 'Real-time analytics & reports', zh: '实时分析与报告' },
-              { icon: '🌐', es: 'Multi-idioma: Español, Inglés y Chino', en: 'Multi-language: ES, EN & ZH', zh: '多语言：西班牙语、英语和中文' },
-            ].map((f, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white/10 rounded-xl px-4 py-3">
-                <span className="text-xl flex-shrink-0">{f.icon}</span>
+            {/* Los textos viven en los archivos de idioma; aquí solo el icono.
+                El primero es deliberadamente neutro: esta pantalla se ve antes
+                de iniciar sesión, así que todavía no se sabe en qué país opera
+                la organización. */}
+            {FEATURES.map((feature) => (
+              <div key={feature.key} className="flex items-start gap-3 bg-white/10 rounded-xl px-4 py-3">
+                <span className="text-xl flex-shrink-0">{feature.icon}</span>
                 <span className="text-white/90 text-sm leading-snug">
-                  {locale === 'zh' ? f.zh : locale === 'en' ? f.en : f.es}
+                  {t(feature.key)}
                 </span>
               </div>
             ))}

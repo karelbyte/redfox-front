@@ -171,7 +171,7 @@
     "invoices": "Facturas",
     "createInvoice": "Crear Factura",
     "invoiceList": "Lista de Facturas",
-    "certificationPacks": "Packs SAT",
+    "certificationPacks": "Facturación electrónica",
     "documentSeries": "Series de comprobantes",
     "auditLogs": "Logs de Auditoría",
     "finance": "Finanzas",
@@ -507,7 +507,7 @@
         "slug": "Slug",
         "description": "Descripción",
         "sku": "SKU",
-        "code": "Código SAT",
+        "code": "Código fiscal del producto",
         "barcode": "Código de Barras",
         "weight": "Peso",
         "width": "Ancho",
@@ -560,7 +560,7 @@
           "nameRequired": "El nombre es requerido",
           "slugRequired": "El slug es requerido",
           "descriptionRequired": "La descripción es requerida",
-          "codeRequired": "El código SAT es requerido",
+          "codeRequired": "El código fiscal del producto es requerido",
           "skuRequired": "El SKU es requerido",
           "categoryRequired": "La categoría es requerida",
           "brandRequired": "La marca es requerida",
@@ -587,7 +587,7 @@
       },
       "table": {
         "name": "Nombre",
-        "code": "Código SAT",
+        "code": "Código fiscal",
         "sku": "SKU",
         "brand": "Marca",
         "category": "Categoría",
@@ -642,7 +642,7 @@
         "export": "Exportar PDF",
         "generating": "Generando PDF...",
         "product": "Producto",
-        "code": "Código SAT",
+        "code": "Código fiscal",
         "sku": "SKU",
         "brand": "Marca",
         "category": "Categoría",
@@ -1090,7 +1090,7 @@
           "actions": "Acciones"
         },
         "errors": {
-          "taxDocumentRequired": "El RFC es requerido",
+          "taxDocumentRequired": "El documento fiscal es requerido",
           "taxNameRequired": "La razón social es requerida"
         },
         "messages": {
@@ -1291,7 +1291,7 @@
           "taxName": "Nombre o Razón social tal como viene en la cédula fiscal de identificación (CIF).\nPara el caso de personas físicas: Nombre(s), Apellido paterno y Apellido materno.\nPara el caso de personas morales: Razón Social.\n! IMPORTANTE !: NO se debe capturar en este campo el Régimen de Capital (ej: SA de CV, S de RL, etc)"
         },
         "errors": {
-          "taxDocumentRequired": "El RFC es requerido",
+          "taxDocumentRequired": "El documento fiscal es requerido",
           "taxNameRequired": "La razón social es requerida",
           "taxDocumentFormat": "El documento debe tener {lengths} dígitos"
         },
@@ -1946,7 +1946,15 @@
       "loginButton": "Iniciar sesión",
       "loggingIn": "Iniciando sesión...",
       "forgotPassword": "¿Olvidaste tu contraseña?",
-      "registerLink": "¿No tienes cuenta? Regístrate"
+      "registerLink": "¿No tienes cuenta? Regístrate",
+      "tagline": "El motor de tu negocio",
+      "features": {
+        "invoicing": "Facturación electrónica adaptada a tu país",
+        "inventory": "Inventario con estrategias FIFO, FEFO y promedio",
+        "pos": "Punto de venta con escáner de código de barras",
+        "analytics": "Analytics y reportes en tiempo real",
+        "languages": "Multi-idioma: Español, Inglés y Chino"
+      }
     },
     "forgotPassword": {
       "title": "Recuperar Contraseña",
@@ -2064,7 +2072,7 @@
         "printTicket": "Imprimir Ticket",
         "refund": "Devolver",
         "refunded": "Devolviendo...",
-        "cannotRefundInvoiced": "No se puede devolver una venta facturada con CFDI"
+        "cannotRefundInvoiced": "No se puede devolver una venta ya facturada"
       },
       "messages": {
         "saleCreated": "Venta creada correctamente",
@@ -2382,7 +2390,7 @@
         "confirm": "Confirmar Pago",
         "processing": "Procesando...",
         "downloadTicket": "Descargar Ticket",
-        "generateInvoice": "Generar factura fiscal (CFDI)",
+        "generateInvoice": "Generar comprobante fiscal",
         "selectEmitter": "Seleccionar emisor",
         "generateInvoiceHint": "Se generará y timbará automáticamente al confirmar"
       },
@@ -2613,7 +2621,7 @@
     },
     "invoices": {
       "title": "Facturas",
-      "subtitle": "Gestión de facturas y CFDI",
+      "subtitle": "Gestión de facturas y comprobantes",
       "searchInvoices": "Buscar factura",
       "create": {
         "title": "Crear Factura",
@@ -2640,8 +2648,8 @@
         "viewDetails": "Ver Detalles",
         "edit": "Editar",
         "delete": "Eliminar",
-        "generateCFDI": "Generar CFDI",
-        "cancelCFDI": "Cancelar CFDI",
+        "generateCFDI": "Generar comprobante",
+        "cancelCFDI": "Cancelar comprobante",
         "downloadPDF": "Descargar PDF",
         "downloadXML": "Descargar XML",
         "downloadingPDF": "Descargando PDF...",
@@ -2691,18 +2699,18 @@
         "cancel": "Cancelar"
       },
       "generateCFDIModal": {
-        "title": "Generar CFDI",
-        "message": "¿Estás seguro de que deseas generar el CFDI para la factura {code}?",
-        "confirm": "Generar CFDI",
+        "title": "Generar comprobante",
+        "message": "¿Estás seguro de que deseas generar el comprobante de la factura {code}?",
+        "confirm": "Generar comprobante",
         "cancel": "Cancelar",
         "generating": "Generando..."
       },
       "cancelCFDIModal": {
-        "title": "Cancelar CFDI",
-        "message": "¿Estás seguro de que deseas cancelar el CFDI de la factura {code}?",
+        "title": "Cancelar comprobante",
+        "message": "¿Estás seguro de que deseas cancelar el comprobante de la factura {code}?",
         "reasonLabel": "Motivo de Cancelación",
         "reasonPlaceholder": "Ingrese el motivo de la cancelación",
-        "confirm": "Cancelar CFDI",
+        "confirm": "Cancelar comprobante",
         "cancel": "Cancelar",
         "cancelling": "Cancelando..."
       },
@@ -2726,7 +2734,7 @@
         "tax": "Impuesto",
         "total": "Total",
         "summary": "Resumen",
-        "cfdi": "CFDI",
+        "cfdi": "Comprobante",
         "uuid": "UUID",
         "facturapiId": "ID FacturaAPI",
         "packInvoiceId": "ID en PAC"
@@ -2764,8 +2772,8 @@
         "cancelError": "Error al cancelar el complemento de pago",
         "cancelComplement": "Cancelar complemento",
         "cancelComplementTitle": "Cancelar complemento de pago",
-        "cancelComplementMessage": "Esta acción cancelará el complemento en el SAT. Selecciona el motivo de cancelación.",
-        "cancelReason": "Motivo de cancelación SAT",
+        "cancelComplementMessage": "Esta acción cancelará el complemento ante la autoridad fiscal. Selecciona el motivo de cancelación.",
+        "cancelReason": "Motivo de cancelación",
         "cancelling": "Cancelando...",
         "confirmCancel": "Cancelar complemento"
       },
@@ -2778,8 +2786,8 @@
         "invoiceCreated": "Factura creada exitosamente",
         "invoiceUpdated": "Factura actualizada exitosamente",
         "invoiceDeleted": "Factura eliminada exitosamente",
-        "cfdiGenerated": "CFDI generado exitosamente",
-        "cfdiCancelled": "CFDI cancelado exitosamente",
+        "cfdiGenerated": "Comprobante generado exitosamente",
+        "cfdiCancelled": "Comprobante cancelado exitosamente",
         "pdfDownloaded": "PDF descargado exitosamente",
         "xmlDownloaded": "XML descargado exitosamente",
         "errorLoadingClients": "Error al cargar los clientes"
@@ -2790,8 +2798,8 @@
         "saveInvoice": "Error al guardar la factura",
         "createInvoice": "Error al crear la factura",
         "deleteInvoice": "Error al eliminar la factura",
-        "generateCFDI": "Error al generar el CFDI",
-        "cancelCFDI": "Error al cancelar el CFDI",
+        "generateCFDI": "Error al generar el comprobante",
+        "cancelCFDI": "Error al cancelar el comprobante",
         "downloadPDF": "Error al descargar el PDF",
         "downloadXML": "Error al descargar el XML",
         "loadInvoiceDetails": "Error al cargar los detalles de la factura"
@@ -2807,8 +2815,8 @@
       "namePlaceholder": "Nombre de la empresa",
       "legalName": "Razón social",
       "legalNamePlaceholder": "Razón social fiscal",
-      "taxId": "RFC / Identificador fiscal",
-      "taxIdPlaceholder": "RFC o equivalente",
+      "taxId": "Identificador fiscal",
+      "taxIdPlaceholder": "RFC, RUC u equivalente",
       "address": "Dirección",
       "addressPlaceholder": "Dirección fiscal",
       "phone": "Teléfono",
@@ -3033,8 +3041,8 @@
       }
     },
     "certificationPacks": {
-      "title": "Packs SAT",
-      "subtitle": "Gestión de packs certificados para facturación",
+      "title": "Facturación electrónica",
+      "subtitle": "Gestión de proveedores de facturación electrónica",
       "searchPlaceholder": "Buscar packs...",
       "noData": "No hay packs",
       "noDataDesc": "No se encontraron packs. Crea el primer pack para comenzar.",
@@ -4583,13 +4591,18 @@
       "renewNow": "Renovar Ahora",
       "loading": "Cargando...",
       "errorLoading": "No se pudo cargar la información de la suscripción",
-      "errorLoadingSubscription": "Error al cargar la suscripción"
+      "errorLoadingSubscription": "Error al cargar la suscripción",
+      "descriptionMonthly": "Todas las características incluidas, facturado cada mes",
+      "descriptionYearly": "Todas las características incluidas, facturado una vez al año",
+      "manageSubscription": "Gestionar suscripción",
+      "openingPortal": "Abriendo…",
+      "manageNote": "Cambia tu tarjeta, consulta tus facturas o cancela cuando quieras.",
+      "portalError": "No se pudo abrir el portal de gestión"
     },
     "payment": {
       "title": "Activar Suscripción",
       "subtitle": "Completa tu pago para continuar usando Nitro sin interrupciones",
       "selectPlan": "Selecciona tu Plan",
-      "saveMore": "Ahorra más de 1 mes",
       "planSummary": "Resumen del Plan",
       "perMonth": "mes",
       "perYear": "año",
@@ -4598,14 +4611,22 @@
       "feature2": "Almacenes ilimitados",
       "feature3": "Productos ilimitados",
       "feature4": "Todas las estrategias de inventario",
-      "feature5": "Facturación electrónica (CFDI)",
+      "feature5": "Facturación electrónica",
       "feature6": "Reportes avanzados",
       "feature7": "API REST y Webhooks",
       "feature8": "Soporte prioritario",
       "paymentInfo": "Información de Pago",
       "securityNote": "Tu información está protegida con encriptación de nivel bancario.",
       "securityNote2": "No almacenamos los datos de tu tarjeta.",
-      "errorLoading": "Error al cargar la información"
+      "errorLoading": "Error al cargar la información",
+      "saveMonths": "Ahorras {months, plural, one {# mes} other {# meses}}",
+      "recommended": "Recomendado",
+      "descriptionMonthly": "Todas las características incluidas, facturado cada mes",
+      "descriptionYearly": "Todas las características incluidas, facturado una vez al año",
+      "goToCheckout": "Continuar al pago",
+      "redirecting": "Redirigiendo a Stripe…",
+      "checkoutNote": "Te llevaremos a la pantalla segura de Stripe para completar el pago.",
+      "checkoutError": "No se pudo abrir la pantalla de pago"
     },
     "paymentForm": {
       "cardInfo": "Información de la Tarjeta",

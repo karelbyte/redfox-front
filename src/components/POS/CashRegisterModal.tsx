@@ -6,6 +6,7 @@ import { XMarkIcon, BanknotesIcon, MagnifyingGlassIcon, PlusIcon } from '@heroic
 import { Input, Btn, SearchInput } from '@/components/atoms';
 import { cashRegisterService } from '@/services/cash-register.service';
 import { CashRegister } from '@/types/cash-register';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface CashRegisterModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ const CashRegisterModal = React.memo(({
   currentCashRegister
 }: CashRegisterModalProps) => {
   const t = useTranslations('pages.pos');
+  const { formatCurrency } = useLocaleUtils();
   const [initialAmount, setInitialAmount] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [cashRegisters, setCashRegisters] = useState<CashRegister[]>([]);
@@ -193,7 +195,7 @@ const CashRegisterModal = React.memo(({
                               <p className="text-xs text-gray-500">{cashRegister.code}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-sm font-semibold">${cashRegister.current_amount.toFixed(2)}</p>
+                              <p className="text-sm font-semibold">{formatCurrency(cashRegister.current_amount)}</p>
                               <p className={`text-xs ${
                                 cashRegister.status === 'open' ? 'text-green-600' : 'text-red-600'
                               }`}>

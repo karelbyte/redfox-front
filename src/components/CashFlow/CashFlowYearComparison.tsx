@@ -71,7 +71,7 @@ export default function CashFlowYearComparison({ currentSummary, isLoading }: Ca
     };
   };
 
-  const formatCurrencyCompact = (value: number) => formatCurrency(value, 'MXN', true);
+  const formatCurrencyCompact = (value: number) => formatCurrency(value, undefined, true);
 
   const yearTrend = calculateYearTrend();
 

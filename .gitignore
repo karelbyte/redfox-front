@@ -15,6 +15,8 @@
 
 # next.js
 /.next/
+# compilación aparte que usan las pruebas e2e
+/.next-e2e
 /out/
 
 # production
@@ -32,6 +34,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# la plantilla sí se versiona: documenta qué variables hacen falta
+!.env.e2e.example
 
 # vercel
 .vercel

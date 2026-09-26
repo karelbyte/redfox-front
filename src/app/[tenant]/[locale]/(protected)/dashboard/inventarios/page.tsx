@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useLocaleUtils } from "@/hooks/useLocale";
 import { ClosedWarehouse } from "@/types/closed-warehouse";
 import { InventoryItem, InventoryResponse } from "@/types/inventory";
 import { closedWarehousesService } from "@/services/closed-warehouses.service";
@@ -31,6 +32,7 @@ import { InventoryPDFService } from "@/services/inventory-pdf.service";
 export default function InventariosPage() {
   const router = useRouter();
   const locale = useLocale();
+  const { defaultCurrency } = useLocaleUtils();
   const t = useTranslations('pages.inventory');
   const [closedWarehouses, setClosedWarehouses] = useState<ClosedWarehouse[]>(
     []
@@ -222,7 +224,7 @@ export default function InventariosPage() {
         selectedBrandId || undefined,
         selectedCategoryId || undefined
       );
-      const currency = selectedWarehouse.currency?.code || 'MXN';
+      const currency = selectedWarehouse.currency?.code || defaultCurrency;
       const isEn = locale === 'en';
 
       // Obtener nombres de marca y categoría seleccionados
@@ -385,7 +387,7 @@ export default function InventariosPage() {
                           <span>
                             {new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'es-MX', {
                               style: 'currency',
-                              currency: selectedWarehouse?.currency?.code || 'MXN',
+                              currency: selectedWarehouse?.currency?.code || undefined,
                             }).format(warehouseValue)}
                           </span>
                         </p>

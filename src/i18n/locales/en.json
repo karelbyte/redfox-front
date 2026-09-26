@@ -171,7 +171,7 @@
     "invoices": "Invoices",
     "createInvoice": "Create Invoice",
     "invoiceList": "Invoice List",
-    "certificationPacks": "SAT Packs",
+    "certificationPacks": "Electronic invoicing",
     "documentSeries": "Document series",
     "auditLogs": "Audit Logs",
     "finance": "Finance",
@@ -507,7 +507,7 @@
         "slug": "Slug",
         "description": "Description",
         "sku": "SKU",
-        "code": "SAT Code",
+        "code": "Product tax code",
         "barcode": "Barcode",
         "weight": "Weight",
         "width": "Width",
@@ -558,7 +558,7 @@
           "nameRequired": "Name is required",
           "slugRequired": "Slug is required",
           "descriptionRequired": "Description is required",
-          "codeRequired": "SAT Code is required",
+          "codeRequired": "Product tax code is required",
           "skuRequired": "SKU is required",
           "categoryRequired": "Category is required",
           "brandRequired": "Brand is required",
@@ -585,7 +585,7 @@
       "table": {
         "name": "Name",
         "sku": "SKU",
-        "code": "SAT Code",
+        "code": "Tax code",
         "brand": "Brand",
         "category": "Category",
         "measurementUnit": "Measurement Unit",
@@ -639,7 +639,7 @@
         "export": "Export PDF",
         "generating": "Generating PDF...",
         "product": "Product",
-        "code": "SAT Code",
+        "code": "Tax code",
         "sku": "SKU",
         "brand": "Brand",
         "category": "Category",
@@ -1077,7 +1077,7 @@
           "actions": "Actions"
         },
         "errors": {
-          "taxDocumentRequired": "RFC is required",
+          "taxDocumentRequired": "The tax document is required",
           "taxNameRequired": "Legal name is required"
         },
         "messages": {
@@ -1306,7 +1306,7 @@
           "taxName": "Name or Business Name as it appears in the Tax Identification Cedula (CIF).\nFor natural persons: Name(s), First Surname and Second Surname.\nFor legal entities: Business Name.\n! IMPORTANT !: Do NOT capture in this field the Capital Regime (e.g., SA de CV, S de RL, etc.)"
         },
         "errors": {
-          "taxDocumentRequired": "Tax document is required",
+          "taxDocumentRequired": "The tax document is required",
           "taxNameRequired": "Legal name is required",
           "taxDocumentFormat": "The document must have {lengths} digits"
         },
@@ -1970,7 +1970,15 @@
       "loginButton": "Login",
       "loggingIn": "Logging in...",
       "forgotPassword": "Forgot your password?",
-      "registerLink": "Don't have an account? Sign up"
+      "registerLink": "Don't have an account? Sign up",
+      "tagline": "Power your business with smart tools",
+      "features": {
+        "invoicing": "Electronic invoicing tailored to your country",
+        "inventory": "Inventory with FIFO, FEFO & average",
+        "pos": "POS with barcode scanner support",
+        "analytics": "Real-time analytics & reports",
+        "languages": "Multi-language: ES, EN & ZH"
+      }
     },
     "forgotPassword": {
       "title": "Recover Password",
@@ -2088,7 +2096,7 @@
         "printTicket": "Print Ticket",
         "refund": "Refund",
         "refunded": "Refunding...",
-        "cannotRefundInvoiced": "Cannot refund an invoiced sale with CFDI"
+        "cannotRefundInvoiced": "Cannot refund a sale that has already been invoiced"
       },
       "messages": {
         "saleCreated": "Sale created successfully",
@@ -2387,7 +2395,7 @@
         "confirm": "Confirm Payment",
         "processing": "Processing...",
         "downloadTicket": "Download Ticket",
-        "generateInvoice": "Generate fiscal invoice (CFDI)",
+        "generateInvoice": "Generate fiscal document",
         "selectEmitter": "Select emitter",
         "generateInvoiceHint": "Will be automatically stamped upon confirmation"
       },
@@ -2618,7 +2626,7 @@
     },
     "invoices": {
       "title": "Invoices",
-      "subtitle": "Invoice and CFDI management",
+      "subtitle": "Invoice and fiscal document management",
       "searchInvoices": "",
       "create": {
         "title": "Create Invoice",
@@ -2645,8 +2653,8 @@
         "viewDetails": "View Details",
         "edit": "Edit",
         "delete": "Delete",
-        "generateCFDI": "Generate CFDI",
-        "cancelCFDI": "Cancel CFDI",
+        "generateCFDI": "Generate document",
+        "cancelCFDI": "Cancel document",
         "downloadPDF": "Download PDF",
         "downloadXML": "Download XML",
         "downloadingPDF": "Downloading PDF...",
@@ -2696,18 +2704,18 @@
         "cancel": "Cancel"
       },
       "generateCFDIModal": {
-        "title": "Generate CFDI",
-        "message": "Are you sure you want to generate CFDI for invoice {code}?",
-        "confirm": "Generate CFDI",
+        "title": "Generate document",
+        "message": "Are you sure you want to generate the fiscal document for invoice {code}?",
+        "confirm": "Generate document",
         "cancel": "Cancel",
         "generating": "Generating..."
       },
       "cancelCFDIModal": {
-        "title": "Cancel CFDI",
-        "message": "Are you sure you want to cancel CFDI for invoice {code}?",
+        "title": "Cancel document",
+        "message": "Are you sure you want to cancel the fiscal document for invoice {code}?",
         "reasonLabel": "Cancellation Reason",
         "reasonPlaceholder": "Enter cancellation reason",
-        "confirm": "Cancel CFDI",
+        "confirm": "Cancel document",
         "cancel": "Cancel",
         "cancelling": "Cancelling..."
       },
@@ -2731,7 +2739,7 @@
         "tax": "Tax",
         "total": "Total",
         "summary": "Summary",
-        "cfdi": "CFDI",
+        "cfdi": "Fiscal document",
         "uuid": "UUID",
         "facturapiId": "FacturaAPI ID",
         "packInvoiceId": "Pack ID"
@@ -2769,8 +2777,8 @@
         "cancelError": "Error cancelling payment complement",
         "cancelComplement": "Cancel complement",
         "cancelComplementTitle": "Cancel payment complement",
-        "cancelComplementMessage": "This action will cancel the complement at the SAT. Select the cancellation reason.",
-        "cancelReason": "SAT cancellation reason",
+        "cancelComplementMessage": "This action will cancel the complement with the tax authority. Select the cancellation reason.",
+        "cancelReason": "Cancellation reason",
         "cancelling": "Cancelling...",
         "confirmCancel": "Cancel complement"
       },
@@ -2783,8 +2791,8 @@
         "invoiceCreated": "Invoice created successfully",
         "invoiceUpdated": "Invoice updated successfully",
         "invoiceDeleted": "Invoice deleted successfully",
-        "cfdiGenerated": "CFDI generated successfully",
-        "cfdiCancelled": "CFDI cancelled successfully",
+        "cfdiGenerated": "Fiscal document generated successfully",
+        "cfdiCancelled": "Fiscal document cancelled successfully",
         "pdfDownloaded": "PDF downloaded successfully",
         "xmlDownloaded": "XML downloaded successfully",
         "errorLoadingClients": "Error loading clients"
@@ -2795,8 +2803,8 @@
         "saveInvoice": "Error saving invoice",
         "createInvoice": "Error creating invoice",
         "deleteInvoice": "Error deleting invoice",
-        "generateCFDI": "Error generating CFDI",
-        "cancelCFDI": "Error cancelling CFDI",
+        "generateCFDI": "Error generating the fiscal document",
+        "cancelCFDI": "Error cancelling the fiscal document",
         "downloadPDF": "Error downloading PDF",
         "downloadXML": "Error downloading XML",
         "loadInvoiceDetails": "Error loading invoice details"
@@ -2812,8 +2820,8 @@
       "namePlaceholder": "Company name",
       "legalName": "Legal name",
       "legalNamePlaceholder": "Legal / fiscal name",
-      "taxId": "Tax ID / RFC",
-      "taxIdPlaceholder": "RFC or equivalent",
+      "taxId": "Tax ID",
+      "taxIdPlaceholder": "Tax ID (RFC, RUC or equivalent)",
       "address": "Address",
       "addressPlaceholder": "Fiscal address",
       "phone": "Phone",
@@ -3038,8 +3046,8 @@
       }
     },
     "certificationPacks": {
-      "title": "SAT Packs",
-      "subtitle": "Certified pack management for invoicing",
+      "title": "Electronic invoicing",
+      "subtitle": "Manage electronic invoicing providers",
       "searchPlaceholder": "Search packs...",
       "noData": "No packs",
       "noDataDesc": "No packs found. Create the first pack to get started.",
@@ -4574,13 +4582,18 @@
       "renewNow": "Renew Now",
       "loading": "Loading...",
       "errorLoading": "Could not load subscription information",
-      "errorLoadingSubscription": "Error loading subscription"
+      "errorLoadingSubscription": "Error loading subscription",
+      "descriptionMonthly": "All features included, billed every month",
+      "descriptionYearly": "All features included, billed once a year",
+      "manageSubscription": "Manage subscription",
+      "openingPortal": "Opening…",
+      "manageNote": "Change your card, view your invoices or cancel whenever you want.",
+      "portalError": "Could not open the management portal"
     },
     "payment": {
       "title": "Activate Subscription",
       "subtitle": "Complete your payment to continue using Nitro without interruptions",
       "selectPlan": "Select Your Plan",
-      "saveMore": "Save more than 1 month",
       "planSummary": "Plan Summary",
       "perMonth": "month",
       "perYear": "year",
@@ -4589,14 +4602,22 @@
       "feature2": "Unlimited warehouses",
       "feature3": "Unlimited products",
       "feature4": "All inventory strategies",
-      "feature5": "Electronic invoicing (CFDI)",
+      "feature5": "Electronic invoicing",
       "feature6": "Advanced reports",
       "feature7": "REST API and Webhooks",
       "feature8": "Priority support",
       "paymentInfo": "Payment Information",
       "securityNote": "Your information is protected with bank-level encryption.",
       "securityNote2": "We do not store your card data.",
-      "errorLoading": "Error loading information"
+      "errorLoading": "Error loading information",
+      "saveMonths": "Save {months, plural, one {# month} other {# months}}",
+      "recommended": "Recommended",
+      "descriptionMonthly": "All features included, billed every month",
+      "descriptionYearly": "All features included, billed once a year",
+      "goToCheckout": "Continue to payment",
+      "redirecting": "Redirecting to Stripe…",
+      "checkoutNote": "We'll take you to Stripe's secure page to complete the payment.",
+      "checkoutError": "Could not open the payment page"
     },
     "paymentForm": {
       "cardInfo": "Card Information",

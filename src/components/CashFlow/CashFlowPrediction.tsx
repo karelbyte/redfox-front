@@ -83,7 +83,7 @@ export default function CashFlowPrediction({ movements, isLoading }: CashFlowPre
 
   const insights = calculateInsights();
 
-  const formatCurrencyCompact = (value: number) => formatCurrency(value, 'MXN', true);
+  const formatCurrencyCompact = (value: number) => formatCurrency(value, undefined, true);
 
   return (
     <div className="space-y-6">

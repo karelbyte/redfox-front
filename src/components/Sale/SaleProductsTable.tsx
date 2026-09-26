@@ -45,7 +45,7 @@ export default function SaleProductsTable({
   const grandSubtotal = products.reduce((s, d) => s + Number(d.quantity) * Number(d.price), 0);
   const grandTax = products.reduce((s, d) => s + calcTaxAmount(d), 0);
   const grandTotal = grandSubtotal + grandTax;
-  const currencyCode = products[0]?.product.currency?.code || 'MXN';
+  const currencyCode = products[0]?.product.currency?.code || undefined;
 
   const handleDeleteClick = (product: SaleDetail) => {
     setProductToDelete(product);

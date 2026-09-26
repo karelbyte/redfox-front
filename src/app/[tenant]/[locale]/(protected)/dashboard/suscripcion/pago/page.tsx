@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { StripeProvider } from '@/providers/StripeProvider';
-import { PaymentForm } from '@/components/Subscription/PaymentForm';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { subscriptionService, SubscriptionStatus, Plan } from '@/services/subscription.service';
 import { toastService } from '@/services/toast.service';
 
@@ -13,10 +12,62 @@ export default function PaymentPage() {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [loading, setLoading] = useState(true);
   const t = useTranslations('subscription.payment');
+  const { formatCurrency } = useLocaleUtils();
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  /**
+   * Meses que se ahorran contratando un plan anual, comparado con pagar el
+   * mensual doce veces. Se calcula a partir de los precios reales en lugar de
+   * anunciarlo con un texto fijo, para que nunca prometa de más ni de menos
+   * cuando cambien los importes o el país.
+   *
+   * Se redondea a la baja: mejor quedarse corto que exagerar.
+   */
+  const savedMonths = (plan: Plan): number => {
+    if (plan.billing_period !== 'yearly') return 0;
+
+    const monthly = plans.find(
+      (p) => p.billing_period === 'monthly' && p.currency === plan.currency,
+    );
+    if (!monthly || Number(monthly.price) <= 0) return 0;
+
+    const saved = Number(monthly.price) * 12 - Number(plan.price);
+
+    return Math.max(0, Math.floor(saved / Number(monthly.price)));
+  };
+
+  /**
+   * La descripción del plan se guarda en la base en un solo idioma, así que
+   * solo se usa si el plan trae una propia; si no, se traduce, igual que la
+   * lista de características.
+   */
+  const planDescription = (plan: Plan): string =>
+    plan.description?.trim() ||
+    t(plan.billing_period === 'yearly' ? 'descriptionYearly' : 'descriptionMonthly');
+
+  /**
+   * Lleva al usuario a la pantalla de pago de Stripe.
+   *
+   * No se limpia `redirecting` al terminar a propósito: si todo va bien el
+   * navegador ya está saliendo de esta página, y devolver el botón a su
+   * estado normal solo daría lugar a un segundo clic durante la redirección.
+   */
+  const goToCheckout = async () => {
+    if (!selectedPlan) return;
+    setRedirecting(true);
+
+    try {
+      const { url } = await subscriptionService.createCheckoutSession(selectedPlan.id);
+      window.location.href = url;
+    } catch (error) {
+      toastService.error(t('checkoutError'));
+      setRedirecting(false);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -92,12 +143,12 @@ export default function PaymentPage() {
                     <h3 className="text-xl font-bold">{plan.name}</h3>
                     {plan.is_default && (
                       <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-primary-100 text-primary-700">
-                        Recomendado
+                        {t('recommended')}
                       </span>
                     )}
                   </div>
                   <p className="text-sm mt-1" style={{ color: 'rgb(var(--color-secondary-600))' }}>
-                    {plan.description}
+                    {planDescription(plan)}
                   </p>
                 </div>
                 {selectedPlan?.id === plan.id && (
@@ -114,16 +165,16 @@ export default function PaymentPage() {
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                  ${plan.price}
+                  {formatCurrency(Number(plan.price), plan.currency)}
                 </span>
                 <span className="text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
-                  {plan.currency}/{plan.billing_period === 'monthly' ? t('perMonth') : t('perYear')}
+                  /{plan.billing_period === 'monthly' ? t('perMonth') : t('perYear')}
                 </span>
               </div>
-              {plan.billing_period === 'yearly' && (
+              {savedMonths(plan) > 0 && (
                 <div className="mt-2">
                   <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                    {t('saveMore')}
+                    {t('saveMonths', { months: savedMonths(plan) })}
                   </span>
                 </div>
               )}
@@ -146,15 +197,15 @@ export default function PaymentPage() {
             <div>
               <h3 className="font-semibold">{selectedPlan.name}</h3>
               <p className="text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
-                {selectedPlan.description}
+                {planDescription(selectedPlan)}
               </p>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                ${selectedPlan.price}
+                {formatCurrency(Number(selectedPlan.price), selectedPlan.currency)}
               </div>
               <div className="text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
-                {selectedPlan.currency}/{selectedPlan.billing_period === 'monthly' ? t('perMonth') : t('perYear')}
+                /{selectedPlan.billing_period === 'monthly' ? t('perMonth') : t('perYear')}
               </div>
             </div>
           </div>
@@ -196,9 +247,18 @@ export default function PaymentPage() {
           }}
         >
           <h2 className="text-lg font-semibold mb-4">{t('paymentInfo')}</h2>
-          <StripeProvider>
-            <PaymentForm planId={selectedPlan.id} />
-          </StripeProvider>
+          <p className="text-sm mb-4" style={{ color: 'rgb(var(--color-secondary-600))' }}>
+            {t('checkoutNote')}
+          </p>
+          <button
+            type="button"
+            onClick={goToCheckout}
+            disabled={redirecting}
+            className="w-full py-3 px-4 rounded-lg font-semibold text-white transition-opacity disabled:opacity-60"
+            style={{ backgroundColor: 'rgb(var(--color-primary-600))' }}
+          >
+            {redirecting ? t('redirecting') : t('goToCheckout')}
+          </button>
         </div>
       )}
 
