@@ -5,6 +5,7 @@ import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import { InventoryProduct } from '@/services/inventory.service';
 import { API_BASE_URL } from '@/lib/config';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface ProductCardProps {
   product: InventoryProduct;
@@ -36,6 +37,7 @@ const urgencyStyles = {
 
 const ProductCard = React.memo(({ product, onAddToCart }: ProductCardProps) => {
   const t = useTranslations('pages.pos');
+  const { formatCurrency } = useLocaleUtils();
   const hasImage = product.product.images && product.product.images.length > 0;
   const imageUrl = hasImage ? `${API_BASE_URL}${product.product.images[0]}` : '';
 
@@ -95,7 +97,7 @@ const ProductCard = React.memo(({ product, onAddToCart }: ProductCardProps) => {
       )}
 
       {/* Precio */}
-      <p className="text-sm font-semibold mt-2 text-center">${product.price || 0}</p>
+      <p className="text-sm font-semibold mt-2 text-center">{formatCurrency(Number(product.price) || 0)}</p>
     </div>
   );
 });

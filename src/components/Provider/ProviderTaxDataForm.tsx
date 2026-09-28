@@ -1,5 +1,6 @@
 import { forwardRef, useImperativeHandle, useState, useEffect, useMemo } from "react";
 import { useTranslations } from 'next-intl';
+import { useCountryProfile } from '@/hooks/useCountryProfile';
 import { ProviderTaxData } from "@/types/provider";
 import { providersService } from "@/services/providers.service";
 import { toastService } from "@/services/toast.service";
@@ -66,7 +67,11 @@ const REGIME_TYPES: Record<string, string[]> = {
 const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFormProps>(
     ({ providerId, taxData, onSuccess, onSavingChange }, ref) => {
         const t = useTranslations('pages.providers.taxData');
-        const t2 = useTranslations('pages.clients.taxData');    
+        const t2 = useTranslations('pages.clients.taxData');
+        // El régimen fiscal y el uso del comprobante son del sistema mexicano:
+        // en otros países no aplican y no deben pedirse.
+        const { country } = useCountryProfile();
+        const taxFields = country.customerTaxFields;    
 
         const [formData, setFormData] = useState<FormData>({
             tax_document: taxData?.tax_document || "",
@@ -225,7 +230,9 @@ const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFo
                     </p>
                 </div>
 
+                {(taxFields.taxSystem || taxFields.invoiceUse) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {taxFields.taxSystem && (
                     <CustomSelect
                         label={t('taxSystem')}
                         value={formData.tax_system}
@@ -242,13 +249,17 @@ const ProviderTaxDataForm = forwardRef<ProviderTaxDataFormRef, ProviderTaxDataFo
                             }));
                         }}
                     />
+                    )}
+                    {taxFields.invoiceUse && (
                     <CustomSelect
                         label={t('defaultInvoiceUse')}
                         value={formData.default_invoice_use}
                         options={invoiceUseOptions}
                         onChange={(e) => setFormData(prev => ({ ...prev, default_invoice_use: e.target.value }))}
                     />
+                    )}
                 </div>
+                )}
 
                 <Checkbox
                     id="is_main_tax"

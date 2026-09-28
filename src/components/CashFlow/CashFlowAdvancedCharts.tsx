@@ -74,7 +74,7 @@ export default function CashFlowAdvancedCharts({ movements, isLoading }: CashFlo
 
   const COLORS = ['#10b981', '#ef4444', '#3b82f6', '#f59e0b'];
 
-  const formatCurrencyCompact = (value: number) => formatCurrency(value, 'MXN', true);
+  const formatCurrencyCompact = (value: number) => formatCurrency(value, undefined, true);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

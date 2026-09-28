@@ -5,6 +5,9 @@ const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Permite compilar en un directorio aparte (lo usan los e2e) para no pisar
+  // el .next del servidor de desarrollo que se esté ejecutando.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   generateEtags: false,
   poweredByHeader: false,
   compress: true,

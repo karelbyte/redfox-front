@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useLocaleUtils } from '@/hooks/useLocale';
 import { subscriptionService, SubscriptionStatus } from '@/services/subscription.service';
 import { referralService, MyReferrer, MyCommission } from '@/services/referral.service';
 import { useRouter, useParams } from 'next/navigation';
@@ -16,12 +17,31 @@ export default function SubscriptionPage() {
   const [referralStats, setReferralStats] = useState<any>(null);
   const [loadingReferral, setLoadingReferral] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [openingPortal, setOpeningPortal] = useState(false);
   const router = useRouter();
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations('subscription.page');
+  const { formatCurrency } = useLocaleUtils();
 
   const tenant = params?.tenant as string;
+
+  /**
+   * Abre el portal de Stripe, donde el cliente cambia su tarjeta, descarga
+   * facturas o cancela. Todo eso lo resuelve Stripe: no hay pantallas
+   * propias que mantener para cada una de esas operaciones.
+   */
+  const openPortal = async () => {
+    setOpeningPortal(true);
+
+    try {
+      const { url } = await subscriptionService.createPortalSession();
+      window.location.href = url;
+    } catch (error) {
+      toastService.error(t('portalError'));
+      setOpeningPortal(false);
+    }
+  };
 
   useEffect(() => {
     fetchSubscription();
@@ -199,18 +219,42 @@ export default function SubscriptionPage() {
             <div>
               <h3 className="text-lg font-semibold">{subscription.plan.name}</h3>
               <p className="text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
-                {subscription.plan.description}
+                {subscription.plan.description?.trim() ||
+                  t(subscription.plan.billing_period === 'yearly' ? 'descriptionYearly' : 'descriptionMonthly')}
               </p>
             </div>
             <div className="text-right">
               <div className="text-3xl font-bold" style={{ color: 'rgb(var(--color-primary-600))' }}>
-                ${subscription.plan.price}
+                {formatCurrency(Number(subscription.plan.price), subscription.plan.currency)}
               </div>
               <div className="text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
-                {subscription.plan.currency}/{subscription.plan.billing_period === 'monthly' ? t('perMonth') : t('perYear')}
+                /{subscription.plan.billing_period === 'monthly' ? t('perMonth') : t('perYear')}
               </div>
             </div>
           </div>
+
+          {subscription.isActive && (
+            <div
+              className="mt-4 pt-4 flex items-center justify-between gap-4 flex-wrap"
+              style={{ borderTop: `1px solid rgb(var(--color-secondary-200))` }}
+            >
+              <p className="text-sm" style={{ color: 'rgb(var(--color-secondary-600))' }}>
+                {t('manageNote')}
+              </p>
+              <button
+                type="button"
+                onClick={openPortal}
+                disabled={openingPortal}
+                className="py-2 px-4 rounded-lg text-sm font-semibold transition-opacity disabled:opacity-60"
+                style={{
+                  border: `1px solid rgb(var(--color-primary-600))`,
+                  color: 'rgb(var(--color-primary-600))',
+                }}
+              >
+                {openingPortal ? t('openingPortal') : t('manageSubscription')}
+              </button>
+            </div>
+          )}
         </div>
       )}
 

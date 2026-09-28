@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService } from '@/services/auth.service';
 import { useRouter } from 'next/navigation';
+import { locales, defaultLocale, type Locale } from '@/i18n/config';
 import { useLocale } from 'next-intl';
 
 interface User {
@@ -44,7 +45,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const locale = useLocale();
+  /**
+   * Las rutas de autenticación (`/{tenant}/login`) no tienen segmento de
+   * idioma, así que next-intl toma el primero de la ruta y devuelve el
+   * tenant. Si se usara tal cual para construir la URL de destino, el
+   * middleware insertaría además el idioma por defecto y el tenant acabaría
+   * duplicado: `/tenant/es/tenant/dashboard`, que no existe.
+   */
+  const resolvedLocale = useLocale();
+  const locale = locales.includes(resolvedLocale as Locale)
+    ? resolvedLocale
+    : defaultLocale;
 
   useEffect(() => {
     const initAuth = async () => {

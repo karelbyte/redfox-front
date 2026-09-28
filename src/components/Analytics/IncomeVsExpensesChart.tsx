@@ -34,7 +34,7 @@ export default function IncomeVsExpensesChart({ data, themeColors }: IncomeVsExp
         <BarChart data={data} margin={{ top: 4, right: 16, left: 8, bottom: 4 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="month" tickFormatter={formatMonth} stroke="#9ca3af" fontSize={11} tickLine={false} />
-          <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatCurrency(v, 'MXN', true)} />
+          <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatCurrency(v, undefined, true)} />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
           <Legend wrapperStyle={{ fontSize: '11px' }} formatter={(value) => t(value)} />
           <Bar dataKey="income" fill={themeColors.primary} radius={[4, 4, 0, 0]} maxBarSize={32} name="income" />

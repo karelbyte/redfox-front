@@ -35,7 +35,7 @@ export default function ReceivablesAgingChart({ data, themeColors }: Receivables
         <BarChart data={data} margin={{ top: 4, right: 16, left: 8, bottom: 4 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="bucket" stroke="#9ca3af" fontSize={12} tickLine={false} />
-          <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatCurrency(v, 'MXN', true)} />
+          <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatCurrency(v, undefined, true)} />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
           <Bar dataKey="amount" radius={[4, 4, 0, 0]} maxBarSize={64}>
             {data.map((_, i) => <Cell key={i} fill={BUCKET_COLORS[i % BUCKET_COLORS.length]} />)}

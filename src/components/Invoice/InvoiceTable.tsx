@@ -38,7 +38,9 @@ export default function InvoiceTable({
   };
 
   const getInvoiceCurrency = (invoice: Invoice) =>
-    invoice.details?.[0]?.product?.currency?.code || 'MXN';
+    invoice.currency_code ||
+    invoice.details?.[0]?.product?.currency?.code ||
+    undefined;
 
   const getStatusColor = (status: string) => {
     switch (status) {

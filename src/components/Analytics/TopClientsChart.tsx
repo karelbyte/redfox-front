@@ -34,7 +34,7 @@ export default function TopClientsChart({ data, themeColors }: TopClientsChartPr
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} layout="vertical" margin={{ top: 4, right: 24, left: 8, bottom: 4 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
-          <XAxis type="number" stroke="#9ca3af" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatCurrency(v, 'MXN', true)} />
+          <XAxis type="number" stroke="#9ca3af" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => formatCurrency(v, undefined, true)} />
           <YAxis type="category" dataKey="clientName" stroke="#6b7280" fontSize={11} width={130} tickLine={false} axisLine={false} tickFormatter={truncate} />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
           <Bar dataKey="totalSpent" radius={[0, 4, 4, 0]} maxBarSize={20}>

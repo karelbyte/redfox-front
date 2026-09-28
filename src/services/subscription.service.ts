@@ -48,6 +48,25 @@ export const subscriptionService = {
     });
   },
 
+  /**
+   * Pide la pantalla de pago alojada por Stripe. El navegador sale de la
+   * aplicación: ningún dato de tarjeta pasa por aquí, que es justamente lo
+   * que hace que no haya nada sensible que proteger en este código.
+   */
+  async createCheckoutSession(planId?: string): Promise<{ url: string }> {
+    return await api.post<{ url: string }>('/subscriptions/checkout-session', {
+      planId,
+    });
+  },
+
+  /**
+   * Pide el portal donde el cliente gestiona su suscripción. No se le envía
+   * ningún identificador: el backend lo resuelve desde la sesión.
+   */
+  async createPortalSession(): Promise<{ url: string }> {
+    return await api.post<{ url: string }>('/subscriptions/portal-session', {});
+  },
+
   async getPlans(): Promise<Plan[]> {
     return await api.get<Plan[]>('/subscriptions/plans');
   },
