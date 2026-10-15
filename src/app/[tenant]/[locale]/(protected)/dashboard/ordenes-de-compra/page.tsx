@@ -31,10 +31,15 @@ import { useColumnPersistence } from '@/hooks/useColumnPersistence';
 import ColumnSelector from '@/components/Table/ColumnSelector';
 import HelpButton from "@/components/Help/HelpButton";
 import { purchaseOrdersHelp } from "@/components/Help/configs/purchase-orders.help";
+import { useLocaleUtils } from '@/hooks/useLocale';
+import { useAuth } from '@/context/AuthContext';
 
 export default function PurchaseOrdersPage() {
   const router = useRouter();
   const locale = useLocale();
+  const { defaultCurrency } = useLocaleUtils();
+  const { user } = useAuth();
+  const country = user?.organization_country;
   const t = useTranslations('pages.purchaseOrders');
   const { can } = usePermissions();
   const { search_purchase_order, setSearchPurchaseOrder } = useSearchStore();
@@ -183,7 +188,7 @@ export default function PurchaseOrdersPage() {
       const detailsResponse = await purchaseOrdersService.getPurchaseOrderDetails(purchaseOrder.id);
       const details = detailsResponse.data || [];
 
-      const pdfService = new PurchaseOrderPDFService(locale);
+      const pdfService = new PurchaseOrderPDFService(locale, defaultCurrency, country);
       await pdfService.generatePDF(purchaseOrder, details, {
         title: t('pdf.title'),
         code: t('pdf.code'),

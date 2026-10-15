@@ -28,11 +28,14 @@ import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 import { Btn, SearchInput } from "@/components/atoms";
 import Select from "@/components/atoms/Select";
 import { InventoryPDFService } from "@/services/inventory-pdf.service";
+import { useAuth } from '@/context/AuthContext';
 
 export default function InventariosPage() {
   const router = useRouter();
   const locale = useLocale();
-  const { defaultCurrency } = useLocaleUtils();
+  const { defaultCurrency, formatCurrency } = useLocaleUtils();
+  const { user } = useAuth();
+  const country = user?.organization_country;
   const t = useTranslations('pages.inventory');
   const [closedWarehouses, setClosedWarehouses] = useState<ClosedWarehouse[]>(
     []
@@ -266,7 +269,7 @@ export default function InventariosPage() {
       if (selectedCategory) filters.category = selectedCategory.name;
       if (searchTerm) filters.searchTerm = searchTerm;
 
-      const svc = new InventoryPDFService(locale);
+      const svc = new InventoryPDFService(locale, defaultCurrency, country);
       svc.generate(allResponse.data, selectedWarehouse.name, currency, translations, filters);
     } catch {
       toastService.error(t('messages.errorLoadingInventory'));
@@ -385,10 +388,10 @@ export default function InventariosPage() {
                         <p className="text-sm mt-2 font-semibold" style={{ color: `rgb(var(--color-primary-700))` }}>
                           {locale === 'en' ? 'Warehouse value' : 'Valor del almacén'}:{' '}
                           <span>
-                            {new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'es-MX', {
-                              style: 'currency',
-                              currency: selectedWarehouse?.currency?.code || undefined,
-                            }).format(warehouseValue)}
+                            {formatCurrency(
+                              warehouseValue,
+                              selectedWarehouse?.currency?.code || undefined,
+                            )}
                           </span>
                         </p>
                       )}

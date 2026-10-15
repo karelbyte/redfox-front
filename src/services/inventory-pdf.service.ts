@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { InventoryItem } from '@/types/inventory';
+import { resolveIntlLocale } from '@/lib/format';
 
 interface InventoryPDFTranslations {
   title: string;
@@ -39,18 +40,23 @@ export class InventoryPDFService {
   private margin = 14;
   private currentY = 14;
   private locale: string;
+  /** Moneda y país de la organización que imprime. */
+  private currency: string = 'MXN';
+  private country?: string;
 
-  constructor(locale = 'es') {
+  constructor(locale = 'es', currency?: string, country?: string) {
     this.doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.locale = locale;
+    this.currency = currency || this.currency;
+    this.country = country;
   }
 
-  private fmt(value: number, currency = 'MXN'): string {
-    return new Intl.NumberFormat(this.locale === 'en' ? 'en-US' : 'es-MX', {
+  private fmt(value: number, currency?: string): string {
+    return new Intl.NumberFormat(resolveIntlLocale(this.locale, this.country), {
       style: 'currency',
-      currency,
+      currency: currency || this.currency,
       minimumFractionDigits: 2,
     }).format(value);
   }

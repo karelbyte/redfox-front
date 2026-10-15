@@ -4,6 +4,7 @@ import { PurchaseOrder, PurchaseOrderDetail } from '@/types/purchase-order';
 import { companySettingsService } from '@/services/company-settings.service';
 import type { CompanySettings } from '@/types/company-settings';
 import { API_BASE_URL } from '@/lib/config';
+import { resolveIntlLocale } from '@/lib/format';
 
 export interface POPDFTranslations {
   title: string;
@@ -40,13 +41,18 @@ export class PurchaseOrderPDFService {
   private margin: number = 20;
   private currentY: number = 20;
   private locale: string = 'es';
+  /** Moneda y país de la organización que imprime. */
+  private currency: string = 'MXN';
+  private country?: string;
   private companySettings: CompanySettings | null = null;
 
-  constructor(locale?: string) {
+  constructor(locale?: string, currency?: string, country?: string) {
     this.doc = new jsPDF();
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.locale = locale || 'es';
+    this.currency = currency || this.currency;
+    this.country = country;
   }
 
   private resetDocument(): void {
@@ -69,7 +75,10 @@ export class PurchaseOrderPDFService {
   }
 
   private formatCurrency(value: number): string {
-    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value);
+    return new Intl.NumberFormat(resolveIntlLocale(this.locale, this.country), {
+      style: 'currency',
+      currency: this.currency,
+    }).format(value);
   }
 
   private formatDate(date: string): string {

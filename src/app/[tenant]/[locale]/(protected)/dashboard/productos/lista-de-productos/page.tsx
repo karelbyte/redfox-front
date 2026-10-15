@@ -28,12 +28,17 @@ import ExportButton from "@/components/atoms/ExportButton";
 import { ProductType } from "@/types/product";
 import HelpButton from "@/components/Help/HelpButton";
 import { productsHelp } from "@/components/Help/configs/products.help";
+import { useLocaleUtils } from '@/hooks/useLocale';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ListProductsPage() {
   const t = useTranslations("pages.products");
   const tCommon = useTranslations("common");
   const tPdf = useTranslations("pages.products.pdf");
   const locale = useLocale();
+  const { defaultCurrency } = useLocaleUtils();
+  const { user } = useAuth();
+  const country = user?.organization_country;
   const { can } = usePermissions();
   const router = useRouter();
   const params = useParams();
@@ -220,7 +225,7 @@ export default function ListProductsPage() {
       };
 
       // Generar PDF usando el nuevo servicio
-      const pdfService = new ProductPDFService(locale);
+      const pdfService = new ProductPDFService(locale, defaultCurrency, country);
       pdfService.generatePDF(response.data, translations);
 
       toastService.success(t("messages.pdfGenerated"));

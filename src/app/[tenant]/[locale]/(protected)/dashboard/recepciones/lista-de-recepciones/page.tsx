@@ -27,10 +27,15 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import Loading from '@/components/Loading/Loading';
 import HelpButton from "@/components/Help/HelpButton";
 import { receptionsHelp } from "@/components/Help/configs/receptions.help";
+import { useLocaleUtils } from '@/hooks/useLocale';
+import { useAuth } from '@/context/AuthContext';
 
 export default function RecepcionesPage() {
   const router = useRouter();
   const locale = useLocale();
+  const { defaultCurrency } = useLocaleUtils();
+  const { user } = useAuth();
+  const country = user?.organization_country;
   const t = useTranslations('pages.receptions');
   const tCommon = useTranslations('common');
   const tPdf = useTranslations('pages.receptions.pdf');
@@ -202,7 +207,7 @@ export default function RecepcionesPage() {
       };
       
       // Generar el PDF usando el nuevo servicio
-      const pdfService = new ReceptionPDFService(locale);
+      const pdfService = new ReceptionPDFService(locale, defaultCurrency, country);
       await pdfService.generatePDF(reception, details, translations);
       
       toastService.success(t('messages.pdfGenerated'));

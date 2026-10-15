@@ -7,6 +7,7 @@ import { Btn } from '@/components/atoms';
 import ActionsMenu, { ActionMenuItem } from '@/components/atoms/ActionsMenu';
 import { usePermissions } from '@/hooks/usePermissions';
 import Tooltip from '@/components/atoms/Tooltip';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface CashRegisterTableProps {
   cashRegisters: CashRegister[];
@@ -26,14 +27,9 @@ export default function CashRegisterTable({
   const t = useTranslations('pages.cashRegisters');
   const tCommon = useTranslations('common');
   const locale = useLocale();
+  const { formatCurrency } = useLocaleUtils();
   const { can } = usePermissions();
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: 'PEN',
-    }).format(amount);
-  };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '-';
