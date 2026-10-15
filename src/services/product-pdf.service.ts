@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Product } from '@/types/product';
+import { resolveIntlLocale } from '@/lib/format';
 
 interface PDFTranslations {
   title: string;
@@ -31,22 +32,23 @@ export class ProductPDFService {
   private margin: number = 15;
   private currentY: number = 15;
   private locale: string = 'es';
+  /** Moneda y país de la organización que imprime. */
+  private currency: string = 'MXN';
+  private country?: string;
 
-  constructor(locale?: string) {
+  constructor(locale?: string, currency?: string, country?: string) {
     this.doc = new jsPDF({ orientation: 'landscape' });
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.locale = locale || 'es';
+    this.currency = currency || this.currency;
+    this.country = country;
   }
 
   private formatCurrency(value: number): string {
-    const localeMap: Record<string, string> = {
-      'es': 'es-PE',
-      'en': 'en-US'
-    };
-    return new Intl.NumberFormat(localeMap[this.locale] || 'es-PE', {
+    return new Intl.NumberFormat(resolveIntlLocale(this.locale, this.country), {
       style: 'currency',
-      currency: 'PEN'
+      currency: this.currency,
     }).format(value);
   }
 

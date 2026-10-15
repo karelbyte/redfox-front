@@ -5,6 +5,7 @@ import { Payroll } from '@/types/employee';
 import { usePayrollTranslations } from './PayrollTranslations.i18n';
 import Tooltip from "@/components/atoms/Tooltip";
 import { Btn } from "@/components/atoms";
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface PayrollTableProps {
   payrollRecords: Payroll[];
@@ -26,6 +27,7 @@ export default function PayrollTable({
   onSelectAllChange
 }: PayrollTableProps) {
   const locale = useLocale();
+  const { formatCurrency } = useLocaleUtils();
   const t = usePayrollTranslations(locale);
   const { can } = usePermissions();
 
@@ -68,12 +70,6 @@ export default function PayrollTable({
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale === 'zh' ? 'zh-CN' : locale === 'en' ? 'en-US' : 'es-PE', {
-      style: 'currency',
-      currency: 'PEN'
-    }).format(amount);
-  };
 
   return (
     <div

@@ -11,6 +11,7 @@ import ClientCreditForm from "@/components/Client/ClientCreditForm";
 import Drawer from "@/components/Drawer/Drawer";
 import { Btn } from "@/components/atoms";
 import Loading from "@/components/Loading/Loading";
+import { useLocaleUtils } from "@/hooks/useLocale";
 import { ArrowLeftIcon, PencilIcon, BanknotesIcon, CalendarDaysIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, ClockIcon } from "@heroicons/react/24/outline";
 
 export default function ClientCreditPage() {
@@ -21,6 +22,7 @@ export default function ClientCreditPage() {
     const router = useRouter();
     const clientId = params.id as string;
     const locale = params.locale as string;
+    const { formatCurrency } = useLocaleUtils();
 
     const [client, setClient] = useState<Client | null>(null);
     const [creditAnalysis, setCreditAnalysis] = useState<any>(null);
@@ -99,10 +101,7 @@ export default function ClientCreditPage() {
                     <div>
                         <p className="text-sm font-medium text-gray-500">{tCredit('limit')}</p>
                         <p className="text-2xl font-bold text-gray-900">
-                            {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-                                style: 'currency',
-                                currency: credit?.currency?.code || undefined
-                            }).format(credit?.credit_limit || 0)}
+                            {formatCurrency(credit?.credit_limit || 0, credit?.currency?.code || undefined)}
                         </p>
                     </div>
                 </div>
@@ -169,10 +168,7 @@ export default function ClientCreditPage() {
                                     <p className="text-sm font-medium text-gray-500">{tCredit('usedCredit')}</p>
                                 </div>
                                 <p className="text-xl font-bold text-gray-900">
-                                    {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-                                        style: 'currency',
-                                        currency: credit?.currency?.code || undefined
-                                    }).format(creditAnalysis.usedCredit)}
+                                    {formatCurrency(creditAnalysis.usedCredit, credit?.currency?.code || undefined)}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">
                                     {creditAnalysis.totalCredit > 0 
@@ -191,10 +187,7 @@ export default function ClientCreditPage() {
                                     <p className="text-sm font-medium text-gray-500">{tCredit('availableCredit')}</p>
                                 </div>
                                 <p className="text-xl font-bold text-green-700">
-                                    {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-                                        style: 'currency',
-                                        currency: credit?.currency?.code || undefined
-                                    }).format(creditAnalysis.availableCredit)}
+                                    {formatCurrency(creditAnalysis.availableCredit, credit?.currency?.code || undefined)}
                                 </p>
                             </div>
 
@@ -207,10 +200,7 @@ export default function ClientCreditPage() {
                                     <p className="text-sm font-medium text-gray-500">{tCredit('currentBalance')}</p>
                                 </div>
                                 <p className="text-xl font-bold text-blue-700">
-                                    {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-                                        style: 'currency',
-                                        currency: credit?.currency?.code || undefined
-                                    }).format(creditAnalysis.currentBalance)}
+                                    {formatCurrency(creditAnalysis.currentBalance, credit?.currency?.code || undefined)}
                                 </p>
                             </div>
 
@@ -223,10 +213,7 @@ export default function ClientCreditPage() {
                                     <p className="text-sm font-medium text-gray-500">{tCredit('overdueBalance')}</p>
                                 </div>
                                 <p className="text-xl font-bold text-red-700">
-                                    {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-                                        style: 'currency',
-                                        currency: credit?.currency?.code || undefined
-                                    }).format(creditAnalysis.overdueBalance)}
+                                    {formatCurrency(creditAnalysis.overdueBalance, credit?.currency?.code || undefined)}
                                 </p>
                             </div>
                         </div>
@@ -277,16 +264,10 @@ export default function ClientCreditPage() {
                                                         {new Date(account.dueDate).toLocaleDateString(locale === 'es' ? 'es-MX' : 'en-US')}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                                                        {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-                                                            style: 'currency',
-                                                            currency: credit?.currency?.code || undefined
-                                                        }).format(account.totalAmount)}
+                                                        {formatCurrency(account.totalAmount, credit?.currency?.code || undefined)}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
-                                                        {new Intl.NumberFormat(locale === 'es' ? 'es-MX' : 'en-US', {
-                                                            style: 'currency',
-                                                            currency: credit?.currency?.code || undefined
-                                                        }).format(account.remainingAmount)}
+                                                        {formatCurrency(account.remainingAmount, credit?.currency?.code || undefined)}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-center">
                                                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

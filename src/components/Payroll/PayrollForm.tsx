@@ -8,6 +8,7 @@ import { payrollService } from "@/services/payroll.service";
 import { employeesService } from "@/services/employees.service";
 import { toastService } from "@/services/toast.service";
 import { usePayrollTranslations } from "./PayrollTranslations.i18n";
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 export interface PayrollFormRef {
   submit: () => void;
@@ -29,6 +30,7 @@ const PayrollForm = forwardRef<PayrollFormRef, PayrollFormProps>(({
   onValidChange
 }, ref) => {
   const locale = useLocale();
+  const { formatCurrency } = useLocaleUtils();
   const t = usePayrollTranslations(locale);
   
   const [formData, setFormData] = useState<Partial<Payroll>>({
@@ -136,12 +138,6 @@ const PayrollForm = forwardRef<PayrollFormRef, PayrollFormProps>(({
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale === 'zh' ? 'zh-CN' : locale === 'en' ? 'en-US' : 'es-PE', {
-      style: 'currency',
-      currency: 'PEN'
-    }).format(amount);
-  };
 
   return (
     <form className="space-y-6">

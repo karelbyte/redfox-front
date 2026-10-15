@@ -6,6 +6,7 @@ import ActionsMenu, { ActionMenuItem } from "@/components/atoms/ActionsMenu";
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRouter, useParams } from 'next/navigation';
 import Tooltip from '@/components/atoms/Tooltip';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface ProviderTableProps {
   providers: Provider[];
@@ -27,6 +28,7 @@ export default function ProviderTable({
   onSelectAllChange
 }: ProviderTableProps) {
   const t = useTranslations('pages.providers');
+  const { formatCurrency } = useLocaleUtils();
   const tCommon = useTranslations('common');
   const tOffline = useTranslations('offline');
   const { can } = usePermissions();
@@ -166,7 +168,7 @@ export default function ProviderTable({
               )}
               {isVisible('balance') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  {new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(provider.balance)}
+                  {formatCurrency(Number(provider.balance) || 0)}
                 </td>
               )}
               {isVisible('status') && (

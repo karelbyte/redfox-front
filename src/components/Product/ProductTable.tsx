@@ -7,6 +7,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { usePackCapabilities } from '@/hooks/usePackCapabilities';
 import Tooltip from '@/components/atoms/Tooltip';
 import { API_BASE_URL } from '@/lib/config';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface ProductTableProps {
   products: Product[];
@@ -32,6 +33,7 @@ export default function ProductTable({
   onSelectAllChange
 }: ProductTableProps) {
   const t = useTranslations('pages.products');
+  const { formatCurrency } = useLocaleUtils();
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
 
@@ -202,7 +204,7 @@ export default function ProductTable({
               )}
               {isVisible('price') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  {new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(product.base_price)}
+                  {formatCurrency(Number(product.base_price) || 0)}
                 </td>
               )}
               {isVisible('stock') && (

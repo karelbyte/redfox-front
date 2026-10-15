@@ -19,13 +19,16 @@ import CloseSaleModal from '@/components/Sale/CloseSaleModal';
 import SaleCloseResultModal from '@/components/Sale/SaleCloseResultModal';
 import Loading from '@/components/Loading/Loading';
 import { useLocaleUtils } from '@/hooks/useLocale';
+import { useAuth } from '@/context/AuthContext';
 
 export default function SaleDetailsPage() {
   const router = useRouter();
   const params = useParams();
   const t = useTranslations('pages.sales');
   const tPdf = useTranslations('pages.sales.pdf');
-  const { locale, formatCurrency } = useLocaleUtils();
+  const { locale, formatCurrency, defaultCurrency } = useLocaleUtils();
+  const { user } = useAuth();
+  const country = user?.organization_country;
   const [sale, setSale] = useState<Sale | null>(null);
   const [products, setProducts] = useState<SaleDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -177,7 +180,7 @@ export default function SaleDetailsPage() {
         }
       };
       
-      const pdfService = new SalePDFService(locale);
+      const pdfService = new SalePDFService(locale, defaultCurrency, country);
       await pdfService.generatePDF(sale, products, translations);
       
       toastService.success(t('messages.pdfGenerated'));

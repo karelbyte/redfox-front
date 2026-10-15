@@ -4,6 +4,7 @@ import { Sale, SaleDetail, PaymentMethod, CardType } from '@/types/sale';
 import { companySettingsService } from '@/services/company-settings.service';
 import type { CompanySettings } from '@/types/company-settings';
 import { API_BASE_URL } from '@/lib/config';
+import { resolveIntlLocale } from '@/lib/format';
 
 interface PDFTranslations {
   title: string;
@@ -48,13 +49,18 @@ export class SalePDFService {
   private margin: number = 20;
   private currentY: number = 20;
   private locale: string = 'es';
+  /** Moneda y país de la organización que imprime. */
+  private currency: string = 'MXN';
+  private country?: string;
   private companySettings: CompanySettings | null = null;
 
-  constructor(locale?: string) {
+  constructor(locale?: string, currency?: string, country?: string) {
     this.doc = new jsPDF();
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.locale = locale || 'es';
+    this.currency = currency || this.currency;
+    this.country = country;
   }
 
   private resetDocument(): void {
@@ -167,9 +173,11 @@ export class SalePDFService {
   }
 
   private formatCurrency(value: number, currencyCode?: string): string {
-    const code = currencyCode || 'MXN';
-    const localeStr = code === 'MXN' ? 'es-MX' : this.locale === 'es' ? 'es-MX' : 'en-US';
-    return new Intl.NumberFormat(localeStr, {
+    // El locale sale del idioma y del país, no de la moneda: elegirlo por la
+    // moneda hacía que un importe en soles se imprimiera con formato mexicano.
+    const code = currencyCode || this.currency;
+
+    return new Intl.NumberFormat(resolveIntlLocale(this.locale, this.country), {
       style: 'currency',
       currency: code,
     }).format(value);

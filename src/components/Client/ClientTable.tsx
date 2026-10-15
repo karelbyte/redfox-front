@@ -6,6 +6,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { usePackCapabilities } from '@/hooks/usePackCapabilities';
 import { useRouter, useParams } from 'next/navigation';
 import Tooltip from '@/components/atoms/Tooltip';
+import { useLocaleUtils } from '@/hooks/useLocale';
 
 interface ClientTableProps {
   clients: Client[];
@@ -29,6 +30,7 @@ export default function ClientTable({
   onSelectAllChange
 }: ClientTableProps) {
   const t = useTranslations('pages.clients');
+  const { formatCurrency } = useLocaleUtils();
   const tCredit = useTranslations('pages.clients.credit');
   const tCommon = useTranslations('common');
   const { can } = usePermissions();
@@ -176,7 +178,7 @@ export default function ClientTable({
               )}
               {isVisible('balance') && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  {new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(client.balance)}
+                  {formatCurrency(Number(client.balance) || 0)}
                 </td>
               )}
               {isVisible('tax_document') && (

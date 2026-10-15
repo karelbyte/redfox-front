@@ -4,6 +4,7 @@ import { Reception, ReceptionDetail } from '@/types/reception';
 import { companySettingsService } from '@/services/company-settings.service';
 import type { CompanySettings } from '@/types/company-settings';
 import { API_BASE_URL } from '@/lib/config';
+import { resolveIntlLocale } from '@/lib/format';
 
 interface PDFTranslations {
   title: string;
@@ -35,13 +36,18 @@ export class ReceptionPDFService {
   private margin: number = 20;
   private currentY: number = 20;
   private locale: string = 'es';
+  /** Moneda y país de la organización que imprime. */
+  private currency: string = 'MXN';
+  private country?: string;
   private companySettings: CompanySettings | null = null;
 
-  constructor(locale?: string) {
+  constructor(locale?: string, currency?: string, country?: string) {
     this.doc = new jsPDF();
     this.pageWidth = this.doc.internal.pageSize.getWidth();
     this.pageHeight = this.doc.internal.pageSize.getHeight();
     this.locale = locale || 'es';
+    this.currency = currency || this.currency;
+    this.country = country;
   }
 
   private async loadCompanySettings(): Promise<void> {
@@ -116,13 +122,9 @@ export class ReceptionPDFService {
   }
 
   private formatCurrency(value: number): string {
-    const localeMap: Record<string, string> = {
-      'es': 'es-PE',
-      'en': 'en-US'
-    };
-    return new Intl.NumberFormat(localeMap[this.locale] || 'es-PE', {
+    return new Intl.NumberFormat(resolveIntlLocale(this.locale, this.country), {
       style: 'currency',
-      currency: 'PEN'
+      currency: this.currency,
     }).format(value);
   }
 
