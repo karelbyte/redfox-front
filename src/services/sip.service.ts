@@ -63,6 +63,23 @@ class SipService {
 
     return res.json();
   }
+
+  async deleteSip(filename: string): Promise<{ success: boolean; message: string }> {
+    const res = await fetch(
+      `${API_BASE_URL}/api/sip/files/${encodeURIComponent(filename)}`,
+      {
+        method: 'DELETE',
+        headers: getHeaders(),
+      },
+    );
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Error al eliminar el SIP');
+    }
+
+    return res.json();
+  }
 }
 
 export const sipService = new SipService();

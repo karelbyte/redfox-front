@@ -16,6 +16,7 @@ export default function ProductUpPage() {
   const [uploaded, setUploaded] = useState<SipUploadResult | null>(null);
   const [files, setFiles] = useState<SipFile[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(false);
+  const [deletingKey, setDeletingKey] = useState<string | null>(null);
 
   const isAdmin = user?.admin || user?.roles?.some((r: any) => r.code === 'SUPER_ADMIN' || r.code === 'ADMIN');
 
@@ -121,6 +122,11 @@ export default function ProductUpPage() {
       colDate: 'Subido',
       colActions: 'Acciones',
       download: 'Descargar',
+      delete: 'Eliminar',
+      deleting: 'Eliminando...',
+      confirmDelete: '¿Estás seguro de que deseas eliminar este SIP? Esta acción no se puede deshacer.',
+      deleted: 'SIP eliminado correctamente',
+      deleteError: 'Error al eliminar el SIP',
     },
     en: {
       title: 'Upload SIP',
@@ -144,6 +150,11 @@ export default function ProductUpPage() {
       colDate: 'Uploaded',
       colActions: 'Actions',
       download: 'Download',
+      delete: 'Delete',
+      deleting: 'Deleting...',
+      confirmDelete: 'Are you sure you want to delete this SIP? This action cannot be undone.',
+      deleted: 'SIP deleted successfully',
+      deleteError: 'Error deleting SIP',
     },
     zh: {
       title: '上传 SIP',
@@ -167,6 +178,11 @@ export default function ProductUpPage() {
       colDate: '上传时间',
       colActions: '操作',
       download: '下载',
+      delete: '删除',
+      deleting: '删除中...',
+      confirmDelete: '您确定要删除此 SIP 吗？此操作无法撤销。',
+      deleted: 'SIP 删除成功',
+      deleteError: '删除 SIP 时出错',
     },
   } as Record<string, {
     title: string; subtitle: string; chooseFile: string; upload: string;
@@ -175,6 +191,8 @@ export default function ProductUpPage() {
     listCount: (n: number) => string; refresh: string; loading: string;
     empty: string; emptyHint: string; colFile: string; colSize: string;
     colDate: string; colActions: string; download: string;
+    delete: string; deleting: string; confirmDelete: string;
+    deleted: string; deleteError: string;
   }>;
 
   const t = translations[locale] || translations.es;
@@ -195,6 +213,22 @@ export default function ProductUpPage() {
       hour: '2-digit',
       minute: '2-digit',
     });
+  };
+
+  const handleDelete = async (item: SipFile) => {
+    if (!window.confirm(`${t.confirmDelete}\n\n${item.displayName}`)) return;
+
+    setDeletingKey(item.key);
+    try {
+      await sipService.deleteSip(item.filename);
+      setFiles((prev) => prev.filter((file) => file.key !== item.key));
+      if (uploaded?.key === item.key) setUploaded(null);
+      toast.success(t.deleted);
+    } catch (error: any) {
+      toast.error(error.message || t.deleteError);
+    } finally {
+      setDeletingKey(null);
+    }
   };
 
   return (
@@ -354,16 +388,29 @@ export default function ProductUpPage() {
                         {formatDate(item.uploadedAt)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <a
-                          href={`${API_BASE_URL}${item.downloadUrl}`}
-                          download={item.displayName}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                          </svg>
-                          {t.download}
-                        </a>
+                        <div className="inline-flex items-center gap-2">
+                          <a
+                            href={`${API_BASE_URL}${item.downloadUrl}`}
+                            download={item.displayName}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            {t.download}
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item)}
+                            disabled={deletingKey === item.key}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            {deletingKey === item.key ? t.deleting : t.delete}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
