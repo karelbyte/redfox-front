@@ -22,6 +22,16 @@ export interface SipUploadResult {
   size: number;
 }
 
+export interface SipFile {
+  key: string;
+  filename: string;
+  displayName: string;
+  size: number;
+  uploadedAt: string;
+  url: string;
+  downloadUrl: string;
+}
+
 class SipService {
   async uploadSip(file: File): Promise<SipUploadResult> {
     const formData = new FormData();
@@ -36,6 +46,19 @@ class SipService {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.message || 'Error al subir el SIP');
+    }
+
+    return res.json();
+  }
+
+  async listSips(): Promise<SipFile[]> {
+    const res = await fetch(`${API_BASE_URL}/api/sip/files`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Error al cargar la lista de SIP');
     }
 
     return res.json();

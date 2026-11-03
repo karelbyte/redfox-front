@@ -1,26 +1,51 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useLocale } from 'next-intl';
 import { toast } from 'react-hot-toast';
-import { sipService, type SipUploadResult } from '@/services/sip.service';
+import { sipService, type SipUploadResult, type SipFile } from '@/services/sip.service';
+import { API_BASE_URL } from '@/lib/config';
 
 export default function ProductUpPage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const locale = useLocale();
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState<SipUploadResult | null>(null);
+  const [files, setFiles] = useState<SipFile[]>([]);
+  const [loadingFiles, setLoadingFiles] = useState(false);
 
   const isAdmin = user?.admin || user?.roles?.some((r: any) => r.code === 'SUPER_ADMIN' || r.code === 'ADMIN');
 
+  const loadFiles = useCallback(async () => {
+    setLoadingFiles(true);
+    try {
+      setFiles(await sipService.listSips());
+    } catch (error: any) {
+      toast.error(error.message || 'Error al cargar la lista de SIP');
+    } finally {
+      setLoadingFiles(false);
+    }
+  }, []);
+
   useEffect(() => {
+    if (isLoading) return;
     if (!isAdmin) {
       toast.error('Acceso denegado: solo administradores');
+      return;
     }
-  }, [isAdmin]);
+    loadFiles();
+  }, [isAdmin, isLoading, loadFiles]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return (
@@ -55,6 +80,7 @@ export default function ProductUpPage() {
     e.preventDefault();
     if (!file) return;
 
+    const form = e.currentTarget as HTMLFormElement;
     setUploading(true);
     setUploaded(null);
 
@@ -62,6 +88,9 @@ export default function ProductUpPage() {
       const result = await sipService.uploadSip(file);
       setUploaded(result);
       toast.success(result.message);
+      setFile(null);
+      form.reset();
+      await loadFiles();
     } catch (error: any) {
       toast.error(error.message || 'Error al subir el SIP');
     } finally {
@@ -81,6 +110,17 @@ export default function ProductUpPage() {
       fileSize: 'Tama\u00f1o:',
       storedIn: 'Almacenado en:',
       adminOnly: 'Solo para administradores',
+      listTitle: 'SIP subidos',
+      listCount: (n: number) => `${n} archivo${n === 1 ? '' : 's'}`,
+      refresh: 'Actualizar',
+      loading: 'Cargando...',
+      empty: 'Todavía no has subido ningún SIP',
+      emptyHint: 'Los archivos ZIP que subas aparecerán aquí.',
+      colFile: 'Archivo',
+      colSize: 'Tamaño',
+      colDate: 'Subido',
+      colActions: 'Acciones',
+      download: 'Descargar',
     },
     en: {
       title: 'Upload SIP',
@@ -93,6 +133,17 @@ export default function ProductUpPage() {
       fileSize: 'Size:',
       storedIn: 'Stored at:',
       adminOnly: 'Admins only',
+      listTitle: 'Uploaded SIPs',
+      listCount: (n: number) => `${n} file${n === 1 ? '' : 's'}`,
+      refresh: 'Refresh',
+      loading: 'Loading...',
+      empty: "You haven't uploaded any SIP yet",
+      emptyHint: 'The ZIP files you upload will appear here.',
+      colFile: 'File',
+      colSize: 'Size',
+      colDate: 'Uploaded',
+      colActions: 'Actions',
+      download: 'Download',
     },
     zh: {
       title: '上传 SIP',
@@ -105,14 +156,50 @@ export default function ProductUpPage() {
       fileSize: '大小:',
       storedIn: '存储位置:',
       adminOnly: '仅限管理员',
+      listTitle: '已上传的 SIP',
+      listCount: (n: number) => `${n} 个文件`,
+      refresh: '刷新',
+      loading: '加载中...',
+      empty: '你还没有上传任何 SIP',
+      emptyHint: '上传的 ZIP 文件将显示在这里。',
+      colFile: '文件',
+      colSize: '大小',
+      colDate: '上传时间',
+      colActions: '操作',
+      download: '下载',
     },
-  } as Record<string, { title: string; subtitle: string; chooseFile: string; upload: string; uploading: string; success: string; fileName: string; fileSize: string; storedIn: string; adminOnly: string }>;
+  } as Record<string, {
+    title: string; subtitle: string; chooseFile: string; upload: string;
+    uploading: string; success: string; fileName: string; fileSize: string;
+    storedIn: string; adminOnly: string; listTitle: string;
+    listCount: (n: number) => string; refresh: string; loading: string;
+    empty: string; emptyHint: string; colFile: string; colSize: string;
+    colDate: string; colActions: string; download: string;
+  }>;
 
   const t = translations[locale] || translations.es;
 
+  const formatSize = (bytes: number) => {
+    if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+    if (bytes >= 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${bytes} B`;
+  };
+
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '-';
+    return date.toLocaleString(locale, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900">{t.title}</h1>
           <p className="text-gray-600 mt-1">{t.subtitle}</p>
@@ -185,6 +272,106 @@ export default function ProductUpPage() {
             </div>
           </div>
         )}
+
+        <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-semibold text-gray-900">{t.listTitle}</h2>
+              {!loadingFiles && (
+                <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold">
+                  {t.listCount(files.length)}
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={loadFiles}
+              disabled={loadingFiles}
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg
+                className={`w-4 h-4 ${loadingFiles ? 'animate-spin' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              {t.refresh}
+            </button>
+          </div>
+
+          {loadingFiles && files.length === 0 ? (
+            <div className="px-6 py-12 text-center text-sm text-gray-500">{t.loading}</div>
+          ) : files.length === 0 ? (
+            <div className="px-6 py-12 text-center">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-8" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-gray-700">{t.empty}</p>
+              <p className="text-xs text-gray-500 mt-1">{t.emptyHint}</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {t.colFile}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {t.colSize}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {t.colDate}
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {t.colActions}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {files.map((item) => (
+                    <tr key={item.key} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                          </div>
+                          <span className="text-sm font-medium text-gray-900 max-w-xs truncate" title={item.displayName}>
+                            {item.displayName}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {formatSize(item.size)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {formatDate(item.uploadedAt)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <a
+                          href={`${API_BASE_URL}${item.downloadUrl}`}
+                          download={item.displayName}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                          {t.download}
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
