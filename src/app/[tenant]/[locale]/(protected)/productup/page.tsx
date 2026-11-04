@@ -7,6 +7,9 @@ import { toast } from 'react-hot-toast';
 import { sipService, type SipUploadResult, type SipFile } from '@/services/sip.service';
 import { API_BASE_URL } from '@/lib/config';
 
+const MAX_SIP_SIZE_MB = 300;
+const MAX_SIP_SIZE = MAX_SIP_SIZE_MB * 1024 * 1024;
+
 export default function ProductUpPage() {
   const { user, isLoading } = useAuth();
   const locale = useLocale();
@@ -74,6 +77,11 @@ export default function ProductUpPage() {
     if (selectedFile && !selectedFile.name.toLowerCase().endsWith('.zip')) {
       toast.error('Solo se permiten archivos ZIP');
       setFile(null);
+      return;
+    }
+    if (selectedFile && selectedFile.size > MAX_SIP_SIZE) {
+      toast.error(`El archivo supera el máximo de ${MAX_SIP_SIZE_MB} MB`);
+      setFile(null);
     }
   };
 
@@ -107,6 +115,7 @@ export default function ProductUpPage() {
       upload: 'Subir SIP',
       uploading: 'Subiendo...',
       success: 'SIP subido correctamente',
+      maxSize: 'Máximo 300 MB · Solo archivos .zip',
       fileName: 'Archivo:',
       fileSize: 'Tama\u00f1o:',
       storedIn: 'Almacenado en:',
@@ -135,6 +144,7 @@ export default function ProductUpPage() {
       upload: 'Upload SIP',
       uploading: 'Uploading...',
       success: 'SIP uploaded successfully',
+      maxSize: 'Max 300 MB · .zip files only',
       fileName: 'File:',
       fileSize: 'Size:',
       storedIn: 'Stored at:',
@@ -163,6 +173,7 @@ export default function ProductUpPage() {
       upload: '上传 SIP',
       uploading: '上传中...',
       success: 'SIP 上传成功',
+      maxSize: '最大 300 MB · 仅限 .zip 文件',
       fileName: '文件:',
       fileSize: '大小:',
       storedIn: '存储位置:',
@@ -186,7 +197,7 @@ export default function ProductUpPage() {
     },
   } as Record<string, {
     title: string; subtitle: string; chooseFile: string; upload: string;
-    uploading: string; success: string; fileName: string; fileSize: string;
+    uploading: string; success: string; maxSize: string; fileName: string; fileSize: string;
     storedIn: string; adminOnly: string; listTitle: string;
     listCount: (n: number) => string; refresh: string; loading: string;
     empty: string; emptyHint: string; colFile: string; colSize: string;
@@ -261,6 +272,7 @@ export default function ProductUpPage() {
                   hover:file:bg-blue-100
                   cursor-pointer"
               />
+              <p className="mt-2 text-xs text-gray-500">{t.maxSize}</p>
             </div>
 
             {file && (
